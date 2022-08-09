@@ -1,5 +1,5 @@
 import React from "react";
-import Code from "../components/Code";
+import Code from "../src/components/Code";
 
 let BLOCK_NUMBER = 0;
 interface htmlToJsxProps {

@@ -1,26 +1,28 @@
-import { readdirSync, readFileSync } from "fs";
-import { join } from 'path';
 import matter from "gray-matter";
-import PostType from "../interfaces/PostType";
+import { SUPABASE_BUCKET_NAME } from "./constants";
+import mdToHtml from "./mdToHtml";
+import { supabase } from "./supabaseClient";
 
 
-const postsDirectory = join(process.cwd(), '_posts')
 
-export function getPostContent(title: string): PostType {
+export async function getPostContent(title: string): Promise<{ title: string, language: string, description: string, content: string }> {
 
-    const postFile = join(postsDirectory, `${title}.md`);
-    console.log(postFile);
-    const fileContent = readFileSync(postFile, 'utf-8');
-    const { data, content } = matter(fileContent);
+    const { data: fileData, error } = await supabase.storage.from(SUPABASE_BUCKET_NAME).download(`${title}`);
+    if (!fileData || error) throw new Error(
+        error?.message || `File named ${title} does not exist`
+    )
+
+    const { data, content } = matter(await fileData.text());
     return {
-        ...data as { title: string, language: string },
-        content
+        ...data as { title: string, language: string, description: string },
+        content: await mdToHtml(content)
     }
 }
 
-export function getAllPostTitles() {
-    const posts = readdirSync(postsDirectory)
-    const titles = posts.map((post) => post.replace(/\.md$/, ''));
+export async function getAllPostTitles(): Promise<string[]> {
+    const { data: posts, error } = await supabase.storage.from(SUPABASE_BUCKET_NAME).list();
+    if (!posts || error) return []
+    const titles = posts.map((post) => post.name.replace(/\.md$/, ''));
     return titles
 }
 

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PostContext } from "../pages/posts/[title]";
+import { PostContext } from "../pages/posts/[postId]";
 import { BsPlayFill } from "react-icons/bs";
 import { GrRevert } from "react-icons/gr";
 

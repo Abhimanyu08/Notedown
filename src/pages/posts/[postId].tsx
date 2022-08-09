@@ -1,15 +1,34 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { PostgrestError } from "@supabase/supabase-js";
+import { GetServerSideProps } from "next";
 import { createContext, useEffect, useState } from "react";
-// import Code from "../../components/Code";
-import PostType from "../../../interfaces/PostType";
-import { getAllPostTitles, getPostContent } from "../../../utils/getResources";
+import { SUPABASE_POST_TABLE } from "../../../utils/constants";
+import { getPostContent } from "../../../utils/getResources";
 import htmlToJsx from "../../../utils/htmlToJsx";
-import mdToHtml from "../../../utils/mdToHtml";
 import sendRequest from "../../../utils/sendRequest";
+import { supabase } from "../../../utils/supabaseClient";
+import Layout from "../../components/Layout";
+import Post from "../../interfaces/Post";
+
+interface PostProps {
+	title: string;
+	description: string;
+	content: string;
+	language: string;
+}
+
+interface PostQueryResult {
+	data: Post[] | null;
+	error: PostgrestError | null;
+}
 
 export const PostContext = createContext<Record<number, string>>({});
 
-export default function Post({ content, language }: PostType) {
+export default function Blog({
+	title,
+	description,
+	content,
+	language,
+}: PostProps) {
 	const [containerId, setContainerId] = useState<string | null>(null);
 	const [child, setChild] = useState<JSX.Element | null>(null);
 	const [runTillThisBlock, setRunTillThisBlock] = useState<
@@ -39,9 +58,7 @@ export default function Post({ content, language }: PostType) {
 			console.log(code);
 			runCodeRequest(code, blockNumber, containerId);
 		};
-		setRunTillThisBlock(() => {
-			return func;
-		});
+		setRunTillThisBlock(() => func);
 	});
 
 	useEffect(() => {
@@ -91,30 +108,45 @@ export default function Post({ content, language }: PostType) {
 
 	return (
 		<PostContext.Provider value={blockToOutput}>
-			<div>{containerId && child ? child : <p>Loading...</p>}</div>
+			<Layout>
+				<div className="w-3/5 mx-auto text-center">
+					<h1 className="text-3xl font-bold">{title}</h1>
+					<p>{description}</p>
+					<div>
+						{containerId && child ? child : <p>Loading...</p>}
+					</div>
+				</div>
+			</Layout>
 		</PostContext.Provider>
 	);
 }
 
-export const getStaticProps: GetStaticProps<
-	PostType,
-	{ title: string }
+export const getServerSideProps: GetServerSideProps<
+	PostProps,
+	{ postId: string }
 > = async (context) => {
-	const post = getPostContent(context.params!.title);
-	return {
+	const defaultReturn = {
 		props: {
-			title: context.params!.title,
-			language: post.language,
-			content: await mdToHtml(post.content),
+			title: "",
+			language: "",
+			content: "",
+			description: "",
 		},
 	};
-};
+	const { data, error }: PostQueryResult = await supabase
+		.from(SUPABASE_POST_TABLE)
+		.select("filename")
+		.eq("id", context.params?.postId);
 
-export const getStaticPaths: GetStaticPaths<{ title: string }> = () => {
-	const titles = getAllPostTitles();
+	if (error || !data || data.length === 0) {
+		console.log(error);
+		return defaultReturn;
+	}
 
+	const postContent = await getPostContent(data.at(0)!.filename!);
 	return {
-		paths: titles.map((title) => ({ params: { title } })),
-		fallback: false,
+		props: {
+			...postContent,
+		},
 	};
 };
