@@ -34,14 +34,14 @@ export default function Blog({
 	const [runTillThisBlock, setRunTillThisBlock] = useState<
 		((blockNumber: number) => void) | null
 	>(null);
-	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
-		{}
-	);
+	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>({
+		3: "4",
+	});
 
 	//prepare the container
-	useEffect(() => {
-		if (!containerId) prepareContainer(language);
-	}, []);
+	// useEffect(() => {
+	// 	if (!containerId) prepareContainer(language);
+	// }, []);
 
 	//
 	useEffect(() => {
@@ -62,15 +62,15 @@ export default function Blog({
 	});
 
 	useEffect(() => {
-		if (containerId)
-			setChild(
-				htmlToJsx({
-					html: content,
-					language,
-					containerId,
-					runTillThisPoint: runTillThisBlock,
-				})
-			);
+		// if (containerId)
+		setChild(
+			htmlToJsx({
+				html: content,
+				language,
+				containerId: "lol",
+				runTillThisPoint: runTillThisBlock,
+			})
+		);
 	}, [containerId, runTillThisBlock]);
 
 	const runCodeRequest = async (
@@ -109,11 +109,13 @@ export default function Blog({
 	return (
 		<PostContext.Provider value={blockToOutput}>
 			<Layout>
-				<div className="w-3/5 mx-auto text-center">
-					<h1 className="text-3xl font-bold">{title}</h1>
-					<p>{description}</p>
-					<div>
-						{containerId && child ? child : <p>Loading...</p>}
+				<div className="w-4/5 md:w-3/5 mx-auto text-left text-white">
+					<h1 className="text-4xl font-bold text-center w-full">
+						{title}
+					</h1>
+					<p className="mt-4 italic text-center">{description}</p>
+					<div className="mt-10">
+						{child ? child : <p>Loading...</p>}
 					</div>
 				</div>
 			</Layout>
