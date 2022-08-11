@@ -9,7 +9,10 @@ import {
 import Layout from "../components/Layout";
 import { getAllPostTitles } from "../../utils/getResources";
 import { supabase } from "../../utils/supabaseClient";
-import { SUPABASE_BUCKET_NAME } from "../../utils/constants";
+import {
+	SUPABASE_BLOGGER_TABLE,
+	SUPABASE_BUCKET_NAME,
+} from "../../utils/constants";
 import { useRouter } from "next/router";
 import { Session, User } from "@supabase/supabase-js";
 
@@ -27,6 +30,18 @@ const Home: NextPage<HomeProps> = () => {
 			setSession(session);
 		});
 	}, []);
+
+	useEffect(() => {
+		if (session) {
+			const name = session.user?.user_metadata.full_name;
+			const avatar_url = session.user?.user_metadata.avatar_url;
+			supabase
+				.from(SUPABASE_BLOGGER_TABLE)
+				.update({ name, avatar_url })
+				.match({ id: session.user?.id })
+				.then((val) => console.log(val));
+		}
+	}, [session]);
 
 	return (
 		<Layout>
