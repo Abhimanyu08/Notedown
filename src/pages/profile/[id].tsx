@@ -1,10 +1,10 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import { PostgrestError, User } from "@supabase/supabase-js";
 import matter from "gray-matter";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { FormEventHandler, useState } from "react";
+import React, { FormEventHandler, useEffect, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import {
@@ -14,11 +14,13 @@ import {
 } from "../../../utils/constants";
 import { supabase } from "../../../utils/supabaseClient";
 import Layout from "../../components/Layout";
+import useAuth from "../../hooks/useAuth";
 import Blogger from "../../interfaces/Blogger";
 import FileMetadata from "../../interfaces/FileMetdata";
 import Post from "../../interfaces/Post";
 
 interface ProfileProps {
+	loggedInUser?: User | null;
 	name?: string | null;
 	posts?: Post[] | null;
 	avatar_url?: string | null;
@@ -34,12 +36,17 @@ interface PostQueryResult {
 	error: PostgrestError | null;
 }
 
-function Profile({ name, posts, avatar_url }: ProfileProps) {
+function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 	const router = useRouter();
 	const { id } = router.query;
 	const [file, setFile] = useState<File | null>();
-	const [owner, setOwner] = useState(() => supabase.auth.user()?.id === id);
+	const [owner, setOwner] = useState(loggedInUser?.id === id);
 	const [uploading, setUploading] = useState(false);
+	loggedInUser = useAuth(loggedInUser || null);
+
+	useEffect(() => {
+		setOwner(loggedInUser?.id === id);
+	}, [loggedInUser]);
 
 	const onUpload: FormEventHandler = async (e) => {
 		e.preventDefault();
@@ -98,10 +105,10 @@ function Profile({ name, posts, avatar_url }: ProfileProps) {
 		alert("file uploaded successfully");
 	};
 	return (
-		<Layout>
+		<Layout user={loggedInUser || null} route={router.asPath}>
 			<div className="grid grid-cols-6 text-white ">
-				<div className="col-span-2  ">
-					<div className="flex flex-col items-center">
+				<div className="col-span-2">
+					<div className="flex flex-col items-start">
 						<div className="rounded-full overflow-hidden">
 							{avatar_url && (
 								<Image
@@ -116,7 +123,7 @@ function Profile({ name, posts, avatar_url }: ProfileProps) {
 						<p className="text-xl font-semibold">{name}</p>
 					</div>
 				</div>
-				<div className="col-start-3 col-span-4 mx-5">
+				<div className="col-start-3 col-span-4">
 					<div className="flex justify-between items-center">
 						<p className="text-3xl font-semibold">Posts</p>
 						<div className="flex gap-1">
@@ -169,24 +176,6 @@ function Profile({ name, posts, avatar_url }: ProfileProps) {
 					</div>
 				</div>
 			</div>
-			{/* <form onSubmit={onUpload} className="absolute right-0">
-				<input
-					type="file"
-					accept="md"
-					onChange={(e) => setFile(e.target.files?.item(0))}
-				/>
-				<button type="submit">Upload post</button>
-			</form>
-			<div>
-				<p>{name ? name : "anon"}</p>
-				<ul>
-					{postTitles?.map((post, idx) => (
-						<li key={idx}>
-							<Link href={`/posts/${post.id}`}>{post.title}</Link>
-						</li>
-					))}
-				</ul>
-			</div> */}
 		</Layout>
 	);
 }
@@ -211,7 +200,7 @@ export const getServerSideProps: GetServerSideProps<
 	{ id: string }
 > = async (context) => {
 	const id = context.params?.id;
-	if (!id) return { props: { name: "", postTitles: [] } };
+	if (!id) return { props: {}, redirect: { destination: "/" } };
 
 	const { data, error }: UserQueryResult = await supabase
 		.from(SUPABASE_BLOGGER_TABLE)
@@ -227,9 +216,10 @@ export const getServerSideProps: GetServerSideProps<
 		console.log("error -> ", error);
 		console.log("postError -> ", postError);
 	}
-
+	const { user } = await supabase.auth.api.getUserByCookie(context.req);
 	return {
 		props: {
+			loggedInUser: user,
 			name: data?.at(0)?.name,
 			posts: postData,
 			avatar_url: data?.at(0)?.avatar_url,

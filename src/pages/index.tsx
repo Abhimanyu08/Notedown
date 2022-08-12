@@ -1,62 +1,52 @@
-import type { GetStaticProps, NextPage } from "next";
+import { ApiError, Session, User } from "@supabase/supabase-js";
+import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
-import {
-	FormEventHandler,
-	MouseEventHandler,
-	useEffect,
-	useState,
-} from "react";
-import Layout from "../components/Layout";
-import { getAllPostTitles } from "../../utils/getResources";
-import { supabase } from "../../utils/supabaseClient";
-import {
-	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_BUCKET_NAME,
-} from "../../utils/constants";
 import { useRouter } from "next/router";
-import { Session, User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
+import handleSignIn from "../../utils/handleSignIn";
+import { supabase } from "../../utils/supabaseClient";
+import Layout from "../components/Layout";
+import useAuth from "../hooks/useAuth";
 
 interface HomeProps {
-	titles: string[];
+	loggedInUser: User | null;
+	error: ApiError | null;
 }
-const Home: NextPage<HomeProps> = () => {
+const Home: NextPage<HomeProps> = ({ loggedInUser, error }) => {
+	loggedInUser = useAuth(loggedInUser || null);
 	const router = useRouter();
-	const [session, setSession] = useState<Session | null>(null);
-
 	useEffect(() => {
-		setSession(supabase.auth.session());
+		if (error) {
+			console.log(error);
+			return;
+		}
 
-		supabase.auth.onAuthStateChange((_, session) => {
-			setSession(session);
-		});
-	}, []);
-
-	useEffect(() => {
-		if (session) {
-			const name = session.user?.user_metadata.full_name;
-			const avatar_url = session.user?.user_metadata.avatar_url;
+		if (loggedInUser) {
+			const name = loggedInUser.user_metadata.full_name;
+			const avatar_url = loggedInUser.user_metadata.avatar_url;
 			supabase
 				.from(SUPABASE_BLOGGER_TABLE)
 				.update({ name, avatar_url })
-				.match({ id: session.user?.id })
-				.then((val) => console.log(val));
+				.match({ id: loggedInUser.id });
 		}
-	}, [session]);
+	}, [loggedInUser]);
 
 	return (
-		<Layout>
-			<p
-				className="absolute right-0"
-				onClick={() => {
-					session
-						? router.push(`/profile/${session.user?.id}`)
-						: router.push("/signin");
-				}}
-			>
-				{session?.user ? "Profile" : "Log/Sign In"}
-			</p>
+		<Layout user={loggedInUser} route={router.asPath}>
+			<></>
 		</Layout>
 	);
 };
 
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+	let { user, error } = await supabase.auth.api.getUserByCookie(req);
+
+	return {
+		props: {
+			loggedInUser: user,
+			error: error?.message || null,
+		},
+	};
+};
 export default Home;

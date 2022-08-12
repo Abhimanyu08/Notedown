@@ -1,5 +1,6 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import { PostgrestError, User } from "@supabase/supabase-js";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
 import { SUPABASE_POST_TABLE } from "../../../utils/constants";
 import { getPostContent } from "../../../utils/getResources";
@@ -9,11 +10,9 @@ import { supabase } from "../../../utils/supabaseClient";
 import Layout from "../../components/Layout";
 import Post from "../../interfaces/Post";
 
-interface PostProps {
-	title: string;
-	description: string;
+interface PostProps extends Post {
 	content: string;
-	language: string;
+	loggedInUser: User | null;
 }
 
 interface PostQueryResult {
@@ -28,7 +27,9 @@ export default function Blog({
 	description,
 	content,
 	language,
+	loggedInUser,
 }: PostProps) {
+	const router = useRouter();
 	const [containerId, setContainerId] = useState<string | null>(null);
 	const [child, setChild] = useState<JSX.Element | null>(null);
 	const [runTillThisBlock, setRunTillThisBlock] = useState<
@@ -66,7 +67,7 @@ export default function Blog({
 		setChild(
 			htmlToJsx({
 				html: content,
-				language,
+				language: language!,
 				containerId: "lol",
 				runTillThisPoint: runTillThisBlock,
 			})
@@ -81,7 +82,7 @@ export default function Blog({
 		const params: Parameters<typeof sendRequest> = [
 			"POST",
 			"http://localhost:5000",
-			{ language, containerId, code },
+			{ language: language!, containerId, code },
 		];
 		const resp = await sendRequest(...params);
 
@@ -108,7 +109,7 @@ export default function Blog({
 
 	return (
 		<PostContext.Provider value={blockToOutput}>
-			<Layout>
+			<Layout user={loggedInUser} route={router.asPath}>
 				<div className="w-4/5 md:w-3/5 mx-auto text-left text-white">
 					<h1 className="text-4xl font-bold text-center w-full">
 						{title}
@@ -127,12 +128,14 @@ export const getServerSideProps: GetServerSideProps<
 	PostProps,
 	{ postId: string }
 > = async (context) => {
+	const { user } = await supabase.auth.api.getUserByCookie(context.req);
 	const defaultReturn = {
 		props: {
 			title: "",
 			language: "",
 			content: "",
 			description: "",
+			loggedInUser: user,
 		},
 	};
 	const { data, error }: PostQueryResult = await supabase
@@ -144,11 +147,11 @@ export const getServerSideProps: GetServerSideProps<
 		console.log(error);
 		return defaultReturn;
 	}
-
 	const postContent = await getPostContent(data.at(0)!.filename!);
 	return {
 		props: {
 			...postContent,
+			loggedInUser: user,
 		},
 	};
 };
