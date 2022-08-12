@@ -4,20 +4,18 @@ import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
-import handleSignIn from "../../utils/handleSignIn";
+import { handleLogout, handleSignIn } from "../../utils/handleAuth";
 import { supabase } from "../../utils/supabaseClient";
 
-function Navbar({ user, route }: { user: User | null; route: string }) {
-	const onLogout: MouseEventHandler = async (e) => {
-		e.preventDefault();
-
-		const { error } = await supabase.auth.signOut();
-		if (error) {
-			alert(error.message);
-			console.log(error);
-			return;
-		}
-	};
+function Navbar({
+	user,
+	route,
+	logoutCallback,
+}: {
+	user: User | null;
+	route: string;
+	logoutCallback: () => void;
+}) {
 	return (
 		<div className="navbar mb-6 ">
 			<div className="flex-1">
@@ -40,7 +38,13 @@ function Navbar({ user, route }: { user: User | null; route: string }) {
 										</Link>
 									</li>
 									<li>
-										<button onClick={onLogout}>
+										<button
+											onClick={(e) => {
+												e.preventDefault();
+												handleLogout();
+												logoutCallback();
+											}}
+										>
 											Logout
 										</button>
 									</li>

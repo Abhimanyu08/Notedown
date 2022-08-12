@@ -8,6 +8,7 @@ import htmlToJsx from "../../../utils/htmlToJsx";
 import sendRequest from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import Layout from "../../components/Layout";
+import useAuth from "../../hooks/useAuth";
 import Post from "../../interfaces/Post";
 
 interface PostProps extends Post {
@@ -39,12 +40,8 @@ export default function Blog({
 		3: "4",
 	});
 
-	//prepare the container
-	// useEffect(() => {
-	// 	if (!containerId) prepareContainer(language);
-	// }, []);
+	const { user, setUser } = useAuth(loggedInUser);
 
-	//
 	useEffect(() => {
 		if (runTillThisBlock || !containerId) return;
 		const func = (blockNumber: number) => {
@@ -109,7 +106,11 @@ export default function Blog({
 
 	return (
 		<PostContext.Provider value={blockToOutput}>
-			<Layout user={loggedInUser} route={router.asPath}>
+			<Layout
+				user={user}
+				route={router.asPath}
+				logoutCallback={() => setUser(null)}
+			>
 				<div className="w-4/5 md:w-3/5 mx-auto text-left text-white">
 					<h1 className="text-4xl font-bold text-center w-full">
 						{title}

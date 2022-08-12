@@ -1,6 +1,6 @@
 import { supabase } from "./supabaseClient";
 
-const handleSignIn = async (redirectTo: string) => {
+export const handleSignIn = async (redirectTo: string) => {
     console.log(redirectTo)
     const { error } = await supabase.auth.signIn(
         {
@@ -16,5 +16,12 @@ const handleSignIn = async (redirectTo: string) => {
     // router.replace("/");
 }
 
+export const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+        alert(error.message);
+        console.log(error);
+        return;
+    }
+};
 
-export default handleSignIn

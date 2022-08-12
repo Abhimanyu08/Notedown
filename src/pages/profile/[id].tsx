@@ -42,11 +42,11 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 	const [file, setFile] = useState<File | null>();
 	const [owner, setOwner] = useState(loggedInUser?.id === id);
 	const [uploading, setUploading] = useState(false);
-	loggedInUser = useAuth(loggedInUser || null);
+	const { user, setUser } = useAuth(loggedInUser || null);
 
 	useEffect(() => {
-		setOwner(loggedInUser?.id === id);
-	}, [loggedInUser]);
+		setOwner(user?.id === id);
+	}, [user]);
 
 	const onUpload: FormEventHandler = async (e) => {
 		e.preventDefault();
@@ -105,7 +105,11 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 		alert("file uploaded successfully");
 	};
 	return (
-		<Layout user={loggedInUser || null} route={router.asPath}>
+		<Layout
+			user={user || null}
+			route={router.asPath}
+			logoutCallback={() => setUser(null)}
+		>
 			<div className="grid grid-cols-6 text-white ">
 				<div className="col-span-2">
 					<div className="flex flex-col items-start">

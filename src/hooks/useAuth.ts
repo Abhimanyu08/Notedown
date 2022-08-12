@@ -24,7 +24,7 @@ function useAuth(loggedInUser: User | null) {
         if (loggedInUser === null) getUserFromUrl()
     }, [])
 
-    return user
+    return { user, setUser }
 }
 
 export default useAuth
