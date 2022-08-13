@@ -111,7 +111,7 @@ export default function Blog({
 				route={router.asPath}
 				logoutCallback={() => setUser(null)}
 			>
-				<div className="w-4/5 md:w-3/5 mx-auto text-left text-white">
+				<div className="w-4/5 xl:w-4/5 mx-auto text-left text-white">
 					<h1 className="text-4xl font-bold text-center w-full">
 						{title}
 					</h1>

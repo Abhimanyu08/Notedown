@@ -1,7 +1,7 @@
 import { ApiError, User } from "@supabase/supabase-js";
 import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
@@ -12,7 +12,7 @@ interface HomeProps {
 	error: ApiError | null;
 }
 const Home: NextPage<HomeProps> = ({ loggedInUser, error }) => {
-	const { user, setUser } = useAuth(loggedInUser || null);
+	const { user, setUser } = useAuth(loggedInUser);
 	const router = useRouter();
 	useEffect(() => {
 		if (error) {

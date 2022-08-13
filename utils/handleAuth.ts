@@ -1,3 +1,4 @@
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
 
 export const handleSignIn = async (redirectTo: string) => {
@@ -12,7 +13,6 @@ export const handleSignIn = async (redirectTo: string) => {
         alert(error.message);
         return;
     }
-
     // router.replace("/");
 }
 
@@ -24,4 +24,13 @@ export const handleLogout = async () => {
         return;
     }
 };
-
+export const notifyServer = (event: AuthChangeEvent, session: Session | null) => {
+    fetch("/api/auth", {
+        method: "POST",
+        headers: new Headers({
+            "Content-Type": "application/json",
+        }),
+        credentials: "same-origin",
+        body: JSON.stringify({ event, session }),
+    }).catch((err) => console.log(err.message));
+}

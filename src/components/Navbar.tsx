@@ -4,7 +4,11 @@ import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { handleLogout, handleSignIn } from "../../utils/handleAuth";
+import {
+	handleLogout,
+	handleSignIn,
+	notifyServer,
+} from "../../utils/handleAuth";
 import { supabase } from "../../utils/supabaseClient";
 
 function Navbar({
@@ -51,7 +55,11 @@ function Navbar({
 								</>
 							) : (
 								<li>
-									<button onClick={() => handleSignIn(route)}>
+									<button
+										onClick={async () => {
+											handleSignIn(route);
+										}}
+									>
 										Log In with <AiFillGithub />
 									</button>
 								</li>
