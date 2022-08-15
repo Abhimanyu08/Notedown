@@ -2,7 +2,6 @@ import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
 
 export const handleSignIn = async (redirectTo: string) => {
-    console.log(redirectTo)
     const { error } = await supabase.auth.signIn(
         {
             provider: "github",
@@ -13,7 +12,6 @@ export const handleSignIn = async (redirectTo: string) => {
         alert(error.message);
         return;
     }
-    // router.replace("/");
 }
 
 export const handleLogout = async () => {

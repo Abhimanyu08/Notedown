@@ -1,15 +1,8 @@
 import { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { MouseEventHandler } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
-import {
-	handleLogout,
-	handleSignIn,
-	notifyServer,
-} from "../../utils/handleAuth";
-import { supabase } from "../../utils/supabaseClient";
+import { handleLogout, handleSignIn } from "../../utils/handleAuth";
 
 function Navbar({
 	user,
@@ -33,7 +26,7 @@ function Navbar({
 						<a>
 							<GiHamburgerMenu />
 						</a>
-						<ul className="p-2 bg-cyan-500 text-black">
+						<ul className="p-2 bg-cyan-500 text-black z-10">
 							{user ? (
 								<>
 									<li>
@@ -45,8 +38,8 @@ function Navbar({
 										<button
 											onClick={(e) => {
 												e.preventDefault();
-												handleLogout();
 												logoutCallback();
+												handleLogout();
 											}}
 										>
 											Logout
@@ -56,7 +49,8 @@ function Navbar({
 							) : (
 								<li>
 									<button
-										onClick={async () => {
+										onClick={(e) => {
+											e.preventDefault();
 											handleSignIn(route);
 										}}
 									>

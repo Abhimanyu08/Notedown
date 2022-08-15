@@ -2,9 +2,8 @@ import { PostgrestError, User } from "@supabase/supabase-js";
 import matter from "gray-matter";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useContext, useEffect, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import {
@@ -14,10 +13,11 @@ import {
 } from "../../../utils/constants";
 import { supabase } from "../../../utils/supabaseClient";
 import Layout from "../../components/Layout";
-import useAuth from "../../hooks/useAuth";
+import PostComponent from "../../components/PostComponent";
 import Blogger from "../../interfaces/Blogger";
 import FileMetadata from "../../interfaces/FileMetdata";
 import Post from "../../interfaces/Post";
+import { UserContext } from "../_app";
 
 interface ProfileProps {
 	loggedInUser?: User | null;
@@ -40,13 +40,18 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 	const router = useRouter();
 	const { id } = router.query;
 	const [file, setFile] = useState<File | null>();
-	const [owner, setOwner] = useState(loggedInUser?.id === id);
 	const [uploading, setUploading] = useState(false);
-	const { user, setUser } = useAuth(loggedInUser || null);
+	const { user: contextUser } = useContext(UserContext);
+	const [user, setUser] = useState(loggedInUser);
 
 	useEffect(() => {
-		setOwner(user?.id === id);
-	}, [user]);
+		if (contextUser) {
+			setUser(contextUser);
+		}
+		if (!loggedInUser && !contextUser) {
+			setUser(null);
+		}
+	}, [loggedInUser, contextUser]);
 
 	const onUpload: FormEventHandler = async (e) => {
 		e.preventDefault();
@@ -76,7 +81,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 			return;
 		}
 
-		const { data, error } = await supabase.storage
+		const { error } = await supabase.storage
 			.from(SUPABASE_BUCKET_NAME)
 			.upload(`${id}/${file.name}`, file);
 		if (error) {
@@ -85,7 +90,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 			return;
 		}
 
-		const { data: postTableData, error: postTableError } = await supabase
+		const { error: postTableError } = await supabase
 			.from(SUPABASE_POST_TABLE)
 			.upsert({
 				created_by: id,
@@ -112,7 +117,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 		>
 			<div className="grid grid-cols-6 text-white ">
 				<div className="col-span-2">
-					<div className="flex flex-col items-start">
+					<div className="flex flex-col items-center w-fit">
 						<div className="rounded-full overflow-hidden">
 							{avatar_url && (
 								<Image
@@ -131,8 +136,8 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 					<div className="flex justify-between items-center">
 						<p className="text-3xl font-semibold">Posts</p>
 						<div className="flex gap-1">
-							{owner && !file && (
-								<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-semibold text-black">
+							{user?.id === id && !file && (
+								<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-normal text-sm text-black">
 									<label htmlFor="file">New Post</label>
 									<input
 										type="file"
@@ -171,10 +176,14 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 						{posts &&
 							posts.map((post, idx) => (
 								<PostComponent
-									key={idx}
-									postId={post.id!}
-									name={post.title!}
+									key={post.id!}
 									description={post.description!}
+									name={post.title!}
+									postId={post.id!}
+									postedOn={post.created_at!}
+									authorId={post.created_by!}
+									author={name!}
+									owner={user?.id === id}
 								/>
 							))}
 					</div>
@@ -183,21 +192,6 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 		</Layout>
 	);
 }
-
-const PostComponent: React.FC<{
-	postId: number;
-	name: string;
-	description: string;
-}> = ({ postId, name, description }) => {
-	return (
-		<div className="text-white">
-			<Link href={`/posts/${postId}`}>
-				<p className="text-xl font-medium">{name} </p>
-			</Link>
-			<p>{description}</p>
-		</div>
-	);
-};
 
 export const getServerSideProps: GetServerSideProps<
 	ProfileProps,
@@ -213,7 +207,7 @@ export const getServerSideProps: GetServerSideProps<
 
 	const { data: postData, error: postError }: PostQueryResult = await supabase
 		.from(SUPABASE_POST_TABLE)
-		.select("title, id, description")
+		.select("*")
 		.eq("created_by", id);
 
 	if (error || postError || !data || !postData) {

@@ -1,15 +1,15 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { SUPABASE_POST_TABLE } from "../../../utils/constants";
 import { getPostContent } from "../../../utils/getResources";
 import htmlToJsx from "../../../utils/htmlToJsx";
 import sendRequest from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import Layout from "../../components/Layout";
-import useAuth from "../../hooks/useAuth";
 import Post from "../../interfaces/Post";
+import { UserContext } from "../_app";
 
 interface PostProps extends Post {
 	content: string;
@@ -39,8 +39,17 @@ export default function Blog({
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>({
 		3: "4",
 	});
+	const { user: contextUser } = useContext(UserContext);
+	const [user, setUser] = useState(loggedInUser);
 
-	const { user, setUser } = useAuth(loggedInUser);
+	useEffect(() => {
+		if (contextUser) {
+			setUser(contextUser);
+		}
+		if (!loggedInUser && !contextUser) {
+			setUser(null);
+		}
+	}, [loggedInUser, contextUser]);
 
 	useEffect(() => {
 		if (runTillThisBlock || !containerId) return;
