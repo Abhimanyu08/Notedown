@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 const PostComponent: React.FC<{
@@ -9,6 +10,7 @@ const PostComponent: React.FC<{
 	authorId: string;
 	postedOn: string;
 	owner: boolean;
+	published?: boolean;
 }> = ({
 	postId,
 	name,
@@ -17,7 +19,9 @@ const PostComponent: React.FC<{
 	authorId,
 	postedOn,
 	owner = false,
+	published,
 }) => {
+	const [visible, setVisible] = useState(published);
 	return (
 		<div className="text-white relative">
 			<Link href={`/posts/${postId}`}>
@@ -30,10 +34,20 @@ const PostComponent: React.FC<{
 					</label>
 					<ul
 						tabIndex={0}
-						className="dropdown-content menu menu-compact bg-cyan-500 rounded-box w-fit text-black"
+						className="dropdown-content menu rounded-lg bg-cyan-500  text-black w-max"
 					>
-						<li>
-							<a>Set to unpublished</a>
+						<li className="">
+							<div className="flex">
+								<label htmlFor="publish">Publish</label>
+								<input
+									type="checkbox"
+									name=""
+									id="publish"
+									className=""
+									checked={visible}
+									onChange={() => setVisible((prev) => !prev)}
+								/>
+							</div>
 						</li>
 						<li>
 							<a>Delete</a>

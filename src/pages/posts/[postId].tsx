@@ -21,7 +21,7 @@ interface PostQueryResult {
 	error: PostgrestError | null;
 }
 
-export const PostContext = createContext<Record<number, string>>({});
+export const BlogContext = createContext<Record<number, string>>({});
 
 export default function Blog({
 	title,
@@ -52,6 +52,22 @@ export default function Blog({
 	}, [loggedInUser, contextUser]);
 
 	useEffect(() => {
+		const prepareContainer = async (language: string) => {
+			const resp = await sendRequest("POST", {
+				language,
+			});
+
+			if (resp.status !== 201) {
+				console.log(resp.statusText);
+				return;
+			}
+			const body: { containerId: string } = await resp.json();
+			setContainerId(body.containerId);
+		};
+		if (!containerId && language) prepareContainer(language);
+	}, []);
+
+	useEffect(() => {
 		if (runTillThisBlock || !containerId) return;
 		const func = (blockNumber: number) => {
 			let code = "";
@@ -62,22 +78,21 @@ export default function Blog({
 				if (!elem) continue;
 				code = code.concat(elem.value + "\n");
 			}
-			console.log(code);
 			runCodeRequest(code, blockNumber, containerId);
 		};
 		setRunTillThisBlock(() => func);
 	});
 
 	useEffect(() => {
-		// if (containerId)
-		setChild(
-			htmlToJsx({
-				html: content,
-				language: language!,
-				containerId: "lol",
-				runTillThisPoint: runTillThisBlock,
-			})
-		);
+		if (containerId)
+			setChild(
+				htmlToJsx({
+					html: content,
+					language: language!,
+					containerId,
+					runTillThisPoint: runTillThisBlock,
+				})
+			);
 	}, [containerId, runTillThisBlock]);
 
 	const runCodeRequest = async (
@@ -87,7 +102,6 @@ export default function Blog({
 	) => {
 		const params: Parameters<typeof sendRequest> = [
 			"POST",
-			"http://localhost:5000",
 			{ language: language!, containerId, code },
 		];
 		const resp = await sendRequest(...params);
@@ -100,21 +114,8 @@ export default function Blog({
 		setBlockToOutput({ [blockNumber]: output });
 	};
 
-	const prepareContainer = async (language: string) => {
-		const resp = await sendRequest("POST", "http://localhost:5000", {
-			language,
-		});
-
-		if (resp.status !== 201) {
-			console.log(resp.statusText);
-			return;
-		}
-		const body: { containerId: string } = await resp.json();
-		setContainerId(body.containerId);
-	};
-
 	return (
-		<PostContext.Provider value={blockToOutput}>
+		<BlogContext.Provider value={blockToOutput}>
 			<Layout
 				user={user}
 				route={router.asPath}
@@ -130,7 +131,7 @@ export default function Blog({
 					</div>
 				</div>
 			</Layout>
-		</PostContext.Provider>
+		</BlogContext.Provider>
 	);
 }
 
@@ -139,6 +140,11 @@ export const getServerSideProps: GetServerSideProps<
 	{ postId: string }
 > = async (context) => {
 	const { user } = await supabase.auth.api.getUserByCookie(context.req);
+	supabase.auth.session = () => ({
+		access_token: context.req.cookies["sb-access-token"] || "",
+		token_type: "bearer",
+		user,
+	});
 	const defaultReturn = {
 		props: {
 			title: "",
@@ -150,17 +156,21 @@ export const getServerSideProps: GetServerSideProps<
 	};
 	const { data, error }: PostQueryResult = await supabase
 		.from(SUPABASE_POST_TABLE)
-		.select("filename")
+		.select("title, description, language, filename")
 		.eq("id", context.params?.postId);
 
 	if (error || !data || data.length === 0) {
 		console.log(error);
 		return defaultReturn;
 	}
-	const postContent = await getPostContent(data.at(0)!.filename!);
+	const { title, description, language, filename } = data.at(0) as Post;
+	const { content } = await getPostContent(filename!);
 	return {
 		props: {
-			...postContent,
+			title,
+			language,
+			description,
+			content,
 			loggedInUser: user,
 		},
 	};

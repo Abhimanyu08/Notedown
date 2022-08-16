@@ -17,18 +17,17 @@ function resetCodeblocks(markdown: string, html: string) {
     return html;
 }
 
-export async function getPostContent(title: string): Promise<{ title: string, language: string, description: string, content: string }> {
+export async function getPostContent(title: string): Promise<{ content: string }> {
 
     const { data: fileData, error } = await supabase.storage.from(SUPABASE_BUCKET_NAME).download(`${title}`);
     if (!fileData || error) throw new Error(
         error?.message || `File named ${title} does not exist`
     )
 
-    const { data, content } = matter(await fileData.text());
+    const { content } = matter(await fileData.text());
     let html = await mdToHtml(content);
     html = resetCodeblocks(content, html)
     return {
-        ...data as { title: string, language: string, description: string },
         content: html
     }
 }

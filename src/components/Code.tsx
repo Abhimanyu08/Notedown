@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PostContext } from "../pages/posts/[postId]";
+import { BlogContext } from "../pages/posts/[postId]";
 import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
+import { MdHideImage } from "react-icons/md";
 
 interface CodeProps {
 	text: string;
@@ -19,40 +20,12 @@ function Code({
 	runTillThisPoint,
 }: CodeProps) {
 	const [code, setCode] = useState(text);
-	const blockToOutput = useContext(PostContext);
-	// // const [changed, setChanged] = useState(false);
-	// const [previousCode, setPreviousCode] = useState("");
-	// const [output, setOutput] = useState("");
-
-	// const onRun: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
-	// 	e.preventDefault();
-	// 	const reqBody = {
-	// 		language,
-	// 		containerId,
-	// 		code,
-	// 	};
-	// 	let resp;
-	// 	if (changed && previousCode !== "") {
-	// 		resp = await sendRequest("PUT", "http://localhost:5000", {
-	// 			...reqBody,
-	// 			previousCode,
-	// 		});
-	// 	} else {
-	// 		resp = await sendRequest("POST", "http://localhost:5000", reqBody);
-	// 	}
-	// 	setPreviousCode(code);
-	// 	if (resp.status === 500) {
-	// 		setOutput(resp.statusText);
-	// 		return;
-	// 	}
-	// 	const body: { output: string } = await resp.json();
-	// 	setOutput(body.output);
-	// };
+	const [hideOutput, setHideOutput] = useState(false);
+	const blockToOutput = useContext(BlogContext);
 
 	const onChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
 		e.preventDefault();
 		setCode(e.target.value);
-		// setChanged(true);
 	};
 
 	const onBackToOriginal: React.MouseEventHandler<HTMLButtonElement> = (
@@ -81,9 +54,16 @@ function Code({
 				<button onClick={onBackToOriginal} className="">
 					<FcUndo />
 				</button>
+				<button onClick={() => setHideOutput((prev) => !prev)}>
+					<MdHideImage />
+				</button>
 			</div>
 			{blockToOutput[blockNumber] && (
-				<div className=" text-white bg-black p-2 mt-2 rounded-md">
+				<div
+					className={` text-white bg-black p-2 mt-2 rounded-md ${
+						hideOutput ? "hidden" : ""
+					}`}
+				>
 					{blockToOutput[blockNumber]}
 				</div>
 			)}

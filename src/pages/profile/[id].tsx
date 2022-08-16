@@ -184,6 +184,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 									authorId={post.created_by!}
 									author={name!}
 									owner={user?.id === id}
+									published={post.published}
 								/>
 							))}
 					</div>
@@ -199,6 +200,12 @@ export const getServerSideProps: GetServerSideProps<
 > = async (context) => {
 	const id = context.params?.id;
 	if (!id) return { props: {}, redirect: { destination: "/" } };
+	const { user } = await supabase.auth.api.getUserByCookie(context.req);
+	supabase.auth.session = () => ({
+		access_token: context.req.cookies["sb-access-token"] || "",
+		token_type: "bearer",
+		user,
+	});
 
 	const { data, error }: UserQueryResult = await supabase
 		.from(SUPABASE_BLOGGER_TABLE)
@@ -214,11 +221,10 @@ export const getServerSideProps: GetServerSideProps<
 		console.log("error -> ", error);
 		console.log("postError -> ", postError);
 	}
-	const { user } = await supabase.auth.api.getUserByCookie(context.req);
 	return {
 		props: {
 			loggedInUser: user,
-			name: data?.at(0)?.name,
+			name: data?.at(0)?.name || null,
 			posts: postData,
 			avatar_url: data?.at(0)?.avatar_url,
 		},
