@@ -20,6 +20,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 
 	useEffect(() => {
+		notifyServer("SIGNED_IN", supabase.auth.session());
+	}, []);
+	useEffect(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, session) => {
 			console.log(event);
 			setUser(session?.user || null);
@@ -27,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 		});
 
 		return () => data?.unsubscribe();
-	});
+	}, []);
 
 	return (
 		<UserContext.Provider value={{ user, setUser }}>

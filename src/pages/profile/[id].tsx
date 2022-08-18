@@ -37,12 +37,16 @@ interface PostQueryResult {
 }
 
 function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
-	const router = useRouter();
-	const { id } = router.query;
 	const [file, setFile] = useState<File | null>();
 	const [uploading, setUploading] = useState(false);
-	const { user: contextUser } = useContext(UserContext);
 	const [user, setUser] = useState(loggedInUser);
+	const [postType, setPostType] = useState<"published" | "unpublished">(
+		"published"
+	);
+	const [clientPosts, setClientPosts] = useState(posts);
+	const router = useRouter();
+	const { id } = router.query;
+	const { user: contextUser } = useContext(UserContext);
 
 	useEffect(() => {
 		if (contextUser) {
@@ -72,7 +76,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 		}: { data: FileMetadata } = matter(await file.text());
 		if (!title || !language || !description) {
 			alert(
-				`Please structure your markdown file correctly, missing these properties: ${
+				`Please structure your markdown file correctly, these properties are missing: ${
 					title ? "" : "title"
 				} ${description ? "" : ", description"} ${
 					language ? "" : ", language"
@@ -106,8 +110,31 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 		}
 
 		setUploading(false);
-		setFile(null);
 		alert("file uploaded successfully");
+		supabase
+			.from(SUPABASE_POST_TABLE)
+			.select("id, created_at")
+			.eq("title", title)
+			.then((val) => {
+				if (!val || !val.data || val.data.length == 0) return;
+				let post = val.data.at(0) as Post;
+				setClientPosts((prev) => {
+					let newPost: Post = {
+						title,
+						created_by: id as string,
+						description,
+						language: language.toLowerCase(),
+						published: false,
+						id: post.id,
+						created_at: post.created_at,
+						filename: `${id}/${file.name}`,
+					};
+					if (!prev) return [newPost];
+					return [newPost, ...prev];
+				});
+
+				setFile(null);
+			});
 	};
 	return (
 		<Layout
@@ -137,7 +164,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 						<p className="text-3xl font-semibold">Posts</p>
 						<div className="flex gap-1">
 							{user?.id === id && !file && (
-								<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-normal text-sm text-black">
+								<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-semibold text-sm text-black">
 									<label htmlFor="file">New Post</label>
 									<input
 										type="file"
@@ -172,21 +199,44 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 							)}
 						</div>
 					</div>
-					<div className="flex flex-col gap-4 mt-5">
-						{posts &&
-							posts.map((post, idx) => (
-								<PostComponent
-									key={post.id!}
-									description={post.description!}
-									name={post.title!}
-									postId={post.id!}
-									postedOn={post.created_at!}
-									authorId={post.created_by!}
-									author={name!}
-									owner={user?.id === id}
-									published={post.published}
-								/>
-							))}
+					{user?.id === id && (
+						<select
+							name=""
+							id=""
+							className="select select-sm mt-5"
+							onChange={(e) => setPostType(e.target.value as any)}
+							value={postType}
+						>
+							<option value="published">Published</option>
+							<option value="unpublished">Unpublished</option>
+						</select>
+					)}
+					<div className="flex flex-col gap-8 mt-5">
+						{clientPosts &&
+							clientPosts.map((post, idx) => {
+								if (postType === "published" && !post.published)
+									return <></>;
+								if (
+									postType === "unpublished" &&
+									post.published
+								)
+									return <></>;
+								return (
+									<PostComponent
+										key={post.id!}
+										description={post.description!}
+										name={post.title!}
+										postId={post.id!}
+										postedOn={post.created_at!}
+										authorId={post.created_by!}
+										author={name!}
+										owner={user?.id === id}
+										published={post.published}
+										filename={post.filename}
+										setClientPosts={setClientPosts}
+									/>
+								);
+							})}
 					</div>
 				</div>
 			</div>
