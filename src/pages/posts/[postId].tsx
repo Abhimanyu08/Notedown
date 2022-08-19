@@ -51,21 +51,21 @@ export default function Blog({
 		}
 	}, [loggedInUser, contextUser]);
 
-	useEffect(() => {
-		const prepareContainer = async (language: string) => {
-			const resp = await sendRequest("POST", {
-				language,
-			});
+	// useEffect(() => {
+	// 	const prepareContainer = async (language: string) => {
+	// 		const resp = await sendRequest("POST", {
+	// 			language,
+	// 		});
 
-			if (resp.status !== 201) {
-				console.log(resp.statusText);
-				return;
-			}
-			const body: { containerId: string } = await resp.json();
-			setContainerId(body.containerId);
-		};
-		if (!containerId && language) prepareContainer(language);
-	}, []);
+	// 		if (resp.status !== 201) {
+	// 			console.log(resp.statusText);
+	// 			return;
+	// 		}
+	// 		const body: { containerId: string } = await resp.json();
+	// 		setContainerId(body.containerId);
+	// 	};
+	// 	if (!containerId && language) prepareContainer(language);
+	// }, []);
 
 	useEffect(() => {
 		if (runTillThisBlock || !containerId) return;
@@ -84,15 +84,15 @@ export default function Blog({
 	});
 
 	useEffect(() => {
-		if (containerId)
-			setChild(
-				htmlToJsx({
-					html: content,
-					language: language!,
-					containerId,
-					runTillThisPoint: runTillThisBlock,
-				})
-			);
+		// if (containerId)
+		setChild(
+			htmlToJsx({
+				html: content,
+				language: language!,
+				containerId: "lol",
+				runTillThisPoint: runTillThisBlock,
+			})
+		);
 	}, [containerId, runTillThisBlock]);
 
 	const runCodeRequest = async (

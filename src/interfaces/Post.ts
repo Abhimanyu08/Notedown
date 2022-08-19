@@ -7,4 +7,5 @@ export default interface Post {
     description?: string
     language?: string
     published?: boolean
+    published_on?: string
 }

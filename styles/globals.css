@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-h3 {
+h2 {
 	font-size: 1.5rem; /* 24px */
 	line-height: 2rem;
 	font-weight: 600;

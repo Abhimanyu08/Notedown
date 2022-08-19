@@ -43,16 +43,20 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 	}, [loggedInUser, contextUser]);
 
 	return (
-		<Layout user={user} route={router.asPath} logoutCallback={() => null}>
+		<Layout
+			user={user}
+			route={router.asPath}
+			logoutCallback={() => setUser(null)}
+		>
 			<div className="flex flex-col gap-6 mx-2">
 				{posts &&
 					posts.map((post) => (
 						<PostComponent
 							key={post.id!}
 							description={post.description!}
-							name={post.title!}
+							title={post.title!}
 							postId={post.id!}
-							postedOn={post.created_at!}
+							publishedOn={post.published_on}
 							authorId={post.created_by!}
 							author={post?.bloggers?.name || ""}
 							owner={false}
@@ -80,15 +84,4 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
 	};
 };
 
-// export const getServerSideProps = withPageAuth({
-// 	authRequired: false,
-// 	async getServerSideProps(ctx) {
-// 		// Access the user object
-// 		const { user, accessToken, error } = await getUser(ctx);
-// 		const { data } = await supabaseServerClient(ctx)
-// 			.from(SUPABASE_POST_TABLE)
-// 			.select(`*, bloggers(name)`);
-// 		return { props: { posts: data } };
-// 	},
-// });
 export default Home;

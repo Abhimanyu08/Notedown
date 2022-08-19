@@ -3,7 +3,13 @@ import matter from "gray-matter";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FormEventHandler, useContext, useEffect, useState } from "react";
+import {
+	FormEventHandler,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { FiUpload } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import {
@@ -36,6 +42,23 @@ interface PostQueryResult {
 	error: PostgrestError | null;
 }
 
+function calculateValidPosts(
+	posts: Post[] | null,
+	status: "published" | "unpublished",
+	user: User | null,
+	profileId: string
+): Post[] {
+	if (!posts) return [];
+	const owner = user?.id === profileId;
+	if (owner) {
+		if (status === "published") {
+			return posts.filter((post) => post.published);
+		}
+		return posts.filter((post) => !post.published);
+	}
+	return posts.filter((post) => post.published);
+}
+
 function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 	const [file, setFile] = useState<File | null>();
 	const [uploading, setUploading] = useState(false);
@@ -47,6 +70,17 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 	const router = useRouter();
 	const { id } = router.query;
 	const { user: contextUser } = useContext(UserContext);
+
+	const memoizedPosts = useMemo(
+		() =>
+			calculateValidPosts(
+				clientPosts || null,
+				postType,
+				user || null,
+				id as string
+			),
+		[clientPosts, postType, user, id]
+	);
 
 	useEffect(() => {
 		if (contextUser) {
@@ -178,13 +212,15 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 							)}
 							{file && (
 								<button
-									className={`btn btn-sm bg-cyan-500 hover:bg-cyan-600 ${
+									className={`btn btn-sm bg-cyan-500 hover:bg-cyan-600 text-black ${
 										uploading ? "loading" : ""
 									}`}
 									onClick={onUpload}
 								>
 									<div className="flex normal-case text-black items-center gap-2">
-										<FiUpload className="text-black" />
+										{!uploading && (
+											<FiUpload className="text-black" />
+										)}
 										{file.name}
 									</div>
 								</button>
@@ -213,21 +249,21 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 					)}
 					<div className="flex flex-col gap-8 mt-5">
 						{clientPosts &&
-							clientPosts.map((post, idx) => {
+							memoizedPosts.map((post, idx) => {
 								if (postType === "published" && !post.published)
 									return <></>;
 								if (
 									postType === "unpublished" &&
-									post.published
+									(post.published || !user)
 								)
 									return <></>;
 								return (
 									<PostComponent
 										key={post.id!}
 										description={post.description!}
-										name={post.title!}
+										title={post.title!}
 										postId={post.id!}
-										postedOn={post.created_at!}
+										publishedOn={post.published_on}
 										authorId={post.created_by!}
 										author={name!}
 										owner={user?.id === id}
