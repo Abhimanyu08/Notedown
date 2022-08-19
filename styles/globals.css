@@ -1,15 +1,40 @@
 @tailwind base;
+
+@layer base {
+	a {
+		@apply text-amber-200 underline;
+	}
+}
 @tailwind components;
 @tailwind utilities;
 
 h2 {
 	font-size: 1.5rem; /* 24px */
 	line-height: 2rem;
-	font-weight: 600;
+	font-weight: 700;
 	margin-bottom: 0.625rem;
 	margin-top: 0.75rem;
 	/* font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
 		"Liberation Mono", "Courier New", monospace; */
+}
+
+h3 {
+	font-size: 1.25rem; /* 20px */
+	line-height: 1.75rem; /* 28px */
+	font-weight: 600;
+	margin-bottom: 0.625rem;
+	margin-top: 0.75rem;
+}
+
+h4 {
+	font-size: 1.125rem; /* 20px */
+	line-height: 1.75rem; /* 28px */
+	font-weight: 600;
+	margin-bottom: 0.625rem;
+	margin-top: 0.75rem;
+}
+ul {
+	margin-left: 1.5rem;
 }
 
 p {

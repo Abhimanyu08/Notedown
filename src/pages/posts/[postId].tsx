@@ -1,9 +1,18 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { createContext, useContext, useEffect, useState } from "react";
-import { SUPABASE_POST_TABLE } from "../../../utils/constants";
-import { getPostContent } from "../../../utils/getResources";
+import {
+	createContext,
+	MouseEventHandler,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
+import {
+	SUPABASE_BUCKET_NAME,
+	SUPABASE_POST_TABLE,
+} from "../../../utils/constants";
+import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import htmlToJsx from "../../../utils/htmlToJsx";
 import sendRequest from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
@@ -14,6 +23,7 @@ import { UserContext } from "../_app";
 interface PostProps extends Post {
 	content: string;
 	loggedInUser: User | null;
+	filename: string;
 }
 
 interface PostQueryResult {
@@ -29,6 +39,7 @@ export default function Blog({
 	content,
 	language,
 	loggedInUser,
+	filename,
 }: PostProps) {
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string | null>(null);
@@ -39,6 +50,7 @@ export default function Blog({
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>({
 		3: "4",
 	});
+	const [file, setFile] = useState<File | null>(null);
 	const { user: contextUser } = useContext(UserContext);
 	const [user, setUser] = useState(loggedInUser);
 
@@ -114,6 +126,28 @@ export default function Blog({
 		setBlockToOutput({ [blockNumber]: output });
 	};
 
+	const onChangeFile: MouseEventHandler = async (e) => {
+		e.preventDefault();
+		if (!file) return;
+		const { error } = await supabase.storage
+			.from(SUPABASE_BUCKET_NAME)
+			.update(filename, file);
+		if (error) {
+			alert("couldn't replace file");
+			return;
+		}
+		const { content: html } = await getHtmlFromMarkdown(file);
+		setChild(
+			htmlToJsx({
+				html,
+				language: language!,
+				containerId: "lol",
+				runTillThisPoint: runTillThisBlock,
+			})
+		);
+		setFile(null);
+	};
+
 	return (
 		<BlogContext.Provider value={blockToOutput}>
 			<Layout
@@ -121,8 +155,41 @@ export default function Blog({
 				route={router.asPath}
 				logoutCallback={() => setUser(null)}
 			>
-				<div className="w-4/5 xl:w-4/5 mx-auto text-left text-white">
-					<h1 className="text-4xl font-bold text-center w-full">
+				{file ? (
+					<>
+						<div
+							className="btn btn-sm capitalize"
+							onClick={onChangeFile}
+						>
+							Upload {file.name}
+						</div>
+						<div
+							className="btn btn-sm capitalize"
+							onClick={() => setFile(null)}
+						>
+							Cancel
+						</div>
+					</>
+				) : (
+					<>
+						<label
+							htmlFor="change-file"
+							className="btn btn-sm capitalize"
+						>
+							Change md file
+						</label>
+						<input
+							type="file"
+							className="hidden"
+							id="change-file"
+							onChange={(e) =>
+								setFile(e.target.files?.item(0) || null)
+							}
+						/>
+					</>
+				)}
+				<div className="w-4/5 mx-auto text-left text-white">
+					<h1 className="text-4xl font-extrabold text-center w-full">
 						{title}
 					</h1>
 					<p className="mt-4 italic text-center">{description}</p>
@@ -151,6 +218,7 @@ export const getServerSideProps: GetServerSideProps<
 			language: "",
 			content: "",
 			description: "",
+			filename: "",
 			loggedInUser: user,
 		},
 	};
@@ -164,13 +232,30 @@ export const getServerSideProps: GetServerSideProps<
 		return defaultReturn;
 	}
 	const { title, description, language, filename } = data.at(0) as Post;
-	const { content } = await getPostContent(filename!);
+	const { data: fileData, error: fileError } = await supabase.storage
+		.from(SUPABASE_BUCKET_NAME)
+		.download(filename!);
+	if (fileError || !fileData) {
+		let content = "";
+		return {
+			props: {
+				title,
+				language,
+				description,
+				content,
+				filename: filename!,
+				loggedInUser: user,
+			},
+		};
+	}
+	let { content } = await getHtmlFromMarkdown(fileData!);
 	return {
 		props: {
 			title,
 			language,
 			description,
 			content,
+			filename: filename!,
 			loggedInUser: user,
 		},
 	};
