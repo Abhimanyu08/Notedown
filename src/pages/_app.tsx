@@ -16,6 +16,8 @@ export const UserContext = createContext<{
 	setUser: Dispatch<SetStateAction<User | null>> | null;
 }>({ user: null, setUser: null });
 
+export const BlogContext = createContext<Record<number, string>>({});
+
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 

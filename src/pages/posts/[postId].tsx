@@ -6,6 +6,7 @@ import {
 	MouseEventHandler,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
 import {
@@ -18,7 +19,7 @@ import sendRequest from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import Layout from "../../components/Layout";
 import Post from "../../interfaces/Post";
-import { UserContext } from "../_app";
+import { UserContext, BlogContext } from "../_app";
 
 interface PostProps extends Post {
 	content: string;
@@ -30,8 +31,6 @@ interface PostQueryResult {
 	data: Post[] | null;
 	error: PostgrestError | null;
 }
-
-export const BlogContext = createContext<Record<number, string>>({});
 
 export default function Blog({
 	title,
@@ -53,7 +52,16 @@ export default function Blog({
 	const [file, setFile] = useState<File | null>(null);
 	const { user: contextUser } = useContext(UserContext);
 	const [user, setUser] = useState(loggedInUser);
-
+	const blogJsx = useMemo(
+		() =>
+			htmlToJsx({
+				html: content,
+				language: language!,
+				containerId: "none",
+				runTillThisPoint: runTillThisBlock,
+			}),
+		[content, language, containerId, runTillThisBlock]
+	);
 	useEffect(() => {
 		if (contextUser) {
 			setUser(contextUser);
@@ -97,14 +105,7 @@ export default function Blog({
 
 	useEffect(() => {
 		// if (containerId)
-		setChild(
-			htmlToJsx({
-				html: content,
-				language: language!,
-				containerId: "lol",
-				runTillThisPoint: runTillThisBlock,
-			})
-		);
+		setChild(blogJsx);
 	}, [containerId, runTillThisBlock]);
 
 	const runCodeRequest = async (
@@ -188,14 +189,10 @@ export default function Blog({
 						/>
 					</>
 				)}
-				<div className="w-4/5 mx-auto text-left text-white">
-					<h1 className="text-4xl font-extrabold text-center w-full">
-						{title}
-					</h1>
-					<p className="mt-4 italic text-center">{description}</p>
-					<div className="mt-10">
-						{child ? child : <p>Loading...</p>}
-					</div>
+				<div className="mx-auto prose lg:prose-lg max-w-none w-4/5 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500 prose-em:text-amber-400">
+					<h1 className="text-center">{title}</h1>
+					<p className="text-center italic">{description}</p>
+					<div className="">{child ? child : <p>Loading...</p>}</div>
 				</div>
 			</Layout>
 		</BlogContext.Provider>

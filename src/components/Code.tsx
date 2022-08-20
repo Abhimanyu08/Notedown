@@ -1,8 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BlogContext } from "../pages/posts/[postId]";
 import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage } from "react-icons/md";
+import { BlogContext } from "../pages/_app";
+
+import { EditorState, Compartment } from "@codemirror/state";
+import { basicSetup, EditorView } from "codemirror";
+import { python } from "@codemirror/lang-python";
 
 interface CodeProps {
 	text: string;
@@ -23,6 +27,23 @@ function Code({
 	const [hideOutput, setHideOutput] = useState(false);
 	const blockToOutput = useContext(BlogContext);
 
+	useEffect(() => {
+		let languageCompartment = new Compartment();
+		let tabSize = new Compartment();
+		let startState = EditorState.create({
+			doc: text,
+			extensions: [
+				basicSetup,
+				languageCompartment.of(python()),
+				tabSize.of(EditorState.tabSize.of(4)),
+			],
+		});
+
+		let view = new EditorView({
+			state: startState,
+			parent: document.getElementById(`${blockNumber}`)!,
+		});
+	}, []);
 	const onChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
 		e.preventDefault();
 		setCode(e.target.value);
@@ -35,13 +56,14 @@ function Code({
 		setCode(text);
 	};
 	return (
-		<div className="flex relative flex-col w-full my-2">
-			<textarea
+		<div className="flex relative flex-col w-full ">
+			<div className="w-full" id={`${blockNumber}`}></div>
+			{/* <textarea
 				onChange={onChange}
 				value={code}
 				id={blockNumber.toString()}
-				className="bg-black w-full text-yellow-200 rounded-md p-2 h-max"
-			/>
+				className="bg-black w-full text-yellow-500 rounded-md p-3"
+			/> */}
 			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-1">
 				<button
 					onClick={() => {
