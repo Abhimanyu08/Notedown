@@ -189,7 +189,11 @@ export default function Blog({
 						/>
 					</>
 				)}
-				<div className="mx-auto prose lg:prose-lg max-w-none w-4/5 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500 prose-em:text-amber-400">
+				<div
+					className="mx-auto prose lg:prose-lg max-w-none w-4/5 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500
+				prose-pre:m-0 prose-pre:p-0
+				"
+				>
 					<h1 className="text-center">{title}</h1>
 					<p className="text-center italic">{description}</p>
 					<div className="">{child ? child : <p>Loading...</p>}</div>

@@ -2,44 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* h2 {
-	font-size: 1.5rem; 
-	line-height: 2rem;
-	font-weight: 700;
-	margin-bottom: 0.625rem;
-	margin-top: 0.75rem;
+.ͼ2 .cm-activeLine {
+	background-color: black;
+	caret-color: white;
 }
 
-h3 {
-	font-size: 1.25rem; 
-	line-height: 1.75rem;
-	font-weight: 600;
-	margin-bottom: 0.625rem;
-	margin-top: 0.75rem;
+.ͼ2 .cm-gutters {
+	background-color: black;
+	color: cyan;
 }
 
-a {
-	text-decoration-line: underline;
+.ͼ2 .cm-activeLineGutter {
+	background-color: black;
 }
-
-h4 {
-	font-size: 1.125rem; 
-	line-height: 1.75rem; 
-	font-weight: 600;
-	margin-bottom: 0.625rem;
-	margin-top: 0.75rem;
-}
-ul {
-	margin-left: 1.5rem;
-}
-
-p {
-	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-		"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-		"Noto Color Emoji";
-}
-
-li {
-	list-style-type: disc;
-} */

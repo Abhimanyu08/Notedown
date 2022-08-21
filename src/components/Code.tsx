@@ -5,7 +5,7 @@ import { MdHideImage } from "react-icons/md";
 import { BlogContext } from "../pages/_app";
 
 import { EditorState, Compartment } from "@codemirror/state";
-import { basicSetup, EditorView } from "codemirror";
+import { basicSetup, minimalSetup, EditorView } from "codemirror";
 import { python } from "@codemirror/lang-python";
 
 interface CodeProps {
@@ -26,8 +26,10 @@ function Code({
 	const [code, setCode] = useState(text);
 	const [hideOutput, setHideOutput] = useState(false);
 	const blockToOutput = useContext(BlogContext);
+	const [editorView, setEditorView] = useState<EditorView | null>(null);
 
 	useEffect(() => {
+		if (editorView) return;
 		let languageCompartment = new Compartment();
 		let tabSize = new Compartment();
 		let startState = EditorState.create({
@@ -43,6 +45,8 @@ function Code({
 			state: startState,
 			parent: document.getElementById(`${blockNumber}`)!,
 		});
+
+		setEditorView(view);
 	}, []);
 	const onChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
 		e.preventDefault();
@@ -57,13 +61,8 @@ function Code({
 	};
 	return (
 		<div className="flex relative flex-col w-full ">
-			<div className="w-full" id={`${blockNumber}`}></div>
-			{/* <textarea
-				onChange={onChange}
-				value={code}
-				id={blockNumber.toString()}
-				className="bg-black w-full text-yellow-500 rounded-md p-3"
-			/> */}
+			<div className="w-full bg-black" id={`${blockNumber}`}></div>
+
 			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-1">
 				<button
 					onClick={() => {
