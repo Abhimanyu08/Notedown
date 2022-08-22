@@ -109,7 +109,7 @@ export default function Blog({
 	}, [containerId]);
 
 	useEffect(() => {
-		if (!runningCode || !runningBlock) return;
+		if (!runningCode || !runningBlock || !language) return;
 		const runCodeRequest = async (blockNumber: number) => {
 			if (!containerId) return;
 			let code = Object.values(blockToCode).join("\n");
@@ -117,7 +117,7 @@ export default function Blog({
 
 			const params: Parameters<typeof sendRequest> = [
 				"POST",
-				{ language: language!, containerId, code },
+				{ language, containerId, code },
 			];
 			const resp = await sendRequest(...params);
 
@@ -198,8 +198,8 @@ export default function Blog({
 					</>
 				)}
 				<div
-					className="mx-auto prose lg:prose-lg max-w-none w-4/5 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500
-				prose-pre:m-0 prose-pre:p-0
+					className="mx-auto prose  max-w-none lg:w-5/6 xl:w-4/6 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500
+				prose-pre:m-0 prose-pre:p-0 
 				"
 				>
 					<h1 className="text-center">{title}</h1>

@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+	MouseEventHandler,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage } from "react-icons/md";
@@ -62,6 +67,13 @@ function Code({ text, language, containerId, blockNumber }: CodeProps) {
 			}));
 		};
 	}, [blockNumber, editorView]);
+
+	const onUndo: MouseEventHandler = () => {
+		const docLength = editorView?.state.doc.length;
+		editorView?.dispatch({
+			changes: { from: 0, to: docLength, insert: text },
+		});
+	};
 	return (
 		<div className="flex relative flex-col w-full ">
 			<div className="w-full bg-black" id={`${blockNumber}`}></div>
@@ -72,15 +84,24 @@ function Code({ text, language, containerId, blockNumber }: CodeProps) {
 						if (!collectCodeTillBlock) return;
 						collectCodeTillBlock(blockNumber);
 					}}
-					className=""
+					className="tooltip  tooltip-left"
+					data-tip="Run Code"
 					id={`run-${blockNumber}`}
 				>
 					<BsPlayFill />
 				</button>
-				<button className="">
+				<button
+					onClick={onUndo}
+					className="tooltip  tooltip-left"
+					data-tip="back to original code"
+				>
 					<FcUndo />
 				</button>
-				<button onClick={() => setHideOutput((prev) => !prev)}>
+				<button
+					onClick={() => setHideOutput((prev) => !prev)}
+					className="tooltip  tooltip-left"
+					data-tip="Hide Output"
+				>
 					<MdHideImage />
 				</button>
 			</div>

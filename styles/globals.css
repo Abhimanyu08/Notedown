@@ -20,3 +20,9 @@
 .cm-activeLine > span {
 	color: cyan;
 }
+
+.tooltip-left::before {
+	background-color: black;
+	color: white;
+	text-transform: capitalize;
+}
