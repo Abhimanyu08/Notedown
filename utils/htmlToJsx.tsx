@@ -6,13 +6,11 @@ interface htmlToJsxProps {
 	html: string;
 	language: string;
 	containerId: string;
-	runTillThisPoint: ((blockNumber: number) => void) | null;
 }
 function htmlToJsx({
 	html,
 	language,
 	containerId,
-	runTillThisPoint,
 }: htmlToJsxProps): JSX.Element {
 	const re = /([^<>]*?)(<(\S*)(.*?=\".*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)/g;
 	const matches = Array.from(html.matchAll(re));
@@ -37,7 +35,6 @@ function htmlToJsx({
 								containerId={containerId}
 								text={content!.at(1)!}
 								blockNumber={BLOCK_NUMBER}
-								runTillThisPoint={runTillThisPoint}
 							/>
 							{string2}
 						</>
@@ -54,7 +51,6 @@ function htmlToJsx({
 								html: content!.at(1)!,
 								language,
 								containerId,
-								runTillThisPoint,
 							})
 						)}
 						{string2}

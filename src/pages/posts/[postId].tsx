@@ -43,25 +43,25 @@ export default function Blog({
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string | null>(null);
 	const [child, setChild] = useState<JSX.Element | null>(null);
-	const [runTillThisBlock, setRunTillThisBlock] = useState<
-		((blockNumber: number) => void) | null
-	>(null);
+	const [collectCodeTillBlock, setCollectCodeTillBlock] =
+		useState<(blockNumber: number) => void>();
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>({
 		3: "4",
 	});
+	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [file, setFile] = useState<File | null>(null);
 	const { user: contextUser } = useContext(UserContext);
 	const [user, setUser] = useState(loggedInUser);
-	const blogJsx = useMemo(
-		() =>
-			htmlToJsx({
-				html: content,
-				language: language!,
-				containerId: "none",
-				runTillThisPoint: runTillThisBlock,
-			}),
-		[content, language, containerId, runTillThisBlock]
-	);
+	const [runningCode, setRunningCode] = useState(false);
+	const [runningBlock, setRunningBlock] = useState<number>();
+	const blogJsx = useMemo(() => {
+		if (!containerId) return <></>;
+		return htmlToJsx({
+			html: content,
+			language: language!,
+			containerId,
+		});
+	}, [content, language, containerId, collectCodeTillBlock]);
 	useEffect(() => {
 		if (contextUser) {
 			setUser(contextUser);
@@ -71,61 +71,68 @@ export default function Blog({
 		}
 	}, [loggedInUser, contextUser]);
 
-	// useEffect(() => {
-	// 	const prepareContainer = async (language: string) => {
-	// 		const resp = await sendRequest("POST", {
-	// 			language,
-	// 		});
+	useEffect(() => {
+		const prepareContainer = async (language: string) => {
+			const resp = await sendRequest("POST", {
+				language,
+			});
 
-	// 		if (resp.status !== 201) {
-	// 			console.log(resp.statusText);
-	// 			return;
-	// 		}
-	// 		const body: { containerId: string } = await resp.json();
-	// 		setContainerId(body.containerId);
-	// 	};
-	// 	if (!containerId && language) prepareContainer(language);
-	// }, []);
+			if (resp.status !== 201) {
+				console.log(resp.statusText);
+				return;
+			}
+			const body: { containerId: string } = await resp.json();
+			setContainerId(body.containerId);
+		};
+		if (!containerId && language) prepareContainer(language);
+	}, []);
 
 	useEffect(() => {
-		if (runTillThisBlock || !containerId) return;
+		if (collectCodeTillBlock || !containerId) return;
 		const func = (blockNumber: number) => {
-			let code = "";
+			const event = new Event("focus");
 			for (let i = 1; i <= blockNumber; i++) {
 				const elem = document.getElementById(
-					`${i}`
-				) as HTMLTextAreaElement | null;
+					`run-${i}`
+				) as HTMLButtonElement | null;
 				if (!elem) continue;
-				code = code.concat(elem.value + "\n");
+				elem.dispatchEvent(event);
 			}
-			runCodeRequest(code, blockNumber, containerId);
+			setRunningBlock(blockNumber);
+			setRunningCode(true);
 		};
-		setRunTillThisBlock(() => func);
-	});
+		setCollectCodeTillBlock(() => func);
+	}, [containerId]);
 
 	useEffect(() => {
-		// if (containerId)
-		setChild(blogJsx);
-	}, [containerId, runTillThisBlock]);
+		if (containerId) setChild(blogJsx);
+	}, [containerId]);
 
-	const runCodeRequest = async (
-		code: string,
-		blockNumber: number,
-		containerId: string
-	) => {
-		const params: Parameters<typeof sendRequest> = [
-			"POST",
-			{ language: language!, containerId, code },
-		];
-		const resp = await sendRequest(...params);
+	useEffect(() => {
+		if (!runningCode || !runningBlock) return;
+		const runCodeRequest = async (blockNumber: number) => {
+			if (!containerId) return;
+			let code = Object.values(blockToCode).join("\n");
+			console.log("code -> ", code);
 
-		if (resp.status === 500) {
-			setBlockToOutput({ [blockNumber]: resp.statusText });
-			return;
-		}
-		const { output } = (await resp.json()) as { output: string };
-		setBlockToOutput({ [blockNumber]: output });
-	};
+			const params: Parameters<typeof sendRequest> = [
+				"POST",
+				{ language: language!, containerId, code },
+			];
+			const resp = await sendRequest(...params);
+
+			if (resp.status === 500) {
+				setBlockToOutput({ [blockNumber]: resp.statusText });
+				return;
+			}
+			const { output } = (await resp.json()) as { output: string };
+			setBlockToOutput({ [blockNumber]: output });
+		};
+		runCodeRequest(runningBlock).then(() => {
+			setRunningBlock(undefined);
+			setRunningCode(false);
+		});
+	}, [runningCode]);
 
 	const onChangeFile: MouseEventHandler = async (e) => {
 		e.preventDefault();
@@ -142,15 +149,16 @@ export default function Blog({
 			htmlToJsx({
 				html,
 				language: language!,
-				containerId: "lol",
-				runTillThisPoint: runTillThisBlock,
+				containerId: containerId!,
 			})
 		);
 		setFile(null);
 	};
 
 	return (
-		<BlogContext.Provider value={blockToOutput}>
+		<BlogContext.Provider
+			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
+		>
 			<Layout
 				user={user}
 				route={router.asPath}

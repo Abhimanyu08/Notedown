@@ -7,25 +7,20 @@ import { BlogContext } from "../pages/_app";
 import { EditorState, Compartment } from "@codemirror/state";
 import { basicSetup, minimalSetup, EditorView } from "codemirror";
 import { python } from "@codemirror/lang-python";
+import { prepareServerlessUrl } from "next/dist/server/base-server";
 
 interface CodeProps {
 	text: string;
 	language: string;
 	containerId: string;
 	blockNumber: number;
-	runTillThisPoint: ((blockNumber: number) => void) | null;
 }
 
-function Code({
-	text,
-	language,
-	containerId,
-	blockNumber,
-	runTillThisPoint,
-}: CodeProps) {
-	const [code, setCode] = useState(text);
+function Code({ text, language, containerId, blockNumber }: CodeProps) {
+	const [codeSubmitted, setCodeSubmitted] = useState(true);
 	const [hideOutput, setHideOutput] = useState(false);
-	const blockToOutput = useContext(BlogContext);
+	const { blockToOutput, setBlockToCode, collectCodeTillBlock } =
+		useContext(BlogContext);
 	const [editorView, setEditorView] = useState<EditorView | null>(null);
 
 	useEffect(() => {
@@ -48,17 +43,25 @@ function Code({
 
 		setEditorView(view);
 	}, []);
-	const onChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-		e.preventDefault();
-		setCode(e.target.value);
-	};
 
-	const onBackToOriginal: React.MouseEventHandler<HTMLButtonElement> = (
-		e
-	) => {
-		e.preventDefault();
-		setCode(text);
-	};
+	useEffect(() => {
+		const playButton = document.getElementById(
+			`run-${blockNumber}`
+		) as HTMLButtonElement | null;
+		if (!playButton) return;
+
+		playButton.onfocus = (e) => {
+			e.preventDefault();
+			console.log(`focus event fired for block-${blockNumber}`);
+			if (!setBlockToCode) return;
+			const codeArray = editorView?.state.doc.toJSON() || [""];
+			const code = codeArray.join("\n");
+			setBlockToCode((prev) => ({
+				...prev,
+				[blockNumber]: code,
+			}));
+		};
+	}, [blockNumber, editorView]);
 	return (
 		<div className="flex relative flex-col w-full ">
 			<div className="w-full bg-black" id={`${blockNumber}`}></div>
@@ -66,20 +69,22 @@ function Code({
 			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-1">
 				<button
 					onClick={() => {
-						if (runTillThisPoint) runTillThisPoint(blockNumber);
+						if (!collectCodeTillBlock) return;
+						collectCodeTillBlock(blockNumber);
 					}}
 					className=""
+					id={`run-${blockNumber}`}
 				>
 					<BsPlayFill />
 				</button>
-				<button onClick={onBackToOriginal} className="">
+				<button className="">
 					<FcUndo />
 				</button>
 				<button onClick={() => setHideOutput((prev) => !prev)}>
 					<MdHideImage />
 				</button>
 			</div>
-			{blockToOutput[blockNumber] && (
+			{blockToOutput && blockToOutput[blockNumber] && (
 				<div
 					className={` text-white bg-black p-2 mt-2 rounded-md ${
 						hideOutput ? "hidden" : ""
