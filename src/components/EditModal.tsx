@@ -14,7 +14,9 @@ export function EditModal({
 	published: boolean;
 	title: string;
 	description: string;
-	setClientPosts?: Dispatch<SetStateAction<Post[] | null | undefined>>;
+	setClientPosts?: Dispatch<
+		SetStateAction<Partial<Post>[] | null | undefined>
+	>;
 }) {
 	const [newTitle, setNewTitle] = useState(title);
 	const [newDesc, setNewDesc] = useState(description);

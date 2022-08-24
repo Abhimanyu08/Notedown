@@ -50,18 +50,21 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 		>
 			<div className="flex flex-col gap-6 mx-2">
 				{posts &&
-					posts.map((post) => (
-						<PostComponent
-							key={post.id!}
-							description={post.description!}
-							title={post.title!}
-							postId={post.id!}
-							publishedOn={post.published_on}
-							authorId={post.created_by!}
-							author={post?.bloggers?.name || ""}
-							owner={false}
-						/>
-					))}
+					posts.map((post) => {
+						if (!post.published) return <></>;
+						return (
+							<PostComponent
+								key={post.id!}
+								description={post.description!}
+								title={post.title!}
+								postId={post.id!}
+								publishedOn={post.published_on}
+								authorId={post.created_by!}
+								author={post?.bloggers?.name || ""}
+								owner={false}
+							/>
+						);
+					})}
 			</div>
 		</Layout>
 	);

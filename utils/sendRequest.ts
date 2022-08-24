@@ -1,4 +1,4 @@
-async function sendRequest(method: "POST" | "PUT", body: { language: string, containerId?: string, code?: string }) {
+async function sendRequest(method: "POST", body: { language: string, containerId?: string, code?: string }) {
     const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
         method,
         mode: "cors",

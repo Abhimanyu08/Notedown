@@ -57,7 +57,7 @@ function Code({ text, language, containerId, blockNumber }: CodeProps) {
 
 		playButton.onfocus = (e) => {
 			e.preventDefault();
-			console.log(`focus event fired for block-${blockNumber}`);
+
 			if (!setBlockToCode) return;
 			const codeArray = editorView?.state.doc.toJSON() || [""];
 			const code = codeArray.join("\n");

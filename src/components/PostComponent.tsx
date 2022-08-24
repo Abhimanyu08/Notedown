@@ -20,7 +20,9 @@ const PostComponent: React.FC<{
 	owner: boolean;
 	published?: boolean;
 	filename?: string;
-	setClientPosts?: Dispatch<SetStateAction<Post[] | null | undefined>>;
+	setClientPosts?: Dispatch<
+		SetStateAction<Partial<Post>[] | null | undefined>
+	>;
 }> = ({
 	postId,
 	title,

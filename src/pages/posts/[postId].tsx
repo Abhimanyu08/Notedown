@@ -45,9 +45,9 @@ export default function Blog({
 	const [child, setChild] = useState<JSX.Element | null>(null);
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
-	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>({
-		3: "4",
-	});
+	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
+		{}
+	);
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [file, setFile] = useState<File | null>(null);
 	const { user: contextUser } = useContext(UserContext);
@@ -91,7 +91,7 @@ export default function Blog({
 		if (collectCodeTillBlock || !containerId) return;
 		const func = (blockNumber: number) => {
 			const event = new Event("focus");
-			for (let i = 1; i <= blockNumber; i++) {
+			for (let i = 1; i < blockNumber; i++) {
 				const elem = document.getElementById(
 					`run-${i}`
 				) as HTMLButtonElement | null;
@@ -113,7 +113,6 @@ export default function Blog({
 		const runCodeRequest = async (blockNumber: number) => {
 			if (!containerId) return;
 			let code = Object.values(blockToCode).join("\n");
-			console.log("code -> ", code);
 
 			const params: Parameters<typeof sendRequest> = [
 				"POST",
@@ -121,12 +120,13 @@ export default function Blog({
 			];
 			const resp = await sendRequest(...params);
 
-			if (resp.status === 500) {
+			if (resp.status !== 201) {
 				setBlockToOutput({ [blockNumber]: resp.statusText });
 				return;
 			}
 			const { output } = (await resp.json()) as { output: string };
 			setBlockToOutput({ [blockNumber]: output });
+			setBlockToCode({});
 		};
 		runCodeRequest(runningBlock).then(() => {
 			setRunningBlock(undefined);

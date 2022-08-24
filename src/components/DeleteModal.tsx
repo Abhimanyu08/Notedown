@@ -15,7 +15,9 @@ export function DeleteModal({
 	title: string;
 	id: number;
 	filename: string;
-	setClientPosts?: Dispatch<SetStateAction<Post[] | null | undefined>>;
+	setClientPosts?: Dispatch<
+		SetStateAction<Partial<Post>[] | null | undefined>
+	>;
 }) {
 	const onDelete: MouseEventHandler = async (e) => {
 		const { error: tableError } = await supabase
@@ -43,12 +45,6 @@ export function DeleteModal({
 			/>
 			<label htmlFor={`delete-${id}`} className="modal  text-black">
 				<label className="modal-box bg-cyan-500 relative">
-					<label
-						htmlFor={`delete-${id}`}
-						className="btn btn-sm btn-circle absolute right-2 top-2"
-					>
-						✕
-					</label>
 					<p>
 						Are you sure you want to delete your post{" "}
 						<span className="font-semibold">{title}</span>?

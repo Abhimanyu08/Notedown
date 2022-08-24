@@ -27,9 +27,8 @@ import { UserContext } from "../_app";
 
 interface ProfileProps {
 	loggedInUser?: User | null;
-	name?: string | null;
-	posts?: Post[] | null;
-	avatar_url?: string | null;
+	posts?: Partial<Post>[] | null;
+	profileUser?: Blogger | null;
 }
 
 interface UserQueryResult {
@@ -38,16 +37,16 @@ interface UserQueryResult {
 }
 
 interface PostQueryResult {
-	data: Post[] | null;
+	data: Partial<Post>[] | null;
 	error: PostgrestError | null;
 }
 
 function calculateValidPosts(
-	posts: Post[] | null,
+	posts: Partial<Post>[] | null,
 	status: "published" | "unpublished",
 	user: User | null,
 	profileId: string
-): Post[] {
+): Partial<Post>[] {
 	if (!posts) return [];
 	const owner = user?.id === profileId;
 	if (owner) {
@@ -59,10 +58,11 @@ function calculateValidPosts(
 	return posts.filter((post) => post.published);
 }
 
-function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
+function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 	const [file, setFile] = useState<File | null>();
 	const [uploading, setUploading] = useState(false);
 	const [user, setUser] = useState(loggedInUser);
+	const [section, setSection] = useState<"posts" | "about">("posts");
 	const [postType, setPostType] = useState<"published" | "unpublished">(
 		"published"
 	);
@@ -153,7 +153,7 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 				if (!val || !val.data || val.data.length == 0) return;
 				let post = val.data.at(0) as Post;
 				setClientPosts((prev) => {
-					let newPost: Post = {
+					let newPost: Partial<Post> = {
 						title,
 						created_by: id as string,
 						description,
@@ -176,13 +176,13 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 			route={router.asPath}
 			logoutCallback={() => setUser(null)}
 		>
-			<div className="grid grid-cols-6 text-white ">
-				<div className="col-span-2">
-					<div className="flex flex-col items-center w-fit">
+			<div className="grid grid-cols-1 lg:grid-cols-6 text-white gap-y-10">
+				<div className="lg:col-span-2">
+					<div className="flex flex-col items-center lg:w-fit w-full">
 						<div className="rounded-full overflow-hidden">
-							{avatar_url && (
+							{profileUser?.avatar_url && (
 								<Image
-									src={avatar_url}
+									src={profileUser.avatar_url}
 									width={128}
 									height={128}
 									layout="fixed"
@@ -190,90 +190,130 @@ function Profile({ loggedInUser, name, posts, avatar_url }: ProfileProps) {
 								/>
 							)}
 						</div>
-						<p className="text-xl font-semibold">{name}</p>
+						<p className="text-xl font-semibold">
+							{profileUser?.name}
+						</p>
 					</div>
 				</div>
-				<div className="col-start-3 col-span-4">
+				<div className="lg:col-span-4">
 					<div className="flex justify-between items-center">
-						<p className="text-3xl font-semibold">Posts</p>
-						<div className="flex gap-1">
-							{user?.id === id && !file && (
-								<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-semibold text-sm text-black">
-									<label htmlFor="file">New Post</label>
-									<input
-										type="file"
-										id="file"
-										className="hidden"
-										onChange={(e) =>
-											setFile(e.target.files?.item(0))
-										}
-									/>
-								</button>
-							)}
-							{file && (
-								<button
-									className={`btn btn-sm bg-cyan-500 hover:bg-cyan-600 text-black ${
-										uploading ? "loading" : ""
-									}`}
-									onClick={onUpload}
-								>
-									<div className="flex normal-case text-black items-center gap-2">
-										{!uploading && (
-											<FiUpload className="text-black" />
-										)}
-										{file.name}
-									</div>
-								</button>
-							)}
-							{file && (
-								<button
-									className="btn btn-sm bg-cyan-500 hover:bg-cyan-600 "
-									onClick={() => setFile(null)}
-								>
-									<MdCancel className="text-black h-6 w-6" />
-								</button>
-							)}
+						<div className="tabs">
+							<p
+								className={`tab tab-lifted ${
+									section === "posts" ? "tab-active" : ""
+								}  font-semibold text-white text-lg `}
+								onClick={() => setSection("posts")}
+							>
+								Posts
+							</p>
+							<p
+								className={`tab tab-lifted ${
+									section === "about" ? "tab-active" : ""
+								}  font-semibold text-white text-lg `}
+								onClick={() => setSection("about")}
+							>
+								About
+							</p>
 						</div>
+						{section === "posts" ? (
+							<div className="flex gap-1">
+								{user?.id === id && !file && (
+									<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-semibold text-sm text-black">
+										<label htmlFor="file">New Post</label>
+										<input
+											type="file"
+											id="file"
+											className="hidden"
+											onChange={(e) =>
+												setFile(e.target.files?.item(0))
+											}
+										/>
+									</button>
+								)}
+								{file && (
+									<button
+										className={`gap-2 normal-case btn btn-sm bg-cyan-500 hover:bg-cyan-600 text-black ${
+											uploading ? "loading" : ""
+										}`}
+										onClick={onUpload}
+									>
+										{!uploading && <FiUpload />}
+										{file.name}
+									</button>
+								)}
+								{file && (
+									<button
+										className="btn btn-sm bg-cyan-500 hover:bg-cyan-600 "
+										onClick={() => setFile(null)}
+									>
+										<MdCancel className="text-black h-6 w-6" />
+									</button>
+								)}
+							</div>
+						) : (
+							<div className="capitalize bg-cyan-500 hover:bg-cyan-600 text-black btn btn-sm">
+								Edit
+							</div>
+						)}
 					</div>
-					{user?.id === id && (
-						<select
-							name=""
-							id=""
-							className="select select-sm mt-5"
-							onChange={(e) => setPostType(e.target.value as any)}
-							value={postType}
-						>
-							<option value="published">Published</option>
-							<option value="unpublished">Unpublished</option>
-						</select>
+					{section === "posts" ? (
+						<>
+							{user?.id === id && (
+								<select
+									name=""
+									id=""
+									className="select select-sm mt-5"
+									onChange={(e) =>
+										setPostType(e.target.value as any)
+									}
+									value={postType}
+								>
+									<option value="published">Published</option>
+									<option value="unpublished">
+										Unpublished
+									</option>
+								</select>
+							)}
+							<div className="flex flex-col gap-8 mt-5">
+								{clientPosts &&
+									memoizedPosts.map((post) => {
+										if (
+											postType === "published" &&
+											!post.published
+										)
+											return <></>;
+										if (
+											postType === "unpublished" &&
+											(post.published || !user)
+										)
+											return <></>;
+										return (
+											<PostComponent
+												key={post.id!}
+												description={post.description!}
+												title={post.title!}
+												postId={post.id!}
+												publishedOn={post.published_on}
+												authorId={post.created_by!}
+												author={name!}
+												owner={user?.id === id}
+												published={post.published}
+												filename={post.filename}
+												setClientPosts={setClientPosts}
+											/>
+										);
+									})}
+							</div>
+						</>
+					) : (
+						<p className="mt-8">
+							{user?.id === id && !profileUser?.about ? (
+								<></>
+							) : (
+								profileUser?.about
+							)}
+						</p>
 					)}
-					<div className="flex flex-col gap-8 mt-5">
-						{clientPosts &&
-							memoizedPosts.map((post, idx) => {
-								if (postType === "published" && !post.published)
-									return <></>;
-								if (
-									postType === "unpublished" &&
-									(post.published || !user)
-								)
-									return <></>;
-								return (
-									<PostComponent
-										key={post.id!}
-										description={post.description!}
-										title={post.title!}
-										postId={post.id!}
-										publishedOn={post.published_on}
-										authorId={post.created_by!}
-										author={name!}
-										owner={user?.id === id}
-										published={post.published}
-										filename={post.filename}
-										setClientPosts={setClientPosts}
-									/>
-								);
-							})}
-					</div>
 				</div>
 			</div>
 		</Layout>
@@ -310,9 +350,8 @@ export const getServerSideProps: GetServerSideProps<
 	return {
 		props: {
 			loggedInUser: user,
-			name: data?.at(0)?.name || null,
 			posts: postData,
-			avatar_url: data?.at(0)?.avatar_url,
+			profileUser: data?.at(0) || null,
 		},
 	};
 };

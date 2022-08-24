@@ -9,7 +9,9 @@ export function PublishModal({
 }: {
 	id: number;
 
-	setClientPosts?: Dispatch<SetStateAction<Post[] | null | undefined>>;
+	setClientPosts?: Dispatch<
+		SetStateAction<Partial<Post>[] | null | undefined>
+	>;
 }) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
