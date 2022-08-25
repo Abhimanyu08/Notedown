@@ -26,3 +26,8 @@
 	color: white;
 	text-transform: capitalize;
 }
+.tooltip::before {
+	background-color: black;
+	color: white;
+	text-transform: capitalize;
+}

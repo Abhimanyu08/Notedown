@@ -1,5 +1,6 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import {
 	createContext,
@@ -25,10 +26,14 @@ interface PostProps extends Post {
 	content: string;
 	loggedInUser: User | null;
 	filename: string;
+	author: string;
+}
+interface PostWithAuthor extends Post {
+	bloggers: { name: string };
 }
 
 interface PostQueryResult {
-	data: Post[] | null;
+	data: Partial<PostWithAuthor>[] | null;
 	error: PostgrestError | null;
 }
 
@@ -39,10 +44,10 @@ export default function Blog({
 	language,
 	loggedInUser,
 	filename,
-}: PostProps) {
+	author,
+}: Partial<PostProps>) {
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string | null>(null);
-	const [child, setChild] = useState<JSX.Element | null>(null);
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
@@ -54,14 +59,15 @@ export default function Blog({
 	const [user, setUser] = useState(loggedInUser);
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
+
 	const blogJsx = useMemo(() => {
-		if (!containerId) return <></>;
+		if (!content) return <></>;
 		return htmlToJsx({
 			html: content,
 			language: language!,
-			containerId,
 		});
-	}, [content, language, containerId, collectCodeTillBlock]);
+	}, [content]);
+
 	useEffect(() => {
 		if (contextUser) {
 			setUser(contextUser);
@@ -88,7 +94,6 @@ export default function Blog({
 	}, []);
 
 	useEffect(() => {
-		if (collectCodeTillBlock || !containerId) return;
 		const func = (blockNumber: number) => {
 			const event = new Event("focus");
 			for (let i = 1; i < blockNumber; i++) {
@@ -102,16 +107,11 @@ export default function Blog({
 			setRunningCode(true);
 		};
 		setCollectCodeTillBlock(() => func);
-	}, [containerId]);
+	}, []);
 
 	useEffect(() => {
-		if (containerId) setChild(blogJsx);
-	}, [containerId]);
-
-	useEffect(() => {
-		if (!runningCode || !runningBlock || !language) return;
+		if (!runningCode || !runningBlock || !language || !containerId) return;
 		const runCodeRequest = async (blockNumber: number) => {
-			if (!containerId) return;
 			let code = Object.values(blockToCode).join("\n");
 
 			const params: Parameters<typeof sendRequest> = [
@@ -136,7 +136,7 @@ export default function Blog({
 
 	const onChangeFile: MouseEventHandler = async (e) => {
 		e.preventDefault();
-		if (!file) return;
+		if (!file || !filename) return;
 		const { error } = await supabase.storage
 			.from(SUPABASE_BUCKET_NAME)
 			.update(filename, file);
@@ -144,23 +144,22 @@ export default function Blog({
 			alert("couldn't replace file");
 			return;
 		}
-		const { content: html } = await getHtmlFromMarkdown(file);
-		setChild(
-			htmlToJsx({
-				html,
-				language: language!,
-				containerId: containerId!,
-			})
-		);
 		setFile(null);
+		router.replace(router.asPath);
 	};
 
 	return (
 		<BlogContext.Provider
 			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
 		>
+			<Head>
+				<title>{title}</title>
+				<meta name="author" content={author} />
+				<meta name="description" content={description} />
+				<meta name="keywords" content={language} />
+			</Head>
 			<Layout
-				user={user}
+				user={user || null}
 				route={router.asPath}
 				logoutCallback={() => setUser(null)}
 			>
@@ -204,7 +203,7 @@ export default function Blog({
 				>
 					<h1 className="text-center">{title}</h1>
 					<p className="text-center italic">{description}</p>
-					<div className="">{child ? child : <p>Loading...</p>}</div>
+					<div className="">{blogJsx}</div>
 				</div>
 			</Layout>
 		</BlogContext.Provider>
@@ -212,7 +211,7 @@ export default function Blog({
 }
 
 export const getServerSideProps: GetServerSideProps<
-	PostProps,
+	Partial<PostProps>,
 	{ postId: string }
 > = async (context) => {
 	const { user } = await supabase.auth.api.getUserByCookie(context.req);
@@ -233,14 +232,14 @@ export const getServerSideProps: GetServerSideProps<
 	};
 	const { data, error }: PostQueryResult = await supabase
 		.from(SUPABASE_POST_TABLE)
-		.select("title, description, language, filename")
+		.select("title, description, language, filename, bloggers(name)")
 		.eq("id", context.params?.postId);
 
 	if (error || !data || data.length === 0) {
 		console.log(error);
 		return defaultReturn;
 	}
-	const { title, description, language, filename } = data.at(0) as Post;
+	const { title, description, language, filename, bloggers } = data.at(0)!;
 	const { data: fileData, error: fileError } = await supabase.storage
 		.from(SUPABASE_BUCKET_NAME)
 		.download(filename!);
@@ -266,6 +265,7 @@ export const getServerSideProps: GetServerSideProps<
 			content,
 			filename: filename!,
 			loggedInUser: user,
+			author: bloggers?.name,
 		},
 	};
 };

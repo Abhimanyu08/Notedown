@@ -18,6 +18,7 @@ import {
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
 import { supabase } from "../../../utils/supabaseClient";
+import { About } from "../../components/About";
 import Layout from "../../components/Layout";
 import PostComponent from "../../components/PostComponent";
 import Blogger from "../../interfaces/Blogger";
@@ -62,10 +63,12 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 	const [file, setFile] = useState<File | null>();
 	const [uploading, setUploading] = useState(false);
 	const [user, setUser] = useState(loggedInUser);
+	const [profile, setProfile] = useState(profileUser);
 	const [section, setSection] = useState<"posts" | "about">("posts");
 	const [postType, setPostType] = useState<"published" | "unpublished">(
 		"published"
 	);
+	const [editing, setEditing] = useState(false);
 	const [clientPosts, setClientPosts] = useState(posts);
 	const router = useRouter();
 	const { id } = router.query;
@@ -180,9 +183,9 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 				<div className="lg:col-span-2">
 					<div className="flex flex-col items-center lg:w-fit w-full">
 						<div className="rounded-full overflow-hidden">
-							{profileUser?.avatar_url && (
+							{profile?.avatar_url && (
 								<Image
-									src={profileUser.avatar_url}
+									src={profile.avatar_url}
 									width={128}
 									height={128}
 									layout="fixed"
@@ -190,18 +193,16 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 								/>
 							)}
 						</div>
-						<p className="text-xl font-semibold">
-							{profileUser?.name}
-						</p>
+						<p className="text-xl font-semibold">{profile?.name}</p>
 					</div>
 				</div>
-				<div className="lg:col-span-4">
-					<div className="flex justify-between items-center">
+				<div className="lg:col-span-4 ">
+					<div className="flex justify-between items-center mb-10">
 						<div className="tabs">
 							<p
 								className={`tab tab-lifted ${
 									section === "posts" ? "tab-active" : ""
-								}  font-semibold text-white text-lg `}
+								}  font-semibold text-white text-base `}
 								onClick={() => setSection("posts")}
 							>
 								Posts
@@ -209,7 +210,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 							<p
 								className={`tab tab-lifted ${
 									section === "about" ? "tab-active" : ""
-								}  font-semibold text-white text-lg `}
+								}  font-semibold text-white text-base `}
 								onClick={() => setSection("about")}
 							>
 								About
@@ -219,7 +220,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 							<div className="flex gap-1">
 								{user?.id === id && !file && (
 									<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-semibold text-sm text-black">
-										<label htmlFor="file">New Post</label>
+										<label htmlFor="file">New post</label>
 										<input
 											type="file"
 											id="file"
@@ -251,9 +252,22 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 								)}
 							</div>
 						) : (
-							<div className="capitalize bg-cyan-500 hover:bg-cyan-600 text-black btn btn-sm">
-								Edit
-							</div>
+							user?.id === id &&
+							(editing ? (
+								<button
+									className="btn btn-xs bg-cyan-500 hover:bg-cyan-600 "
+									onClick={() => setEditing(false)}
+								>
+									<MdCancel className="text-black h-5 w-6" />
+								</button>
+							) : (
+								<div
+									className="capitalize bg-cyan-500 hover:bg-cyan-600 text-black btn btn-sm"
+									onClick={() => setEditing(true)}
+								>
+									Edit
+								</div>
+							))
 						)}
 					</div>
 					{section === "posts" ? (
@@ -295,7 +309,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 												postId={post.id!}
 												publishedOn={post.published_on}
 												authorId={post.created_by!}
-												author={name!}
+												author={profile?.name!}
 												owner={user?.id === id}
 												published={post.published}
 												filename={post.filename}
@@ -306,13 +320,14 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 							</div>
 						</>
 					) : (
-						<p className="mt-8">
-							{user?.id === id && !profileUser?.about ? (
-								<></>
-							) : (
-								profileUser?.about
-							)}
-						</p>
+						<About
+							id={profileUser?.id}
+							editing={editing}
+							owner={user?.id === id}
+							markdown={profile?.about}
+							setProfile={setProfile}
+							setEditing={setEditing}
+						/>
 					)}
 				</div>
 			</div>
@@ -335,7 +350,7 @@ export const getServerSideProps: GetServerSideProps<
 
 	const { data, error }: UserQueryResult = await supabase
 		.from(SUPABASE_BLOGGER_TABLE)
-		.select("name, avatar_url")
+		.select("id, name, avatar_url,about")
 		.eq("id", id);
 
 	const { data: postData, error: postError }: PostQueryResult = await supabase

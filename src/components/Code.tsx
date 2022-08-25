@@ -17,11 +17,10 @@ import { prepareServerlessUrl } from "next/dist/server/base-server";
 interface CodeProps {
 	text: string;
 	language: string;
-	containerId: string;
 	blockNumber: number;
 }
 
-function Code({ text, language, containerId, blockNumber }: CodeProps) {
+function Code({ text, language, blockNumber }: CodeProps) {
 	const [codeSubmitted, setCodeSubmitted] = useState(true);
 	const [hideOutput, setHideOutput] = useState(false);
 	const { blockToOutput, setBlockToCode, collectCodeTillBlock } =

@@ -5,13 +5,8 @@ let BLOCK_NUMBER = 0;
 interface htmlToJsxProps {
 	html: string;
 	language: string;
-	containerId: string;
 }
-function htmlToJsx({
-	html,
-	language,
-	containerId,
-}: htmlToJsxProps): JSX.Element {
+function htmlToJsx({ html, language }: htmlToJsxProps): JSX.Element {
 	const re = /([^<>]*?)(<(\S*)(.*?=\".*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)/g;
 	const matches = Array.from(html.matchAll(re));
 	if (matches.length === 0) return <>{html}</>;
@@ -32,7 +27,6 @@ function htmlToJsx({
 							<Code
 								key={BLOCK_NUMBER}
 								language={language}
-								containerId={containerId}
 								text={content!.at(1)!}
 								blockNumber={BLOCK_NUMBER}
 							/>
@@ -50,7 +44,6 @@ function htmlToJsx({
 							htmlToJsx({
 								html: content!.at(1)!,
 								language,
-								containerId,
 							})
 						)}
 						{string2}
