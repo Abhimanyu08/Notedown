@@ -1,10 +1,10 @@
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
 
-export const handleSignIn = async (redirectTo: string) => {
+export const handleSignIn = async (provider: "github" | "google", redirectTo: string) => {
     const { error } = await supabase.auth.signIn(
         {
-            provider: "github",
+            provider,
         },
         { redirectTo: `http://localhost:3000${redirectTo}` }
     );

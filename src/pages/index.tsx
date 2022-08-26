@@ -26,7 +26,7 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 	const [user, setUser] = useState(loggedInUser);
 
 	useEffect(() => {
-		if (contextUser) {
+		if (!user && contextUser) {
 			setUser(contextUser);
 		}
 		if (!loggedInUser && !contextUser) {

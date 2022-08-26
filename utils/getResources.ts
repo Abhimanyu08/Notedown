@@ -17,15 +17,12 @@ function resetCodeblocks(markdown: string, html: string) {
     return html;
 }
 
-export async function getHtmlFromMarkdown(file: File | Blob): Promise<{ content: string }> {
+export async function getHtmlFromMarkdown(file: File | Blob): Promise<string> {
 
     const { content } = matter(await file.text());
     let html = await mdToHtml(content);
     html = resetCodeblocks(content, html)
-    return {
-
-        content: html
-    }
+    return html
 }
 
 export async function getAllPostTitles(): Promise<string[]> {

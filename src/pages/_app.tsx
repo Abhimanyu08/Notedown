@@ -12,9 +12,9 @@ import { notifyServer } from "../../utils/handleAuth";
 import { supabase } from "../../utils/supabaseClient";
 
 export const UserContext = createContext<{
-	user: User | null;
-	setUser: Dispatch<SetStateAction<User | null>> | null;
-}>({ user: null, setUser: null });
+	user?: User | null;
+	setUser?: Dispatch<SetStateAction<User | null>>;
+}>({});
 
 export const BlogContext = createContext<{
 	blockToOutput?: Record<number, string>;

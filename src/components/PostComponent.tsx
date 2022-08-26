@@ -48,7 +48,11 @@ const PostComponent: React.FC<{
 				{...{ title, description, setClientPosts }}
 			/>
 			<PublishModal id={postId} setClientPosts={setClientPosts} />
-			<Link href={`/posts/${postId}`}>
+			<Link
+				href={
+					published ? `/posts/${postId}` : `/posts/preview/${postId}`
+				}
+			>
 				<span className="text-xl font-medium link link-hover">
 					{title}{" "}
 				</span>

@@ -1,6 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import { AiFillGithub } from "react-icons/ai";
+import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { handleLogout, handleSignIn } from "../../utils/handleAuth";
 
@@ -47,16 +47,30 @@ function Navbar({
 									</li>
 								</>
 							) : (
-								<li>
-									<button
-										onClick={(e) => {
-											e.preventDefault();
-											handleSignIn(route);
-										}}
-									>
-										Log In with <AiFillGithub />
-									</button>
-								</li>
+								<>
+									<li>
+										<button
+											onClick={(e) => {
+												e.preventDefault();
+												handleSignIn("github", route);
+											}}
+										>
+											Log-in with{" "}
+											<AiFillGithub size={20} />
+										</button>
+									</li>
+									<li>
+										<button
+											onClick={(e) => {
+												e.preventDefault();
+												handleSignIn("google", route);
+											}}
+										>
+											Log-in with{" "}
+											<AiFillGoogleCircle size={20} />
+										</button>
+									</li>
+								</>
 							)}
 						</ul>
 					</li>
