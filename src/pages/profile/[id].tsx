@@ -179,7 +179,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 			route={router.asPath}
 			logoutCallback={() => setUser(null)}
 		>
-			<div className="grid grid-cols-1 lg:grid-cols-6 text-white gap-y-10">
+			<div className="grid grid-cols-1 lg:grid-cols-6 text-white gap-y-10 px-80">
 				<div className="lg:col-span-2">
 					<div className="flex flex-col items-center lg:w-fit w-full">
 						<div className="rounded-full overflow-hidden">

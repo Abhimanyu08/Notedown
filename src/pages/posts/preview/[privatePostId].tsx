@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { Blog } from "../../components/Blog";
-import Layout from "../../components/Layout";
-import usePrivatePostQuery from "../../hooks/usePrivatePost";
-import { UserContext } from "../_app";
+import { Blog } from "../../../components/Blog";
+import Layout from "../../../components/Layout";
+import usePrivatePostQuery from "../../../hooks/usePrivatePost";
+import { UserContext } from "../../_app";
 
 export default function PrivateBlog() {
 	const router = useRouter();

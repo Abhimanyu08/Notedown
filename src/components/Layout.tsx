@@ -10,7 +10,7 @@ const Layout: React.FC<{
 	logoutCallback: () => void;
 }> = ({ children, user, route, logoutCallback }) => {
 	return (
-		<div className="px-5 sm:px-0 relative min-h-screen w-full sm:w-3/4 md:w-3/5 lg:w-3/5 sm:mx-auto pb-2">
+		<div className=" min-h-screen w-full ">
 			<Navbar {...{ user, route, logoutCallback }} />
 			{children}
 		</div>

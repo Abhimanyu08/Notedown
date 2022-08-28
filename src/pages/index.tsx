@@ -48,7 +48,7 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 			route={router.asPath}
 			logoutCallback={() => setUser(null)}
 		>
-			<div className="flex flex-col gap-6 mx-2">
+			<div className="flex flex-col gap-6 mx-2 px-80">
 				{posts &&
 					posts.map((post) => {
 						if (!post.published) return <></>;
@@ -61,6 +61,7 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 								publishedOn={post.published_on}
 								authorId={post.created_by!}
 								author={post?.bloggers?.name || ""}
+								published={post.published}
 								owner={false}
 							/>
 						);
@@ -72,8 +73,9 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
 	req,
+	res,
 }) => {
-	let { user, error } = await supabase.auth.api.getUserByCookie(req);
+	let { user, error } = await supabase.auth.api.getUserByCookie(req, res);
 
 	const { data } = await supabase
 		.from(SUPABASE_POST_TABLE)

@@ -14,7 +14,7 @@ function Navbar({
 	logoutCallback: () => void;
 }) {
 	return (
-		<div className="navbar mb-6 ">
+		<div className="navbar mb-6 px-80">
 			<div className="flex-1">
 				<Link href="/" className="btn btn-ghost normal-case text-xl">
 					Home

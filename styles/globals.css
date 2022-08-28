@@ -2,23 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-.ͼ2 .cm-activeLine {
-	background-color: rgb(22 78 99);
+.cm-activeLine {
+	background-color: rgb(22 78 99) !important;
 	caret-color: white;
 	color: springgreen;
 }
 
-.ͼ2 .cm-gutters {
-	background-color: black;
-	color: cyan;
+.cm-gutters {
+	background-color: black !important;
+	color: cyan !important;
 }
 
-.ͼ2 .cm-activeLineGutter {
-	background-color: black;
+.cm-activeLineGutter {
+	background-color: black !important;
 }
 
 .cm-activeLine > span {
-	color: cyan;
+	color: cyan !important;
 }
 
 .tooltip-left::before {

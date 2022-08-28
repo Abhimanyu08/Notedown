@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import htmlToJsx from "../../utils/htmlToJsx";
 import sendRequest from "../../utils/sendRequest";
-import { BlogProps } from "../interfaces/PublicBlogProps";
+import { BlogProps } from "../interfaces/BlogProps";
 import { BlogContext } from "../pages/_app";
 
 export function Blog({
@@ -90,12 +90,15 @@ export function Blog({
 			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
 		>
 			<div
-				className={`mx-auto prose  max-w-none lg:w-5/6 xl:w-4/6 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500
-				prose-pre:m-0 prose-pre:p-0
+				className={` prose  max-w-none basis-3/5 lg:px-40 prose-headings:text-amber-500 prose-p:font-medium prose-p:text-lg prose-p:text-justify text-white prose-a:text-lime-400
+				prose-strong:text-violet-500 prose-pre:m-0 prose-pre:p-0 prose-li:text-lg prose-blockquote:text-amber-300 prose-p:font-sans overflow-scroll h-screen pb-20 
+				
 				`}
 			>
 				<h1 className="text-center">{title}</h1>
-				<p className="text-center italic">{description}</p>
+				<div className="text-center italic text-xl w-full">
+					{description}
+				</div>
 				<div className="">{blogJsx}</div>
 			</div>
 		</BlogContext.Provider>

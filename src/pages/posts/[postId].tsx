@@ -1,4 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
+import { BiCodeAlt } from "react-icons/bi";
+import { IoMdShareAlt } from "react-icons/io";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext } from "react";
@@ -9,10 +11,11 @@ import {
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import { supabase } from "../../../utils/supabaseClient";
 import { Blog } from "../../components/Blog";
-import Layout from "../../components/Layout";
+import BlogLayout from "../../components/BlogLayout";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
-import { BlogProps } from "../../interfaces/PublicBlogProps";
+import { BlogProps } from "../../interfaces/BlogProps";
 import { UserContext } from "../_app";
+import Layout from "../../components/Layout";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -56,7 +59,14 @@ export default function PublicBlog(props: BlogProps | {}) {
 				route={router.asPath}
 				logoutCallback={() => null}
 			>
-				<Blog {...props} />
+				<BlogLayout>
+					<div className="flex flex-col basis-1/5"></div>
+					<Blog {...props} />
+					<div className="flex flex-col basis-1/5 w-fit my-auto pl-5">
+						<BiCodeAlt />
+						<IoMdShareAlt />
+					</div>
+				</BlogLayout>
 			</Layout>
 		</>
 	);
