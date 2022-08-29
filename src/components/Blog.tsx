@@ -17,6 +17,9 @@ export function Blog({
 		{}
 	);
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
+	const [codeToOutput, setCodeToOutput] = useState<Record<string, string>>(
+		{}
+	);
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
 
@@ -48,6 +51,13 @@ export function Blog({
 		if (!runningCode || !runningBlock || !language || !containerId) return;
 		const runCodeRequest = async (blockNumber: number) => {
 			let code = Object.values(blockToCode).join("\n");
+			code = code.trim();
+
+			if (Object.hasOwn(codeToOutput, code)) {
+				setBlockToOutput({ [blockNumber]: codeToOutput[code] });
+				setBlockToCode({});
+				return;
+			}
 
 			const params: Parameters<typeof sendRequest> = [
 				"POST",
@@ -60,6 +70,7 @@ export function Blog({
 				return;
 			}
 			const { output } = (await resp.json()) as { output: string };
+			setCodeToOutput((prev) => ({ ...prev, [code]: output }));
 			setBlockToOutput({ [blockNumber]: output });
 			setBlockToCode({});
 		};

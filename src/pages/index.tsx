@@ -48,7 +48,7 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 			route={router.asPath}
 			logoutCallback={() => setUser(null)}
 		>
-			<div className="flex flex-col gap-6 mx-2 px-80">
+			<div className="flex flex-col gap-6 px-80">
 				{posts &&
 					posts.map((post) => {
 						if (!post.published) return <></>;
