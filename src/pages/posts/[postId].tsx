@@ -1,9 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import { BiCodeAlt } from "react-icons/bi";
+import { BiCodeAlt, BiUpvote } from "react-icons/bi";
 import { IoMdShareAlt } from "react-icons/io";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { MouseEventHandler, useContext, useState } from "react";
 import {
 	SUPABASE_BUCKET_NAME,
 	SUPABASE_POST_TABLE,
@@ -16,6 +16,8 @@ import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import { UserContext } from "../_app";
 import Layout from "../../components/Layout";
+import sendRequest from "../../../utils/sendRequest";
+import { BsBookmarkFill } from "react-icons/bs";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -24,6 +26,8 @@ function checkProps(props: BlogProps | {}): props is BlogProps {
 export default function PublicBlog(props: BlogProps | {}) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
+	const [containerId, setContainerId] = useState<string>();
+	const [connecting, setConnecting] = useState(false);
 
 	if (router.isFallback || !checkProps(props)) {
 		console.log("rendering this");
@@ -46,6 +50,30 @@ export default function PublicBlog(props: BlogProps | {}) {
 		);
 	}
 
+	const prepareContainer = async () => {
+		if (!user) return;
+		if (containerId) return;
+		setConnecting(true);
+		try {
+			const resp = await sendRequest("POST", {
+				language: (props as BlogProps).language,
+			});
+
+			if (resp.status !== 201) {
+				console.log(resp.statusText);
+				alert("Couldn't set up remote code execution");
+				setConnecting(false);
+				return;
+			}
+			const body: { containerId: string } = await resp.json();
+			setContainerId(body.containerId);
+			setConnecting(false);
+		} catch (_) {
+			setConnecting(false);
+			alert("Couldn't enable remote code execution");
+		}
+	};
+
 	return (
 		<>
 			<Head>
@@ -61,10 +89,44 @@ export default function PublicBlog(props: BlogProps | {}) {
 			>
 				<BlogLayout>
 					<div className="flex flex-col basis-1/5"></div>
-					<Blog {...props} />
-					<div className="flex flex-col basis-1/5 w-fit my-auto pl-5">
-						<BiCodeAlt />
-						<IoMdShareAlt />
+					<Blog {...props} containerId={containerId} />
+					<div className="flex flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
+						<div
+							className={` btn btn-circle  btn-ghost tooltip`}
+							data-tip={` ${
+								user
+									? "Enable remote code execution"
+									: "Please login to enable remote code execution"
+							} `}
+							onClick={prepareContainer}
+						>
+							<BiCodeAlt
+								size={30}
+								className={` ${
+									containerId ? "text-lime-400" : "text-white"
+								}${connecting ? "hidden" : ""} mt-2 ml-2 `}
+							/>
+						</div>
+
+						<div
+							className="btn btn-circle btn-ghost tooltip"
+							data-tip="share"
+						>
+							<IoMdShareAlt
+								size={30}
+								className="text-white mt-2 ml-2"
+							/>
+						</div>
+
+						<div
+							className="btn btn-circle  btn-ghost tooltip"
+							data-tip="Upvote"
+						>
+							<BiUpvote
+								size={30}
+								className="text-white mt-2 ml-2"
+							/>
+						</div>
 					</div>
 				</BlogLayout>
 			</Layout>
