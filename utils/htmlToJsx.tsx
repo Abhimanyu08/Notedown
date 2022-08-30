@@ -7,7 +7,7 @@ interface htmlToJsxProps {
 	language: string;
 }
 function htmlToJsx({ html, language }: htmlToJsxProps): JSX.Element {
-	const re = /([^<>]*?)(<(\S*)(.*?=\".*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)/g;
+	const re = /([^<>]*?)(<(\S*)(.*?=\".*\")*?>(.|\r|\n)*?(<\/\3>)?)([^<>]*)/g;
 	const matches = Array.from(html.matchAll(re));
 	if (matches.length === 0) return <>{html}</>;
 	const elem = (
@@ -17,7 +17,7 @@ function htmlToJsx({ html, language }: htmlToJsxProps): JSX.Element {
 				const string2 = <>{match.at(6)}</>;
 				const elem = match.at(2)!;
 				const type = match.at(3);
-				const content = elem.match(/<.+?>((.|\n|\r)+)<\/.*>/);
+				const content = elem.match(/<.+?>((.|\n|\r)+)(<\/.*>)?/);
 
 				if (type === "code") {
 					BLOCK_NUMBER += 1;

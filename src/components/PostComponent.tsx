@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useDebugValue } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -35,6 +36,7 @@ const PostComponent: React.FC<{
 	filename,
 	setClientPosts,
 }) => {
+	const router = useRouter();
 	return (
 		<div className="text-white relative">
 			<DeleteModal
@@ -86,9 +88,12 @@ const PostComponent: React.FC<{
 			)}
 
 			<div className="flex gap-2 text-xs text-white/50">
-				<Link href={`/profile/${authorId}`} className="link">
+				<p
+					onClick={() => router.push(`/profile/${authorId}`)}
+					className="link link-hover"
+				>
 					{author}
-				</Link>
+				</p>
 				<span className="">{publishedOn}</span>
 			</div>
 			<p className="italic">{description}</p>

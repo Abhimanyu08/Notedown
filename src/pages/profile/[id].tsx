@@ -4,10 +4,14 @@ import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
+	ChangeEventHandler,
+	Dispatch,
 	FormEventHandler,
+	SetStateAction,
 	useContext,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 import { FiUpload } from "react-icons/fi";
@@ -17,6 +21,7 @@ import {
 	SUPABASE_BUCKET_NAME,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
+import mdToHtml from "../../../utils/mdToHtml";
 import { supabase } from "../../../utils/supabaseClient";
 import { About } from "../../components/About";
 import Layout from "../../components/Layout";
@@ -94,91 +99,92 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 		}
 	}, [loggedInUser, contextUser]);
 
-	const onUpload: FormEventHandler = async (e) => {
-		e.preventDefault();
-		setUploading(true);
-		if (!file) {
-			alert("Please select a file");
-			return;
-		}
+	// const onUpload: FormEventHandler = async (e) => {
+	// 	e.preventDefault();
+	// 	setUploading(true);
+	// 	if (!file) {
+	// 		alert("Please select a file");
+	// 		return;
+	// 	}
 
-		const fileExt = file.name.split(".").pop();
-		if (fileExt !== "md") {
-			alert("Please enter a markdown file");
-			return;
-		}
+	// 	const fileExt = file.name.split(".").pop();
+	// 	if (fileExt !== "md") {
+	// 		alert("Please enter a markdown file");
+	// 		return;
+	// 	}
 
-		const {
-			data: { title, language, description },
-		}: { data: FileMetadata } = matter(await file.text());
-		if (!title || !language || !description) {
-			alert(
-				`Please structure your markdown file correctly, these properties are missing: ${
-					title ? "" : "title"
-				} ${description ? "" : ", description"} ${
-					language ? "" : ", language"
-				}`
-			);
-			return;
-		}
+	// 	const {
+	// 		data: { title, language, description },
+	// 	}: { data: FileMetadata } = matter(await file.text());
+	// 	if (!title || !language || !description) {
+	// 		alert(
+	// 			`Please structure your markdown file correctly, these properties are missing: ${
+	// 				title ? "" : "title"
+	// 			} ${description ? "" : ", description"} ${
+	// 				language ? "" : ", language"
+	// 			}`
+	// 		);
+	// 		return;
+	// 	}
 
-		const { error } = await supabase.storage
-			.from(SUPABASE_BUCKET_NAME)
-			.upload(`${id}/${file.name}`, file);
-		if (error) {
-			alert(error.message);
-			console.log(error);
-			return;
-		}
+	// 	const { error } = await supabase.storage
+	// 		.from(SUPABASE_BUCKET_NAME)
+	// 		.upload(`${id}/${file.name}`, file);
+	// 	if (error) {
+	// 		alert(error.message);
+	// 		console.log(error);
+	// 		return;
+	// 	}
 
-		const { error: postTableError } = await supabase
-			.from(SUPABASE_POST_TABLE)
-			.upsert({
-				created_by: id,
-				title,
-				description,
-				language: language.toLowerCase(),
-				filename: `${id}/${file.name}`,
-			} as Post);
-		if (postTableError) {
-			alert(postTableError.message);
-			console.log(postTableError);
-			return;
-		}
+	// 	const { error: postTableError } = await supabase
+	// 		.from(SUPABASE_POST_TABLE)
+	// 		.upsert({
+	// 			created_by: id,
+	// 			title,
+	// 			description,
+	// 			language: language.toLowerCase(),
+	// 			filename: `${id}/${file.name}`,
+	// 		} as Post);
+	// 	if (postTableError) {
+	// 		alert(postTableError.message);
+	// 		console.log(postTableError);
+	// 		return;
+	// 	}
 
-		setUploading(false);
-		alert("file uploaded successfully");
-		supabase
-			.from(SUPABASE_POST_TABLE)
-			.select("id, created_at")
-			.eq("title", title)
-			.then((val) => {
-				if (!val || !val.data || val.data.length == 0) return;
-				let post = val.data.at(0) as Post;
-				setClientPosts((prev) => {
-					let newPost: Partial<Post> = {
-						title,
-						created_by: id as string,
-						description,
-						language: language.toLowerCase(),
-						published: false,
-						id: post.id,
-						created_at: post.created_at,
-						filename: `${id}/${file.name}`,
-					};
-					if (!prev) return [newPost];
-					return [newPost, ...prev];
-				});
+	// 	setUploading(false);
+	// 	alert("file uploaded successfully");
+	// 	supabase
+	// 		.from(SUPABASE_POST_TABLE)
+	// 		.select("id, created_at")
+	// 		.eq("title", title)
+	// 		.then((val) => {
+	// 			if (!val || !val.data || val.data.length == 0) return;
+	// 			let post = val.data.at(0) as Post;
+	// 			setClientPosts((prev) => {
+	// 				let newPost: Partial<Post> = {
+	// 					title,
+	// 					created_by: id as string,
+	// 					description,
+	// 					language: language.toLowerCase(),
+	// 					published: false,
+	// 					id: post.id,
+	// 					created_at: post.created_at,
+	// 					filename: `${id}/${file.name}`,
+	// 				};
+	// 				if (!prev) return [newPost];
+	// 				return [newPost, ...prev];
+	// 			});
 
-				setFile(null);
-			});
-	};
+	// 			setFile(null);
+	// 		});
+	// };
 	return (
 		<Layout
 			user={user || null}
 			route={router.asPath}
 			logoutCallback={() => setUser(null)}
 		>
+			<UploadModal userId={user!.id} setClientPosts={setClientPosts} />
 			<div className="grid grid-cols-1 lg:grid-cols-6 text-white gap-y-10 px-80">
 				<div className="lg:col-span-2">
 					<div className="flex flex-col items-center lg:w-fit w-full">
@@ -217,40 +223,12 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 							</p>
 						</div>
 						{section === "posts" ? (
-							<div className="flex gap-1">
-								{user?.id === id && !file && (
-									<button className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600  p-1 rounded-md font-semibold text-sm text-black">
-										<label htmlFor="file">New post</label>
-										<input
-											type="file"
-											id="file"
-											className="hidden"
-											onChange={(e) =>
-												setFile(e.target.files?.item(0))
-											}
-										/>
-									</button>
-								)}
-								{file && (
-									<button
-										className={`gap-2 normal-case btn btn-sm bg-cyan-500 hover:bg-cyan-600 text-black ${
-											uploading ? "loading" : ""
-										}`}
-										onClick={onUpload}
-									>
-										{!uploading && <FiUpload />}
-										{file.name}
-									</button>
-								)}
-								{file && (
-									<button
-										className="btn btn-sm bg-cyan-500 hover:bg-cyan-600 "
-										onClick={() => setFile(null)}
-									>
-										<MdCancel className="text-black h-6 w-6" />
-									</button>
-								)}
-							</div>
+							<label
+								htmlFor="upload"
+								className="btn btn-sm normal-case btn-ghost"
+							>
+								New Post
+							</label>
 						) : (
 							user?.id === id &&
 							(editing ? (
@@ -335,6 +313,200 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 	);
 }
 
+function UploadModal({
+	userId,
+	setClientPosts,
+}: {
+	userId: string;
+	setClientPosts: Dispatch<
+		SetStateAction<Partial<Post>[] | null | undefined>
+	>;
+}) {
+	const [mdfile, setMdFile] = useState<File | null>();
+	const [numImageTags, setNumImageTags] = useState(0);
+	const [images, setImages] = useState<File[] | null>();
+	const [uploading, setUploading] = useState(false);
+	const [alertText, setAlert] = useState("");
+	const [postDets, setPostDets] = useState<FileMetadata>();
+
+	const cancelButton = useRef<HTMLLabelElement>(null);
+
+	const setAlertTimer = (text: string) => {
+		setAlert(text);
+		setTimeout(() => setAlert(""), 3 * 1000);
+	};
+
+	const onFileSelect: ChangeEventHandler<HTMLInputElement> = async (e) => {
+		e.preventDefault();
+		const file = e.target.files?.item(0);
+		if (!file || file.name.split(".").at(1) !== "md") {
+			setAlertTimer("Please select a markdown file");
+			return;
+		}
+
+		const contents = await file.text();
+		const { data } = matter(contents);
+		if (!data.title) {
+			setAlertTimer(
+				`Please structure your markdown file correctly, title is missing`
+			);
+			return;
+		}
+		setPostDets({ ...(data as FileMetadata) });
+
+		const numImageTags = Array.from(
+			contents.matchAll(/!\[.*\]\(.*\)/g)
+		).length;
+		setMdFile(file);
+		setNumImageTags(numImageTags);
+	};
+
+	const cleanUp = () => {
+		setUploading(false);
+		setImages(null);
+		setNumImageTags(0);
+		setMdFile(null);
+		cancelButton.current?.dispatchEvent(new Event("click"));
+	};
+	const onFinalUpload = async () => {
+		if (!mdfile) {
+			setAlertTimer("Please select a markdown file");
+			return;
+		}
+		if (numImageTags > 0 && (!images || images.length === 0)) {
+			setAlertTimer(`Please select ${numImageTags} images`);
+			return;
+		}
+		if ((images?.length || 0) < numImageTags) {
+			setAlertTimer(`Please select ${numImageTags} images`);
+			return;
+		}
+		setUploading(true);
+
+		const blogFolder = `${userId}/${postDets?.title}`;
+		const blogFilePath = blogFolder + `/${mdfile.name}`;
+
+		const { data, error } = await supabase.storage
+			.from(SUPABASE_BUCKET_NAME)
+			.upload(blogFilePath, mdfile);
+
+		if (error || !data) {
+			console.log(error || "Supabase didn't return any data");
+			setAlertTimer(error?.message || "" + " Please retry");
+			setUploading(false);
+			return;
+		}
+
+		if (numImageTags === 0) {
+			cleanUp();
+			return;
+		}
+
+		const blogImageFolder = blogFolder + "/images";
+		const imageResults = await Promise.all(
+			images!.map(async (image) => {
+				const imagePath = blogImageFolder + `/${image.name}`;
+				const result = await supabase.storage
+					.from(SUPABASE_BUCKET_NAME)
+					.upload(imagePath, image);
+				return result;
+			})
+		);
+		if (imageResults.some((res) => res.error !== null)) {
+			setAlertTimer("Error in uploading images, please retry");
+			setUploading(false);
+			return;
+		}
+
+		const { data: postTableData, error: postTableError } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.insert({
+				created_by: userId,
+				title: postDets?.title,
+				language: postDets?.language,
+				description: postDets?.description,
+				filename: data?.Key,
+			});
+		if (postTableError || !postTableData || postTableData.length === 0) {
+			setAlertTimer(
+				postTableError?.message ||
+					"null data returned by supabase" + " Please retry"
+			);
+			setUploading(false);
+			return;
+		}
+
+		setClientPosts((prev) => [
+			postTableData.at(0) as Post,
+			...(prev || []),
+		]);
+
+		setAlertTimer("");
+		cleanUp();
+	};
+
+	return (
+		<>
+			<input type="checkbox" id="upload" className="modal-toggle" />
+			<div className="modal">
+				<div className="modal-box shadow-md shadow-slate-600 bg-slate-800">
+					<label
+						htmlFor="file"
+						className="text-white font-semibold mr-2"
+					>
+						Select markdown file:
+					</label>
+					<input
+						type="file"
+						name=""
+						id="file"
+						onChange={onFileSelect}
+						accept=".md"
+						className="file:rounded-xl file:text-sm"
+					/>
+					{numImageTags > 0 && (
+						<div className="mt-4">
+							<label
+								htmlFor="blogImages"
+								className="text-white font-semibold mr-2"
+							>
+								Please upload {numImageTags}
+								{numImageTags > 1 ? " images" : " image"}:
+							</label>
+							<input
+								type="file"
+								id="blogImages"
+								max={numImageTags}
+								multiple
+								accept="image/*"
+								className="file:rounded-xl file:text-sm"
+								onChange={(e) =>
+									setImages(Array.from(e.target.files || []))
+								}
+							/>
+						</div>
+					)}
+					{alertText && <p className="text-red-400">{alertText}</p>}
+					<div className="modal-action">
+						<div
+							className="btn btn-sm normal-case text-white "
+							onClick={onFinalUpload}
+						>
+							Upload
+						</div>
+						<label
+							htmlFor="upload"
+							className="btn btn-sm normal-case text-white"
+							ref={cancelButton}
+						>
+							Cancel
+						</label>
+					</div>
+				</div>
+			</div>
+		</>
+	);
+}
 export const getServerSideProps: GetServerSideProps<
 	ProfileProps,
 	{ id: string }

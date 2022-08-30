@@ -1,5 +1,5 @@
 export default interface FileMetadata {
-    title?: string,
+    title: string,
     language?: string,
     description?: string
 }
