@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Blog } from "../../../components/Blog";
+import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
 import { UserContext } from "../../_app";
@@ -58,7 +59,11 @@ export default function PrivateBlog() {
 				route={router.asPath}
 				logoutCallback={() => null}
 			>
-				<Blog {...data} />
+				<BlogLayout>
+					<div className="basis-1/5" />
+					<Blog {...data} />
+					<div className="basis-1/5" />
+				</BlogLayout>
 			</Layout>
 		</>
 	);

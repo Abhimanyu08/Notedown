@@ -88,7 +88,7 @@ export default function PublicBlog(props: BlogProps | {}) {
 				logoutCallback={() => null}
 			>
 				<BlogLayout>
-					<div className="flex flex-col basis-1/5"></div>
+					<div className="basis-1/5"></div>
 					<Blog {...props} containerId={containerId} />
 					<div className="flex flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
 						<div
