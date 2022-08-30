@@ -10,6 +10,7 @@ export function Blog({
 	content,
 	language,
 	containerId,
+	created_by,
 }: Partial<BlogProps>) {
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
@@ -28,6 +29,8 @@ export function Blog({
 		return htmlToJsx({
 			html: content,
 			language: language!,
+			ownerId: created_by!,
+			blogTitle: title!,
 		});
 	}, [content]);
 

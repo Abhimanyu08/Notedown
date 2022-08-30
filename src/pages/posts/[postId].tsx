@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { MouseEventHandler, useContext, useState } from "react";
 import {
-	SUPABASE_BUCKET_NAME,
+	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
@@ -156,7 +156,7 @@ export const getStaticProps: GetStaticProps<
 	const post = data[0];
 	const filename = post.filename;
 	const { data: fileData, error: fileError } = await supabase.storage
-		.from(SUPABASE_BUCKET_NAME)
+		.from(SUPABASE_FILES_BUCKET)
 		.download(filename);
 
 	if (fileError || !fileData) return { props: {} };

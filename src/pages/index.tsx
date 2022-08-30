@@ -17,36 +17,17 @@ interface PostWithAuthor extends Post {
 }
 
 interface HomeProps {
-	loggedInUser: User | null;
 	posts: PostWithAuthor[] | null;
 }
-const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
+const Home: NextPage<HomeProps> = ({ posts }) => {
 	const router = useRouter();
-	const { user: contextUser } = useContext(UserContext);
-	const [user, setUser] = useState(loggedInUser);
-
-	useEffect(() => {
-		if (!user && contextUser) {
-			setUser(contextUser);
-		}
-		if (!loggedInUser && !contextUser) {
-			setUser(null);
-		}
-		if (user) {
-			const name = user.user_metadata.full_name;
-			const avatar_url = user.user_metadata.avatar_url;
-			supabase
-				.from(SUPABASE_BLOGGER_TABLE)
-				.update({ name, avatar_url })
-				.match({ id: user.id });
-		}
-	}, [loggedInUser, contextUser]);
+	const { user } = useContext(UserContext);
 
 	return (
 		<Layout
-			user={user}
+			user={user || null}
 			route={router.asPath}
-			logoutCallback={() => setUser(null)}
+			logoutCallback={() => null}
 		>
 			<div className="flex flex-col gap-6 px-80">
 				{posts &&
@@ -71,19 +52,12 @@ const Home: NextPage<HomeProps> = ({ loggedInUser, posts }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
-	req,
-	res,
-}) => {
-	let { user, error } = await supabase.auth.api.getUserByCookie(req, res);
-
+export const getServerSideProps: GetServerSideProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
 		.from(SUPABASE_POST_TABLE)
 		.select(`*, bloggers(name)`);
 	return {
 		props: {
-			loggedInUser: user,
-			error: error?.message || null,
 			posts: data,
 		},
 	};

@@ -1,5 +1,5 @@
 import matter from "gray-matter";
-import { SUPABASE_BUCKET_NAME } from "./constants";
+import { SUPABASE_FILES_BUCKET } from "./constants";
 import mdToHtml from "./mdToHtml";
 import { supabase } from "./supabaseClient";
 
@@ -8,7 +8,7 @@ function resetCodeblocks(markdown: string, html: string) {
         markdown.matchAll(/```.*\r\n((.|\n|\r)*?)\r\n```/g)
     ).map((match) => match.at(1));
     const contentMatch = Array.from(
-        html.matchAll(/<code>((.|\n|\r)*?)<\/code>/g)
+        html.matchAll(/<pre><code>((.|\n|\r)*?)<\/code><\/pre>/g)
     ).map((match) => match.at(1));
 
     for (let i = 0; i < mdMatched.length; i++) {
@@ -26,7 +26,7 @@ export async function getHtmlFromMarkdown(file: File | Blob): Promise<string> {
 }
 
 export async function getAllPostTitles(): Promise<string[]> {
-    const { data: posts, error } = await supabase.storage.from(SUPABASE_BUCKET_NAME).list();
+    const { data: posts, error } = await supabase.storage.from(SUPABASE_FILES_BUCKET).list();
     if (!posts || error) return []
     const titles = posts.map((post) => post.name.replace(/\.md$/, ''));
     return titles

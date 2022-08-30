@@ -1,7 +1,7 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { SUPABASE_BUCKET_NAME, SUPABASE_POST_TABLE } from "../../utils/constants";
+import { SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "../../utils/constants";
 import { getHtmlFromMarkdown } from "../../utils/getResources";
 import { supabase } from "../../utils/supabaseClient";
 import { BlogProps } from "../interfaces/BlogProps";
@@ -45,7 +45,7 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: 
                 return
             }
 
-            const { data: fileData, error: fileError } = await supabase.storage.from(SUPABASE_BUCKET_NAME).download(post.filename)
+            const { data: fileData, error: fileError } = await supabase.storage.from(SUPABASE_FILES_BUCKET).download(post.filename)
 
             if (fileError) {
                 setError(fileError)

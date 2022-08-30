@@ -18,7 +18,8 @@ import { FiUpload } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 import {
 	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_BUCKET_NAME,
+	SUPABASE_FILES_BUCKET,
+	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
 import mdToHtml from "../../../utils/mdToHtml";
@@ -387,7 +388,7 @@ function UploadModal({
 		const blogFilePath = blogFolder + `/${mdfile.name}`;
 
 		const { data, error } = await supabase.storage
-			.from(SUPABASE_BUCKET_NAME)
+			.from(SUPABASE_FILES_BUCKET)
 			.upload(blogFilePath, mdfile);
 
 		if (error || !data) {
@@ -402,12 +403,11 @@ function UploadModal({
 			return;
 		}
 
-		const blogImageFolder = blogFolder + "/images";
 		const imageResults = await Promise.all(
 			images!.map(async (image) => {
-				const imagePath = blogImageFolder + `/${image.name}`;
+				const imagePath = blogFolder + `/${image.name}`;
 				const result = await supabase.storage
-					.from(SUPABASE_BUCKET_NAME)
+					.from(SUPABASE_IMAGE_BUCKET)
 					.upload(imagePath, image);
 				return result;
 			})
@@ -418,6 +418,9 @@ function UploadModal({
 			return;
 		}
 
+		const filename = data.Key.match(
+			new RegExp(`${SUPABASE_FILES_BUCKET}/(.*)`)
+		)?.at(1);
 		const { data: postTableData, error: postTableError } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.insert({
@@ -425,7 +428,7 @@ function UploadModal({
 				title: postDets?.title,
 				language: postDets?.language,
 				description: postDets?.description,
-				filename: data?.Key,
+				filename,
 			});
 		if (postTableError || !postTableData || postTableData.length === 0) {
 			setAlertTimer(

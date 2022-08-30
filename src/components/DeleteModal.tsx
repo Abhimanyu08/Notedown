@@ -1,6 +1,6 @@
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import {
-	SUPABASE_BUCKET_NAME,
+	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
@@ -25,7 +25,7 @@ export function DeleteModal({
 			.delete()
 			.match({ id });
 		const { error: storageError } = await supabase.storage
-			.from(SUPABASE_BUCKET_NAME)
+			.from(SUPABASE_FILES_BUCKET)
 			.remove([filename]);
 
 		if (tableError || storageError) {
