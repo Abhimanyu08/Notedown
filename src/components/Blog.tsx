@@ -88,9 +88,8 @@ export function Blog({
 			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
 		>
 			<div
-				className={` prose  max-w-none basis-3/5 lg:px-32 prose-headings:text-amber-500 prose-p:font-medium prose-p:text-lg prose-p:text-justify text-white prose-a:text-lime-400
-				prose-strong:text-violet-500 prose-pre:m-0 prose-pre:p-0 prose-li:text-lg prose-blockquote:text-amber-300 prose-p:font-sans overflow-scroll h-screen pb-20 
-				
+				className={` prose  max-w-none basis-3/5 lg:px-32 prose-headings:text-amber-500 prose-p:font-normal prose-p:text-lg prose-p:text-justify text-white prose-a:text-lime-400
+				prose-strong:text-violet-500 prose-pre:m-0 prose-pre:p-0 prose-li:text-lg prose-blockquote:text-amber-300 prose-p:font-sans h-full overflow-y-auto
 				`}
 			>
 				<h1 className="text-center">{title}</h1>

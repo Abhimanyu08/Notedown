@@ -1,36 +1,21 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
-import matter from "gray-matter";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import {
-	ChangeEventHandler,
-	Dispatch,
-	FormEventHandler,
-	SetStateAction,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
-import { FiUpload } from "react-icons/fi";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import {
 	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_FILES_BUCKET,
-	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
-import mdToHtml from "../../../utils/mdToHtml";
 import { supabase } from "../../../utils/supabaseClient";
 import { About } from "../../components/About";
 import Layout from "../../components/Layout";
 import PostComponent from "../../components/PostComponent";
 import Blogger from "../../interfaces/Blogger";
-import FileMetadata from "../../interfaces/FileMetdata";
 import Post from "../../interfaces/Post";
 import { UserContext } from "../_app";
+import { UploadModal } from "../../components/UploadModal";
 
 interface ProfileProps {
 	loggedInUser?: User | null;
@@ -186,7 +171,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 			logoutCallback={() => setUser(null)}
 		>
 			<UploadModal userId={user!.id} setClientPosts={setClientPosts} />
-			<div className="grid grid-cols-1 lg:grid-cols-6 text-white gap-y-10 px-80">
+			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-y-auto lg:grid-cols-6 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
 				<div className="lg:col-span-2">
 					<div className="flex flex-col items-center lg:w-fit w-full">
 						<div className="rounded-full overflow-hidden">
@@ -200,16 +185,16 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 								/>
 							)}
 						</div>
-						<p className="text-xl font-semibold">{profile?.name}</p>
+						<p className="text-lg font-normal">{profile?.name}</p>
 					</div>
 				</div>
 				<div className="lg:col-span-4 ">
-					<div className="flex justify-between items-center mb-10">
+					<div className="flex justify-between items-center mb-4">
 						<div className="tabs">
 							<p
 								className={`tab tab-lifted ${
 									section === "posts" ? "tab-active" : ""
-								}  font-semibold text-white text-base `}
+								} font-normal text-white text-base `}
 								onClick={() => setSection("posts")}
 							>
 								Posts
@@ -217,7 +202,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 							<p
 								className={`tab tab-lifted ${
 									section === "about" ? "tab-active" : ""
-								}  font-semibold text-white text-base `}
+								}  font-normal text-white text-base `}
 								onClick={() => setSection("about")}
 							>
 								About
@@ -226,7 +211,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 						{section === "posts" ? (
 							<label
 								htmlFor="upload"
-								className="btn btn-sm normal-case btn-ghost"
+								className="btn font-normal btn-sm normal-case bg-slate-700 text-white"
 							>
 								New Post
 							</label>
@@ -255,7 +240,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 								<select
 									name=""
 									id=""
-									className="select select-sm mt-5"
+									className="select select-sm font-normal"
 									onChange={(e) =>
 										setPostType(e.target.value as any)
 									}
@@ -314,202 +299,6 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 	);
 }
 
-function UploadModal({
-	userId,
-	setClientPosts,
-}: {
-	userId: string;
-	setClientPosts: Dispatch<
-		SetStateAction<Partial<Post>[] | null | undefined>
-	>;
-}) {
-	const [mdfile, setMdFile] = useState<File | null>();
-	const [numImageTags, setNumImageTags] = useState(0);
-	const [images, setImages] = useState<File[] | null>();
-	const [uploading, setUploading] = useState(false);
-	const [alertText, setAlert] = useState("");
-	const [postDets, setPostDets] = useState<FileMetadata>();
-
-	const cancelButton = useRef<HTMLLabelElement>(null);
-
-	const setAlertTimer = (text: string) => {
-		setAlert(text);
-		setTimeout(() => setAlert(""), 3 * 1000);
-	};
-
-	const onFileSelect: ChangeEventHandler<HTMLInputElement> = async (e) => {
-		e.preventDefault();
-		const file = e.target.files?.item(0);
-		if (!file || file.name.split(".").at(1) !== "md") {
-			setAlertTimer("Please select a markdown file");
-			return;
-		}
-
-		const contents = await file.text();
-		const { data } = matter(contents);
-		if (!data.title) {
-			setAlertTimer(
-				`Please structure your markdown file correctly, title is missing`
-			);
-			return;
-		}
-		setPostDets({ ...(data as FileMetadata) });
-
-		const numImageTags = Array.from(
-			contents.matchAll(/!\[.*\]\(.*\)/g)
-		).length;
-		setMdFile(file);
-		setNumImageTags(numImageTags);
-	};
-
-	const cleanUp = () => {
-		setUploading(false);
-		setImages(null);
-		setNumImageTags(0);
-		setMdFile(null);
-		cancelButton.current?.dispatchEvent(new Event("click"));
-	};
-	const onFinalUpload = async () => {
-		if (!mdfile) {
-			setAlertTimer("Please select a markdown file");
-			return;
-		}
-		if (numImageTags > 0 && (!images || images.length === 0)) {
-			setAlertTimer(`Please select ${numImageTags} images`);
-			return;
-		}
-		if ((images?.length || 0) < numImageTags) {
-			setAlertTimer(`Please select ${numImageTags} images`);
-			return;
-		}
-		setUploading(true);
-
-		const blogFolder = `${userId}/${postDets?.title}`;
-		const blogFilePath = blogFolder + `/${mdfile.name}`;
-
-		const { data, error } = await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.upload(blogFilePath, mdfile);
-
-		if (error || !data) {
-			console.log(error || "Supabase didn't return any data");
-			setAlertTimer(error?.message || "" + " Please retry");
-			setUploading(false);
-			return;
-		}
-
-		if (numImageTags === 0) {
-			cleanUp();
-			return;
-		}
-
-		const imageResults = await Promise.all(
-			images!.map(async (image) => {
-				const imagePath = blogFolder + `/${image.name}`;
-				const result = await supabase.storage
-					.from(SUPABASE_IMAGE_BUCKET)
-					.upload(imagePath, image);
-				return result;
-			})
-		);
-		if (imageResults.some((res) => res.error !== null)) {
-			setAlertTimer("Error in uploading images, please retry");
-			setUploading(false);
-			return;
-		}
-
-		const filename = data.Key.match(
-			new RegExp(`${SUPABASE_FILES_BUCKET}/(.*)`)
-		)?.at(1);
-		const { data: postTableData, error: postTableError } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.insert({
-				created_by: userId,
-				title: postDets?.title,
-				language: postDets?.language,
-				description: postDets?.description,
-				filename,
-			});
-		if (postTableError || !postTableData || postTableData.length === 0) {
-			setAlertTimer(
-				postTableError?.message ||
-					"null data returned by supabase" + " Please retry"
-			);
-			setUploading(false);
-			return;
-		}
-
-		setClientPosts((prev) => [
-			postTableData.at(0) as Post,
-			...(prev || []),
-		]);
-
-		setAlertTimer("");
-		cleanUp();
-	};
-
-	return (
-		<>
-			<input type="checkbox" id="upload" className="modal-toggle" />
-			<div className="modal">
-				<div className="modal-box shadow-md shadow-slate-600 bg-slate-800">
-					<label
-						htmlFor="file"
-						className="text-white font-semibold mr-2"
-					>
-						Select markdown file:
-					</label>
-					<input
-						type="file"
-						name=""
-						id="file"
-						onChange={onFileSelect}
-						accept=".md"
-						className="file:rounded-xl file:text-sm"
-					/>
-					{numImageTags > 0 && (
-						<div className="mt-4">
-							<label
-								htmlFor="blogImages"
-								className="text-white font-semibold mr-2"
-							>
-								Please upload {numImageTags}
-								{numImageTags > 1 ? " images" : " image"}:
-							</label>
-							<input
-								type="file"
-								id="blogImages"
-								max={numImageTags}
-								multiple
-								accept="image/*"
-								className="file:rounded-xl file:text-sm"
-								onChange={(e) =>
-									setImages(Array.from(e.target.files || []))
-								}
-							/>
-						</div>
-					)}
-					{alertText && <p className="text-red-400">{alertText}</p>}
-					<div className="modal-action">
-						<div
-							className="btn btn-sm normal-case text-white "
-							onClick={onFinalUpload}
-						>
-							Upload
-						</div>
-						<label
-							htmlFor="upload"
-							className="btn btn-sm normal-case text-white"
-							ref={cancelButton}
-						>
-							Cancel
-						</label>
-					</div>
-				</div>
-			</div>
-		</>
-	);
-}
 export const getServerSideProps: GetServerSideProps<
 	ProfileProps,
 	{ id: string }

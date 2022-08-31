@@ -55,7 +55,7 @@ const PostComponent: React.FC<{
 					published ? `/posts/${postId}` : `/posts/preview/${postId}`
 				}
 			>
-				<span className="text-xl font-medium link link-hover">
+				<span className="text-xl font-normal link link-hover">
 					{title}{" "}
 				</span>
 			</Link>
@@ -63,26 +63,35 @@ const PostComponent: React.FC<{
 				<div className="flex absolute top-0 right-0 gap-2">
 					<label
 						htmlFor={`edit-${postId}`}
-						className="btn btn-xs btn-circle bg-cyan-500 text-black hover:bg-cyan-800 tooltip capitalize"
+						className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 						data-tip="edit"
 					>
-						<AiFillEdit className="ml-1 mt-1" size={15} />
+						<AiFillEdit
+							className="ml-1 mt-1 text-cyan-400"
+							size={15}
+						/>
 					</label>
 					{!published && (
 						<label
 							htmlFor={`publish-${postId}`}
-							className="btn btn-xs btn-circle bg-cyan-500 text-black hover:bg-cyan-800 tooltip capitalize"
+							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 							data-tip="publish"
 						>
-							<MdPublish className="ml-1 mt-1" size={15} />
+							<MdPublish
+								className="ml-1 mt-1 text-cyan-400"
+								size={15}
+							/>
 						</label>
 					)}
 					<label
 						htmlFor={`delete-${postId}`}
-						className="btn btn-xs btn-circle bg-cyan-500 text-black hover:bg-cyan-800 tooltip capitalize"
+						className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 						data-tip="delete"
 					>
-						<AiFillDelete className="mt-1 ml-1" size={13} />
+						<AiFillDelete
+							className="mt-1 ml-1 text-cyan-400"
+							size={15}
+						/>
 					</label>
 				</div>
 			)}

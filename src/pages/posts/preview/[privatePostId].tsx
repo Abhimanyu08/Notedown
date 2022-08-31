@@ -53,18 +53,16 @@ export default function PrivateBlog() {
 	}
 
 	return (
-		<>
-			<Layout
-				user={user || null}
-				route={router.asPath}
-				logoutCallback={() => null}
-			>
-				<BlogLayout>
-					<div className="basis-1/5" />
-					<Blog {...data} />
-					<div className="basis-1/5" />
-				</BlogLayout>
-			</Layout>
-		</>
+		<Layout
+			user={user || null}
+			route={router.asPath}
+			logoutCallback={() => null}
+		>
+			<BlogLayout>
+				<div className="basis-1/5" />
+				<Blog {...data} />
+				<div className="basis-1/5" />
+			</BlogLayout>
+		</Layout>
 	);
 }

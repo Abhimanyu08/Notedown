@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import Code from "../src/components/Code";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
@@ -57,13 +58,20 @@ function htmlToJsx({
 					const { publicURL } = supabase.storage
 						.from(SUPABASE_IMAGE_BUCKET)
 						.getPublicUrl(`${ownerId}/${blogTitle}/${imageName}`);
-					attrs["src"] = publicURL!;
 					return (
-						<>
-							{string1}
-							{React.createElement("img", attrs)}
-							{string2}
-						</>
+						<div className="relative m-4">
+							<Image
+								src={publicURL!}
+								layout="responsive"
+								objectFit="contain"
+								className="resize w-full"
+								width={200}
+								height={120}
+							/>
+							<figcaption className="text-center text-white italic">
+								{attrs["alt"]}
+							</figcaption>
+						</div>
 					);
 				}
 				return (
