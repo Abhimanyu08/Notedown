@@ -11,7 +11,7 @@ function Navbar({
 }: {
 	user: User | null;
 	route: string;
-	logoutCallback: () => void;
+	logoutCallback?: () => void;
 }) {
 	return (
 		<div className="navbar grow-0 mb-6 lg:px-64 xl:px-80 px-5 md:px-32 z-10 opacity-100 bg-slate-900">
@@ -36,7 +36,7 @@ function Navbar({
 								<div
 									onClick={(e) => {
 										e.preventDefault();
-										logoutCallback();
+										if (logoutCallback) logoutCallback();
 										handleLogout();
 									}}
 									className="btn btn-ghost normal-case "

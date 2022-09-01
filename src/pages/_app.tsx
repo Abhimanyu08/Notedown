@@ -8,8 +8,10 @@ import {
 	useState,
 } from "react";
 import "../../styles/globals.css";
+import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import { notifyServer } from "../../utils/handleAuth";
 import { supabase } from "../../utils/supabaseClient";
+import Blogger from "../interfaces/Blogger";
 
 export const UserContext = createContext<{
 	user?: User | null;
@@ -26,16 +28,45 @@ function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 
 	useEffect(() => {
-		notifyServer("SIGNED_IN", supabase.auth.session());
-	}, []);
-	useEffect(() => {
-		const { data } = supabase.auth.onAuthStateChange((event, session) => {
-			console.log(event);
-			setUser(session?.user || null);
-			notifyServer(event, session);
-		});
+		if (user) {
+			supabase
+				.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+				.select("name, avatar_url")
+				.eq("id", user.id)
+				.then((val) => {
+					const { name, avatar_url } = val.data!.at(0)!;
+					if (!name) {
+						console.log("name changed", user.user_metadata.name);
+						supabase
+							.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+							.update({ name: user.user_metadata.name })
+							.match({ id: user.id })
+							.then(() => null);
+					}
 
-		return () => data?.unsubscribe();
+					if (!avatar_url) {
+						console.log(
+							"avatar changed",
+							user.user_metadata.avatar_url
+						);
+						supabase
+							.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+							.update({
+								avatar_url: user.user_metadata.avatar_url,
+							})
+							.match({ id: user.id })
+							.then(() => null);
+					}
+				});
+		}
+	}, [user]);
+
+	useEffect(() => {
+		supabase.auth.onAuthStateChange((event) => {
+			if (event === "SIGNED_OUT") {
+				setUser(null);
+			}
+		});
 	}, []);
 
 	return (

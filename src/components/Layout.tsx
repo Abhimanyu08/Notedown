@@ -7,7 +7,7 @@ const Layout: React.FC<{
 	children: JSX.Element[] | JSX.Element;
 	user: User | null;
 	route: string;
-	logoutCallback: () => void;
+	logoutCallback?: () => void;
 }> = ({ children, user, route, logoutCallback }) => {
 	const [mounted, setMounted] = useState(false);
 

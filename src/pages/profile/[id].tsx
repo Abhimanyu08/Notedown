@@ -18,19 +18,8 @@ import { UserContext } from "../_app";
 import { UploadModal } from "../../components/UploadModal";
 
 interface ProfileProps {
-	loggedInUser?: User | null;
 	posts?: Partial<Post>[] | null;
 	profileUser?: Blogger | null;
-}
-
-interface UserQueryResult {
-	data: Blogger[] | null;
-	error: PostgrestError | null;
-}
-
-interface PostQueryResult {
-	data: Partial<Post>[] | null;
-	error: PostgrestError | null;
 }
 
 function calculateValidPosts(
@@ -50,147 +39,54 @@ function calculateValidPosts(
 	return posts.filter((post) => post.published);
 }
 
-function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
-	const [file, setFile] = useState<File | null>();
-	const [uploading, setUploading] = useState(false);
-	const [user, setUser] = useState(loggedInUser);
+function Profile({ profileUser, posts }: ProfileProps) {
 	const [profile, setProfile] = useState(profileUser);
 	const [section, setSection] = useState<"posts" | "about">("posts");
 	const [postType, setPostType] = useState<"published" | "unpublished">(
 		"published"
 	);
 	const [editing, setEditing] = useState(false);
-	const [clientPosts, setClientPosts] = useState(posts);
+	const [publicPosts, setPublicPosts] = useState(posts);
 	const router = useRouter();
 	const { id } = router.query;
-	const { user: contextUser } = useContext(UserContext);
+	const { user } = useContext(UserContext);
 
 	const memoizedPosts = useMemo(
 		() =>
 			calculateValidPosts(
-				clientPosts || null,
+				publicPosts || null,
 				postType,
 				user || null,
 				id as string
 			),
-		[clientPosts, postType, user, id]
+		[publicPosts, postType, user, id]
 	);
 
-	useEffect(() => {
-		if (contextUser) {
-			setUser(contextUser);
-		}
-		if (!loggedInUser && !contextUser) {
-			setUser(null);
-		}
-	}, [loggedInUser, contextUser]);
-
-	// const onUpload: FormEventHandler = async (e) => {
-	// 	e.preventDefault();
-	// 	setUploading(true);
-	// 	if (!file) {
-	// 		alert("Please select a file");
-	// 		return;
-	// 	}
-
-	// 	const fileExt = file.name.split(".").pop();
-	// 	if (fileExt !== "md") {
-	// 		alert("Please enter a markdown file");
-	// 		return;
-	// 	}
-
-	// 	const {
-	// 		data: { title, language, description },
-	// 	}: { data: FileMetadata } = matter(await file.text());
-	// 	if (!title || !language || !description) {
-	// 		alert(
-	// 			`Please structure your markdown file correctly, these properties are missing: ${
-	// 				title ? "" : "title"
-	// 			} ${description ? "" : ", description"} ${
-	// 				language ? "" : ", language"
-	// 			}`
-	// 		);
-	// 		return;
-	// 	}
-
-	// 	const { error } = await supabase.storage
-	// 		.from(SUPABASE_BUCKET_NAME)
-	// 		.upload(`${id}/${file.name}`, file);
-	// 	if (error) {
-	// 		alert(error.message);
-	// 		console.log(error);
-	// 		return;
-	// 	}
-
-	// 	const { error: postTableError } = await supabase
-	// 		.from(SUPABASE_POST_TABLE)
-	// 		.upsert({
-	// 			created_by: id,
-	// 			title,
-	// 			description,
-	// 			language: language.toLowerCase(),
-	// 			filename: `${id}/${file.name}`,
-	// 		} as Post);
-	// 	if (postTableError) {
-	// 		alert(postTableError.message);
-	// 		console.log(postTableError);
-	// 		return;
-	// 	}
-
-	// 	setUploading(false);
-	// 	alert("file uploaded successfully");
-	// 	supabase
-	// 		.from(SUPABASE_POST_TABLE)
-	// 		.select("id, created_at")
-	// 		.eq("title", title)
-	// 		.then((val) => {
-	// 			if (!val || !val.data || val.data.length == 0) return;
-	// 			let post = val.data.at(0) as Post;
-	// 			setClientPosts((prev) => {
-	// 				let newPost: Partial<Post> = {
-	// 					title,
-	// 					created_by: id as string,
-	// 					description,
-	// 					language: language.toLowerCase(),
-	// 					published: false,
-	// 					id: post.id,
-	// 					created_at: post.created_at,
-	// 					filename: `${id}/${file.name}`,
-	// 				};
-	// 				if (!prev) return [newPost];
-	// 				return [newPost, ...prev];
-	// 			});
-
-	// 			setFile(null);
-	// 		});
-	// };
 	return (
-		<Layout
-			user={user || null}
-			route={router.asPath}
-			logoutCallback={() => setUser(null)}
-		>
+		<Layout user={user || null} route={router.asPath}>
 			<>
-				{user && (
+				{user?.id === id && (
 					<UploadModal
 						userId={user!.id}
-						setClientPosts={setClientPosts}
+						setClientPosts={setPublicPosts}
 					/>
 				)}
 			</>
 			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-y-auto lg:grid-cols-6 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
 				<div className="lg:col-span-2">
-					<div className="flex flex-col items-center lg:w-fit w-full">
-						<div className="rounded-full overflow-hidden">
-							{profile?.avatar_url && (
-								<Image
-									src={profile.avatar_url}
-									width={128}
-									height={128}
-									layout="fixed"
-									className=""
-								/>
-							)}
+					<div className="flex flex-col gap-4 items-center lg:w-fit w-full">
+						<div className="avatar">
+							<div className="rounded-md">
+								{profile?.avatar_url && (
+									<Image
+										src={profile.avatar_url}
+										width={128}
+										height={128}
+										layout="fixed"
+										className=""
+									/>
+								)}
+							</div>
 						</div>
 						<p className="text-lg font-normal">{profile?.name}</p>
 					</div>
@@ -260,7 +156,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 								</select>
 							)}
 							<div className="flex flex-col gap-8 mt-5">
-								{clientPosts &&
+								{publicPosts &&
 									memoizedPosts.map((post) => {
 										if (
 											postType === "published" &&
@@ -284,7 +180,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 												owner={user?.id === id}
 												published={post.published}
 												filename={post.filename}
-												setClientPosts={setClientPosts}
+												setClientPosts={setPublicPosts}
 											/>
 										);
 									})}
@@ -310,34 +206,34 @@ export const getServerSideProps: GetServerSideProps<
 	ProfileProps,
 	{ id: string }
 > = async (context) => {
-	const id = context.params?.id;
-	if (!id) return { props: {}, redirect: { destination: "/" } };
-	const { user } = await supabase.auth.api.getUserByCookie(context.req);
-	supabase.auth.session = () => ({
-		access_token: context.req.cookies["sb-access-token"] || "",
-		token_type: "bearer",
-		user,
-	});
+	const id = context.params!.id;
 
-	const { data, error }: UserQueryResult = await supabase
-		.from(SUPABASE_BLOGGER_TABLE)
-		.select("id, name, avatar_url,about")
-		.eq("id", id);
+	let userData, postData, error;
 
-	const { data: postData, error: postError }: PostQueryResult = await supabase
-		.from(SUPABASE_POST_TABLE)
-		.select("*")
-		.eq("created_by", id);
+	await Promise.all([
+		supabase
+			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+			.select("id, name, avatar_url,about")
+			.eq("id", id)
+			.then((val) => {
+				userData = val.data?.at(0);
+				error = val.error;
+			}),
 
-	if (error || postError || !data || !postData) {
-		console.log("error -> ", error);
-		console.log("postError -> ", postError);
-	}
+		supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select("*")
+			.eq("created_by", id)
+			.then((val) => {
+				postData = val.data;
+				error = val.error;
+			}),
+	]);
+
 	return {
 		props: {
-			loggedInUser: user,
 			posts: postData,
-			profileUser: data?.at(0) || null,
+			profileUser: userData,
 		},
 	};
 };

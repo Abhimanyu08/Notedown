@@ -24,11 +24,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	const { user } = useContext(UserContext);
 
 	return (
-		<Layout
-			user={user || null}
-			route={router.asPath}
-			logoutCallback={() => null}
-		>
+		<Layout user={user || null} route={router.asPath}>
 			<div className="flex flex-col gap-6 px-80 grow-1 min-h-0">
 				{posts &&
 					posts.map((post) => {

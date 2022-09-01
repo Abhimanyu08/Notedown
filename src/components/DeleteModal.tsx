@@ -1,6 +1,8 @@
+import { PostgrestError } from "@supabase/supabase-js";
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import {
 	SUPABASE_FILES_BUCKET,
+	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
@@ -11,6 +13,7 @@ export function DeleteModal({
 	title,
 	filename,
 	setClientPosts,
+	created_by,
 }: {
 	title: string;
 	id: number;
@@ -18,22 +21,47 @@ export function DeleteModal({
 	setClientPosts?: Dispatch<
 		SetStateAction<Partial<Post>[] | null | undefined>
 	>;
+	created_by: string;
 }) {
 	const onDelete: MouseEventHandler = async (e) => {
-		const { error: tableError } = await supabase
-			.from(SUPABASE_POST_TABLE)
-			.delete()
-			.match({ id });
-		const { error: storageError } = await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.remove([filename]);
+		let data, error;
+		await Promise.all([
+			//delete the row corresponding to this post from the table
+			supabase
+				.from(SUPABASE_POST_TABLE)
+				.delete({ returning: "minimal" })
+				.match({ id })
+				.then((val) => (error = val.error)),
 
-		if (tableError || storageError) {
-			console.log("Table Error -> ", tableError);
-			console.log("Storage Error -> ", storageError);
+			//delete the file corresponding to this post from file storage
+			supabase.storage
+				.from(SUPABASE_FILES_BUCKET)
+				.remove([filename])
+				.then((val) => (error = val.error)),
+
+			//delete the image corresponding to this post from image storage
+			supabase.storage
+				.from(SUPABASE_IMAGE_BUCKET)
+				.list(`${created_by}/${title}`)
+				.then((val) => {
+					data = val.data;
+					error = val.error;
+				}),
+		]);
+
+		if (error) {
 			alert("delete failed for some reason");
 			return;
 		}
+		if (data)
+			await supabase.storage
+				.from(SUPABASE_IMAGE_BUCKET)
+				.remove(
+					(data as { name: string }[]).map(
+						(obj) => `${created_by}/${title}/${obj.name}`
+					)
+				);
+
 		setClientPosts!((prev) => prev?.filter((post) => post.id !== id));
 	};
 	return (

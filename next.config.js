@@ -6,6 +6,7 @@ const nextConfig = {
 		domains: [
 			"avatars.githubusercontent.com",
 			"newnblwzrgvnhplztbua.supabase.co",
+			"lh3.googleusercontent.com",
 		],
 	},
 };

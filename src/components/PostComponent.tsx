@@ -42,7 +42,7 @@ const PostComponent: React.FC<{
 			<DeleteModal
 				id={postId}
 				filename={filename!}
-				{...{ title, setClientPosts }}
+				{...{ title, setClientPosts, created_by: authorId }}
 			/>
 			<EditModal
 				id={postId}

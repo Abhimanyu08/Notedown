@@ -71,7 +71,9 @@ export function Blog({
 				return;
 			}
 			const { output } = (await resp.json()) as { output: string };
-			sessionStorage.setItem(code, output);
+			try {
+				sessionStorage.setItem(code, output);
+			} catch {}
 			setBlockToOutput({ [blockNumber]: output });
 			setBlockToCode({});
 		};
