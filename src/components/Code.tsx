@@ -1,52 +1,23 @@
-import React, {
-	MouseEventHandler,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage } from "react-icons/md";
 import { BlogContext } from "../pages/_app";
 
-import { EditorState, Compartment } from "@codemirror/state";
-import { basicSetup, minimalSetup, EditorView } from "codemirror";
-import { python } from "@codemirror/lang-python";
-import { prepareServerlessUrl } from "next/dist/server/base-server";
+import useEditor from "../hooks/useEditor";
 
 interface CodeProps {
-	text: string;
+	code: string;
 	language: string;
 	blockNumber: number;
 }
 
-function Code({ text, language, blockNumber }: CodeProps) {
-	const [codeSubmitted, setCodeSubmitted] = useState(true);
+function Code({ code, language, blockNumber }: CodeProps) {
 	const [hideOutput, setHideOutput] = useState(false);
 	const { blockToOutput, setBlockToCode, collectCodeTillBlock } =
 		useContext(BlogContext);
-	const [editorView, setEditorView] = useState<EditorView | null>(null);
 
-	useEffect(() => {
-		if (editorView) return;
-		let languageCompartment = new Compartment();
-		let tabSize = new Compartment();
-		let startState = EditorState.create({
-			doc: text,
-			extensions: [
-				basicSetup,
-				languageCompartment.of(python()),
-				tabSize.of(EditorState.tabSize.of(4)),
-			],
-		});
-
-		let view = new EditorView({
-			state: startState,
-			parent: document.getElementById(`${blockNumber}`)!,
-		});
-
-		setEditorView(view);
-	}, []);
+	const { editorView } = useEditor({ language, blockNumber, code });
 
 	useEffect(() => {
 		const playButton = document.getElementById(
@@ -70,12 +41,12 @@ function Code({ text, language, blockNumber }: CodeProps) {
 	const onUndo: MouseEventHandler = () => {
 		const docLength = editorView?.state.doc.length;
 		editorView?.dispatch({
-			changes: { from: 0, to: docLength, insert: text },
+			changes: { from: 0, to: docLength, insert: code },
 		});
 	};
 	return (
 		<div className="flex relative flex-col w-full ">
-			<div className="w-full bg-black" id={`${blockNumber}`}></div>
+			<div className="w-full " id={`${blockNumber}`}></div>
 
 			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-1">
 				<button
@@ -84,7 +55,7 @@ function Code({ text, language, blockNumber }: CodeProps) {
 						collectCodeTillBlock(blockNumber);
 					}}
 					className="tooltip  tooltip-left"
-					data-tip="Run Code"
+					data-tip="Run Code (Shift+Enter)"
 					id={`run-${blockNumber}`}
 				>
 					<BsPlayFill />
@@ -105,12 +76,16 @@ function Code({ text, language, blockNumber }: CodeProps) {
 				</button>
 			</div>
 			{blockToOutput && blockToOutput[blockNumber] && (
-				<div
-					className={` text-white bg-black p-2 mt-2 rounded-md ${
-						hideOutput ? "hidden" : ""
-					}`}
-				>
-					{blockToOutput[blockNumber]}
+				<div className="not-prose">
+					<pre
+						className={`text-white  mt-2 p-4 rounded-md bg-black ${
+							hideOutput ? "hidden" : ""
+						}`}
+					>
+						<code className="">
+							{blockToOutput[blockNumber].trim()}
+						</code>
+					</pre>
 				</div>
 			)}
 		</div>

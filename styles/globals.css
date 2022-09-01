@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.cm-activeLine {
+/* .cm-activeLine {
 	background-color: rgb(22 78 99) !important;
 	caret-color: white;
 	color: springgreen;
@@ -19,7 +19,7 @@
 
 .cm-activeLine > span {
 	color: cyan !important;
-}
+} */
 
 .tooltip-left::before {
 	background-color: black;

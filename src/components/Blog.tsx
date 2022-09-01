@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import htmlToJsx from "../../utils/htmlToJsx";
 import sendRequest from "../../utils/sendRequest";
 import { BlogProps } from "../interfaces/BlogProps";
@@ -18,9 +18,6 @@ export function Blog({
 		{}
 	);
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
-	const [codeToOutput, setCodeToOutput] = useState<Record<string, string>>(
-		{}
-	);
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
 
@@ -32,12 +29,13 @@ export function Blog({
 			ownerId: created_by!,
 			blogTitle: title!,
 		});
-	}, [content]);
+	}, []);
 
 	useEffect(() => {
 		const func = (blockNumber: number) => {
+			setBlockToCode({});
 			const event = new Event("focus");
-			for (let i = 1; i <= blockNumber; i++) {
+			for (let i = 0; i <= blockNumber; i++) {
 				const elem = document.getElementById(
 					`run-${i}`
 				) as HTMLButtonElement | null;
@@ -56,12 +54,12 @@ export function Blog({
 			let code = Object.values(blockToCode).join("\n");
 			code = code.trim();
 
-			if (Object.hasOwn(codeToOutput, code)) {
-				setBlockToOutput({ [blockNumber]: codeToOutput[code] });
+			let sessionCodeToOutput = sessionStorage.getItem(code);
+			if (sessionCodeToOutput) {
+				setBlockToOutput({ [blockNumber]: sessionCodeToOutput });
 				setBlockToCode({});
 				return;
 			}
-
 			const params: Parameters<typeof sendRequest> = [
 				"POST",
 				{ language, containerId, code },
@@ -73,7 +71,7 @@ export function Blog({
 				return;
 			}
 			const { output } = (await resp.json()) as { output: string };
-			setCodeToOutput((prev) => ({ ...prev, [code]: output }));
+			sessionStorage.setItem(code, output);
 			setBlockToOutput({ [blockNumber]: output });
 			setBlockToCode({});
 		};

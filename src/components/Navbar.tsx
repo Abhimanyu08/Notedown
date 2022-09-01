@@ -22,13 +22,10 @@ function Navbar({
 			</div>
 			<div className="flex-none">
 				<div className="dropdown dropdown-left lg:dropdown-hover ">
-					<label tabIndex={0}>
+					<label>
 						<GiHamburgerMenu />
 					</label>
-					<label
-						tabIndex={0}
-						className="dropdown-content  menu rounded-md menu-normal w-fit bg-base-100  "
-					>
+					<label className="dropdown-content  menu rounded-md menu-normal w-fit bg-base-100  ">
 						{user ? (
 							<>
 								<div className="btn btn-ghost normal-case">

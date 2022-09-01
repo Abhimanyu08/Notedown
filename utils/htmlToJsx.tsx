@@ -4,7 +4,7 @@ import Code from "../src/components/Code";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import { supabase } from "./supabaseClient";
 
-let BLOCK_NUMBER = 0;
+let BLOCK_NUMBER = -1;
 interface htmlToJsxProps {
 	html: string;
 	language: string;
@@ -37,7 +37,7 @@ function htmlToJsx({
 							<Code
 								key={BLOCK_NUMBER}
 								language={language}
-								text={code || ""}
+								code={code || ""}
 								blockNumber={BLOCK_NUMBER}
 							/>
 							{string2}
@@ -59,7 +59,7 @@ function htmlToJsx({
 						.from(SUPABASE_IMAGE_BUCKET)
 						.getPublicUrl(`${ownerId}/${blogTitle}/${imageName}`);
 					return (
-						<div className="relative m-4">
+						<div className="relative m-1">
 							<Image
 								src={publicURL!}
 								layout="responsive"

@@ -170,7 +170,14 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 			route={router.asPath}
 			logoutCallback={() => setUser(null)}
 		>
-			<UploadModal userId={user!.id} setClientPosts={setClientPosts} />
+			<>
+				{user && (
+					<UploadModal
+						userId={user!.id}
+						setClientPosts={setClientPosts}
+					/>
+				)}
+			</>
 			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-y-auto lg:grid-cols-6 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
 				<div className="lg:col-span-2">
 					<div className="flex flex-col items-center lg:w-fit w-full">
@@ -208,7 +215,7 @@ function Profile({ loggedInUser, profileUser, posts }: ProfileProps) {
 								About
 							</p>
 						</div>
-						{section === "posts" ? (
+						{user?.id === id && section === "posts" ? (
 							<label
 								htmlFor="upload"
 								className="btn font-normal btn-sm normal-case bg-slate-700 text-white"
