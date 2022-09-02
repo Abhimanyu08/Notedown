@@ -142,16 +142,12 @@ export const getStaticProps: GetStaticProps<
 	Partial<BlogProps>,
 	{ postId: string }
 > = async (context) => {
-	const sleep = (seconds: number) =>
-		new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-
-	await sleep(5);
 	const { data, error } = await supabase
 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 		.select("*, bloggers(name)")
 		.match({ id: context.params?.postId });
 
-	if (error || !data || data.length == 0) return { props: {} };
+	if (error || !data || data.length == 0) return { props: {}, redirect: "/" };
 
 	const post = data[0];
 	const filename = post.filename;

@@ -8,15 +8,17 @@ export function EditModal({
 	published,
 	title,
 	description,
-	setClientPosts,
+	modifyPosts,
 }: {
 	id: number;
 	published: boolean;
 	title: string;
 	description: string;
-	setClientPosts?: Dispatch<
-		SetStateAction<Partial<Post>[] | null | undefined>
-	>;
+
+	modifyPosts: (
+		type: "published" | "unpublished",
+		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
+	) => void;
 }) {
 	const [newTitle, setNewTitle] = useState(title);
 	const [newDesc, setNewDesc] = useState(description);
@@ -25,20 +27,16 @@ export function EditModal({
 		if (newTitle === title && description === newDesc) return;
 
 		const { data, error } = await supabase
-			.from(SUPABASE_POST_TABLE)
+			.from<Post>(SUPABASE_POST_TABLE)
 			.update({ title: newTitle, description: newDesc })
 			.match({ id });
 		if (error || !data || data.length === 0) {
 			console.log(error);
 			return;
 		}
-		setClientPosts!((prev) => {
-			let newPosts = prev?.map((post) => {
-				if (post.id !== id) return post;
-				return data.at(0) as Post;
-			});
-			return newPosts;
-		});
+		modifyPosts(published ? "published" : "unpublished", (prev) =>
+			prev?.filter((post) => post.id !== id).concat(data)
+		);
 	};
 
 	return (

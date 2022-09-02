@@ -3,7 +3,7 @@ import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Post from "../interfaces/Post";
 
-export function PublishModal({
+export function UnPublishModal({
 	id,
 	modifyPosts,
 }: {
@@ -16,35 +16,35 @@ export function PublishModal({
 }) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
-			.from(SUPABASE_POST_TABLE)
+			.from<Post>(SUPABASE_POST_TABLE)
 			.update({
-				published: true,
-				published_on: new Date().toDateString(),
+				published: false,
+				published_on: null,
 			})
 			.match({ id });
 		if (error || !data || data.length === 0) {
-			alert("Error in publishing post");
+			alert("Error in unpublishing post");
 			return;
 		}
-		modifyPosts("unpublished", (prev) =>
+		modifyPosts("published", (prev) =>
 			prev?.filter((post) => post.id !== id)
 		);
 
-		modifyPosts("published", (prev) => [...(prev || []), data.at(0)]);
+		modifyPosts("unpublished", (prev) => [...(prev || []), ...data]);
 	};
 	return (
 		<>
 			<input
 				type="checkbox"
-				id={`publish-${id}`}
+				id={`unpublish-${id}`}
 				className="modal-toggle"
 			/>
-			<label className="modal" htmlFor={`publish-${id}`}>
+			<label className="modal" htmlFor={`unpublish-${id}`}>
 				<label className="modal-box bg-cyan-500 text-black relative">
-					Are you ready to make your post public?
+					Are you sure you want to unpublish this post?
 					<div className="modal-action">
 						<label
-							htmlFor={`publish-${id}`}
+							htmlFor={`unpublish-${id}`}
 							className="btn btn-sm capitalize text-white"
 							onClick={onPublish}
 						>

@@ -26,9 +26,10 @@ export const BlogContext = createContext<{
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
+	const [updated, setUpdated] = useState(false);
 
 	useEffect(() => {
-		if (user) {
+		if (user && !updated) {
 			supabase
 				.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 				.select("name, avatar_url")
@@ -58,14 +59,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 							.then(() => null);
 					}
 				});
+			setUpdated(true);
 		}
 	}, [user]);
 
 	useEffect(() => {
-		supabase.auth.onAuthStateChange((event) => {
-			if (event === "SIGNED_OUT") {
-				setUser(null);
-			}
+		supabase.auth.onAuthStateChange((_, session) => {
+			setUser(session?.user || null);
 		});
 	}, []);
 

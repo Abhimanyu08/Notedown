@@ -7,5 +7,6 @@ export default interface Post {
     description: string
     language: string
     published: boolean
-    published_on: string
+    published_on: string | null
+    image_folder: string | null
 }

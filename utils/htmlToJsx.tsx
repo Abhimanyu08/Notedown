@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Code from "../src/components/Code";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
+import makeFolderName from "./makeFolderName";
 import { supabase } from "./supabaseClient";
 
 let BLOCK_NUMBER = -1;
@@ -57,7 +58,9 @@ function htmlToJsx({
 					let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
 					const { publicURL } = supabase.storage
 						.from(SUPABASE_IMAGE_BUCKET)
-						.getPublicUrl(`${ownerId}/${blogTitle}/${imageName}`);
+						.getPublicUrl(
+							`${makeFolderName(ownerId, blogTitle)}/${imageName}`
+						);
 					return (
 						<div className="relative m-1">
 							<Image

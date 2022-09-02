@@ -12,26 +12,32 @@ export function DeleteModal({
 	id,
 	title,
 	filename,
-	setClientPosts,
 	created_by,
+	type,
+	modifyPosts,
 }: {
 	title: string;
 	id: number;
 	filename: string;
-	setClientPosts?: Dispatch<
-		SetStateAction<Partial<Post>[] | null | undefined>
-	>;
+
+	type: "published" | "unpublished";
+	modifyPosts: (
+		type: "published" | "unpublished",
+		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
+	) => void;
 	created_by: string;
 }) {
 	const onDelete: MouseEventHandler = async (e) => {
-		let data, error;
+		let postData: Post | undefined, imageData, error;
 		await Promise.all([
 			//delete the row corresponding to this post from the table
 			supabase
-				.from(SUPABASE_POST_TABLE)
-				.delete({ returning: "minimal" })
+				.from<Post>(SUPABASE_POST_TABLE)
+				.delete()
 				.match({ id })
-				.then((val) => (error = val.error)),
+				.then((val) => {
+					postData = val.data?.at(0);
+				}),
 
 			//delete the file corresponding to this post from file storage
 			supabase.storage
@@ -44,7 +50,7 @@ export function DeleteModal({
 				.from(SUPABASE_IMAGE_BUCKET)
 				.list(`${created_by}/${title}`)
 				.then((val) => {
-					data = val.data;
+					imageData = val.data;
 					error = val.error;
 				}),
 		]);
@@ -53,16 +59,18 @@ export function DeleteModal({
 			alert("delete failed for some reason");
 			return;
 		}
-		if (data)
+		if (imageData && postData) {
 			await supabase.storage
 				.from(SUPABASE_IMAGE_BUCKET)
 				.remove(
-					(data as { name: string }[]).map(
-						(obj) => `${created_by}/${title}/${obj.name}`
+					(imageData as { name: string }[]).map(
+						(obj) =>
+							`${(postData as Post).image_folder}/${obj.name}`
 					)
 				);
+		}
 
-		setClientPosts!((prev) => prev?.filter((post) => post.id !== id));
+		modifyPosts(type, (prev) => prev?.filter((post) => post.id !== id));
 	};
 	return (
 		<>

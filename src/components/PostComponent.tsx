@@ -2,14 +2,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useDebugValue } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { TbNews, TbNewsOff } from "react-icons/tb";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
-import { MdPublish } from "react-icons/md";
+import { MdOutlineCancelPresentation, MdPublish } from "react-icons/md";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import Post from "../interfaces/Post";
 import { DeleteModal } from "./DeleteModal";
 import { EditModal } from "./EditModal";
 import { PublishModal } from "./PublishModal";
+import { UnPublishModal } from "./UnPublishModal";
 
 const PostComponent: React.FC<{
 	postId: number;
@@ -21,9 +23,10 @@ const PostComponent: React.FC<{
 	owner: boolean;
 	published?: boolean;
 	filename?: string;
-	setClientPosts?: Dispatch<
-		SetStateAction<Partial<Post>[] | null | undefined>
-	>;
+	modifyPosts: (
+		type: "published" | "unpublished",
+		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
+	) => void;
 }> = ({
 	postId,
 	title,
@@ -34,7 +37,7 @@ const PostComponent: React.FC<{
 	owner = false,
 	published,
 	filename,
-	setClientPosts,
+	modifyPosts,
 }) => {
 	const router = useRouter();
 	return (
@@ -42,14 +45,20 @@ const PostComponent: React.FC<{
 			<DeleteModal
 				id={postId}
 				filename={filename!}
-				{...{ title, setClientPosts, created_by: authorId }}
+				type={published ? "published" : "unpublished"}
+				{...{
+					title,
+					modifyPosts,
+					created_by: authorId,
+				}}
 			/>
 			<EditModal
 				id={postId}
-				published={false}
-				{...{ title, description, setClientPosts }}
+				published={published || false}
+				{...{ title, description, modifyPosts }}
 			/>
-			<PublishModal id={postId} setClientPosts={setClientPosts} />
+			<PublishModal id={postId} {...{ modifyPosts }} />
+			<UnPublishModal id={postId} modifyPosts={modifyPosts} />
 			<Link
 				href={
 					published ? `/posts/${postId}` : `/posts/preview/${postId}`
@@ -67,18 +76,29 @@ const PostComponent: React.FC<{
 						data-tip="edit"
 					>
 						<AiFillEdit
-							className="ml-1 mt-1 text-cyan-400"
+							className="ml-1 mt-1 text-white"
 							size={15}
 						/>
 					</label>
-					{!published && (
+					{published ? (
+						<label
+							htmlFor={`unpublish-${postId}`}
+							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
+							data-tip="unpublish"
+						>
+							<TbNewsOff
+								className="ml-1 mt-1 text-white"
+								size={15}
+							/>
+						</label>
+					) : (
 						<label
 							htmlFor={`publish-${postId}`}
 							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 							data-tip="publish"
 						>
-							<MdPublish
-								className="ml-1 mt-1 text-cyan-400"
+							<TbNews
+								className="ml-1 mt-1 text-white"
 								size={15}
 							/>
 						</label>
@@ -89,20 +109,21 @@ const PostComponent: React.FC<{
 						data-tip="delete"
 					>
 						<AiFillDelete
-							className="mt-1 ml-1 text-cyan-400"
+							className="ml-1 mt-1 text-white"
 							size={15}
 						/>
 					</label>
 				</div>
 			)}
 
-			<div className="flex gap-2 text-xs text-white/50">
+			<div className="flex text-xs text-white/50">
 				<p
 					onClick={() => router.push(`/profile/${authorId}`)}
 					className="link link-hover"
 				>
 					{author}
 				</p>
+				<div className="divider divider-horizontal"></div>
 				<span className="">{publishedOn}</span>
 			</div>
 			<p className="italic">{description}</p>

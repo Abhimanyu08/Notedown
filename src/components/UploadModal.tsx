@@ -11,6 +11,7 @@ import {
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
+import makeFolderName from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
 import FileMetadata from "../interfaces/FileMetdata";
 import Post from "../interfaces/Post";
@@ -83,9 +84,13 @@ export function UploadModal({
 			setAlertTimer(`Please select ${numImageTags} images`);
 			return;
 		}
+		if (!postDets) {
+			setAlertTimer(`Not able to read title from your post file`);
+			return;
+		}
 		setUploading(true);
 
-		const blogFolder = `${userId}/${postDets?.title}`;
+		const blogFolder = makeFolderName(userId, postDets.title);
 		const blogFilePath = blogFolder + `/${mdfile.name}`;
 
 		const { data, error } = await supabase.storage
@@ -99,29 +104,23 @@ export function UploadModal({
 			return;
 		}
 
-		if (numImageTags === 0) {
-			cleanUp();
-			return;
+		if (numImageTags !== 0) {
+			const imageResults = await Promise.all(
+				images!.map(async (image) => {
+					const imagePath = blogFolder + `/${image.name}`;
+					const result = await supabase.storage
+						.from(SUPABASE_IMAGE_BUCKET)
+						.upload(imagePath, image);
+					return result;
+				})
+			);
+			if (imageResults.some((res) => res.error !== null)) {
+				setAlertTimer("Error in uploading images, please retry");
+				setUploading(false);
+				return;
+			}
 		}
 
-		const imageResults = await Promise.all(
-			images!.map(async (image) => {
-				const imagePath = blogFolder + `/${image.name}`;
-				const result = await supabase.storage
-					.from(SUPABASE_IMAGE_BUCKET)
-					.upload(imagePath, image);
-				return result;
-			})
-		);
-		if (imageResults.some((res) => res.error !== null)) {
-			setAlertTimer("Error in uploading images, please retry");
-			setUploading(false);
-			return;
-		}
-
-		const filename = data.Key.match(
-			new RegExp(`${SUPABASE_FILES_BUCKET}/(.*)`)
-		)?.at(1);
 		const { data: postTableData, error: postTableError } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.insert({
@@ -129,7 +128,8 @@ export function UploadModal({
 				title: postDets?.title,
 				language: postDets?.language,
 				description: postDets?.description,
-				filename,
+				filename: `${blogFolder}/${mdfile.name}`,
+				image_folder: blogFolder,
 			});
 		if (postTableError || !postTableData || postTableData.length === 0) {
 			setAlertTimer(

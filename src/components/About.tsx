@@ -1,53 +1,20 @@
-import { VscPreview } from "react-icons/vsc";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
-import Blogger from "../interfaces/Blogger";
-import { AiOutlineFileDone } from "react-icons/ai";
-import mdToHtml from "../../utils/mdToHtml";
+import { Dispatch, SetStateAction } from "react";
 
 export function About({
-	id,
+	about,
+	setAbout,
+	htmlAbout,
 	editing,
-	markdown,
 	owner,
-	setProfile,
-	setEditing,
+	previewing,
 }: {
-	id?: string;
+	about: string;
+	setAbout: Dispatch<SetStateAction<string | undefined>>;
+	htmlAbout: string;
 	owner: boolean;
 	editing: boolean;
-	markdown?: string;
-	setProfile: Dispatch<SetStateAction<Blogger | null | undefined>>;
-	setEditing: Dispatch<SetStateAction<boolean>>;
+	previewing: boolean;
 }) {
-	const [about, setAbout] = useState(markdown);
-	const [previewing, setPreviewing] = useState(false);
-	const [htmlAbout, setHtmlAbout] = useState("");
-
-	useEffect(() => {
-		const aboutMd2Html = async () => {
-			if (!about) return;
-			const html = await mdToHtml(about);
-			setHtmlAbout(html);
-		};
-
-		aboutMd2Html();
-	}, [previewing]);
-
-	const onAboutSave = async () => {
-		const { data, error } = await supabase
-			.from(SUPABASE_BLOGGER_TABLE)
-			.update({ about })
-			.eq("id", id);
-		if (error || !data || data.length == 0) {
-			alert("Error in updating about");
-			return;
-		}
-		setProfile(data.at(0));
-		setEditing(false);
-	};
-
 	if (!owner) {
 		return (
 			<div
@@ -59,24 +26,7 @@ export function About({
 
 	if (editing) {
 		return (
-			<div className="relative">
-				<div className="right-1 top-1 flex gap-2 justify-end mb-1 overflow-visible">
-					<div
-						className="tooltip"
-						data-tip="preview"
-						onClick={() => setPreviewing((prev) => !prev)}
-					>
-						<VscPreview size={20} />
-					</div>
-
-					<div
-						className="tooltip"
-						data-tip="save"
-						onClick={onAboutSave}
-					>
-						<AiOutlineFileDone size={20} />
-					</div>
-				</div>
+			<>
 				{previewing ? (
 					<div
 						className="prose prose-code:p-1"
@@ -90,13 +40,13 @@ export function About({
 						value={about}
 					/>
 				)}
-			</div>
+			</>
 		);
 	}
 	return (
 		<div
-			className="prose prose-code:p-1"
-			dangerouslySetInnerHTML={{ __html: htmlAbout }}
+			className="prose prose-code:p-1 text-white"
+			dangerouslySetInnerHTML={{ __html: about }}
 		></div>
 	);
 }
