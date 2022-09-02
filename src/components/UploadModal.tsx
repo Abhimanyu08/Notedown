@@ -26,7 +26,6 @@ export function UploadModal({
 	>;
 }) {
 	const [mdfile, setMdFile] = useState<File | null>();
-	const [numImageTags, setNumImageTags] = useState(0);
 	const [images, setImages] = useState<File[] | null>();
 	const [uploading, setUploading] = useState(false);
 	const [alertText, setAlert] = useState("");
@@ -57,17 +56,12 @@ export function UploadModal({
 		}
 		setPostDets({ ...(data as FileMetadata) });
 
-		const numImageTags = Array.from(
-			contents.matchAll(/!\[.*\]\(.*\)/g)
-		).length;
 		setMdFile(file);
-		setNumImageTags(numImageTags);
 	};
 
 	const cleanUp = () => {
 		setUploading(false);
 		setImages(null);
-		setNumImageTags(0);
 		setMdFile(null);
 		cancelButton.current?.dispatchEvent(new Event("click"));
 	};
@@ -76,14 +70,7 @@ export function UploadModal({
 			setAlertTimer("Please select a markdown file");
 			return;
 		}
-		if (numImageTags > 0 && (!images || images.length === 0)) {
-			setAlertTimer(`Please select ${numImageTags} images`);
-			return;
-		}
-		if ((images?.length || 0) < numImageTags) {
-			setAlertTimer(`Please select ${numImageTags} images`);
-			return;
-		}
+
 		if (!postDets) {
 			setAlertTimer(`Not able to read title from your post file`);
 			return;
@@ -104,9 +91,9 @@ export function UploadModal({
 			return;
 		}
 
-		if (numImageTags !== 0) {
+		if (images) {
 			const imageResults = await Promise.all(
-				images!.map(async (image) => {
+				images.map(async (image) => {
 					const imagePath = blogFolder + `/${image.name}`;
 					const result = await supabase.storage
 						.from(SUPABASE_IMAGE_BUCKET)
@@ -168,28 +155,24 @@ export function UploadModal({
 						accept=".md"
 						className="file:rounded-xl file:text-sm"
 					/>
-					{numImageTags > 0 && (
-						<div className="mt-4">
-							<label
-								htmlFor="blogImages"
-								className="text-white font-semibold mr-2"
-							>
-								Please upload {numImageTags}
-								{numImageTags > 1 ? " images" : " image"}:
-							</label>
-							<input
-								type="file"
-								id="blogImages"
-								max={numImageTags}
-								multiple
-								accept="image/*"
-								className="file:rounded-xl file:text-sm"
-								onChange={(e) =>
-									setImages(Array.from(e.target.files || []))
-								}
-							/>
-						</div>
-					)}
+					<div className="mt-4">
+						<label
+							htmlFor="blogImages"
+							className="text-white font-semibold mr-2"
+						>
+							Please upload images used in your blog (if any)
+						</label>
+						<input
+							type="file"
+							id="blogImages"
+							multiple
+							accept="image/*"
+							className="file:rounded-xl file:text-sm"
+							onChange={(e) =>
+								setImages(Array.from(e.target.files || []))
+							}
+						/>
+					</div>
 					{alertText && <p className="text-red-400">{alertText}</p>}
 					<div className="modal-action">
 						<div

@@ -45,38 +45,66 @@ function htmlToJsx({
 						</>
 					);
 				}
-				const content = elem.match(/<.*?>((.|\n|\r)*)<\/.*>/)?.at(1);
-
-				if (content?.startsWith("<img")) {
-					let attrString = content.match(/<img (.*)>/)?.at(1);
-					let attrs = makeAttrMap(attrString);
-					console.log(attrs);
-					if (!Object.hasOwn(attrs, "src")) {
-						return <></>;
-					}
-					let src = attrs["src"];
-					let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
-					const { publicURL } = supabase.storage
-						.from(SUPABASE_IMAGE_BUCKET)
-						.getPublicUrl(
-							`${makeFolderName(ownerId, blogTitle)}/${imageName}`
-						);
+				if (type === "code") {
+					let code = elem.match(/<code>((.|\r|\n)*)<\/code>/)?.at(1);
 					return (
-						<div className="relative m-1">
-							<Image
-								src={publicURL!}
-								layout="responsive"
-								objectFit="contain"
-								className="resize w-full"
-								width={200}
-								height={120}
-							/>
-							<figcaption className="text-center text-white italic">
-								{attrs["alt"]}
-							</figcaption>
-						</div>
+						<>
+							{string1}
+							<code>{code}</code>
+							{string2}
+						</>
 					);
 				}
+				const content = elem.match(/<.*?>((.|\n|\r)*)<\/.*>/)?.at(1);
+				const hasImage = Array.from(
+					content?.matchAll(/((.|\n|\r)*?)(<img (.*)>)([^<>]*)/g) ||
+						[]
+				);
+				if (hasImage.length !== 0) {
+					return Array.from(hasImage).map((imageMatch) => {
+						const string1 = imageMatch.at(1);
+						const string2 = imageMatch.at(5);
+						let attrString = imageMatch.at(4);
+						let attrs = makeAttrMap(attrString);
+
+						if (!Object.hasOwn(attrs, "src")) {
+							return <></>;
+						}
+						let src = attrs["src"];
+						let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
+						const { publicURL } = supabase.storage
+							.from(SUPABASE_IMAGE_BUCKET)
+							.getPublicUrl(
+								`${makeFolderName(
+									ownerId,
+									blogTitle
+								)}/${imageName}`
+							);
+						return (
+							<div className="relative">
+								{htmlToJsx({
+									html: string1 || "",
+									language,
+									ownerId,
+									blogTitle,
+								})}
+								<Image
+									src={publicURL!}
+									layout="responsive"
+									objectFit="contain"
+									className="resize w-full"
+									width={200}
+									height={120}
+								/>
+								<figcaption className="text-center text-white italic">
+									{attrs["alt"]}
+								</figcaption>
+								{string2}
+							</div>
+						);
+					});
+				}
+				console.log("reaches here");
 				return (
 					<>
 						{string1}

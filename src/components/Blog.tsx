@@ -32,6 +32,7 @@ export function Blog({
 	}, []);
 
 	useEffect(() => {
+		console.log(content);
 		const func = (blockNumber: number) => {
 			setBlockToCode({});
 			const event = new Event("focus");
