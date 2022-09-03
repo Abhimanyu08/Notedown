@@ -65,6 +65,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [about, setAbout] = useState(profile?.about);
 	const [htmlAbout, setHtmlAbout] = useState("");
 	const [previewing, setPreviewing] = useState(false);
+	const [sortType, setSortType] = useState<"greatest" | "latest">("latest");
 
 	useEffect(() => {
 		const aboutMd2Html = async () => {
@@ -73,8 +74,8 @@ function Profile({ profileUser, posts }: ProfileProps) {
 			setHtmlAbout(html);
 		};
 
-		if (previewing) aboutMd2Html();
-	}, [previewing]);
+		aboutMd2Html();
+	}, [about]);
 
 	const onAboutSave = async () => {
 		const { data, error } = await supabase
@@ -99,11 +100,12 @@ function Profile({ profileUser, posts }: ProfileProps) {
 			return;
 		}
 
-		if (!privatePosts) {
+		if (!privatePosts || privatePosts.length === 0) {
 			const { data, error } = await supabase
 				.from<Post>(SUPABASE_POST_TABLE)
 				.select()
-				.match({ created_by: id, published: false });
+				.match({ created_by: id, published: false })
+				.limit(10);
 			setPrivatePosts(data);
 		}
 	};
@@ -129,8 +131,8 @@ function Profile({ profileUser, posts }: ProfileProps) {
 					/>
 				)}
 			</>
-			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-y-auto lg:grid-cols-6 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
-				<div className="lg:col-span-2">
+			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
+				<div className="lg:col-span-2 h-fit">
 					<div className="flex flex-col gap-4 items-center lg:w-fit w-full">
 						<div className="avatar">
 							<div className="rounded-md">
@@ -148,8 +150,8 @@ function Profile({ profileUser, posts }: ProfileProps) {
 						<p className="text-lg font-normal">{profile?.name}</p>
 					</div>
 				</div>
-				<div className="lg:col-span-4 ">
-					<div className="flex justify-between items-center mb-4">
+				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 overflow-y-auto pl-1">
+					<div className="flex justify-between grow-0 items-center mb-4">
 						<div className="tabs">
 							<p
 								className={`tab tab-lifted ${
@@ -223,21 +225,45 @@ function Profile({ profileUser, posts }: ProfileProps) {
 					</div>
 					{section === "posts" ? (
 						<>
-							{user?.id === id && (
-								<select
-									name=""
-									id=""
-									className="select select-sm font-normal"
-									onChange={onPostTypeChange}
-									value={postType}
-								>
-									<option value="published">Published</option>
-									<option value="unpublished">
-										Unpublished
-									</option>
-								</select>
-							)}
-							<div className="flex flex-col gap-8 mt-5">
+							<div className="flex justify-between grow-0">
+								{user?.id === id && (
+									<select
+										name=""
+										id=""
+										className="select select-sm font-normal"
+										onChange={onPostTypeChange}
+										value={postType}
+									>
+										<option value="published">
+											Published
+										</option>
+										<option value="unpublished">
+											Unpublished
+										</option>
+									</select>
+								)}
+								{postType === "published" && (
+									<select
+										name=""
+										id=""
+										className="select select-sm font-normal"
+										value={sortType}
+										onChange={(e) =>
+											setSortType(
+												e.target.value as
+													| "greatest"
+													| "latest"
+											)
+										}
+									>
+										<option value="latest">Latest</option>
+										<option value="greatest">
+											Greatest
+										</option>
+									</select>
+								)}
+							</div>
+							<div className="flex flex-col gap-8 pb-20 mt-5 grow-1 overflow-y-auto">
 								{(postType === "published"
 									? publicPosts
 									: privatePosts
@@ -258,6 +284,11 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										modifyPosts={modifyPosts}
 									/>
 								))}
+								<div className="flex justify-center">
+									<div className="btn btn-sm normal-case bg-slate-800">
+										Load More
+									</div>
+								</div>
 							</div>
 						</>
 					) : (
@@ -298,6 +329,8 @@ export const getServerSideProps: GetServerSideProps<
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select("*")
 			.eq("created_by", id)
+			.order("created_at", { ascending: false })
+			.limit(10)
 			.then((val) => {
 				postData = val.data;
 				error = val.error;

@@ -51,7 +51,8 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 export const getServerSideProps: GetServerSideProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
 		.from(SUPABASE_POST_TABLE)
-		.select(`*, bloggers(name)`);
+		.select(`*, bloggers(name)`)
+		.limit(1);
 	return {
 		props: {
 			posts: data,

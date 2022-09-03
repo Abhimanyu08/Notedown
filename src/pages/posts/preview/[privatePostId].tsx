@@ -23,8 +23,13 @@ export default function PrivateBlog() {
 	const [connecting, setConnecting] = useState(false);
 
 	useEffect(() => {
+		if (!user) router.replace("/");
+		if (data) {
+			if (data.created_by !== user?.id) router.replace("/");
+		}
+
 		setMounted(true);
-	}, []);
+	}, [data]);
 
 	if (!mounted) {
 		return null;

@@ -15,7 +15,7 @@ function Navbar({
 	return (
 		<div className="navbar justify-between grow-0 mb-10 lg:px-64 xl:px-80 px-5 md:px-32 z-10 opacity-100">
 			<Link href="/">
-				<p className="text-white link-hover cursor-pointer">Home</p>
+				<p className="link-hover cursor-pointer">Home</p>
 			</Link>
 			{user ? (
 				<div className="flex gap-5">
