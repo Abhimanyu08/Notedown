@@ -93,7 +93,7 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
             doc: code,
             extensions: [
                 mySetup,
-                python(),
+                languageCompartment.of(python()),
                 tabSize.of(EditorState.tabSize.of(4)),
                 keymap.of([{
                     key: "Shift-Enter",

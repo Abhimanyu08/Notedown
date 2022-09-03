@@ -19,14 +19,14 @@ function htmlToJsx({
 	blogTitle,
 }: htmlToJsxProps): JSX.Element {
 	const re =
-		/([^<>]*?)(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^(<>|\n|\r)]*)/g;
+		/([^<>]*?)(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)/g;
 	const matches = Array.from(html.matchAll(re));
 	if (matches.length === 0) return <>{html}</>;
 	const elem = (
 		<>
 			{matches.map((match) => {
-				const string1 = <>{match.at(1)}</>;
-				const string2 = <>{match.at(6)}</>;
+				const string1 = match.at(1);
+				const string2 = match.at(6);
 				const elem = match.at(2)!;
 				const type = match.at(3);
 				if (type === "pre") {
@@ -49,9 +49,9 @@ function htmlToJsx({
 					let code = elem.match(/<code>((.|\r|\n)*)<\/code>/)?.at(1);
 					return (
 						<>
-							{string1}
-							<code>{code}</code>
-							{string2}
+							<span>
+								{string1} <code>{code}</code> {string2}
+							</span>
 						</>
 					);
 				}
@@ -65,7 +65,7 @@ function htmlToJsx({
 						const string1 = imageMatch.at(1);
 						const string2 = imageMatch.at(5);
 						let attrString = imageMatch.at(4);
-						let attrs = makeAttrMap(attrString);
+						let attrs = makeAttrMap({ match: attrString });
 
 						if (!Object.hasOwn(attrs, "src")) {
 							return <></>;
@@ -81,37 +81,43 @@ function htmlToJsx({
 								)}/${imageName}`
 							);
 						return (
-							<div className="relative">
-								{htmlToJsx({
-									html: string1 || "",
-									language,
-									ownerId,
-									blogTitle,
-								})}
-								<Image
-									src={publicURL!}
-									layout="responsive"
-									objectFit="contain"
-									className="resize w-full"
-									width={200}
-									height={120}
-								/>
-								<figcaption className="text-center text-white italic">
-									{attrs["alt"]}
-								</figcaption>
-								{string2}
-							</div>
+							<>
+								<span>
+									{htmlToJsx({
+										html: string1 || "",
+										language,
+										ownerId,
+										blogTitle,
+									})}
+								</span>
+								<div className="">
+									<div className="relative">
+										<Image
+											src={publicURL!}
+											layout="responsive"
+											objectFit="contain"
+											className="resize w-full"
+											width={175}
+											height={120}
+										/>
+									</div>
+									<figcaption className="text-center text-white italic">
+										{attrs["alt"]}
+									</figcaption>
+								</div>
+								<span className="">{string2}</span>
+							</>
 						);
 					});
 				}
-				console.log("reaches here");
+
 				return (
 					<>
-						{string1}
+						<span>{string1}</span>
 
 						{React.createElement(
 							type!,
-							makeAttrMap(match.at(4)),
+							makeAttrMap({ type, content, match: match.at(4) }),
 							htmlToJsx({
 								html: content!,
 								language,
@@ -119,7 +125,7 @@ function htmlToJsx({
 								blogTitle,
 							})
 						)}
-						{string2}
+						<span>{string2}</span>
 					</>
 				);
 			})}
@@ -128,8 +134,19 @@ function htmlToJsx({
 	return elem;
 }
 
-function makeAttrMap(match?: string) {
+function makeAttrMap({
+	type,
+	content,
+	match,
+}: {
+	type?: string;
+	content?: string;
+	match?: string;
+}) {
 	let obj: Record<string, string> = {};
+	if (type && /h\d/.test(type)) {
+		obj["id"] = content!;
+	}
 	if (!match) return obj;
 	const re = /(.*?)=\"(.*?)\"/g;
 	const attrs = Array.from(match.matchAll(re));

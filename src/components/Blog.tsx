@@ -32,7 +32,6 @@ export function Blog({
 	}, []);
 
 	useEffect(() => {
-		console.log(content);
 		const func = (blockNumber: number) => {
 			setBlockToCode({});
 			const event = new Event("focus");
@@ -89,15 +88,19 @@ export function Blog({
 			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
 		>
 			<div
-				className={` prose  max-w-none basis-3/5 lg:px-32 prose-headings:text-amber-500 prose-p:font-normal prose-p:text-lg prose-p:text-justify text-white prose-a:text-lime-400
-				prose-strong:text-violet-500 prose-pre:m-0 prose-pre:p-0 prose-li:text-lg prose-blockquote:text-amber-300 prose-p:font-sans h-full overflow-y-auto
+				className={` prose  max-w-none basis-3/5 lg:px-28 prose-headings:text-amber-500  prose-p:text-justify text-white prose-a:text-lime-500
+				prose-strong:text-violet-500 prose-strong:font-bold prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-yellow-400  h-full overflow-y-auto prose-p:text-lg prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono prose-ul:text-lg
 				`}
 			>
-				<h1 className="text-center">{title}</h1>
-				<div className="text-center italic text-xl w-full">
+				<h1 className="text-center" id="title">
+					{title}
+				</h1>
+				<div className="mb-20 text-center italic text-xl w-full">
 					{description}
 				</div>
-				<div className="">{blogJsx}</div>
+				<div className="" id="jsx">
+					{blogJsx}
+				</div>
 			</div>
 		</BlogContext.Provider>
 	);

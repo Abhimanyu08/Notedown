@@ -35,7 +35,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 								description={post.description!}
 								title={post.title!}
 								postId={post.id!}
-								publishedOn={post.published_on}
+								publishedOn={post.published_on || undefined}
 								authorId={post.created_by!}
 								author={post?.bloggers?.name || ""}
 								published={post.published}

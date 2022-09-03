@@ -13,7 +13,7 @@ function Navbar({
 	logoutCallback?: () => void;
 }) {
 	return (
-		<div className="navbar justify-between grow-0 mb-14 lg:px-64 xl:px-80 px-5 md:px-32 z-10 opacity-100 bg-slate-900">
+		<div className="navbar justify-between grow-0 mb-10 lg:px-64 xl:px-80 px-5 md:px-32 z-10 opacity-100">
 			<Link href="/">
 				<p className="text-white link-hover cursor-pointer">Home</p>
 			</Link>

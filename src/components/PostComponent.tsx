@@ -23,7 +23,7 @@ const PostComponent: React.FC<{
 	owner: boolean;
 	published?: boolean;
 	filename?: string;
-	modifyPosts: (
+	modifyPosts?: (
 		type: "published" | "unpublished",
 		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
 	) => void;
@@ -42,23 +42,27 @@ const PostComponent: React.FC<{
 	const router = useRouter();
 	return (
 		<div className="text-white relative">
-			<DeleteModal
-				id={postId}
-				filename={filename!}
-				type={published ? "published" : "unpublished"}
-				{...{
-					title,
-					modifyPosts,
-					created_by: authorId,
-				}}
-			/>
-			<EditModal
-				id={postId}
-				published={published || false}
-				{...{ title, description, modifyPosts }}
-			/>
-			<PublishModal id={postId} {...{ modifyPosts }} />
-			<UnPublishModal id={postId} modifyPosts={modifyPosts} />
+			{modifyPosts && (
+				<>
+					<DeleteModal
+						id={postId}
+						filename={filename!}
+						type={published ? "published" : "unpublished"}
+						{...{
+							title,
+							modifyPosts,
+							created_by: authorId,
+						}}
+					/>
+					<EditModal
+						id={postId}
+						published={published || false}
+						{...{ title, description, modifyPosts }}
+					/>
+					<PublishModal id={postId} {...{ modifyPosts }} />
+					<UnPublishModal id={postId} modifyPosts={modifyPosts} />
+				</>
+			)}
 			<Link
 				href={
 					published ? `/posts/${postId}` : `/posts/preview/${postId}`

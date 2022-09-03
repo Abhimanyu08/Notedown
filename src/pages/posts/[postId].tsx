@@ -18,6 +18,7 @@ import { UserContext } from "../_app";
 import Layout from "../../components/Layout";
 import sendRequest from "../../../utils/sendRequest";
 import { BsBookmarkFill } from "react-icons/bs";
+import { Toc } from "../../components/TableOfContents";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -88,7 +89,9 @@ export default function PublicBlog(props: BlogProps | {}) {
 				logoutCallback={() => null}
 			>
 				<BlogLayout>
-					<div className="basis-1/5"></div>
+					<div className="basis-1/5 flex flex-col justify-center">
+						<Toc html={props?.content} />
+					</div>
 					<Blog {...props} containerId={containerId} />
 					<div className="flex flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
 						<div
