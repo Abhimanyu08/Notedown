@@ -26,6 +26,11 @@ import { UploadModal } from "../../components/UploadModal";
 import { VscPreview } from "react-icons/vsc";
 import { AiOutlineFileDone } from "react-icons/ai";
 import mdToHtml from "../../../utils/mdToHtml";
+import PostDisplay from "../../components/PostDisplay";
+import { DeleteModal } from "../../components/DeleteModal";
+import { EditModal } from "../../components/EditModal";
+import { PublishModal } from "../../components/PublishModal";
+import { UnPublishModal } from "../../components/UnPublishModal";
 
 interface ProfileProps {
 	posts?: Partial<Post>[] | null;
@@ -55,7 +60,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [postType, setPostType] = useState<"published" | "unpublished">(
 		"published"
 	);
-	const [editing, setEditing] = useState(false);
+	const [editingAbout, setEditingAbout] = useState(false);
 	const [publicPosts, setPublicPosts] = useState(posts);
 	const [privatePosts, setPrivatePosts] = useState<Partial<Post>[] | null>();
 	const router = useRouter();
@@ -66,6 +71,10 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [htmlAbout, setHtmlAbout] = useState("");
 	const [previewing, setPreviewing] = useState(false);
 	const [sortType, setSortType] = useState<"greatest" | "latest">("latest");
+
+	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
+		null
+	);
 
 	useEffect(() => {
 		const aboutMd2Html = async () => {
@@ -87,7 +96,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 			return;
 		}
 		setProfile(data.at(0));
-		setEditing(false);
+		setEditingAbout(false);
 	};
 
 	const onPostTypeChange: ChangeEventHandler<HTMLSelectElement> = async (
@@ -96,6 +105,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 		e.preventDefault();
 
 		setPostType(e.target.value as "published" | "unpublished");
+
 		if (e.target.value === "published") {
 			return;
 		}
@@ -105,7 +115,8 @@ function Profile({ profileUser, posts }: ProfileProps) {
 				.from<Post>(SUPABASE_POST_TABLE)
 				.select()
 				.match({ created_by: id, published: false })
-				.limit(10);
+				.order("created_at", { ascending: false })
+				.limit(2);
 			setPrivatePosts(data);
 		}
 	};
@@ -129,6 +140,27 @@ function Profile({ profileUser, posts }: ProfileProps) {
 						userId={user!.id}
 						setClientPosts={setPrivatePosts}
 					/>
+				)}
+
+				{postInAction && (
+					<>
+						<DeleteModal
+							post={postInAction}
+							modifyPosts={modifyPosts}
+						/>
+						<EditModal
+							post={postInAction}
+							modifyPosts={modifyPosts}
+						/>
+						<PublishModal
+							post={postInAction}
+							modifyPosts={modifyPosts}
+						/>
+						<UnPublishModal
+							post={postInAction}
+							modifyPosts={modifyPosts}
+						/>
+					</>
 				)}
 			</>
 			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
@@ -179,7 +211,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 							</label>
 						) : (
 							user?.id === id &&
-							(editing ? (
+							(editingAbout ? (
 								<div className="flex">
 									<button
 										className="btn btn-xs btn-ghost tooltip tooltip-left"
@@ -206,7 +238,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										className="btn btn-xs btn-ghost tooltip tooltip-left"
 										onClick={() => {
 											setAbout(profileUser?.about);
-											setEditing(false);
+											setEditingAbout(false);
 										}}
 										data-tip="cancel"
 									>
@@ -216,7 +248,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 							) : (
 								<div
 									className="btn font-normal btn-sm normal-case btn-ghost text-white"
-									onClick={() => setEditing(true)}
+									onClick={() => setEditingAbout(true)}
 								>
 									Edit
 								</div>
@@ -263,33 +295,37 @@ function Profile({ profileUser, posts }: ProfileProps) {
 									</select>
 								)}
 							</div>
-							<div className="flex flex-col gap-8 pb-20 mt-5 grow-1 overflow-y-auto">
-								{(postType === "published"
-									? publicPosts
-									: privatePosts
-								)?.map((post) => (
-									<PostComponent
-										key={post.id!}
-										description={post.description!}
-										title={post.title!}
-										postId={post.id!}
-										publishedOn={
-											post.published_on || undefined
+							{
+								<PostDisplay
+									posts={
+										postType === "published"
+											? publicPosts
+											: privatePosts
+									}
+									owner={user?.id === id}
+									author={profile?.name || undefined}
+									setPostInAction={setPostInAction}
+									cursorKey={
+										postType === "published"
+											? "published_on"
+											: "created_at"
+									}
+									ascending={false}
+									addPosts={(newPosts) => {
+										if (newPosts.at(0)?.published) {
+											setPublicPosts((prev) => [
+												...(prev || []),
+												...newPosts,
+											]);
+											return;
 										}
-										authorId={post.created_by!}
-										author={profile?.name!}
-										owner={user?.id === id}
-										published={post.published}
-										filename={post.filename}
-										modifyPosts={modifyPosts}
-									/>
-								))}
-								<div className="flex justify-center">
-									<div className="btn btn-sm normal-case bg-slate-800">
-										Load More
-									</div>
-								</div>
-							</div>
+										setPrivatePosts((prev) => [
+											...(prev || []),
+											...newPosts,
+										]);
+									}}
+								/>
+							}
 						</>
 					) : (
 						<About
@@ -297,7 +333,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 							htmlAbout={htmlAbout || ""}
 							previewing={previewing}
 							setAbout={setAbout}
-							editing={editing}
+							editing={editingAbout}
 							owner={user?.id === id}
 						/>
 					)}
@@ -329,8 +365,8 @@ export const getServerSideProps: GetServerSideProps<
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select("*")
 			.eq("created_by", id)
-			.order("created_at", { ascending: false })
-			.limit(10)
+			.order("published_on", { ascending: false })
+			.limit(2)
 			.then((val) => {
 				postData = val.data;
 				error = val.error;

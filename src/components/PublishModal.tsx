@@ -1,19 +1,9 @@
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import { MouseEventHandler } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
-import Post from "../interfaces/Post";
+import ModalProps from "../interfaces/ModalProps";
 
-export function PublishModal({
-	id,
-	modifyPosts,
-}: {
-	id: number;
-
-	modifyPosts: (
-		type: "published" | "unpublished",
-		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
-	) => void;
-}) {
+export function PublishModal({ post: { id }, modifyPosts }: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
 			.from(SUPABASE_POST_TABLE)
@@ -34,17 +24,13 @@ export function PublishModal({
 	};
 	return (
 		<>
-			<input
-				type="checkbox"
-				id={`publish-${id}`}
-				className="modal-toggle"
-			/>
-			<label className="modal" htmlFor={`publish-${id}`}>
+			<input type="checkbox" id={`publish`} className="modal-toggle" />
+			<label className="modal" htmlFor={`publish`}>
 				<label className="modal-box bg-cyan-500 text-black relative">
 					Are you ready to make your post public?
 					<div className="modal-action">
 						<label
-							htmlFor={`publish-${id}`}
+							htmlFor={`publish`}
 							className="btn btn-sm capitalize text-white"
 							onClick={onPublish}
 						>

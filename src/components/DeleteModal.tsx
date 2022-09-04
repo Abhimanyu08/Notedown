@@ -6,29 +6,16 @@ import {
 	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
+import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
 export function DeleteModal({
-	id,
-	title,
-	filename,
-	created_by,
-	type,
+	post: { id, title, created_by, filename, published },
 	modifyPosts,
-}: {
-	title: string;
-	id: number;
-	filename: string;
-
-	type: "published" | "unpublished";
-	modifyPosts: (
-		type: "published" | "unpublished",
-		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
-	) => void;
-	created_by: string;
-}) {
+}: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {
 		let postData: Post | undefined, imageData, error;
+		if (!filename) return;
 		await Promise.all([
 			//delete the row corresponding to this post from the table
 			supabase
@@ -70,16 +57,14 @@ export function DeleteModal({
 				);
 		}
 
-		modifyPosts(type, (prev) => prev?.filter((post) => post.id !== id));
+		modifyPosts(published ? "published" : "unpublished", (prev) =>
+			prev?.filter((post) => post.id !== id)
+		);
 	};
 	return (
 		<>
-			<input
-				type="checkbox"
-				id={`delete-${id}`}
-				className="modal-toggle"
-			/>
-			<label htmlFor={`delete-${id}`} className="modal  text-black">
+			<input type="checkbox" id={`delete`} className="modal-toggle" />
+			<label htmlFor={`delete`} className="modal  text-black">
 				<label className="modal-box bg-cyan-500 relative">
 					<p>
 						Are you sure you want to delete your post{" "}
@@ -87,7 +72,7 @@ export function DeleteModal({
 					</p>
 					<div className="modal-action">
 						<label
-							htmlFor={`delete-${id}`}
+							htmlFor={`delete`}
 							className="btn-sm btn capitalize bg-red-600 text-black border-2"
 							onClick={onDelete}
 						>

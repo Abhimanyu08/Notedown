@@ -1,19 +1,10 @@
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
+import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
-export function UnPublishModal({
-	id,
-	modifyPosts,
-}: {
-	id: number;
-
-	modifyPosts: (
-		type: "published" | "unpublished",
-		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
-	) => void;
-}) {
+export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
@@ -34,17 +25,13 @@ export function UnPublishModal({
 	};
 	return (
 		<>
-			<input
-				type="checkbox"
-				id={`unpublish-${id}`}
-				className="modal-toggle"
-			/>
-			<label className="modal" htmlFor={`unpublish-${id}`}>
+			<input type="checkbox" id={`unpublish`} className="modal-toggle" />
+			<label className="modal" htmlFor={`unpublish`}>
 				<label className="modal-box bg-cyan-500 text-black relative">
 					Are you sure you want to unpublish this post?
 					<div className="modal-action">
 						<label
-							htmlFor={`unpublish-${id}`}
+							htmlFor={`unpublish`}
 							className="btn btn-sm capitalize text-white"
 							onClick={onPublish}
 						>

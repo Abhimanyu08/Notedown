@@ -1,25 +1,13 @@
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
+import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
 export function EditModal({
-	id,
-	published,
-	title,
-	description,
+	post: { title, description, id, published },
 	modifyPosts,
-}: {
-	id: number;
-	published: boolean;
-	title: string;
-	description: string;
-
-	modifyPosts: (
-		type: "published" | "unpublished",
-		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
-	) => void;
-}) {
+}: ModalProps) {
 	const [newTitle, setNewTitle] = useState(title);
 	const [newDesc, setNewDesc] = useState(description);
 
@@ -41,8 +29,8 @@ export function EditModal({
 
 	return (
 		<>
-			<input type="checkbox" id={`edit-${id}`} className="modal-toggle" />
-			<label className="modal" htmlFor={`edit-${id}`}>
+			<input type="checkbox" id={`edit`} className="modal-toggle" />
+			<label className="modal" htmlFor={`edit`}>
 				<label className="modal-box bg-cyan-500 text-black flex flex-col gap-4 relative">
 					<div className="w-full font-semibold">
 						<p>Title:</p>
@@ -66,7 +54,7 @@ export function EditModal({
 					</div>
 					<div className="modal-action">
 						<label
-							htmlFor={`edit-${id}`}
+							htmlFor={`edit`}
 							className={`btn capitalize btn-sm text-white ${
 								title !== newTitle || description !== newDesc
 									? ""

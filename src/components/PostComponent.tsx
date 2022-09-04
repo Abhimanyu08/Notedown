@@ -1,73 +1,26 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useDebugValue } from "react";
+import { MouseEventHandler } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { TbNews, TbNewsOff } from "react-icons/tb";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { FiEdit } from "react-icons/fi";
-import { MdOutlineCancelPresentation, MdPublish } from "react-icons/md";
-import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import Post from "../interfaces/Post";
-import { DeleteModal } from "./DeleteModal";
-import { EditModal } from "./EditModal";
-import { PublishModal } from "./PublishModal";
-import { UnPublishModal } from "./UnPublishModal";
+import { PostComponentProps } from "../interfaces/PostComponentProps";
 
-const PostComponent: React.FC<{
-	postId: number;
-	title: string;
-	description: string;
-	author: string;
-	authorId: string;
-	publishedOn?: string;
-	owner: boolean;
-	published?: boolean;
-	filename?: string;
-	modifyPosts?: (
-		type: "published" | "unpublished",
-		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
-	) => void;
-}> = ({
-	postId,
-	title,
-	description,
+const PostComponent: React.FC<PostComponentProps> = ({
+	post,
 	author,
-	authorId,
-	publishedOn,
 	owner = false,
-	published,
-	filename,
-	modifyPosts,
+	setPostInAction,
 }) => {
+	const { id, title, description, created_by, published_on, published } =
+		post;
 	const router = useRouter();
+
+	const onAction: MouseEventHandler = () => {
+		if (setPostInAction) setPostInAction(post);
+	};
 	return (
 		<div className="text-white relative">
-			{modifyPosts && (
-				<>
-					<DeleteModal
-						id={postId}
-						filename={filename!}
-						type={published ? "published" : "unpublished"}
-						{...{
-							title,
-							modifyPosts,
-							created_by: authorId,
-						}}
-					/>
-					<EditModal
-						id={postId}
-						published={published || false}
-						{...{ title, description, modifyPosts }}
-					/>
-					<PublishModal id={postId} {...{ modifyPosts }} />
-					<UnPublishModal id={postId} modifyPosts={modifyPosts} />
-				</>
-			)}
-			<Link
-				href={
-					published ? `/posts/${postId}` : `/posts/preview/${postId}`
-				}
-			>
+			<Link href={published ? `/posts/${id}` : `/posts/preview/${id}`}>
 				<span className="text-xl font-normal link link-hover">
 					{title}{" "}
 				</span>
@@ -75,9 +28,10 @@ const PostComponent: React.FC<{
 			{owner && (
 				<div className="flex absolute top-0 right-0 gap-2">
 					<label
-						htmlFor={`edit-${postId}`}
+						htmlFor={`edit`}
 						className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 						data-tip="edit"
+						onClick={onAction}
 					>
 						<AiFillEdit
 							className="ml-1 mt-1 text-white"
@@ -86,9 +40,10 @@ const PostComponent: React.FC<{
 					</label>
 					{published ? (
 						<label
-							htmlFor={`unpublish-${postId}`}
+							htmlFor={`unpublish`}
 							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 							data-tip="unpublish"
+							onClick={onAction}
 						>
 							<TbNewsOff
 								className="ml-1 mt-1 text-white"
@@ -97,9 +52,10 @@ const PostComponent: React.FC<{
 						</label>
 					) : (
 						<label
-							htmlFor={`publish-${postId}`}
+							htmlFor={`publish`}
 							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 							data-tip="publish"
+							onClick={onAction}
 						>
 							<TbNews
 								className="ml-1 mt-1 text-white"
@@ -108,9 +64,10 @@ const PostComponent: React.FC<{
 						</label>
 					)}
 					<label
-						htmlFor={`delete-${postId}`}
+						htmlFor={`delete`}
 						className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
 						data-tip="delete"
+						onClick={onAction}
 					>
 						<AiFillDelete
 							className="ml-1 mt-1 text-white"
@@ -122,13 +79,13 @@ const PostComponent: React.FC<{
 
 			<div className="flex text-xs text-white/50">
 				<p
-					onClick={() => router.push(`/profile/${authorId}`)}
+					onClick={() => router.push(`/profile/${created_by}`)}
 					className="link link-hover"
 				>
 					{author}
 				</p>
 				<div className="divider divider-horizontal"></div>
-				<span className="">{publishedOn}</span>
+				<span className="">{published_on}</span>
 			</div>
 			<p className="italic">{description}</p>
 		</div>
