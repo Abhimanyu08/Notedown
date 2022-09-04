@@ -109,23 +109,6 @@ export default function PrivateBlog() {
 							}${connecting ? "hidden" : ""} mt-2 ml-2 `}
 						/>
 					</div>
-
-					<div
-						className="btn btn-circle btn-ghost tooltip"
-						data-tip="share"
-					>
-						<IoMdShareAlt
-							size={30}
-							className="text-white mt-2 ml-2"
-						/>
-					</div>
-
-					<div
-						className="btn btn-circle  btn-ghost tooltip"
-						data-tip="Upvote"
-					>
-						<BiUpvote size={30} className="text-white mt-2 ml-2" />
-					</div>
 				</div>
 			</BlogLayout>
 		</Layout>

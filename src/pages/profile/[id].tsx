@@ -182,7 +182,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 						<p className="text-lg font-normal">{profile?.name}</p>
 					</div>
 				</div>
-				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 overflow-y-auto pl-1">
+				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 overflow-y-auto px-1">
 					<div className="flex justify-between grow-0 items-center mb-4">
 						<div className="tabs">
 							<p

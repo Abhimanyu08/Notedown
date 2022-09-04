@@ -1,3 +1,4 @@
+import { prepareServerlessUrl } from "next/dist/server/base-server";
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
@@ -23,7 +24,10 @@ export function EditModal({
 			return;
 		}
 		modifyPosts(published ? "published" : "unpublished", (prev) =>
-			prev?.filter((post) => post.id !== id).concat(data)
+			prev?.map((post) => {
+				if (post.id !== id) return post;
+				return data.at(0)!;
+			})
 		);
 	};
 

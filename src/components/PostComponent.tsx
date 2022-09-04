@@ -19,11 +19,11 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		if (setPostInAction) setPostInAction(post);
 	};
 	return (
-		<div className="text-white relative">
+		<div className="text-white relative container">
 			<Link href={published ? `/posts/${id}` : `/posts/preview/${id}`}>
-				<span className="text-xl font-normal link link-hover">
+				<div className="text-xl font-normal link link-hover truncate w-3/4">
 					{title}{" "}
-				</span>
+				</div>
 			</Link>
 			{owner && (
 				<div className="flex absolute top-0 right-0 gap-2">
@@ -85,7 +85,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					{author}
 				</p>
 				<div className="divider divider-horizontal"></div>
-				<span className="">{published_on}</span>
+				<span className="">
+					{published_on && new Date(published_on).toDateString()}
+				</span>
 			</div>
 			<p className="italic">{description}</p>
 		</div>

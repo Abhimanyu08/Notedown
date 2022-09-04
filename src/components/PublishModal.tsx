@@ -9,7 +9,7 @@ export function PublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			.from(SUPABASE_POST_TABLE)
 			.update({
 				published: true,
-				published_on: new Date().toDateString(),
+				published_on: new Date().toISOString(),
 			})
 			.match({ id });
 		if (error || !data || data.length === 0) {
@@ -20,7 +20,7 @@ export function PublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			prev?.filter((post) => post.id !== id)
 		);
 
-		modifyPosts("published", (prev) => [...(prev || []), data.at(0)]);
+		modifyPosts("published", (prev) => [data.at(0), ...(prev || [])]);
 	};
 	return (
 		<>

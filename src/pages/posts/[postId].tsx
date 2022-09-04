@@ -3,10 +3,11 @@ import { BiCodeAlt, BiUpvote } from "react-icons/bi";
 import { IoMdShareAlt } from "react-icons/io";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import {
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
+	SUPABASE_UPVOTES_TABLE,
 } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import { supabase } from "../../../utils/supabaseClient";
@@ -19,6 +20,7 @@ import Layout from "../../components/Layout";
 import sendRequest from "../../../utils/sendRequest";
 import { BsBookmarkFill } from "react-icons/bs";
 import { Toc } from "../../components/TableOfContents";
+import Upvotes from "../../interfaces/Upvotes";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -29,6 +31,8 @@ export default function PublicBlog(props: BlogProps | {}) {
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string>();
 	const [connecting, setConnecting] = useState(false);
+	const [upvoted, setUpvoted] = useState(false);
+	const { postId } = router.query;
 
 	if (router.isFallback || !checkProps(props)) {
 		console.log("rendering this");
@@ -50,6 +54,21 @@ export default function PublicBlog(props: BlogProps | {}) {
 			</Layout>
 		);
 	}
+
+	useEffect(() => {
+		const fetchUpvote = async () => {
+			if (!user) return;
+			const { data, error } = await supabase
+				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+				.select()
+				.match({ upvoter: user.id, post_id: postId });
+			if (error || !data || data.length === 0) return;
+
+			setUpvoted(true);
+		};
+
+		fetchUpvote();
+	}, [user]);
 
 	const prepareContainer = async () => {
 		if (!user) return;
@@ -73,6 +92,16 @@ export default function PublicBlog(props: BlogProps | {}) {
 			setConnecting(false);
 			alert("Couldn't enable remote code execution");
 		}
+	};
+
+	const onUpvote: MouseEventHandler = async () => {
+		if (upvoted || !user || !postId) return;
+
+		const { data, error } = await supabase
+			.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+			.insert({ upvoter: user.id, post_id: parseInt(postId as string) });
+		if (error || !data || data.length === 0) return;
+		setUpvoted(true);
 	};
 
 	return (
@@ -123,11 +152,16 @@ export default function PublicBlog(props: BlogProps | {}) {
 
 						<div
 							className="btn btn-circle  btn-ghost tooltip"
-							data-tip="Upvote"
+							data-tip={` ${
+								user ? "Upvote" : "Please login to upvote"
+							} `}
+							onClick={onUpvote}
 						>
 							<BiUpvote
 								size={30}
-								className="text-white mt-2 ml-2"
+								className={`mt-2 ml-2 ${
+									upvoted ? "text-lime-400" : "text-white"
+								}`}
 							/>
 						</div>
 					</div>

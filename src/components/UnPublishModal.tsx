@@ -21,7 +21,7 @@ export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			prev?.filter((post) => post.id !== id)
 		);
 
-		modifyPosts("unpublished", (prev) => [...(prev || []), ...data]);
+		modifyPosts("unpublished", (prev) => [...data, ...(prev || [])]);
 	};
 	return (
 		<>
