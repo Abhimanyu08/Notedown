@@ -34,8 +34,22 @@ export default function PublicBlog(props: BlogProps | {}) {
 	const [upvoted, setUpvoted] = useState(false);
 	const { postId } = router.query;
 
+	useEffect(() => {
+		const fetchUpvote = async () => {
+			if (!user) return;
+			const { data, error } = await supabase
+				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+				.select()
+				.match({ upvoter: user.id, post_id: postId });
+			if (error || !data || data.length === 0) return;
+
+			setUpvoted(true);
+		};
+
+		fetchUpvote();
+	}, [user]);
+
 	if (router.isFallback || !checkProps(props)) {
-		console.log("rendering this");
 		return (
 			<Layout user={null} route={"/"} logoutCallback={() => null}>
 				<div
@@ -54,21 +68,6 @@ export default function PublicBlog(props: BlogProps | {}) {
 			</Layout>
 		);
 	}
-
-	useEffect(() => {
-		const fetchUpvote = async () => {
-			if (!user) return;
-			const { data, error } = await supabase
-				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
-				.select()
-				.match({ upvoter: user.id, post_id: postId });
-			if (error || !data || data.length === 0) return;
-
-			setUpvoted(true);
-		};
-
-		fetchUpvote();
-	}, [user]);
 
 	const prepareContainer = async () => {
 		if (!user) return;
@@ -95,13 +94,21 @@ export default function PublicBlog(props: BlogProps | {}) {
 	};
 
 	const onUpvote: MouseEventHandler = async () => {
-		if (upvoted || !user || !postId) return;
+		if (!user || !postId) return;
+		if (upvoted) {
+			setUpvoted(false);
+			await supabase
+				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+				.delete()
+				.match({ post_id: postId, upvoter: user.id });
+			return;
+		}
 
+		setUpvoted(true);
 		const { data, error } = await supabase
 			.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
 			.insert({ upvoter: user.id, post_id: parseInt(postId as string) });
 		if (error || !data || data.length === 0) return;
-		setUpvoted(true);
 	};
 
 	return (
