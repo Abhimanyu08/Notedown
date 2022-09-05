@@ -18,7 +18,7 @@ export function About({
 	if (!owner) {
 		return (
 			<div
-				className="prose prose-code:p-1 text-white"
+				className="prose prose-code:p-1 text-white prose-headings:text-white"
 				dangerouslySetInnerHTML={{ __html: htmlAbout }}
 			></div>
 		);

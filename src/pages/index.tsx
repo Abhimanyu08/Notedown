@@ -22,28 +22,67 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	const [searchResults, setSearchResults] = useState<
 		PostWithBlogger[] | Post[]
 	>();
+	const [searchQuery, setSearchQuery] = useState("");
 
+	const fetchHomePosts = async (cursor: string | number) => {
+		const { data, error } = await supabase
+			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+			.select("*,bloggers(name)")
+			.match({ published: true })
+			.lt("published_on", cursor)
+			.order("published_on", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data) {
+			console.log(error.message || "data returned is null");
+			return;
+		}
+		setHomePosts((prev) => [...(prev || []), ...data]);
+	};
+
+	const fetchSearchPosts = async (
+		cursor: string | number,
+		searchTerm?: string
+	) => {
+		if (!searchTerm) return;
+		const { data, error } = await supabase
+			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+			.select("*,bloggers(name)")
+			.textSearch("search_index_col", searchTerm)
+			.lt("upvote_count", cursor)
+			.order("upvote_count", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data) {
+			console.log(error.message || "data returned is null");
+			return;
+		}
+		setSearchResults((prev) => [...(prev || []), ...data]);
+	};
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<div className="w-1/3 mx-auto">
-				<SearchComponent setPosts={setSearchResults} />
+				<SearchComponent
+					setPosts={setSearchResults}
+					setSearchQuery={setSearchQuery}
+				/>
 			</div>
-			<div className="px-80 grow-1 min-h-0 overflow-y-auto">
+			<div className="px-64 grow mt-5 overflow-hidden">
 				{(searchResults?.length || 0) > 0 ? (
-					<PostDisplay posts={searchResults} />
+					<PostDisplay
+						posts={searchResults || []}
+						cursorKey="upvote_count"
+						searchTerm={searchQuery}
+						owner={false}
+						fetchPosts={fetchSearchPosts}
+					/>
 				) : (
 					<PostDisplay
-						posts={homePosts}
-						ascending={false}
-						cursorKey={"published_on"}
+						posts={homePosts || []}
+						cursorKey="published_on"
+						searchTerm={searchQuery}
 						owner={false}
-						addPosts={(newPosts) => {
-							if (!newPosts || !checkPostsType(newPosts)) return;
-							setHomePosts((prev) => [
-								...(prev || []),
-								...newPosts,
-							]);
-						}}
+						fetchPosts={fetchHomePosts}
 					/>
 				)}
 			</div>

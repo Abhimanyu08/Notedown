@@ -1,6 +1,8 @@
 import React, {
 	ChangeEventHandler,
+	Dispatch,
 	MouseEventHandler,
+	SetStateAction,
 	useEffect,
 	useState,
 } from "react";
@@ -14,32 +16,44 @@ import PostDisplay from "./PostDisplay";
 interface SearchComponentProps {
 	setPosts: (newPosts: PostWithBlogger[] | Post[]) => void;
 	profileId?: string;
+	setSearchQuery: Dispatch<SetStateAction<string>>;
 }
 
-function SearchComponent({ setPosts, profileId }: SearchComponentProps) {
+function SearchComponent({
+	setPosts,
+	profileId,
+	setSearchQuery,
+}: SearchComponentProps) {
 	const [searchTerm, setSearchTerm] = useState<string>();
 	const [_, setTimer] = useState<NodeJS.Timeout>();
 
 	const onSearchTermInput: ChangeEventHandler<HTMLInputElement> = (e) => {
-		setSearchTerm(e.target.value);
+		setSearchTerm(e.target.value.split(" ").join(" | "));
 	};
 
 	useEffect(() => {
 		setTimer((prev) => {
 			clearTimeout(prev);
 			return setTimeout(() => {
+				setSearchQuery(searchTerm || "");
 				search(searchTerm);
 			}, 500);
 		});
 	}, [searchTerm]);
 
 	const search = async (term?: string) => {
-		if (!term) return;
+		if (term === undefined) return;
+		if (term === "") {
+			setPosts([]);
+			return;
+		}
 		if (!profileId) {
 			const { data, error } = await supabase
 				.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 				.select("*, bloggers(name)")
-				.textSearch("search_index_col", term);
+				.textSearch("search_index_col", term)
+				.order("upvote_count", { ascending: false })
+				.limit(10);
 			console.log(data);
 			if (error || !data) return;
 
@@ -50,7 +64,8 @@ function SearchComponent({ setPosts, profileId }: SearchComponentProps) {
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select()
 			.match({ created_by: profileId })
-			.textSearch("search_index_col", term);
+			.textSearch("search_index_col", term)
+			.limit(10);
 
 		console.log(data);
 		if (error || !data) return;

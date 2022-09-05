@@ -34,6 +34,7 @@ import { PublishModal } from "../../components/PublishModal";
 import { UnPublishModal } from "../../components/UnPublishModal";
 import Head from "next/head";
 import SearchComponent from "../../components/SearchComponent";
+import PostWithBlogger from "../../interfaces/PostWithBlogger";
 
 interface ProfileProps {
 	posts?: Partial<Post>[] | null;
@@ -58,6 +59,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [htmlAbout, setHtmlAbout] = useState("");
 	const [previewing, setPreviewing] = useState(false);
 	const [sortType, setSortType] = useState<"greatest" | "latest">("latest");
+	const [searchQuery, setSearchQuery] = useState("");
 
 	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
 		null
@@ -119,6 +121,57 @@ function Profile({ profileUser, posts }: ProfileProps) {
 		setPrivatePosts(newPosts);
 	};
 
+	const fetchPrivatePosts = async (cursor: string | number) => {
+		const { data, error } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select()
+			.match({ created_by: profileUser?.id, published: false })
+			.lt("created_at", cursor)
+			.order("created_at", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data) {
+			console.log(error.message || "data returned is null");
+			return;
+		}
+		setPrivatePosts((prev) => [...(prev || []), ...data]);
+	};
+	const fetchPublicPosts = async (cursor: string | number) => {
+		const { data, error } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select()
+			.match({ created_by: profileUser?.id, published: true })
+			.lt("published_on", cursor)
+			.order("published_on", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data) {
+			console.log(error.message || "data returned is null");
+			return;
+		}
+		setPublicPosts((prev) => [...(prev || []), ...data]);
+	};
+	const fetchSearchPosts = async (
+		cursor: string | number,
+		searchTerm?: string
+	) => {
+		if (!searchTerm) return;
+		const { data, error } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select("*")
+			.match({ created_by: profileUser?.id })
+			.textSearch("search_index_col", searchTerm)
+			.lt("upvote_count", cursor)
+			.order("upvote_count", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data) {
+			console.log(error.message || "data returned is null");
+			return;
+		}
+		setSearchResults((prev) => [...(prev || []), ...data]);
+	};
+
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<Head>
@@ -158,7 +211,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 					</>
 				)}
 			</>
-			<div className="grid grid-cols-1 grow-1 min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-80 px-5 md:px-32">
+			<div className="grid grid-cols-1 grow min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-64 px-5 md:px-32">
 				<div className="lg:col-span-2 h-fit">
 					<div className="flex flex-col gap-4 items-center lg:w-fit w-full">
 						<div className="avatar">
@@ -177,7 +230,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 						<h1 className="text-lg font-normal">{profile?.name}</h1>
 					</div>
 				</div>
-				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 overflow-y-auto px-1">
+				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 px-1">
 					<div className="flex justify-between grow-0 items-center mb-4">
 						<div className="tabs">
 							<p
@@ -234,6 +287,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										onClick={() => {
 											setAbout(profileUser?.about);
 											setEditingAbout(false);
+											setPreviewing(false);
 										}}
 										data-tip="cancel"
 									>
@@ -252,12 +306,12 @@ function Profile({ profileUser, posts }: ProfileProps) {
 					</div>
 					{section === "posts" ? (
 						<>
-							<div className="flex justify-between">
+							<div className="flex justify-between grow-0">
 								{user?.id === id && (
 									<select
 										name=""
 										id=""
-										className="grow-0 select select-sm font-normal"
+										className="select select-sm font-normal"
 										onChange={onPostTypeChange}
 										value={postType}
 									>
@@ -269,17 +323,18 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										</option>
 									</select>
 								)}
-								<div className="grow-1">
+								<div className="w-1/2">
 									<SearchComponent
 										setPosts={setSearchResults}
 										profileId={profileUser?.id}
+										setSearchQuery={setSearchQuery}
 									/>
 								</div>
 								{
 									<select
 										name=""
 										id=""
-										className={` select select-sm font-normal grow-0 ${
+										className={` select select-sm font-normal ${
 											postType === "published"
 												? ""
 												: "invisible"
@@ -302,50 +357,46 @@ function Profile({ profileUser, posts }: ProfileProps) {
 							</div>
 							{(searchResults?.length || 0) > 0 ? (
 								<PostDisplay
-									posts={searchResults}
+									posts={searchResults || []}
 									author={profileUser?.name || ""}
+									cursorKey="upvote_count"
+									searchTerm={searchQuery}
+									owner={user?.id === id}
+									fetchPosts={fetchSearchPosts}
+									setPostInAction={setPostInAction}
+								/>
+							) : postType === "published" ? (
+								<PostDisplay
+									posts={publicPosts || []}
+									owner={user?.id === id}
+									author={profile?.name || undefined}
+									cursorKey={"published_on"}
+									fetchPosts={fetchPublicPosts}
+									searchTerm={searchQuery}
 								/>
 							) : (
 								<PostDisplay
-									posts={
-										postType === "published"
-											? publicPosts
-											: privatePosts
-									}
+									posts={privatePosts || []}
 									owner={user?.id === id}
 									author={profile?.name || undefined}
 									setPostInAction={setPostInAction}
-									cursorKey={
-										postType === "published"
-											? "published_on"
-											: "created_at"
-									}
-									ascending={false}
-									addPosts={(newPosts) => {
-										if (newPosts.at(0)?.published) {
-											setPublicPosts((prev) => [
-												...(prev || []),
-												...newPosts,
-											]);
-											return;
-										}
-										setPrivatePosts((prev) => [
-											...(prev || []),
-											...newPosts,
-										]);
-									}}
+									cursorKey={"created_at"}
+									fetchPosts={fetchPrivatePosts}
+									searchTerm={searchQuery}
 								/>
 							)}
 						</>
 					) : (
-						<About
-							about={about || ""}
-							htmlAbout={htmlAbout || ""}
-							previewing={previewing}
-							setAbout={setAbout}
-							editing={editingAbout}
-							owner={user?.id === id}
-						/>
+						<div className="mt-6 pl-2">
+							<About
+								about={about || ""}
+								htmlAbout={htmlAbout || ""}
+								previewing={previewing}
+								setAbout={setAbout}
+								editing={editingAbout}
+								owner={user?.id === id}
+							/>
+						</div>
 					)}
 				</div>
 			</div>

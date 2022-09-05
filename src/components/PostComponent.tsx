@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { title } from "process";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { TbNews, TbNewsOff } from "react-icons/tb";
@@ -20,6 +20,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		post;
 	const router = useRouter();
 	const [upvotes, setUpvotes] = useState<number | null>(null);
+	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 
 	useEffect(() => {
 		const fetchUpvotes = async () => {
@@ -111,7 +112,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				</span>
 				<div className="divider divider-horizontal"></div>
 				<span className="flex items-center gap-1">
-					{upvotes && upvotes > 0 && upvotes} <BiUpvote />
+					{upvotes &&
+						upvotes > 0 &&
+						formatter.current.format(upvotes)}{" "}
+					<BiUpvote />
 				</span>
 			</div>
 			<p className="italic">{description}</p>

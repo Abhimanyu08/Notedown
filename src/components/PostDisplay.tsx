@@ -14,23 +14,23 @@ import PostComponent from "./PostComponent";
 
 interface PostDisplayProps {
 	owner: boolean;
-	author: string;
-	setPostInAction: Dispatch<SetStateAction<Partial<Post> | null>>;
+	author?: string;
+	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
 	posts: Partial<PostWithBlogger>[] | null;
 	cursorKey: keyof Post;
-	ascending: boolean;
-	addPosts: (newPosts: Post[] | PostWithBlogger[]) => void;
+	searchTerm: string;
+	fetchPosts: (cursor: string | number, searchTerm?: string) => void;
 }
 
 function PostDisplay({
-	ascending,
 	posts,
-	owner,
+	owner = false,
 	author,
 	cursorKey,
 	setPostInAction,
-	addPosts,
-}: Partial<PostDisplayProps>) {
+	searchTerm,
+	fetchPosts,
+}: PostDisplayProps) {
 	const [cursor, setCursor] = useState(
 		(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] || null
 	);
@@ -43,61 +43,30 @@ function PostDisplay({
 	}, [posts]);
 
 	const onLoadMore: MouseEventHandler = async () => {
-		if (!posts || posts.length === 0) return;
+		if (!fetchPosts || !posts || posts.length === 0) return;
 
-		if (author) {
-			//posts are requested from a single user
-			const created_by = posts.at(0)!.created_by!;
-			const published = posts.at(0)!.published!;
-			const { data, error } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
-				.select()
-				.match({ created_by, published })
-				.order(cursorKey || "created_at", { ascending })
-				.lt(cursorKey || "created_at", cursor)
-				.limit(LIMIT);
-
-			if (error || !data) {
-				console.log(error.message || "data returned is null");
-				return;
-			}
-
-			if (addPosts) addPosts(data);
-			return;
-		}
-
-		const { data, error } = await supabase
-			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-			.select("*, bloggers(name)")
-			.order(cursorKey || "created_at", { ascending })
-			.lt(cursorKey || "created_at", cursor)
-			.limit(LIMIT);
-
-		if (error || !data) {
-			console.log(error.message || "data returned is null");
-			return;
-		}
-
-		if (addPosts) addPosts(data);
+		await fetchPosts(cursor as string | number, searchTerm);
 	};
 
 	return (
-		<div className="flex flex-col gap-8  mt-5 grow-1 overflow-y-auto">
-			{posts?.map((post) => (
-				<PostComponent
-					key={post.id!}
-					{...{
-						post,
-						author: author || post.bloggers?.name,
-						owner: owner || false,
-						setPostInAction,
-					}}
-				/>
-			))}
-			{(posts?.length || 0) > 0 && addPosts && (
-				<div className="flex justify-center pb-10">
+		<div className="flex flex-col h-full overflow-x-hidden overflow-y-auto mt-8">
+			<div className="flex flex-col gap-8 p-2">
+				{posts?.map((post) => (
+					<PostComponent
+						key={post.id!}
+						{...{
+							post,
+							author: author || post.bloggers?.name,
+							owner: owner || false,
+							setPostInAction,
+						}}
+					/>
+				))}
+			</div>
+			{(posts?.length || 0) > 0 && (
+				<div className="flex justify-center pb-10 mt-10">
 					<div
-						className="btn btn-sm normal-case bg-slate-800"
+						className="btn btn-sm normal-case bg-base-100"
 						onClick={onLoadMore}
 					>
 						Load More
