@@ -1,5 +1,5 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -12,6 +12,7 @@ import {
 } from "react";
 import { MdCancel } from "react-icons/md";
 import {
+	LIMIT,
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
@@ -31,27 +32,12 @@ import { DeleteModal } from "../../components/DeleteModal";
 import { EditModal } from "../../components/EditModal";
 import { PublishModal } from "../../components/PublishModal";
 import { UnPublishModal } from "../../components/UnPublishModal";
+import Head from "next/head";
+import SearchComponent from "../../components/SearchComponent";
 
 interface ProfileProps {
 	posts?: Partial<Post>[] | null;
 	profileUser?: Blogger | null;
-}
-
-function calculateValidPosts(
-	posts: Partial<Post>[] | null,
-	status: "published" | "unpublished",
-	user: User | null,
-	profileId: string
-): Partial<Post>[] {
-	if (!posts) return [];
-	const owner = user?.id === profileId;
-	if (owner) {
-		if (status === "published") {
-			return posts.filter((post) => post.published);
-		}
-		return posts.filter((post) => !post.published);
-	}
-	return posts.filter((post) => post.published);
 }
 
 function Profile({ profileUser, posts }: ProfileProps) {
@@ -63,6 +49,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [editingAbout, setEditingAbout] = useState(false);
 	const [publicPosts, setPublicPosts] = useState(posts);
 	const [privatePosts, setPrivatePosts] = useState<Partial<Post>[] | null>();
+	const [searchResults, setSearchResults] = useState<Post[]>();
 	const router = useRouter();
 	const { id } = router.query;
 	const { user } = useContext(UserContext);
@@ -111,12 +98,12 @@ function Profile({ profileUser, posts }: ProfileProps) {
 		}
 
 		if (!privatePosts || privatePosts.length === 0) {
-			const { data, error } = await supabase
+			const { data } = await supabase
 				.from<Post>(SUPABASE_POST_TABLE)
 				.select()
 				.match({ created_by: id, published: false })
 				.order("created_at", { ascending: false })
-				.limit(2);
+				.limit(LIMIT);
 			setPrivatePosts(data);
 		}
 	};
@@ -134,6 +121,14 @@ function Profile({ profileUser, posts }: ProfileProps) {
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
+			<Head>
+				<title>{`Profile-${profileUser?.name}`}</title>
+				<meta name="author" content={profileUser?.name || ""} />
+				<meta
+					name="description"
+					content={`Rce-Blog profile page for blogger ${profileUser?.name}`}
+				/>
+			</Head>
 			<>
 				{user?.id === id && (
 					<UploadModal
@@ -179,7 +174,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 								)}
 							</div>
 						</div>
-						<p className="text-lg font-normal">{profile?.name}</p>
+						<h1 className="text-lg font-normal">{profile?.name}</h1>
 					</div>
 				</div>
 				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 overflow-y-auto px-1">
@@ -257,12 +252,12 @@ function Profile({ profileUser, posts }: ProfileProps) {
 					</div>
 					{section === "posts" ? (
 						<>
-							<div className="flex justify-between grow-0">
+							<div className="flex justify-between">
 								{user?.id === id && (
 									<select
 										name=""
 										id=""
-										className="select select-sm font-normal"
+										className="grow-0 select select-sm font-normal"
 										onChange={onPostTypeChange}
 										value={postType}
 									>
@@ -274,11 +269,17 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										</option>
 									</select>
 								)}
+								<div className="grow-1">
+									<SearchComponent
+										setPosts={setSearchResults}
+										profileId={profileUser?.id}
+									/>
+								</div>
 								{postType === "published" && (
 									<select
 										name=""
 										id=""
-										className="select select-sm font-normal"
+										className="select select-sm font-normal grow-0"
 										value={sortType}
 										onChange={(e) =>
 											setSortType(
@@ -295,7 +296,12 @@ function Profile({ profileUser, posts }: ProfileProps) {
 									</select>
 								)}
 							</div>
-							{
+							{(searchResults?.length || 0) > 0 ? (
+								<PostDisplay
+									posts={searchResults}
+									author={profileUser?.name || ""}
+								/>
+							) : (
 								<PostDisplay
 									posts={
 										postType === "published"
@@ -325,7 +331,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										]);
 									}}
 								/>
-							}
+							)}
 						</>
 					) : (
 						<About
@@ -343,7 +349,10 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	);
 }
 
-export const getServerSideProps: GetServerSideProps<
+export const getStaticPaths: GetStaticPaths = async () => {
+	return { paths: [], fallback: true };
+};
+export const getStaticProps: GetStaticProps<
 	ProfileProps,
 	{ id: string }
 > = async (context) => {
@@ -366,7 +375,7 @@ export const getServerSideProps: GetServerSideProps<
 			.select("*")
 			.eq("created_by", id)
 			.order("published_on", { ascending: false })
-			.limit(2)
+			.limit(LIMIT)
 			.then((val) => {
 				postData = val.data;
 				error = val.error;

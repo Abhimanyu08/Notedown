@@ -9,4 +9,6 @@ export default interface Post {
     published: boolean
     published_on: string | null
     image_folder: string | null
+    upvote_count: number
+    search_index_col: string
 }

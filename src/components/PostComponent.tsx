@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MouseEventHandler } from "react";
+import { title } from "process";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { BiUpvote } from "react-icons/bi";
 import { TbNews, TbNewsOff } from "react-icons/tb";
+import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { supabase } from "../../utils/supabaseClient";
+import Post from "../interfaces/Post";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 
 const PostComponent: React.FC<PostComponentProps> = ({
@@ -14,6 +19,20 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	const { id, title, description, created_by, published_on, published } =
 		post;
 	const router = useRouter();
+	const [upvotes, setUpvotes] = useState<number | null>(null);
+
+	useEffect(() => {
+		const fetchUpvotes = async () => {
+			const { data, error } = await supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select("upvote_count")
+				.eq("id", id!);
+			if (error || !data || data.length === 0) return;
+			setUpvotes(data.at(0)?.upvote_count || 0);
+		};
+
+		if (upvotes === null && id) fetchUpvotes();
+	}, []);
 
 	const onAction: MouseEventHandler = () => {
 		if (setPostInAction) setPostInAction(post);
@@ -86,7 +105,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				</p>
 				<div className="divider divider-horizontal"></div>
 				<span className="">
-					{published_on && new Date(published_on).toDateString()}
+					{published_on
+						? new Date(published_on).toDateString()
+						: "Not Published"}
+				</span>
+				<div className="divider divider-horizontal"></div>
+				<span className="flex items-center gap-1">
+					{upvotes && upvotes > 0 && upvotes} <BiUpvote />
 				</span>
 			</div>
 			<p className="italic">{description}</p>

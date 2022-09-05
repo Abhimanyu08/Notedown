@@ -6,6 +6,6 @@ these three steps should be a transaction. Either all of them execute successful
 5. Enable changing name and profile picture
 6. Enable search
 7. tags
-8. comments
 9. upvotes -> Enable greatest feature on profile page
 10. improve upload UX
+11. update search ts vector when someone updates his name

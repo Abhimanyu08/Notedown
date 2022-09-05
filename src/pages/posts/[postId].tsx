@@ -3,7 +3,13 @@ import { BiCodeAlt, BiUpvote } from "react-icons/bi";
 import { IoMdShareAlt } from "react-icons/io";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import {
+	MouseEventHandler,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import {
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
@@ -21,6 +27,7 @@ import sendRequest from "../../../utils/sendRequest";
 import { BsBookmarkFill } from "react-icons/bs";
 import { Toc } from "../../components/TableOfContents";
 import Upvotes from "../../interfaces/Upvotes";
+import Post from "../../interfaces/Post";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -32,6 +39,8 @@ export default function PublicBlog(props: BlogProps | {}) {
 	const [containerId, setContainerId] = useState<string>();
 	const [connecting, setConnecting] = useState(false);
 	const [upvoted, setUpvoted] = useState(false);
+	const [upvotes, setUpvotes] = useState<number | null>(null);
+	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const { postId } = router.query;
 
 	useEffect(() => {
@@ -48,6 +57,19 @@ export default function PublicBlog(props: BlogProps | {}) {
 
 		fetchUpvote();
 	}, [user]);
+
+	useEffect(() => {
+		const fetchUpvotes = async () => {
+			const { data, error } = await supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select("upvote_count")
+				.eq("id", parseInt(postId as string));
+			if (error || !data || data.length === 0) return;
+			setUpvotes(data.at(0)?.upvote_count || 0);
+		};
+
+		if (upvotes === null) fetchUpvotes();
+	}, []);
 
 	if (router.isFallback || !checkProps(props)) {
 		return (
@@ -75,7 +97,7 @@ export default function PublicBlog(props: BlogProps | {}) {
 		setConnecting(true);
 		try {
 			const resp = await sendRequest("POST", {
-				language: (props as BlogProps).language,
+				language: props.language,
 			});
 
 			if (resp.status !== 201) {
@@ -97,6 +119,7 @@ export default function PublicBlog(props: BlogProps | {}) {
 		if (!user || !postId) return;
 		if (upvoted) {
 			setUpvoted(false);
+			setUpvotes((prev) => prev! - 1);
 			await supabase
 				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
 				.delete()
@@ -105,10 +128,10 @@ export default function PublicBlog(props: BlogProps | {}) {
 		}
 
 		setUpvoted(true);
-		const { data, error } = await supabase
+		setUpvotes((prev) => (prev || 0) + 1);
+		await supabase
 			.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
 			.insert({ upvoter: user.id, post_id: parseInt(postId as string) });
-		if (error || !data || data.length === 0) return;
 	};
 
 	return (
@@ -157,19 +180,24 @@ export default function PublicBlog(props: BlogProps | {}) {
 							/>
 						</div>
 
-						<div
-							className="btn btn-circle  btn-ghost tooltip"
-							data-tip={` ${
-								user ? "Upvote" : "Please login to upvote"
-							} `}
-							onClick={onUpvote}
-						>
-							<BiUpvote
-								size={30}
-								className={`mt-2 ml-2 ${
-									upvoted ? "text-lime-400" : "text-white"
-								}`}
-							/>
+						<div className="flex items-center">
+							<div
+								className="btn btn-circle  btn-ghost tooltip"
+								data-tip={` ${
+									user ? "Upvote" : "Please login to upvote"
+								} `}
+								onClick={onUpvote}
+							>
+								<BiUpvote
+									size={30}
+									className={`mt-2 ml-2 ${
+										upvoted ? "text-lime-400" : "text-white"
+									}`}
+								/>
+							</div>
+							<span>
+								{formatter.current.format(upvotes || 0)}
+							</span>
 						</div>
 					</div>
 				</BlogLayout>

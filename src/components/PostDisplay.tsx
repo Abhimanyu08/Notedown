@@ -5,29 +5,21 @@ import React, {
 	useEffect,
 	useState,
 } from "react";
-import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Post from "../interfaces/Post";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 import PostComponent from "./PostComponent";
 
-const LIMIT = 2;
-
 interface PostDisplayProps {
 	owner: boolean;
-	author?: string;
-	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
-	posts?: Partial<PostWithBlogger>[] | null;
+	author: string;
+	setPostInAction: Dispatch<SetStateAction<Partial<Post> | null>>;
+	posts: Partial<PostWithBlogger>[] | null;
 	cursorKey: keyof Post;
 	ascending: boolean;
 	addPosts: (newPosts: Post[] | PostWithBlogger[]) => void;
-}
-
-function checkPostType(
-	post: PostWithBlogger | Partial<Post>
-): post is PostWithBlogger {
-	return Object.hasOwn(post, "bloggers");
 }
 
 function PostDisplay({
@@ -38,13 +30,16 @@ function PostDisplay({
 	cursorKey,
 	setPostInAction,
 	addPosts,
-}: PostDisplayProps) {
+}: Partial<PostDisplayProps>) {
 	const [cursor, setCursor] = useState(
-		(posts?.at(posts.length - 1) || {})[cursorKey] || null
+		(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] || null
 	);
 
 	useEffect(() => {
-		setCursor((posts?.at(posts.length - 1) || {})[cursorKey] || null);
+		setCursor(
+			(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] ||
+				null
+		);
 	}, [posts]);
 
 	const onLoadMore: MouseEventHandler = async () => {
@@ -58,8 +53,8 @@ function PostDisplay({
 				.from<Post>(SUPABASE_POST_TABLE)
 				.select()
 				.match({ created_by, published })
-				.order(cursorKey, { ascending })
-				.lt(cursorKey, cursor)
+				.order(cursorKey || "created_at", { ascending })
+				.lt(cursorKey || "created_at", cursor)
 				.limit(LIMIT);
 
 			if (error || !data) {
@@ -67,15 +62,15 @@ function PostDisplay({
 				return;
 			}
 
-			addPosts(data);
+			if (addPosts) addPosts(data);
 			return;
 		}
 
 		const { data, error } = await supabase
 			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 			.select("*, bloggers(name)")
-			.order(cursorKey, { ascending })
-			.lt(cursorKey, cursor)
+			.order(cursorKey || "created_at", { ascending })
+			.lt(cursorKey || "created_at", cursor)
 			.limit(LIMIT);
 
 		if (error || !data) {
@@ -83,7 +78,7 @@ function PostDisplay({
 			return;
 		}
 
-		addPosts(data);
+		if (addPosts) addPosts(data);
 	};
 
 	return (
@@ -94,19 +89,21 @@ function PostDisplay({
 					{...{
 						post,
 						author: author || post.bloggers?.name,
-						owner,
+						owner: owner || false,
 						setPostInAction,
 					}}
 				/>
 			))}
-			<div className="flex justify-center pb-10">
-				<div
-					className="btn btn-sm normal-case bg-slate-800"
-					onClick={onLoadMore}
-				>
-					Load More
+			{(posts?.length || 0) > 0 && addPosts && (
+				<div className="flex justify-center pb-10">
+					<div
+						className="btn btn-sm normal-case bg-slate-800"
+						onClick={onLoadMore}
+					>
+						Load More
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 }
