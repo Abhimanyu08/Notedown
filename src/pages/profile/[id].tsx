@@ -275,11 +275,15 @@ function Profile({ profileUser, posts }: ProfileProps) {
 										profileId={profileUser?.id}
 									/>
 								</div>
-								{postType === "published" && (
+								{
 									<select
 										name=""
 										id=""
-										className="select select-sm font-normal grow-0"
+										className={` select select-sm font-normal grow-0 ${
+											postType === "published"
+												? ""
+												: "invisible"
+										}`}
 										value={sortType}
 										onChange={(e) =>
 											setSortType(
@@ -294,7 +298,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 											Greatest
 										</option>
 									</select>
-								)}
+								}
 							</div>
 							{(searchResults?.length || 0) > 0 ? (
 								<PostDisplay

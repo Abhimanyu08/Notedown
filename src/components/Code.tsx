@@ -31,6 +31,12 @@ function Code({ code, language, blockNumber }: CodeProps) {
 			if (!setBlockToCode) return;
 			const codeArray = editorView?.state.doc.toJSON() || [""];
 			const code = codeArray.join("\n");
+			if (/file-((.)+)/.exec(codeArray[0])) {
+				setBlockToCode({
+					[blockNumber]: code,
+				});
+				return;
+			}
 			setBlockToCode((prev) => ({
 				...prev,
 				[blockNumber]: code,
@@ -78,11 +84,11 @@ function Code({ code, language, blockNumber }: CodeProps) {
 			{blockToOutput && blockToOutput[blockNumber] && (
 				<div className="not-prose">
 					<pre
-						className={`text-white  mt-2 p-4 rounded-md bg-black ${
+						className={`text-white overflow-x-auto mt-2 p-4 rounded-md bg-black ${
 							hideOutput ? "hidden" : ""
 						}`}
 					>
-						<code className="">
+						<code className="max-w-full">
 							{blockToOutput[blockNumber].trim()}
 						</code>
 					</pre>

@@ -11,6 +11,7 @@ export function Blog({
 	language,
 	containerId,
 	created_by,
+	image_folder,
 }: Partial<BlogProps>) {
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
@@ -27,7 +28,7 @@ export function Blog({
 			html: content,
 			language: language!,
 			ownerId: created_by!,
-			blogTitle: title!,
+			imageFolder: image_folder || undefined,
 		});
 	}, []);
 
@@ -51,6 +52,7 @@ export function Blog({
 	useEffect(() => {
 		if (!runningCode || !runningBlock || !language || !containerId) return;
 		const runCodeRequest = async (blockNumber: number) => {
+			console.log(blockToCode);
 			let code = Object.values(blockToCode).join("\n");
 			code = code.trim();
 

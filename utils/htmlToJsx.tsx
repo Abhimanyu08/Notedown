@@ -10,13 +10,13 @@ interface htmlToJsxProps {
 	html: string;
 	language: string;
 	ownerId: string;
-	blogTitle: string;
+	imageFolder?: string;
 }
 function htmlToJsx({
 	html,
 	language,
 	ownerId,
-	blogTitle,
+	imageFolder,
 }: htmlToJsxProps): JSX.Element {
 	const re =
 		/([^<>]*?)(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)/g;
@@ -60,7 +60,7 @@ function htmlToJsx({
 					content?.matchAll(/((.|\n|\r)*?)(<img (.*)>)([^<>]*)/g) ||
 						[]
 				);
-				if (hasImage.length !== 0) {
+				if (hasImage.length !== 0 && imageFolder) {
 					return Array.from(hasImage).map((imageMatch) => {
 						const string1 = imageMatch.at(1);
 						const string2 = imageMatch.at(5);
@@ -74,12 +74,7 @@ function htmlToJsx({
 						let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
 						const { publicURL } = supabase.storage
 							.from(SUPABASE_IMAGE_BUCKET)
-							.getPublicUrl(
-								`${makeFolderName(
-									ownerId,
-									blogTitle
-								)}/${imageName}`
-							);
+							.getPublicUrl(`${imageFolder}/${imageName}`);
 						return (
 							<>
 								<span>
@@ -87,7 +82,7 @@ function htmlToJsx({
 										html: string1 || "",
 										language,
 										ownerId,
-										blogTitle,
+										imageFolder,
 									})}
 								</span>
 								<div className="">
@@ -122,7 +117,7 @@ function htmlToJsx({
 								html: content!,
 								language,
 								ownerId,
-								blogTitle,
+								imageFolder,
 							})
 						)}
 						<span>{string2}</span>
