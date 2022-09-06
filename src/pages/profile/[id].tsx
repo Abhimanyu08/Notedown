@@ -1,5 +1,5 @@
-import { PostgrestError, User } from "@supabase/supabase-js";
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -7,39 +7,36 @@ import {
 	SetStateAction,
 	useContext,
 	useEffect,
-	useMemo,
 	useState,
 } from "react";
+import { AiOutlineFileDone } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
+import { VscPreview } from "react-icons/vsc";
 import {
 	LIMIT,
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
+import mdToHtml from "../../../utils/mdToHtml";
+import { sendRevalidationRequest } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import { About } from "../../components/About";
+import { DeleteModal } from "../../components/DeleteModal";
+import { EditModal } from "../../components/EditModal";
 import Layout from "../../components/Layout";
-import PostComponent from "../../components/PostComponent";
+import PostDisplay from "../../components/PostDisplay";
+import { PublishModal } from "../../components/PublishModal";
+import SearchComponent from "../../components/SearchComponent";
+import { UnPublishModal } from "../../components/UnPublishModal";
+import { UploadModal } from "../../components/UploadModal";
+import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
 import { UserContext } from "../_app";
-import { UploadModal } from "../../components/UploadModal";
-import { VscPreview } from "react-icons/vsc";
-import { AiOutlineFileDone } from "react-icons/ai";
-import mdToHtml from "../../../utils/mdToHtml";
-import PostDisplay from "../../components/PostDisplay";
-import { DeleteModal } from "../../components/DeleteModal";
-import { EditModal } from "../../components/EditModal";
-import { PublishModal } from "../../components/PublishModal";
-import { UnPublishModal } from "../../components/UnPublishModal";
-import Head from "next/head";
-import SearchComponent from "../../components/SearchComponent";
-import PostWithBlogger from "../../interfaces/PostWithBlogger";
-import { sendRevalidationRequest } from "../../../utils/sendRequest";
 
 interface ProfileProps {
-	posts?: Partial<Post>[] | null;
-	profileUser?: Blogger | null;
+	posts?: Partial<Post>[];
+	profileUser?: Blogger;
 }
 
 function Profile({ profileUser, posts }: ProfileProps) {
@@ -49,14 +46,15 @@ function Profile({ profileUser, posts }: ProfileProps) {
 		"published"
 	);
 	const [editingAbout, setEditingAbout] = useState(false);
-	const [publicPosts, setPublicPosts] = useState(posts);
+	const [publicPosts, setPublicPosts] = useState<
+		Partial<Post>[] | null | undefined
+	>(posts);
 	const [privatePosts, setPrivatePosts] = useState<Partial<Post>[] | null>();
 	const [searchResults, setSearchResults] = useState<Post[]>();
 	const router = useRouter();
-	const { id } = router.query;
 	const { user } = useContext(UserContext);
 
-	const [about, setAbout] = useState(profile?.about);
+	const [about, setAbout] = useState<string | undefined>(profile?.about);
 	const [htmlAbout, setHtmlAbout] = useState("");
 	const [previewing, setPreviewing] = useState(false);
 	const [sortType, setSortType] = useState<"greatest" | "latest">("latest");
@@ -65,6 +63,8 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
 		null
 	);
+
+	const id = profileUser?.id || null;
 
 	useEffect(() => {
 		const aboutMd2Html = async () => {
@@ -80,13 +80,14 @@ function Profile({ profileUser, posts }: ProfileProps) {
 		const { data, error } = await supabase
 			.from(SUPABASE_BLOGGER_TABLE)
 			.update({ about })
-			.eq("id", id);
+			.eq("id", profile?.id);
 		if (error || !data || data.length == 0) {
 			alert("Error in updating about");
 			return;
 		}
 		setProfile(data.at(0));
 		setEditingAbout(false);
+		sendRevalidationRequest(`profile/${profile?.id}`);
 	};
 
 	const onPostTypeChange: ChangeEventHandler<HTMLSelectElement> = async (
@@ -104,7 +105,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 			const { data } = await supabase
 				.from<Post>(SUPABASE_POST_TABLE)
 				.select()
-				.match({ created_by: id, published: false })
+				.match({ created_by: profile?.id, published: false })
 				.order("created_at", { ascending: false })
 				.limit(LIMIT);
 			setPrivatePosts(data);
@@ -214,22 +215,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 			</>
 			<div className="grid grid-cols-1 grow min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-64 px-5 md:px-32">
 				<div className="lg:col-span-2 h-fit">
-					<div className="flex flex-col gap-4 items-center lg:w-fit w-full">
-						<div className="avatar">
-							<div className="rounded-md">
-								{profile?.avatar_url && (
-									<Image
-										src={profile.avatar_url}
-										width={128}
-										height={128}
-										layout="fixed"
-										className=""
-									/>
-								)}
-							</div>
-						</div>
-						<h1 className="text-lg font-normal">{profile?.name}</h1>
-					</div>
+					<UserDisplay profile={profile} />
 				</div>
 				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 px-1">
 					<div className="flex justify-between grow-0 items-center mb-4">
@@ -370,6 +356,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 								<PostDisplay
 									posts={publicPosts || []}
 									owner={user?.id === id}
+									setPostInAction={setPostInAction}
 									author={profile?.name || undefined}
 									cursorKey={"published_on"}
 									fetchPosts={fetchPublicPosts}
@@ -409,12 +396,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	return { paths: [], fallback: true };
 };
 export const getStaticProps: GetStaticProps<
-	ProfileProps,
+	Partial<ProfileProps>,
 	{ id: string }
 > = async (context) => {
-	const id = context.params!.id;
+	if (!context.params) throw Error("context params are undefined");
+	const { id } = context.params;
 
-	let userData, postData, error;
+	let userData: Blogger | undefined;
+	let postData: Partial<Post>[] | undefined;
+	let error;
 
 	await Promise.all([
 		supabase
@@ -433,11 +423,15 @@ export const getStaticProps: GetStaticProps<
 			.order("published_on", { ascending: false })
 			.limit(LIMIT)
 			.then((val) => {
-				postData = val.data;
+				postData = val.data || undefined;
 				error = val.error;
 			}),
 	]);
+	if (error) {
+		return { props: {}, redirect: "/" };
+	}
 
+	if (!userData) return { props: {}, redirect: "/" };
 	return {
 		props: {
 			posts: postData,

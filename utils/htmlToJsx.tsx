@@ -93,6 +93,7 @@ function htmlToJsx({
 											objectFit="contain"
 											className="resize w-full"
 											width={175}
+											alt={attrs["alt"]}
 											height={120}
 										/>
 									</div>

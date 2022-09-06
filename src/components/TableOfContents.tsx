@@ -68,7 +68,10 @@ export function Toc({ html }: { html?: string }) {
 				</li>
 				{matches?.map((match) => {
 					return (
-						<li className={`${headingToMargin[match.at(1)!]}`}>
+						<li
+							className={`${headingToMargin[match.at(1)!]}`}
+							key={match.at(4)}
+						>
 							<a
 								href={`#${match.at(4)}`}
 								className={`${headingToFontSize[match.at(1)!]}

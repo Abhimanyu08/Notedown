@@ -33,7 +33,11 @@ function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
 }
 
-export default function PublicBlog(props: BlogProps | {}) {
+interface PublicBlogProps extends BlogProps {
+	postId: string;
+}
+
+export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string>();
@@ -41,7 +45,7 @@ export default function PublicBlog(props: BlogProps | {}) {
 	const [upvoted, setUpvoted] = useState(false);
 	const [upvotes, setUpvotes] = useState<number | null>(null);
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
-	const { postId } = router.query;
+	const { postId } = props;
 
 	useEffect(() => {
 		const fetchUpvote = async () => {
@@ -140,7 +144,10 @@ export default function PublicBlog(props: BlogProps | {}) {
 				<title>{props.title || ""}</title>
 				<meta name="author" content={props.bloggers.name} />
 				<meta name="description" content={props.description} />
-				<meta name="keywords" content={props.language} />
+				<meta
+					name="keywords"
+					content={`${props.language}, ${props.title}`}
+				/>
 			</Head>
 			<Layout
 				user={user || null}
@@ -207,11 +214,20 @@ export default function PublicBlog(props: BlogProps | {}) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	return { paths: [], fallback: true };
+	const { data } = await supabase
+		.from<Post>(SUPABASE_POST_TABLE)
+		.select("id")
+		.limit(5);
+	return {
+		paths: data?.map((post) => ({ params: { postId: `${post.id}` } })) || [
+			{ params: { postId: "69" } },
+		],
+		fallback: true,
+	};
 };
 
 export const getStaticProps: GetStaticProps<
-	Partial<BlogProps>,
+	Partial<PublicBlogProps>,
 	{ postId: string }
 > = async (context) => {
 	const { data, error } = await supabase
@@ -233,6 +249,7 @@ export const getStaticProps: GetStaticProps<
 	return {
 		props: {
 			...post,
+			postId: context.params?.postId,
 			content,
 		},
 	};

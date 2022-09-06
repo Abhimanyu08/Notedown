@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { BiCodeAlt, BiUpvote } from "react-icons/bi";
-import { IoMdShareAlt } from "react-icons/io";
-import sendRequestToRceServer from "../../../../utils/sendRequest";
+import { BiCodeAlt } from "react-icons/bi";
+import { sendRequestToRceServer } from "../../../../utils/sendRequest";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";

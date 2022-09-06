@@ -49,7 +49,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				<div className="flex absolute top-0 right-0 gap-2">
 					<label
 						htmlFor={`edit`}
-						className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
+						className="btn btn-xs btn-circle btn-ghost  tooltip tooltip-left capitalize"
 						data-tip="edit"
 						onClick={onAction}
 					>
@@ -61,7 +61,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					{published ? (
 						<label
 							htmlFor={`unpublish`}
-							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
+							className="btn btn-xs btn-circle btn-ghost  tooltip tooltip-left capitalize"
 							data-tip="unpublish"
 							onClick={onAction}
 						>
@@ -73,7 +73,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					) : (
 						<label
 							htmlFor={`publish`}
-							className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
+							className="btn btn-xs btn-circle btn-ghost tooltip-left tooltip capitalize"
 							data-tip="publish"
 							onClick={onAction}
 						>
@@ -85,7 +85,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					)}
 					<label
 						htmlFor={`delete`}
-						className="btn btn-xs btn-circle btn-ghost  tooltip capitalize"
+						className="btn btn-xs btn-circle btn-ghost  tooltip tooltip-left capitalize"
 						data-tip="delete"
 						onClick={onAction}
 					>

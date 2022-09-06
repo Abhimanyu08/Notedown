@@ -12,10 +12,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const { pathToRevalidate } = JSON.parse(req.body)
         console.log(pathToRevalidate)
         await res.revalidate(`/${pathToRevalidate}`)
+        console.log(`success in revalidating ${pathToRevalidate}`);
         return res.json({ revalidated: true })
     } catch (err) {
         // If there was an error, Next.js will continue
         // to show the last successfully generated page
+        console.log(err)
         return res.status(500).send('Error revalidating')
     }
 }

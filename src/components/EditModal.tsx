@@ -7,7 +7,7 @@ import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
 export function EditModal({
-	post: { title, description, id, published },
+	post: { title, description, id, published, created_by },
 	modifyPosts,
 }: ModalProps) {
 	const [newTitle, setNewTitle] = useState(title);
@@ -26,6 +26,7 @@ export function EditModal({
 		}
 		if (published) {
 			sendRevalidationRequest(`posts/${id}`);
+			sendRevalidationRequest(`profile/${created_by}`);
 		}
 
 		modifyPosts(published ? "published" : "unpublished", (prev) =>

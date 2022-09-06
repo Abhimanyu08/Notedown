@@ -7,9 +7,9 @@ import { supabase } from "../../utils/supabaseClient";
 import { BlogProps } from "../interfaces/BlogProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 
-export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: number, loggedInUser: User | null }): { data: BlogProps | undefined; error: PostgrestError | Error | undefined; loading: boolean; } {
+export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: number, loggedInUser: User | null }): { data: Partial<BlogProps> | undefined; error: PostgrestError | Error | undefined; loading: boolean; } {
     const router = useRouter()
-    const [privatePost, setPrivatePost] = useState<BlogProps>();
+    const [privatePost, setPrivatePost] = useState<Partial<BlogProps>>();
     const [error, setError] = useState<PostgrestError | Error>();
     const [loading, setLoading] = useState(true);
     const fetch = useRef(true)

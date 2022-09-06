@@ -20,7 +20,9 @@ export function PublishModal({
 			alert("Error in publishing post");
 			return;
 		}
+
 		sendRevalidationRequest(`profile/${created_by}`);
+		sendRevalidationRequest(`posts/${id}`);
 		modifyPosts("unpublished", (prev) =>
 			prev?.filter((post) => post.id !== id)
 		);
