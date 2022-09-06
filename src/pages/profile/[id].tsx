@@ -1,6 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import {
 	ChangeEventHandler,
@@ -80,6 +79,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		aboutMd2Html();
 	}, [about]);
 
+	useEffect(() => {
+		checkGreatestStillGreatest(greatest);
+	}, []);
+
 	const onAboutSave = async () => {
 		const { data, error } = await supabase
 			.from(SUPABASE_BLOGGER_TABLE)
@@ -113,6 +116,24 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				.order("created_at", { ascending: false })
 				.limit(LIMIT);
 			setPrivatePosts(data);
+		}
+	};
+
+	const checkGreatestStillGreatest = async (
+		greatest?: Partial<Post>[] | null
+	) => {
+		if (!greatest) return;
+		const { data, error } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select("*")
+			.match({ created_by: id, published: true })
+			.order("upvote_count", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data || data.length === 0) return;
+
+		if (data.some((post, idx) => post.id !== greatest[idx].id)) {
+			sendRevalidationRequest(`profile/${id}`);
 		}
 	};
 

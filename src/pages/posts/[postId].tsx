@@ -1,6 +1,4 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import { BiCodeAlt, BiUpvote } from "react-icons/bi";
-import { IoMdShareAlt } from "react-icons/io";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import {
@@ -10,24 +8,25 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { BiCodeAlt, BiUpvote } from "react-icons/bi";
+import { IoMdShareAlt } from "react-icons/io";
 import {
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
 	SUPABASE_UPVOTES_TABLE,
 } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
+import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import { Blog } from "../../components/Blog";
 import BlogLayout from "../../components/BlogLayout";
-import PostWithBlogger from "../../interfaces/PostWithBlogger";
-import { BlogProps } from "../../interfaces/BlogProps";
-import { UserContext } from "../_app";
 import Layout from "../../components/Layout";
-import { sendRequestToRceServer } from "../../../utils/sendRequest";
-import { BsBookmarkFill } from "react-icons/bs";
 import { Toc } from "../../components/TableOfContents";
-import Upvotes from "../../interfaces/Upvotes";
+import { BlogProps } from "../../interfaces/BlogProps";
 import Post from "../../interfaces/Post";
+import PostWithBlogger from "../../interfaces/PostWithBlogger";
+import Upvotes from "../../interfaces/Upvotes";
+import { UserContext } from "../_app";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;

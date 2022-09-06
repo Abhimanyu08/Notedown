@@ -1,16 +1,14 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { SUPABASE_POST_TABLE, LIMIT } from "../../utils/constants";
+import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
-import PostComponent from "../components/PostComponent";
 import PostDisplay from "../components/PostDisplay";
-import PostWithBlogger from "../interfaces/PostWithBlogger";
-import { checkPostsType } from "../../utils/checkPostsType";
-import { UserContext } from "./_app";
 import SearchComponent from "../components/SearchComponent";
 import Post from "../interfaces/Post";
+import PostWithBlogger from "../interfaces/PostWithBlogger";
+import { UserContext } from "./_app";
 
 interface HomeProps {
 	posts: PostWithBlogger[] | null;

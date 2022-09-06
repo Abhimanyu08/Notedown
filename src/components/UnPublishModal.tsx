@@ -1,4 +1,4 @@
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import { MouseEventHandler } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { sendRevalidationRequest } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";

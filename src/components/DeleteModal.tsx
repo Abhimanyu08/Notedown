@@ -1,5 +1,4 @@
-import { PostgrestError } from "@supabase/supabase-js";
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import { MouseEventHandler } from "react";
 import {
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,

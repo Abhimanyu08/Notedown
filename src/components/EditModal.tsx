@@ -1,5 +1,4 @@
-import { prepareServerlessUrl } from "next/dist/server/base-server";
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { sendRevalidationRequest } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";

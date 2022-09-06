@@ -1,7 +1,6 @@
-import React, {
+import {
 	ChangeEventHandler,
 	Dispatch,
-	MouseEventHandler,
 	SetStateAction,
 	useEffect,
 	useState,
@@ -11,7 +10,6 @@ import { SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
-import PostDisplay from "./PostDisplay";
 
 interface SearchComponentProps {
 	setPosts: (newPosts: PostWithBlogger[] | Post[]) => void;

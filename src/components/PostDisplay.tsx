@@ -1,14 +1,11 @@
-import React, {
+import {
 	Dispatch,
 	MouseEventHandler,
 	SetStateAction,
 	useEffect,
 	useState,
 } from "react";
-import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
 import Post from "../interfaces/Post";
-import { PostComponentProps } from "../interfaces/PostComponentProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 import PostComponent from "./PostComponent";
 

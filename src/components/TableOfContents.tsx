@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-	MdOutlineArrowDownward,
-	MdOutlineArrowDropDown,
-	MdOutlineArrowRight,
-} from "react-icons/md";
+import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 
 const headingToMargin: Record<string, string> = {
 	h2: "ml-0",

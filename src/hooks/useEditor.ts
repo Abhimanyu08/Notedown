@@ -1,23 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { text } from 'stream/consumers';
-import { EditorState, Compartment, EditorSelection, Extension } from "@codemirror/state";
-import { basicSetup, minimalSetup, EditorView } from "codemirror";
 import { python } from "@codemirror/lang-python";
+import { Compartment, EditorState, Extension } from "@codemirror/state";
+import { EditorView } from "codemirror";
+import { useContext, useEffect, useState } from 'react';
 
 
-import {
-    keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
-    rectangularSelection, crosshairCursor,
-    lineNumbers, highlightActiveLineGutter
-} from "@codemirror/view"
-import {
-    defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-    foldGutter, foldKeymap
-} from "@codemirror/language"
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands"
-import { searchKeymap, highlightSelectionMatches } from "@codemirror/search"
-import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete"
-import { lintKeymap } from "@codemirror/lint"
+import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
+import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language";
+import { lintKeymap } from "@codemirror/lint";
+import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
+import { crosshairCursor, drawSelection, dropCursor, highlightActiveLineGutter, highlightSpecialChars, keymap, lineNumbers, rectangularSelection } from "@codemirror/view";
 import { BlogContext } from '../pages/_app';
 
 
