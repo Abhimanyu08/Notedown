@@ -23,7 +23,7 @@ import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import { UserContext } from "../_app";
 import Layout from "../../components/Layout";
-import sendRequest from "../../../utils/sendRequest";
+import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { BsBookmarkFill } from "react-icons/bs";
 import { Toc } from "../../components/TableOfContents";
 import Upvotes from "../../interfaces/Upvotes";
@@ -96,7 +96,7 @@ export default function PublicBlog(props: BlogProps | {}) {
 		if (containerId) return;
 		setConnecting(true);
 		try {
-			const resp = await sendRequest("POST", {
+			const resp = await sendRequestToRceServer("POST", {
 				language: props.language,
 			});
 
@@ -227,7 +227,7 @@ export const getStaticProps: GetStaticProps<
 		.from(SUPABASE_FILES_BUCKET)
 		.download(filename);
 
-	if (fileError || !fileData) return { props: {} };
+	if (fileError || !fileData) return { props: {}, redirect: "/" };
 	const content = await getHtmlFromMarkdown(fileData);
 
 	return {

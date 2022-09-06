@@ -9,7 +9,6 @@ import {
 } from "react";
 import "../../styles/globals.css";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import { notifyServer } from "../../utils/handleAuth";
 import { supabase } from "../../utils/supabaseClient";
 import Blogger from "../interfaces/Blogger";
 

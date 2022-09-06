@@ -35,6 +35,7 @@ import { UnPublishModal } from "../../components/UnPublishModal";
 import Head from "next/head";
 import SearchComponent from "../../components/SearchComponent";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
+import { sendRevalidationRequest } from "../../../utils/sendRequest";
 
 interface ProfileProps {
 	posts?: Partial<Post>[] | null;

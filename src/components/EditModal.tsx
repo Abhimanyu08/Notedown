@@ -1,6 +1,7 @@
 import { prepareServerlessUrl } from "next/dist/server/base-server";
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { sendRevalidationRequest } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
@@ -23,6 +24,10 @@ export function EditModal({
 			console.log(error);
 			return;
 		}
+		if (published) {
+			sendRevalidationRequest(`posts/${id}`);
+		}
+
 		modifyPosts(published ? "published" : "unpublished", (prev) =>
 			prev?.map((post) => {
 				if (post.id !== id) return post;

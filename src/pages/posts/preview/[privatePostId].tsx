@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { BiCodeAlt, BiUpvote } from "react-icons/bi";
 import { IoMdShareAlt } from "react-icons/io";
-import sendRequest from "../../../../utils/sendRequest";
+import sendRequestToRceServer from "../../../../utils/sendRequest";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
@@ -46,7 +46,7 @@ export default function PrivateBlog() {
 		if (containerId) return;
 		setConnecting(true);
 		try {
-			const resp = await sendRequest("POST", {
+			const resp = await sendRequestToRceServer("POST", {
 				language: data?.language || "",
 			});
 

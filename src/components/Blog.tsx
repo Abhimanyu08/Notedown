@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import htmlToJsx from "../../utils/htmlToJsx";
-import sendRequest from "../../utils/sendRequest";
+import { sendRequestToRceServer } from "../../utils/sendRequest";
 import { BlogProps } from "../interfaces/BlogProps";
 import { BlogContext } from "../pages/_app";
 
@@ -62,11 +62,11 @@ export function Blog({
 				setBlockToCode({});
 				return;
 			}
-			const params: Parameters<typeof sendRequest> = [
+			const params: Parameters<typeof sendRequestToRceServer> = [
 				"POST",
 				{ language, containerId, code },
 			];
-			const resp = await sendRequest(...params);
+			const resp = await sendRequestToRceServer(...params);
 
 			if (resp.status !== 201) {
 				setBlockToOutput({ [blockNumber]: resp.statusText });

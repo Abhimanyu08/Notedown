@@ -1,9 +1,13 @@
 import { MouseEventHandler } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { sendRevalidationRequest } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 
-export function PublishModal({ post: { id }, modifyPosts }: ModalProps) {
+export function PublishModal({
+	post: { id, created_by },
+	modifyPosts,
+}: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
 			.from(SUPABASE_POST_TABLE)
@@ -16,6 +20,7 @@ export function PublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			alert("Error in publishing post");
 			return;
 		}
+		sendRevalidationRequest(`profile/${created_by}`);
 		modifyPosts("unpublished", (prev) =>
 			prev?.filter((post) => post.id !== id)
 		);

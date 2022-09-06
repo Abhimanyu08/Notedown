@@ -1,4 +1,4 @@
-async function sendRequest(method: "POST", body: { language: string, containerId?: string, code?: string }) {
+export async function sendRequestToRceServer(method: "POST", body: { language: string, containerId?: string, code?: string }) {
     const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
         method,
         mode: "cors",
@@ -10,4 +10,9 @@ async function sendRequest(method: "POST", body: { language: string, containerId
     return resp
 }
 
-export default sendRequest
+export async function sendRevalidationRequest(pathToRevalidate: string) {
+    await fetch(`/api/revalidate?secret=${process.env.NEXT_PUBLIC_REVALIDATE_TOKEN}`, {
+        method: "POST",
+        body: JSON.stringify({ pathToRevalidate })
+    });
+}

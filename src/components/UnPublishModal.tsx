@@ -1,10 +1,14 @@
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { sendRevalidationRequest } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
-export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
+export function UnPublishModal({
+	post: { id, created_by },
+	modifyPosts,
+}: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
@@ -17,6 +21,9 @@ export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			alert("Error in unpublishing post");
 			return;
 		}
+
+		sendRevalidationRequest(`posts/${id}`);
+		sendRevalidationRequest(`profile/${created_by}`);
 		modifyPosts("published", (prev) =>
 			prev?.filter((post) => post.id !== id)
 		);
