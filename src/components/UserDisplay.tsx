@@ -8,11 +8,13 @@ import {
 } from "../../utils/constants";
 import makeFolderName from "../../utils/makeFolderName";
 import { sendRevalidationRequest } from "../../utils/sendRequest";
+import { User } from "@supabase/supabase-js";
 interface UserDisplayProps {
 	profile?: Blogger;
+	user: User | null;
 }
 
-function UserDisplay({ profile }: UserDisplayProps) {
+function UserDisplay({ profile, user }: UserDisplayProps) {
 	const [editing, setEditing] = useState(false);
 	const [newName, setNewName] = useState("");
 	const [newPic, setNewPic] = useState<File | null>(null);
@@ -103,21 +105,22 @@ function UserDisplay({ profile }: UserDisplayProps) {
 					{profile?.name}
 				</h1>
 			)}
-			{editing ? (
-				<div
-					className="btn btn-sm bg-base-200 normal-case mt-10"
-					onClick={onSave}
-				>
-					Save
-				</div>
-			) : (
-				<div
-					className="btn btn-sm bg-base-200 normal-case w-fit mt-10"
-					onClick={() => setEditing((prev) => !prev)}
-				>
-					Edit
-				</div>
-			)}
+			{(user?.id || null) === profile?.id &&
+				(editing ? (
+					<div
+						className="btn btn-sm bg-base-200 normal-case mt-10"
+						onClick={onSave}
+					>
+						Save
+					</div>
+				) : (
+					<div
+						className="btn btn-sm bg-base-200 normal-case w-fit mt-10"
+						onClick={() => setEditing((prev) => !prev)}
+					>
+						Edit
+					</div>
+				))}
 		</div>
 	);
 }

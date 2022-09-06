@@ -18,7 +18,7 @@ interface PostDisplayProps {
 	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
 	posts: Partial<PostWithBlogger>[] | null;
 	cursorKey: keyof Post;
-	searchTerm: string;
+	searchTerm?: string;
 	fetchPosts: (cursor: string | number, searchTerm?: string) => void;
 }
 
@@ -45,7 +45,7 @@ function PostDisplay({
 	const onLoadMore: MouseEventHandler = async () => {
 		if (!fetchPosts || !posts || posts.length === 0) return;
 
-		await fetchPosts(cursor as string | number, searchTerm);
+		fetchPosts(cursor as string | number, searchTerm);
 	};
 
 	return (

@@ -35,11 +35,12 @@ import Post from "../../interfaces/Post";
 import { UserContext } from "../_app";
 
 interface ProfileProps {
-	posts?: Partial<Post>[];
+	latest?: Partial<Post>[];
+	greatest?: Partial<Post>[];
 	profileUser?: Blogger;
 }
 
-function Profile({ profileUser, posts }: ProfileProps) {
+function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [profile, setProfile] = useState(profileUser);
 	const [section, setSection] = useState<"posts" | "about">("posts");
 	const [postType, setPostType] = useState<"published" | "unpublished">(
@@ -48,9 +49,12 @@ function Profile({ profileUser, posts }: ProfileProps) {
 	const [editingAbout, setEditingAbout] = useState(false);
 	const [publicPosts, setPublicPosts] = useState<
 		Partial<Post>[] | null | undefined
-	>(posts);
+	>(latest);
 	const [privatePosts, setPrivatePosts] = useState<Partial<Post>[] | null>();
 	const [searchResults, setSearchResults] = useState<Post[]>();
+	const [greatestPosts, setGreatestPosts] = useState<
+		Partial<Post>[] | null | undefined
+	>(greatest);
 	const router = useRouter();
 	const { user } = useContext(UserContext);
 
@@ -138,7 +142,24 @@ function Profile({ profileUser, posts }: ProfileProps) {
 		}
 		setPrivatePosts((prev) => [...(prev || []), ...data]);
 	};
-	const fetchPublicPosts = async (cursor: string | number) => {
+
+	const fetchGreatestPosts = async (cursor: string | number) => {
+		const { data, error } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select()
+			.match({ created_by: profileUser?.id, published: true })
+			.lt("upvote_count", cursor)
+			.order("upvote_count", { ascending: false })
+			.limit(LIMIT);
+
+		if (error || !data) {
+			console.log(error.message || "data returned is null");
+			return;
+		}
+		setGreatestPosts((prev) => [...(prev || []), ...data]);
+	};
+
+	const fetchLatestPosts = async (cursor: string | number) => {
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select()
@@ -215,7 +236,7 @@ function Profile({ profileUser, posts }: ProfileProps) {
 			</>
 			<div className="grid grid-cols-1 grow min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-64 px-5 md:px-32">
 				<div className="lg:col-span-2 h-fit">
-					<UserDisplay profile={profile} />
+					<UserDisplay profile={profile} user={user || null} />
 				</div>
 				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 px-1">
 					<div className="flex justify-between grow-0 items-center mb-4">
@@ -353,15 +374,25 @@ function Profile({ profileUser, posts }: ProfileProps) {
 									setPostInAction={setPostInAction}
 								/>
 							) : postType === "published" ? (
-								<PostDisplay
-									posts={publicPosts || []}
-									owner={user?.id === id}
-									setPostInAction={setPostInAction}
-									author={profile?.name || undefined}
-									cursorKey={"published_on"}
-									fetchPosts={fetchPublicPosts}
-									searchTerm={searchQuery}
-								/>
+								sortType === "latest" ? (
+									<PostDisplay
+										posts={publicPosts || []}
+										owner={user?.id === id}
+										setPostInAction={setPostInAction}
+										author={profile?.name || undefined}
+										cursorKey={"published_on"}
+										fetchPosts={fetchLatestPosts}
+									/>
+								) : (
+									<PostDisplay
+										posts={greatestPosts || []}
+										owner={user?.id === id}
+										setPostInAction={setPostInAction}
+										author={profile?.name || undefined}
+										cursorKey={"upvote_count"}
+										fetchPosts={fetchGreatestPosts}
+									/>
+								)
 							) : (
 								<PostDisplay
 									posts={privatePosts || []}
@@ -370,7 +401,6 @@ function Profile({ profileUser, posts }: ProfileProps) {
 									setPostInAction={setPostInAction}
 									cursorKey={"created_at"}
 									fetchPosts={fetchPrivatePosts}
-									searchTerm={searchQuery}
 								/>
 							)}
 						</>
@@ -403,7 +433,9 @@ export const getStaticProps: GetStaticProps<
 	const { id } = context.params;
 
 	let userData: Blogger | undefined;
-	let postData: Partial<Post>[] | undefined;
+	let latest: Partial<Post>[] | undefined;
+	let greatest: Partial<Post>[] | undefined;
+
 	let error;
 
 	await Promise.all([
@@ -423,7 +455,18 @@ export const getStaticProps: GetStaticProps<
 			.order("published_on", { ascending: false })
 			.limit(LIMIT)
 			.then((val) => {
-				postData = val.data || undefined;
+				latest = val.data || undefined;
+				error = val.error;
+			}),
+
+		supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select("*")
+			.eq("created_by", id)
+			.order("upvote_count", { ascending: false })
+			.limit(LIMIT)
+			.then((val) => {
+				greatest = val.data || undefined;
 				error = val.error;
 			}),
 	]);
@@ -434,7 +477,8 @@ export const getStaticProps: GetStaticProps<
 	if (!userData) return { props: {}, redirect: "/" };
 	return {
 		props: {
-			posts: postData,
+			latest,
+			greatest,
 			profileUser: userData,
 		},
 	};
