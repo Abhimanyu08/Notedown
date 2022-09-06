@@ -11,6 +11,7 @@ import {
 import { BiCodeAlt, BiUpvote } from "react-icons/bi";
 import { IoMdShareAlt } from "react-icons/io";
 import {
+	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
 	SUPABASE_UPVOTES_TABLE,
@@ -22,6 +23,7 @@ import { Blog } from "../../components/Blog";
 import BlogLayout from "../../components/BlogLayout";
 import Layout from "../../components/Layout";
 import { Toc } from "../../components/TableOfContents";
+import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import Post from "../../interfaces/Post";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
@@ -43,36 +45,47 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const [connecting, setConnecting] = useState(false);
 	const [upvoted, setUpvoted] = useState(false);
 	const [upvotes, setUpvotes] = useState<number | null>(null);
+	const [author, setAuthor] = useState<string>();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const { postId } = props;
 
+	const fetchUpvote = async () => {
+		if (!user) return;
+		const { data, error } = await supabase
+			.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+			.select()
+			.match({ upvoter: user.id, post_id: postId });
+		if (error || !data || data.length === 0) return;
+
+		setUpvoted(true);
+	};
+
+	const fetchUpvotes = async () => {
+		const { data, error } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select("upvote_count")
+			.eq("id", parseInt(postId as string));
+		if (error || !data || data.length === 0) return;
+		setUpvotes(data.at(0)?.upvote_count || 0);
+	};
+
+	const fetchAuthor = async () => {
+		//fetching author here because author may have changed his displayname
+		// and I will blow my head off before attempting to revalidate each one of his single posts
+		//just because that maniac changed his username from josh to joshua
+
+		const { data, error } = await supabase
+			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+			.select("name")
+			.eq("id", props.created_by || null);
+		if (data) setAuthor(data.at(0)?.name || undefined);
+	};
+
 	useEffect(() => {
-		const fetchUpvote = async () => {
-			if (!user) return;
-			const { data, error } = await supabase
-				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
-				.select()
-				.match({ upvoter: user.id, post_id: postId });
-			if (error || !data || data.length === 0) return;
-
-			setUpvoted(true);
-		};
-
-		fetchUpvote();
-	}, [user]);
-
-	useEffect(() => {
-		const fetchUpvotes = async () => {
-			const { data, error } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
-				.select("upvote_count")
-				.eq("id", parseInt(postId as string));
-			if (error || !data || data.length === 0) return;
-			setUpvotes(data.at(0)?.upvote_count || 0);
-		};
-
 		if (upvotes === null) fetchUpvotes();
-	}, []);
+		if (!author) fetchAuthor();
+		if (user) fetchUpvote();
+	}, [user]);
 
 	if (router.isFallback || !checkProps(props)) {
 		return (
@@ -157,7 +170,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					<div className="basis-1/5 flex flex-col justify-center">
 						<Toc html={props?.content} />
 					</div>
-					<Blog {...props} containerId={containerId} />
+					<Blog
+						{...props}
+						containerId={containerId}
+						author={author}
+					/>
 					<div className="flex flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
 						<div
 							className={` btn btn-circle  btn-ghost tooltip`}

@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
@@ -59,6 +60,17 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	};
 	return (
 		<Layout user={user || null} route={router.asPath}>
+			<Head>
+				<title>Rce Blog</title>
+				<meta
+					name="description"
+					content="Home page for the rce blog official website"
+				/>
+				<meta
+					name="keywords"
+					content="Rce Blog, remote code execution, blog, tech blog"
+				/>
+			</Head>
 			<div className="w-1/3 mx-auto">
 				<SearchComponent
 					setPosts={setSearchResults}

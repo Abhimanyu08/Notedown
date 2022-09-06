@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import htmlToJsx from "../../utils/htmlToJsx";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
@@ -12,6 +13,8 @@ export function Blog({
 	containerId,
 	created_by,
 	image_folder,
+	author,
+	bloggers,
 }: Partial<BlogProps>) {
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
@@ -97,8 +100,16 @@ export function Blog({
 				<h1 className="text-center" id="title">
 					{title}
 				</h1>
-				<div className="mb-20 text-center italic text-xl w-full">
+				<div className="text-center italic text-xl w-full">
 					{description}
+				</div>
+				<div className="flex gap-1 not-prose text-sm justify-center mb-20 mt-8">
+					<span>by</span>
+					<span className="link link-hover">
+						<Link href={`profile/${created_by}`}>
+							{author || bloggers?.name || ""}
+						</Link>
+					</span>
 				</div>
 				<div className="" id="jsx">
 					{blogJsx}
