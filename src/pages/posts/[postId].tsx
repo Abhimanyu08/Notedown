@@ -90,6 +90,16 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 		if (user && typeof upvoted !== "boolean") fetchUpvote();
 	}, [user]);
 
+	useEffect(() => {
+		window.onbeforeunload = () => {
+			if (containerId) sendRequestToRceServer("DELETE", { containerId });
+		};
+
+		return () => {
+			if (containerId) sendRequestToRceServer("DELETE", { containerId });
+		};
+	}, [containerId]);
+
 	if (router.isFallback || !checkProps(props)) {
 		return (
 			<Layout user={null} route={"/"} logoutCallback={() => null}>

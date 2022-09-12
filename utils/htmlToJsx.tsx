@@ -149,6 +149,7 @@ function makeAttrMap({
 	for (const attr of attrs) {
 		obj[attr[1].trim()] = attr[2].trim();
 	}
+	if (type === "a") obj["target"] = "_blank";
 	return obj;
 }
 

@@ -6,7 +6,7 @@ import {
 	useState,
 } from "react";
 import { MdCancel } from "react-icons/md";
-import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
@@ -51,7 +51,7 @@ function SearchComponent({
 				.select("*, bloggers(name)")
 				.textSearch("search_index_col", term)
 				.order("upvote_count", { ascending: false })
-				.limit(10);
+				.limit(LIMIT);
 			console.log(data);
 			if (error || !data) return;
 

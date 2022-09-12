@@ -1,4 +1,4 @@
-export async function sendRequestToRceServer(method: "POST", body: { language: string, containerId?: string, code?: string }) {
+export async function sendRequestToRceServer(method: "POST" | "DELETE", body: { language?: string, containerId?: string, code?: string }) {
     const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
         method,
         mode: "cors",
@@ -8,10 +8,6 @@ export async function sendRequestToRceServer(method: "POST", body: { language: s
         body: JSON.stringify(body),
     });
     return resp
-    // await fetch(`/api/rce`, {
-    //     method: "POST",
-    //     body: JSON.stringify(body)
-    // });
 }
 
 export async function sendRevalidationRequest(pathToRevalidate: string) {
