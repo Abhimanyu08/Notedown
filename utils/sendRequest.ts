@@ -8,6 +8,10 @@ export async function sendRequestToRceServer(method: "POST", body: { language: s
         body: JSON.stringify(body),
     });
     return resp
+    // await fetch(`/api/rce`, {
+    //     method: "POST",
+    //     body: JSON.stringify(body)
+    // });
 }
 
 export async function sendRevalidationRequest(pathToRevalidate: string) {

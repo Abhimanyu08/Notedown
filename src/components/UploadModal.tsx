@@ -1,4 +1,5 @@
 import matter from "gray-matter";
+import Router, { useRouter } from "next/router";
 import {
 	ChangeEventHandler,
 	Dispatch,
@@ -30,6 +31,9 @@ export function UploadModal({
 	const [uploading, setUploading] = useState(false);
 	const [alertText, setAlert] = useState("");
 	const [postDets, setPostDets] = useState<FileMetadata>();
+	const [uploaded, setUploaded] = useState(false);
+	const [uploadedPostId, setUploadedPostId] = useState<number | null>(null);
+	const router = useRouter();
 
 	const cancelButton = useRef<HTMLLabelElement>(null);
 
@@ -63,7 +67,7 @@ export function UploadModal({
 		setUploading(false);
 		setImages(null);
 		setMdFile(null);
-		cancelButton.current?.dispatchEvent(new Event("click"));
+		setUploaded(true);
 	};
 	const onFinalUpload = async () => {
 		if (!mdfile) {
@@ -131,9 +135,13 @@ export function UploadModal({
 			postTableData.at(0) as Post,
 			...(prev || []),
 		]);
-
+		setUploadedPostId(postTableData.at(0)?.id || null);
 		setAlertTimer("");
 		cleanUp();
+	};
+
+	const onPreview = () => {
+		if (uploadedPostId) router.push(`/posts/preview/${uploadedPostId}`);
 	};
 
 	return (
@@ -176,10 +184,12 @@ export function UploadModal({
 					{alertText && <p className="text-red-400">{alertText}</p>}
 					<div className="modal-action">
 						<div
-							className="btn btn-sm normal-case text-white "
-							onClick={onFinalUpload}
+							className={`btn btn-sm normal-case text-white ${
+								uploading ? "loading" : ""
+							}`}
+							onClick={uploaded ? onPreview : onFinalUpload}
 						>
-							Upload
+							{uploaded ? "Preview" : "Upload"}
 						</div>
 						<label
 							htmlFor="upload"

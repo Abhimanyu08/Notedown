@@ -31,7 +31,7 @@ import { UploadModal } from "../../components/UploadModal";
 import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
-import { UserContext } from "../_app";
+import { TrialContext, UserContext } from "../_app";
 
 interface ProfileProps {
 	latest?: Partial<Post>[];
@@ -142,7 +142,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
 	) => {
 		if (type === "published") {
-			setPublicPosts(newPosts);
+			if (setPublicPosts) setPublicPosts(newPosts);
 			return;
 		}
 		setPrivatePosts(newPosts);
@@ -193,7 +193,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 			console.log(error.message || "data returned is null");
 			return;
 		}
-		setPublicPosts((prev) => [...(prev || []), ...data]);
+		if (setPublicPosts)
+			setPublicPosts((prev) => [...(prev || []), ...data]);
 	};
 	const fetchSearchPosts = async (
 		cursor: string | number,
@@ -255,7 +256,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</>
 				)}
 			</>
-			<div className="grid grid-cols-1 grow min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10 lg:px-64 xl:px-64 px-5 md:px-32">
+			<div className="grid grid-cols-1 grow min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
 				<div className="lg:col-span-2 h-fit">
 					<UserDisplay profile={profile} user={user || null} />
 				</div>

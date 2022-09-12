@@ -43,7 +43,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string>();
 	const [connecting, setConnecting] = useState(false);
-	const [upvoted, setUpvoted] = useState(false);
+	const [upvoted, setUpvoted] = useState<boolean | null>(null);
 	const [upvotes, setUpvotes] = useState<number | null>(null);
 	const [author, setAuthor] = useState<string>();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
@@ -55,8 +55,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 			.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
 			.select()
 			.match({ upvoter: user.id, post_id: postId });
-		if (error || !data || data.length === 0) return;
-
+		if (error || !data) return;
+		if (data.length === 0) {
+			setUpvoted(false);
+			return;
+		}
 		setUpvoted(true);
 	};
 
@@ -82,9 +85,9 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	};
 
 	useEffect(() => {
-		if (upvotes === null) fetchUpvotes();
+		if (typeof upvotes !== "number") fetchUpvotes();
 		if (!author) fetchAuthor();
-		if (user) fetchUpvote();
+		if (user && typeof upvoted !== "boolean") fetchUpvote();
 	}, [user]);
 
 	if (router.isFallback || !checkProps(props)) {
