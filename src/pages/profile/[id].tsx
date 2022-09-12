@@ -31,7 +31,7 @@ import { UploadModal } from "../../components/UploadModal";
 import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
-import { TrialContext, UserContext } from "../_app";
+import { UserContext } from "../_app";
 
 interface ProfileProps {
 	latest?: Partial<Post>[];

@@ -24,19 +24,9 @@ export const BlogContext = createContext<{
 	collectCodeTillBlock?: (blockNumber: number) => void;
 }>({});
 
-export const TrialContext = createContext<{
-	trialPosts?: Partial<Post>[] | null;
-	setTrialPosts?: Dispatch<
-		SetStateAction<Partial<Post>[] | undefined | null>
-	>;
-}>({});
-
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 	const [updated, setUpdated] = useState(false);
-	const [trialPosts, setTrialPosts] = useState<
-		Partial<Post>[] | undefined | null
-	>(null);
 
 	useEffect(() => {
 		if (user && !updated) {
@@ -81,9 +71,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	return (
 		<UserContext.Provider value={{ user, setUser }}>
-			<TrialContext.Provider value={{ trialPosts, setTrialPosts }}>
-				<Component {...pageProps} />
-			</TrialContext.Provider>
+			<Component {...pageProps} />
 		</UserContext.Provider>
 	);
 }
