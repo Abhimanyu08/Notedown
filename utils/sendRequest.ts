@@ -1,5 +1,7 @@
 export async function sendRequestToRceServer(method: "POST" | "DELETE", body: { language?: string, containerId?: string, code?: string }) {
-    const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
+    const url = new URL(process.env.NEXT_PUBLIC_DOCKER_SERVER as string)
+    url.port = "80"
+    const resp = fetch(url, {
         method,
         mode: "cors",
         headers: {
