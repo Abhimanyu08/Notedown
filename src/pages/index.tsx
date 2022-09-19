@@ -106,6 +106,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({}) => {
 		.select(`*, bloggers(name)`)
 		.order("published_on", { ascending: false })
 		.limit(LIMIT);
+
 	return {
 		props: {
 			posts: data,

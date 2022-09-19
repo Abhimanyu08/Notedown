@@ -2,11 +2,20 @@ import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
 
 export const handleSignIn = async (provider: "github" | "google", redirectTo: string) => {
+    const hostname = window.location.hostname
+    let redirectUrl
+    if (hostname === "localhost") {
+        redirectUrl = `http://localhost:3000${redirectTo}`
+    } else {
+        redirectUrl = `${window.location.protocol}/${window.location.hostname}${redirectTo}`
+    }
+
+    console.log(redirectUrl)
     const { error } = await supabase.auth.signIn(
         {
             provider,
         },
-        { redirectTo: `${window.location.protocol}/${window.location.hostname}${redirectTo}` }
+        { redirectTo: redirectUrl }
     );
     if (error) {
         alert(error.message);

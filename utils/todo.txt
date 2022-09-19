@@ -1,12 +1,5 @@
-1. statically generate a blogger's profile.
-2. revalidate a blogger's profile when he publishes a post
-3. since a public post is statically generated, revalidate it when the owner changes the title/description or when he deletes/unpublishes it.
-4. every time someone publishes or deletes a post, there are three steps (a. upload/delete file b. upload/delete images c.make/delete a new row in posts table). Ideally,
-these three steps should be a transaction. Either all of them execute successfully or none of them do.
-5. Enable changing name and profile picture
-6. Enable search
-7. tags
-9. upvotes -> Enable greatest feature on profile page
-10. improve upload UX
-11. update search ts vector when someone updates his name
-12. kill the container when user closes the tab or switches pages
+1. Limit the number of images a user can upload
+2. Only allow authorized users to create containers
+3. Fetch all the upvotes on visible posts at once.
+4. Cache the home page posts
+5. Enable share option
