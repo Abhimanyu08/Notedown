@@ -1,14 +1,17 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
+import { NextRequest } from "next/server";
 
+export const config = {
+    runtime: 'experimental-edge'
+}
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextRequest) => {
 
     const resp = await fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
         method: req.method,
         mode: "cors",
         headers: {
             "Content-Type": "application/json",
-            "Origin": req.headers.origin as string
         },
         body: req.body,
     });
@@ -17,9 +20,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await resp.json()
 
     if (!body) {
-        res.status(400).end()
+
+        return new Response("", { status: resp.status, headers: { 'content-type': 'application/json' } })
     }
-    res.status(resp.status).json(body)
+
+    return new Response(JSON.stringify(body), { status: resp.status, headers: { 'content-type': 'application/json' } })
 
 }
 
