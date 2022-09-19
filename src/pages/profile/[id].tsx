@@ -353,13 +353,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										</option>
 									</select>
 								)}
-								<div className="w-1/2">
-									<SearchComponent
-										setPosts={setSearchResults}
-										profileId={profileUser?.id}
-										setSearchQuery={setSearchQuery}
-									/>
-								</div>
+
 								{
 									<select
 										name=""
@@ -384,6 +378,13 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										</option>
 									</select>
 								}
+							</div>
+							<div className="my-4 md:w-1/2">
+								<SearchComponent
+									setPosts={setSearchResults}
+									profileId={profileUser?.id}
+									setSearchQuery={setSearchQuery}
+								/>
 							</div>
 							{(searchResults?.length || 0) > 0 ? (
 								<PostDisplay

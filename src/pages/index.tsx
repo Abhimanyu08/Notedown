@@ -71,7 +71,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					content="Rce Blog, remote code execution, blog, tech blog"
 				/>
 			</Head>
-			<div className="w-1/3 mx-auto">
+			<div className="w-4/5 md:w-1/3 mx-auto">
 				<SearchComponent
 					setPosts={setSearchResults}
 					setSearchQuery={setSearchQuery}

@@ -78,7 +78,7 @@ function SearchComponent({
 				name=""
 				id=""
 				placeholder="Search"
-				className="w-full input input-sm bg-white text-black text-base"
+				className="w-full input input-sm md:input-sm bg-white text-black text-base"
 				value={searchTerm}
 				onChange={onSearchTermInput}
 			/>

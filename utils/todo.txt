@@ -3,3 +3,4 @@
 3. Fetch all the upvotes on visible posts at once.
 4. Cache the home page posts
 5. Enable share option
+6. Limit the length of title and description of the posts

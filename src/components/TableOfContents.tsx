@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 
 const headingToMargin: Record<string, string> = {
@@ -24,9 +24,15 @@ const headingToFontWeight: Record<string, string> = {
 	h6: "font-light",
 };
 
-export function Toc({ html }: { html?: string }) {
+export function Toc({
+	html,
+	setShowContents,
+}: {
+	html?: string;
+	setShowContents: Dispatch<SetStateAction<boolean>>;
+}) {
 	const [matches, setMatches] = useState<RegExpMatchArray[]>();
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(true);
 
 	useEffect(() => {
 		if (!html) return;
@@ -35,7 +41,10 @@ export function Toc({ html }: { html?: string }) {
 	}, [html]);
 
 	return (
-		<div className="flex flex-col gap-5 ml-10 text-white">
+		<div
+			className="flex flex-col gap-5 md:ml-10 text-white"
+			onClick={() => setShowContents(false)}
+		>
 			<h3
 				className="text-xl font-semibold flex flex-row items-center"
 				onClick={() => setOpen((prev) => !prev)}

@@ -46,8 +46,8 @@ function PostDisplay({
 	};
 
 	return (
-		<div className="flex flex-col h-full overflow-x-hidden overflow-y-auto mt-8">
-			<div className="flex flex-col gap-8 p-2">
+		<div className="flex flex-col h-full overflow-x-hidden overflow-y-auto">
+			<div className="flex flex-col gap-8">
 				{posts?.map((post) => (
 					<PostComponent
 						key={post.id!}

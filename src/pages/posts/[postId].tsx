@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from "next";
+import { GiHamburgerMenu } from "react-icons/gi";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import {
@@ -48,6 +49,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const [author, setAuthor] = useState<string>();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const { postId } = props;
+	const [showContent, setShowContents] = useState(false);
 
 	const fetchUpvote = async () => {
 		if (!user) return;
@@ -182,15 +184,31 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 				logoutCallback={() => null}
 			>
 				<BlogLayout>
-					<div className="basis-1/5 flex flex-col justify-center">
-						<Toc html={props?.content} />
+					<div
+						className={`md:basis-1/5  md:flex-col justify-center md:flex ${
+							showContent
+								? "absolute z-50 top-0 left-0 opacity-100 w-screen"
+								: "hidden"
+						}`}
+					>
+						<Toc
+							html={props?.content}
+							setShowContents={setShowContents}
+						/>
 					</div>
-					<Blog
-						{...props}
-						containerId={containerId}
-						author={author}
-					/>
-					<div className="flex flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
+
+					<div
+						className={`md:basis-3/5 ${
+							showContent ? "opacity-0 w-screen" : "w-screen"
+						}`}
+					>
+						<Blog
+							{...props}
+							containerId={containerId}
+							author={author}
+						/>
+					</div>
+					<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
 						<div
 							className={` btn btn-circle  btn-ghost tooltip`}
 							data-tip={` ${
@@ -239,6 +257,41 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						</div>
 					</div>
 				</BlogLayout>
+				<footer className="w-full flex items-center md:hidden justify-between p-3  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
+					<div
+						className="flex flex-col items-center"
+						onClick={prepareContainer}
+					>
+						<BiCodeAlt
+							size={20}
+							className={` ${containerId ? "text-lime-400" : ""}`}
+						/>
+						<span className="text-xs">Activate RCE</span>
+					</div>
+					<div className="flex flex-col items-center">
+						<IoMdShareAlt size={20} className="" />
+						<span className="text-xs">Share</span>
+					</div>
+					<div
+						className="flex flex-col items-center"
+						onClick={onUpvote}
+					>
+						<BiUpvote
+							size={16}
+							className={`${upvoted ? "text-lime-400" : ""}`}
+						/>
+						<span className="text-xs">
+							{formatter.current.format(upvotes || 0)} upvotes
+						</span>
+					</div>
+					<div
+						className="flex flex-col items-center"
+						onClick={() => setShowContents((prev) => !prev)}
+					>
+						<GiHamburgerMenu size={14} />
+						<span className="text-xs">Contents</span>
+					</div>
+				</footer>
 			</Layout>
 		</>
 	);
