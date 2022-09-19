@@ -9,7 +9,6 @@ const handler = async (req: NextRequest) => {
 
     const resp = await fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
         method: req.method,
-        mode: "cors",
         headers: {
             "Content-Type": "application/json",
         },
