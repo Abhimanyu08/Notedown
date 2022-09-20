@@ -85,6 +85,13 @@ export function Blog({
 	};
 
 	useEffect(() => {
+		console.log(
+			"this runs",
+			runningCode,
+			runningBlock,
+			language,
+			containerId
+		);
 		if (!runningCode || !runningBlock || !language || !containerId) return;
 		runCodeRequest(runningBlock, blockToCode).then(() => {
 			setRunningBlock(undefined);
