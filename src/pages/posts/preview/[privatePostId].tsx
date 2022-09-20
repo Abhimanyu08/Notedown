@@ -108,7 +108,7 @@ export default function PrivateBlog() {
 				>
 					<Blog {...data} containerId={containerId} />
 				</div>
-				<div className="flex flex-col basis-1/5 w-fit justify-center pl-5 gap-4">
+				<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
 					<div
 						className={` btn btn-circle  btn-ghost tooltip`}
 						data-tip={` ${
