@@ -1,4 +1,3 @@
-import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
 export const config = {
@@ -14,7 +13,6 @@ const handler = async (req: NextRequest) => {
         },
         body: req.body,
     });
-
 
     const body = await resp.json()
 

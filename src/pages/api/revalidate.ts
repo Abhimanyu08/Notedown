@@ -7,16 +7,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-        // this should be the actual path not a rewritten path
-        // e.g. for "/blog/[slug]" this should be "/blog/post-1"
         const { pathToRevalidate } = JSON.parse(req.body)
-        console.log(pathToRevalidate)
         await res.revalidate(`/${pathToRevalidate}`)
-        console.log(`success in revalidating ${pathToRevalidate}`);
         return res.json({ revalidated: true })
+
     } catch (err) {
-        // If there was an error, Next.js will continue
-        // to show the last successfully generated page
         console.log(err)
         return res.status(500).send('Error revalidating')
     }

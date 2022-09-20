@@ -4,11 +4,12 @@ import mdToHtml from "./mdToHtml";
 import { supabase } from "./supabaseClient";
 
 function resetCodeblocks(markdown: string, html: string) {
-    const mdMatched = Array.from(
-        markdown.matchAll(/```.*\r\n((.|\n|\r)*?)\r\n```/g)
-    ).map((match) => match.at(1));
+    let mdMatchedArray = Array.from(
+        markdown.matchAll(/(`{1,3})([^`]*?\r\n)?((.|\n|\r)*?)(\r\n)?(\1)/g)
+    )
+    const mdMatched = mdMatchedArray.map((match) => match.at(3));
     const contentMatch = Array.from(
-        html.matchAll(/<pre><code>((.|\n|\r)*?)<\/code><\/pre>/g)
+        html.matchAll(/<code>((.|\n|\r)*?)<\/code>/g)
     ).map((match) => match.at(1));
 
     for (let i = 0; i < mdMatched.length; i++) {
