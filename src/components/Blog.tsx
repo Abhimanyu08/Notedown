@@ -35,11 +35,27 @@ export function Blog({
 		});
 	}, []);
 
+	useEffect(() => {
+		const func = (blockNumber: number) => {
+			setBlockToCode({});
+			const event = new Event("focus");
+			for (let i = 0; i <= blockNumber; i++) {
+				const elem = document.getElementById(
+					`run-${i}`
+				) as HTMLButtonElement | null;
+				if (!elem) continue;
+				elem.dispatchEvent(event);
+			}
+			setRunningBlock(blockNumber);
+			setRunningCode(true);
+		};
+		setCollectCodeTillBlock(() => func);
+	}, []);
+
 	const runCodeRequest = async (
-		blockNumber?: number,
-		blockToCode?: Record<number, string>
+		blockNumber: number,
+		blockToCode: Record<number, string>
 	) => {
-		if (!blockNumber || !blockToCode) return;
 		console.log(blockToCode);
 		let code = Object.values(blockToCode).join("\n");
 		code = code.trim();
@@ -67,27 +83,14 @@ export function Blog({
 		setBlockToOutput({ [blockNumber]: output });
 		setBlockToCode({});
 	};
-	useEffect(() => {
-		const func = (blockNumber: number) => {
-			setBlockToCode({});
-			const event = new Event("focus");
-			for (let i = 0; i <= blockNumber; i++) {
-				const elem = document.getElementById(
-					`run-${i}`
-				) as HTMLButtonElement | null;
-				if (!elem) continue;
-				elem.dispatchEvent(event);
-			}
-			setRunningBlock(blockNumber);
-			setRunningCode(true);
 
-			runCodeRequest(blockNumber, blockToCode).then(() => {
-				setRunningBlock(undefined);
-				setRunningCode(false);
-			});
-		};
-		setCollectCodeTillBlock(() => func);
-	}, []);
+	useEffect(() => {
+		if (!runningCode || !runningBlock || !language || !containerId) return;
+		runCodeRequest(runningBlock, blockToCode).then(() => {
+			setRunningBlock(undefined);
+			setRunningCode(false);
+		});
+	}, [runningCode]);
 
 	// useEffect(() => {
 	// 	if (!runningCode || !runningBlock || !language || !containerId) return;
