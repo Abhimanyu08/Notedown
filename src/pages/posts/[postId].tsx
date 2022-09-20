@@ -93,14 +93,13 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	}, [user]);
 
 	useEffect(() => {
-		window.onbeforeunload = () => {
-			if (containerId && user)
+		if (containerId) {
+			window.onunload = () =>
 				sendRequestToRceServer("DELETE", { containerId });
-		};
+		}
 
 		return () => {
-			if (containerId && user)
-				sendRequestToRceServer("DELETE", { containerId });
+			if (containerId) sendRequestToRceServer("DELETE", { containerId });
 		};
 	}, [containerId]);
 

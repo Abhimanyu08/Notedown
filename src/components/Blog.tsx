@@ -123,7 +123,7 @@ export function Blog({
 				<div className="flex gap-1 not-prose text-xs md:text-sm justify-center mb-10 md:mb-12 mt-8 font-mono">
 					<span>by</span>
 					<span className="link link-hover">
-						<Link href={`profile/${created_by}`}>
+						<Link href={`/profile/${created_by}`}>
 							{author || bloggers?.name || ""}
 						</Link>
 					</span>
