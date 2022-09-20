@@ -66,6 +66,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
 		null
 	);
+	const [showPic, setShowPic] = useState(true);
 
 	const id = profileUser?.id || null;
 
@@ -256,17 +257,21 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</>
 				)}
 			</>
-			<div className="grid grid-cols-1 grow min-h-0 overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
-				<div className="lg:col-span-2 h-fit">
+			<div className="grid grid-cols-1 md:grow md:min-h-0 h-max overflow-y-auto  md:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
+				<div
+					className={` lg:col-span-2 h-fit ${
+						showPic ? "" : "hidden"
+					}`}
+				>
 					<UserDisplay profile={profile} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col max-h-full min-h-0 px-1">
-					<div className="flex justify-between grow-0 items-center mb-4">
+				<div className="lg:col-span-5 flex flex-col max-h-full  md:min-h-0 px-1">
+					<div className="flex justify-between grow-0 items-center mb-4 sticky top-0 z-20 bg-slate-900">
 						<div className="tabs">
 							<p
 								className={`tab tab-lifted ${
 									section === "posts" ? "tab-active" : ""
-								} font-normal text-white text-base `}
+								} font-normal text-white text-sm md:text-base `}
 								onClick={() => setSection("posts")}
 							>
 								Posts
@@ -274,12 +279,30 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							<p
 								className={`tab tab-lifted ${
 									section === "about" ? "tab-active" : ""
-								}  font-normal text-white text-base `}
+								}  font-normal text-white text-sm md:text-base `}
 								onClick={() => setSection("about")}
 							>
 								About
 							</p>
 						</div>
+						{user?.id !== id && section === "posts" && (
+							<select
+								name=""
+								id=""
+								className={` select select-sm font-normal ${
+									postType === "published" ? "" : "invisible"
+								}`}
+								value={sortType}
+								onChange={(e) =>
+									setSortType(
+										e.target.value as "greatest" | "latest"
+									)
+								}
+							>
+								<option value="latest">Latest</option>
+								<option value="greatest">Greatest</option>
+							</select>
+						)}
 						{user?.id === id && section === "posts" ? (
 							<label
 								htmlFor="upload"
@@ -336,55 +359,59 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</div>
 					{section === "posts" ? (
 						<>
-							<div className="flex justify-between grow-0">
-								{user?.id === id && (
-									<select
-										name=""
-										id=""
-										className="select select-sm font-normal"
-										onChange={onPostTypeChange}
-										value={postType}
-									>
-										<option value="published">
-											Published
-										</option>
-										<option value="unpublished">
-											Unpublished
-										</option>
-									</select>
-								)}
+							<div className="sticky top-8 pt-1 z-20 bg-slate-900">
+								<div className="flex justify-between grow-0">
+									{user?.id === id && (
+										<select
+											name=""
+											id=""
+											className="select select-sm font-normal"
+											onChange={onPostTypeChange}
+											value={postType}
+										>
+											<option value="published">
+												Published
+											</option>
+											<option value="unpublished">
+												Unpublished
+											</option>
+										</select>
+									)}
 
-								{
-									<select
-										name=""
-										id=""
-										className={` select select-sm font-normal ${
-											postType === "published"
-												? ""
-												: "invisible"
-										}`}
-										value={sortType}
-										onChange={(e) =>
-											setSortType(
-												e.target.value as
-													| "greatest"
-													| "latest"
-											)
-										}
-									>
-										<option value="latest">Latest</option>
-										<option value="greatest">
-											Greatest
-										</option>
-									</select>
-								}
-							</div>
-							<div className="my-4 md:w-1/2">
-								<SearchComponent
-									setPosts={setSearchResults}
-									profileId={profileUser?.id}
-									setSearchQuery={setSearchQuery}
-								/>
+									{user?.id === id && (
+										<select
+											name=""
+											id=""
+											className={` select select-sm font-normal ${
+												postType === "published"
+													? ""
+													: "invisible"
+											}`}
+											value={sortType}
+											onChange={(e) =>
+												setSortType(
+													e.target.value as
+														| "greatest"
+														| "latest"
+												)
+											}
+										>
+											<option value="latest">
+												Latest
+											</option>
+											<option value="greatest">
+												Greatest
+											</option>
+										</select>
+									)}
+								</div>
+								<div className="my-4 md:w-1/2">
+									<SearchComponent
+										setPosts={setSearchResults}
+										profileId={profileUser?.id}
+										setSearchQuery={setSearchQuery}
+									/>
+								</div>
 							</div>
 							{(searchResults?.length || 0) > 0 ? (
 								<PostDisplay

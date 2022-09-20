@@ -49,8 +49,8 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 	};
 
 	return (
-		<div className="flex flex-col items-center gap-2 w-fit">
-			<div className="avatar w-36 h-36 ">
+		<div className="flex flex-col items-center gap-1 w-full md:w-fit">
+			<div className="avatar w-28 h-28 md:w-36 md:h-36">
 				<div
 					className={`rounded-3xl ${
 						editing ? "border-2 border-base-200" : ""
@@ -108,14 +108,14 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 			{(user?.id || null) === profile?.id &&
 				(editing ? (
 					<div
-						className="btn btn-sm bg-base-200 normal-case mt-10"
+						className="btn btn-sm bg-base-200 normal-case md:mt-10"
 						onClick={onSave}
 					>
 						Save
 					</div>
 				) : (
 					<div
-						className="btn btn-sm bg-base-200 normal-case w-fit mt-10"
+						className="btn btn-sm bg-base-200 normal-case w-fit md:mt-10"
 						onClick={() => setEditing((prev) => !prev)}
 					>
 						Edit

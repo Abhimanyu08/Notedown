@@ -40,7 +40,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	return (
 		<div className="text-white relative container">
 			<Link href={published ? `/posts/${id}` : `/posts/preview/${id}`}>
-				<div className="text-xl font-normal link link-hover truncate w-3/4">
+				<div className="text-lg md:text-xl font-normal link link-hover truncate w-3/4">
 					{title}{" "}
 				</div>
 			</Link>
@@ -117,7 +117,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					<BiUpvote />
 				</span>
 			</div>
-			<p className="italic">{description}</p>
+			<p className="italic text-sm md:text-base">{description}</p>
 		</div>
 	);
 };

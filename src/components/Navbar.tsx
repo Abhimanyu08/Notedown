@@ -20,9 +20,11 @@ function Navbar({
 				</p>
 			</Link>
 			{user ? (
-				<div className="flex gap-5">
+				<div className="flex gap-5 mr-2">
 					<Link href={`/profile/${user.id}`}>
-						<p className="link-hover cursor-pointer">Profile</p>
+						<p className="link-hover cursor-pointer text-xs md:text-base">
+							Profile
+						</p>
 					</Link>
 					<div
 						onClick={(e) => {
@@ -30,7 +32,7 @@ function Navbar({
 							if (logoutCallback) logoutCallback();
 							handleLogout();
 						}}
-						className="link-hover cursor-pointer"
+						className="link-hover cursor-pointer text-xs md:text-base"
 					>
 						Logout
 					</div>

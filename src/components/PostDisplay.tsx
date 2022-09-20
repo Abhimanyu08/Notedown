@@ -46,8 +46,11 @@ function PostDisplay({
 	};
 
 	return (
-		<div className="flex flex-col h-full overflow-x-hidden overflow-y-auto">
-			<div className="flex flex-col gap-8">
+		<div className="flex flex-col h-full overflow-x-hidden  md:overflow-y-auto">
+			<div
+				className="flex flex-col gap-8"
+				onScroll={(e) => e.currentTarget}
+			>
 				{posts?.map((post) => (
 					<PostComponent
 						key={post.id!}

@@ -77,7 +77,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					setSearchQuery={setSearchQuery}
 				/>
 			</div>
-			<div className="px-2 md:px-32 xl:px-64 grow mt-5 overflow-hidden">
+			<div className="px-4 md:px-32 xl:px-64 grow mt-5 overflow-hidden">
 				{(searchResults?.length || 0) > 0 ? (
 					<PostDisplay
 						posts={searchResults || []}
