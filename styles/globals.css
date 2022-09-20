@@ -2,30 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .cm-activeLine {
-	background-color: rgb(22 78 99) !important;
-	caret-color: white;
-	color: springgreen;
-}
-
-.cm-gutters {
-	background-color: black !important;
-	color: cyan !important;
-}
-
-.cm-activeLineGutter {
-	background-color: black !important;
-}
-
-.cm-activeLine > span {
-	color: cyan !important;
-} */
-#jsx span {
-	font-size: 1.125rem; /* 18px */
-	line-height: 1.75rem; /* 28px */
-	margin-bottom: 1.25em;
-}
-
 .tooltip-left::before {
 	background-color: black;
 	color: white;
@@ -35,4 +11,16 @@
 	background-color: black;
 	color: white;
 	text-transform: capitalize;
+}
+
+#jsx span {
+	font-size: 0.875rem; /* 14px */
+	line-height: 1.25rem; /* 20px */ /* 24px */
+}
+
+@media (min-width: 768px) {
+	#jsx span {
+		font-size: 1.125rem; /* 18px */
+		line-height: 1.75rem; /* 28px */
+	}
 }

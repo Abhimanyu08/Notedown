@@ -93,17 +93,17 @@ export function Blog({
 			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
 		>
 			<div
-				className={`scroll-smooth prose  max-w-none px-4  lg:px-28 prose-headings:text-amber-500  prose-p:text-justify text-white prose-a:text-lime-500
-				prose-strong:text-violet-500 prose-strong:font-bold prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-yellow-400  h-full overflow-y-auto prose-p:text-lg prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono prose-ul:text-lg
+				className={`scroll-smooth prose prose-sm md:prose-base  max-w-none px-4  lg:px-28 prose-headings:text-amber-500  prose-p:text-justify text-white prose-a:text-lime-500
+				prose-strong:text-violet-500 prose-strong:font-bold prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-yellow-400  h-full overflow-y-auto prose-p:text-sm prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg
 				`}
 			>
 				<h1 className="text-center" id="title">
 					{title}
 				</h1>
-				<div className="text-center italic text-xl w-full">
+				<div className="text-center italic text-lg md:text-xl w-full font-semibold">
 					{description}
 				</div>
-				<div className="flex gap-1 not-prose text-sm justify-center mb-20 mt-8">
+				<div className="flex gap-1 not-prose text-xs md:text-sm justify-center mb-10 md:mb-12 mt-8 font-mono">
 					<span>by</span>
 					<span className="link link-hover">
 						<Link href={`profile/${created_by}`}>
