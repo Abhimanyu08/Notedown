@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { BiCodeAlt } from "react-icons/bi";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { sendRequestToRceServer } from "../../../../utils/sendRequest";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
@@ -17,6 +18,7 @@ export default function PrivateBlog() {
 		postId: parseInt(privatePostId as string),
 		loggedInUser: user || null,
 	});
+	const [showContent, setShowContents] = useState(false);
 	const [mounted, setMounted] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
 	const [connecting, setConnecting] = useState(false);
@@ -87,10 +89,25 @@ export default function PrivateBlog() {
 			logoutCallback={() => null}
 		>
 			<BlogLayout>
-				<div className="basis-1/5 flex flex-col justify-center">
-					<Toc html={data?.content} />
+				<div
+					className={` md:basis-1/5 md:flex md:flex-col justify-center ${
+						showContent
+							? "absolute z-50 top-0 left-0 opacity-100 w-screen"
+							: "hidden"
+					}`}
+				>
+					<Toc
+						html={data?.content}
+						setShowContents={setShowContents}
+					/>
 				</div>
-				<Blog {...data} />
+				<div
+					className={`md:basis-3/5 ${
+						showContent ? "opacity-0 w-screen" : "w-screen"
+					}`}
+				>
+					<Blog {...data} containerId={containerId} />
+				</div>
 				<div className="flex flex-col basis-1/5 w-fit justify-center pl-5 gap-4">
 					<div
 						className={` btn btn-circle  btn-ghost tooltip`}
@@ -110,6 +127,26 @@ export default function PrivateBlog() {
 					</div>
 				</div>
 			</BlogLayout>
+			<footer className="w-full flex items-center md:hidden justify-between p-3  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
+				<div
+					className="flex flex-col items-center"
+					onClick={prepareContainer}
+				>
+					<BiCodeAlt
+						size={20}
+						className={` ${containerId ? "text-lime-400" : ""}`}
+					/>
+					<span className="text-xs">Activate RCE</span>
+				</div>
+
+				<div
+					className="flex flex-col items-center"
+					onClick={() => setShowContents((prev) => !prev)}
+				>
+					<GiHamburgerMenu size={14} />
+					<span className="text-xs">Contents</span>
+				</div>
+			</footer>
 		</Layout>
 	);
 }
