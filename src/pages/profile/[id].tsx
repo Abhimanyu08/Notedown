@@ -528,7 +528,7 @@ export const getStaticProps: GetStaticProps<
 
 		supabase
 			.from<Post>(SUPABASE_POST_TABLE)
-			.select("id, published_on,title,description,language")
+			.select("id, published,published_on,title,description,language")
 			.eq("created_by", id)
 			.order("published_on", { ascending: false })
 			.limit(LIMIT)
@@ -539,7 +539,7 @@ export const getStaticProps: GetStaticProps<
 
 		supabase
 			.from<Post>(SUPABASE_POST_TABLE)
-			.select("id, published_on,title,description,language")
+			.select("id, published,published_on,title,description,language")
 			.eq("created_by", id)
 			.order("upvote_count", { ascending: false })
 			.limit(LIMIT)

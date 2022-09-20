@@ -104,7 +104,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 		.select(
-			`id,created_by,title,description,language,published_on,upvote_count, bloggers(name)`
+			`id,created_by,title,description,language,published,published_on,upvote_count, bloggers(name)`
 		)
 		.match({ published: true })
 		.order("published_on", { ascending: false })
