@@ -35,6 +35,38 @@ export function Blog({
 		});
 	}, []);
 
+	const runCodeRequest = async (
+		blockNumber?: number,
+		blockToCode?: Record<number, string>
+	) => {
+		if (!blockNumber || !blockToCode) return;
+		console.log(blockToCode);
+		let code = Object.values(blockToCode).join("\n");
+		code = code.trim();
+
+		let sessionCodeToOutput = sessionStorage.getItem(code);
+		if (sessionCodeToOutput) {
+			setBlockToOutput({ [blockNumber]: sessionCodeToOutput });
+			setBlockToCode({});
+			return;
+		}
+		const params: Parameters<typeof sendRequestToRceServer> = [
+			"POST",
+			{ language, containerId, code },
+		];
+		const resp = await sendRequestToRceServer(...params);
+
+		if (resp.status !== 201) {
+			setBlockToOutput({ [blockNumber]: resp.statusText });
+			return;
+		}
+		const { output } = (await resp.json()) as { output: string };
+		try {
+			sessionStorage.setItem(code, output);
+		} catch {}
+		setBlockToOutput({ [blockNumber]: output });
+		setBlockToCode({});
+	};
 	useEffect(() => {
 		const func = (blockNumber: number) => {
 			setBlockToCode({});
@@ -48,45 +80,18 @@ export function Blog({
 			}
 			setRunningBlock(blockNumber);
 			setRunningCode(true);
+
+			runCodeRequest(blockNumber, blockToCode).then(() => {
+				setRunningBlock(undefined);
+				setRunningCode(false);
+			});
 		};
 		setCollectCodeTillBlock(() => func);
 	}, []);
 
-	useEffect(() => {
-		if (!runningCode || !runningBlock || !language || !containerId) return;
-		const runCodeRequest = async (blockNumber: number) => {
-			console.log(blockToCode);
-			let code = Object.values(blockToCode).join("\n");
-			code = code.trim();
-
-			let sessionCodeToOutput = sessionStorage.getItem(code);
-			if (sessionCodeToOutput) {
-				setBlockToOutput({ [blockNumber]: sessionCodeToOutput });
-				setBlockToCode({});
-				return;
-			}
-			const params: Parameters<typeof sendRequestToRceServer> = [
-				"POST",
-				{ language, containerId, code },
-			];
-			const resp = await sendRequestToRceServer(...params);
-
-			if (resp.status !== 201) {
-				setBlockToOutput({ [blockNumber]: resp.statusText });
-				return;
-			}
-			const { output } = (await resp.json()) as { output: string };
-			try {
-				sessionStorage.setItem(code, output);
-			} catch {}
-			setBlockToOutput({ [blockNumber]: output });
-			setBlockToCode({});
-		};
-		runCodeRequest(runningBlock).then(() => {
-			setRunningBlock(undefined);
-			setRunningCode(false);
-		});
-	}, [runningCode]);
+	// useEffect(() => {
+	// 	if (!runningCode || !runningBlock || !language || !containerId) return;
+	// }, [runningCode]);
 
 	return (
 		<BlogContext.Provider
