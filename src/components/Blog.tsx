@@ -90,8 +90,11 @@ export function Blog({
 			runningBlock === undefined ||
 			!language ||
 			!containerId
-		)
+		) {
+			setRunningBlock(undefined);
+			setRunningCode(false);
 			return;
+		}
 		runCodeRequest(runningBlock, blockToCode).then(() => {
 			setRunningBlock(undefined);
 			setRunningCode(false);
