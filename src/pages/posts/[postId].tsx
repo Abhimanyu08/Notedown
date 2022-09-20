@@ -263,13 +263,15 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					>
 						<BiCodeAlt
 							size={20}
-							className={` ${containerId ? "text-lime-400" : ""}`}
+							className={` ${
+								containerId ? "text-lime-400" : "text-white"
+							}`}
 						/>
-						<span className="text-xs">Activate RCE</span>
+						<span className="text-xs text-white">Activate RCE</span>
 					</div>
 					<div className="flex flex-col items-center">
-						<IoMdShareAlt size={20} className="" />
-						<span className="text-xs">Share</span>
+						<IoMdShareAlt size={20} className="text-white" />
+						<span className="text-xs text-white">Share</span>
 					</div>
 					<div
 						className="flex flex-col items-center"
@@ -277,9 +279,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					>
 						<BiUpvote
 							size={16}
-							className={`${upvoted ? "text-lime-400" : ""}`}
+							className={`${
+								upvoted ? "text-lime-400" : "text-white"
+							}`}
 						/>
-						<span className="text-xs">
+						<span className="text-xs text-white">
 							{formatter.current.format(upvotes || 0)} upvotes
 						</span>
 					</div>
@@ -287,8 +291,8 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						className="flex flex-col items-center"
 						onClick={() => setShowContents((prev) => !prev)}
 					>
-						<GiHamburgerMenu size={14} />
-						<span className="text-xs">Contents</span>
+						<GiHamburgerMenu size={14} className="text-white" />
+						<span className="text-xs text-white">Contents</span>
 					</div>
 				</footer>
 			</Layout>

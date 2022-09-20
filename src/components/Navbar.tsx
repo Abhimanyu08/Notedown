@@ -15,14 +15,14 @@ function Navbar({
 	return (
 		<div className="navbar justify-between grow-0 mb-2 md:mb-10 xl:px-64  pl-5 pr-0 md:px-32 z-10 opacity-100">
 			<Link href="/">
-				<p className="link-hover cursor-pointer md:text-base text-xs">
+				<p className="link-hover cursor-pointer md:text-base text-xs text-white">
 					Home
 				</p>
 			</Link>
 			{user ? (
 				<div className="flex gap-5 mr-2">
 					<Link href={`/profile/${user.id}`}>
-						<p className="link-hover cursor-pointer text-xs md:text-base">
+						<p className="link-hover cursor-pointer text-xs md:text-base text-white">
 							Profile
 						</p>
 					</Link>
@@ -32,7 +32,7 @@ function Navbar({
 							if (logoutCallback) logoutCallback();
 							handleLogout();
 						}}
-						className="link-hover cursor-pointer text-xs md:text-base"
+						className="link-hover cursor-pointer text-xs md:text-base text-white"
 					>
 						Logout
 					</div>
@@ -45,12 +45,12 @@ function Navbar({
 								e.preventDefault();
 								handleSignIn("github", route);
 							}}
-							className="btn btn-xs md:btn-sm btn-ghost normal-case w-28 md:w-32"
+							className="btn btn-xs md:btn-sm btn-ghost normal-case w-28 md:w-32 text-white"
 						>
 							Login with{" "}
 							<AiFillGithub
 								size={20}
-								className="ml-2 w-4 md:w-6"
+								className="ml-2 w-4 md:w-6 text-white"
 							/>
 						</div>
 						<div
@@ -58,12 +58,12 @@ function Navbar({
 								e.preventDefault();
 								handleSignIn("google", route);
 							}}
-							className="btn btn-xs md:btn-sm btn-ghost normal-case w-28 md:w-32"
+							className="btn btn-xs md:btn-sm btn-ghost text-white normal-case w-28 md:w-32"
 						>
 							Login with{" "}
 							<AiFillGoogleCircle
 								size={20}
-								className="ml-2 w-4 md:w-6"
+								className="ml-2 w-4 md:w-6 text-white"
 							/>
 						</div>
 					</>
