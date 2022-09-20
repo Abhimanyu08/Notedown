@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import {
 	ChangeEventHandler,
+	Dispatch,
 	SetStateAction,
 	useContext,
 	useEffect,
@@ -66,7 +67,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
 		null
 	);
-	const [showPic, setShowPic] = useState(true);
 
 	const id = profileUser?.id || null;
 
@@ -82,6 +82,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 	useEffect(() => {
 		checkGreatestStillGreatest(greatest);
+		fetchUpvotes(publicPosts, setPublicPosts);
+		fetchUpvotes(greatestPosts, setGreatestPosts);
 	}, []);
 
 	const onAboutSave = async () => {
@@ -135,6 +137,33 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (data.some((post, idx) => post.id !== greatest[idx].id)) {
 			sendRevalidationRequest(`profile/${id}`);
+		}
+	};
+
+	const fetchUpvotes = async (
+		postArray: Partial<Post>[] | null | undefined,
+		setPostFunc: Dispatch<
+			SetStateAction<Partial<Post>[] | null | undefined>
+		>
+	) => {
+		const idArray = postArray?.map((post) => post.id!);
+		if (idArray) {
+			const { data } = await supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select("id,upvote_count")
+				.in("id", idArray);
+			if (data) {
+				let idToUpvotes: Record<number, number> = {};
+				data.forEach((post) => {
+					idToUpvotes[post.id] = post.upvote_count;
+				});
+				setPostFunc((prev) =>
+					prev?.map((post) => ({
+						...post,
+						upvote_count: idToUpvotes[post.id!],
+					}))
+				);
+			}
 		}
 	};
 
@@ -257,15 +286,14 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</>
 				)}
 			</>
-			<div className="grid grid-cols-1 md:grow md:min-h-0 h-max overflow-y-auto  md:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
+			<div className="md:grid flex flex-col grow md:min-h-0 h-max overflow-y-auto  md:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
 				<div
-					className={` lg:col-span-2 h-fit ${
-						showPic ? "" : "hidden"
-					}`}
+					className={` lg:col-span-2 h-fit 
+					`}
 				>
 					<UserDisplay profile={profile} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col max-h-full  md:min-h-0 px-1">
+				<div className="lg:col-span-5 flex flex-col  md:min-h-0 px-1">
 					<div className="flex justify-between grow-0 items-center mb-4 sticky top-0 z-20 bg-slate-900">
 						<div className="tabs">
 							<p
@@ -500,7 +528,7 @@ export const getStaticProps: GetStaticProps<
 
 		supabase
 			.from<Post>(SUPABASE_POST_TABLE)
-			.select("*")
+			.select("id, published_on,title,description,language")
 			.eq("created_by", id)
 			.order("published_on", { ascending: false })
 			.limit(LIMIT)
@@ -511,7 +539,7 @@ export const getStaticProps: GetStaticProps<
 
 		supabase
 			.from<Post>(SUPABASE_POST_TABLE)
-			.select("*")
+			.select("id, published_on,title,description,language")
 			.eq("created_by", id)
 			.order("upvote_count", { ascending: false })
 			.limit(LIMIT)

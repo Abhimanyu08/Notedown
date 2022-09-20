@@ -49,18 +49,18 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 	};
 
 	return (
-		<div className="flex flex-col items-center gap-1 w-full md:w-fit">
-			<div className="avatar w-28 h-28 md:w-36 md:h-36">
+		<div className="flex flex-col  items-center gap-2 w-full md:w-fit">
+			<div className="avatar">
 				<div
-					className={`rounded-3xl ${
+					className={`rounded-xl ${
 						editing ? "border-2 border-base-200" : ""
 					}`}
 				>
 					{editing ? (
-						<div className="w-full h-full flex items-center justify-center">
+						<div className="w-28 h-full flex items-center justify-center">
 							<label
 								htmlFor="dp"
-								className="btn btn-sm capitalize bg-base-200 w-28
+								className="btn btn-xs capitalize bg-base-200 w-fit
                                 truncate"
 							>
 								{newPic ? newPic.name : "Upload"}
@@ -81,9 +81,9 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 						profile?.avatar_url && (
 							<Image
 								src={profile.avatar_url}
-								width={128}
-								height={128}
-								layout="responsive"
+								width={132}
+								height={132}
+								layout="intrinsic"
 								objectFit="contain"
 							/>
 						)
@@ -95,27 +95,27 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					type="text"
 					name=""
 					id=""
-					className="input input-sm bg-white text-black w-fit "
+					className="input input-xs md:input-sm bg-white text-black w-fit "
 					placeholder={profile?.name || ""}
 					value={newName}
 					onChange={(e) => setNewName(e.target.value)}
 				/>
 			) : (
-				<h1 className={`text-lg font-normal w-fit `}>
+				<h1 className={` text-sm md:text-lg font-normal w-fit `}>
 					{profile?.name}
 				</h1>
 			)}
 			{(user?.id || null) === profile?.id &&
 				(editing ? (
 					<div
-						className="btn btn-sm bg-base-200 normal-case md:mt-10"
+						className="btn btn-xs md:btn-sm bg-base-200 normal-case md:mt-10"
 						onClick={onSave}
 					>
 						Save
 					</div>
 				) : (
 					<div
-						className="btn btn-sm bg-base-200 normal-case w-fit md:mt-10"
+						className="btn btn-xs md:btn-sm bg-base-200 normal-case w-fit md:mt-10"
 						onClick={() => setEditing((prev) => !prev)}
 					>
 						Edit

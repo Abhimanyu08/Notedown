@@ -316,7 +316,9 @@ export const getStaticProps: GetStaticProps<
 > = async (context) => {
 	const { data, error } = await supabase
 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-		.select("*, bloggers(name)")
+		.select(
+			"id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)"
+		)
 		.match({ id: context.params?.postId });
 
 	if (error || !data || data.length == 0) return { props: {}, redirect: "/" };

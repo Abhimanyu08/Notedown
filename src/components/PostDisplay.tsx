@@ -66,7 +66,7 @@ function PostDisplay({
 			{(posts?.length || 0) > 0 && (
 				<div className="flex justify-center pb-10 mt-10">
 					<div
-						className="btn btn-sm normal-case bg-base-100"
+						className="btn btn-xs md:btn-sm normal-case bg-amber-500 text-black"
 						onClick={onLoadMore}
 					>
 						Load More

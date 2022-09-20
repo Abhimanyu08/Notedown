@@ -103,7 +103,10 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 export const getServerSideProps: GetServerSideProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-		.select(`*, bloggers(name)`)
+		.select(
+			`id,created_by,title,description,language,published_on,upvote_count, bloggers(name)`
+		)
+		.match({ published: true })
 		.order("published_on", { ascending: false })
 		.limit(LIMIT);
 

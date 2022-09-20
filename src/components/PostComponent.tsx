@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useEffect, useRef, useState } from "react";
+import { MouseEventHandler, useRef } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { TbNews, TbNewsOff } from "react-icons/tb";
-import { SUPABASE_POST_TABLE } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
-import Post from "../interfaces/Post";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 
 const PostComponent: React.FC<PostComponentProps> = ({
@@ -15,32 +12,38 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	owner = false,
 	setPostInAction,
 }) => {
-	const { id, title, description, created_by, published_on, published } =
-		post;
+	const {
+		id,
+		title,
+		description,
+		created_by,
+		published_on,
+		published,
+		upvote_count: upvotes,
+	} = post;
 	const router = useRouter();
-	const [upvotes, setUpvotes] = useState<number | null>(null);
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 
-	useEffect(() => {
-		const fetchUpvotes = async () => {
-			const { data, error } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
-				.select("upvote_count")
-				.eq("id", id!);
-			if (error || !data || data.length === 0) return;
-			setUpvotes(data.at(0)?.upvote_count || 0);
-		};
+	// useEffect(() => {
+	// 	const fetchUpvotes = async () => {
+	// 		const { data, error } = await supabase
+	// 			.from<Post>(SUPABASE_POST_TABLE)
+	// 			.select("upvote_count")
+	// 			.eq("id", id!);
+	// 		if (error || !data || data.length === 0) return;
+	// 		setUpvotes(data.at(0)?.upvote_count || 0);
+	// 	};
 
-		if (upvotes === null && id) fetchUpvotes();
-	}, []);
+	// 	if (upvotes === null && id) fetchUpvotes();
+	// }, []);
 
 	const onAction: MouseEventHandler = () => {
 		if (setPostInAction) setPostInAction(post);
 	};
 	return (
-		<div className="text-white relative container">
+		<div className="relative container">
 			<Link href={published ? `/posts/${id}` : `/posts/preview/${id}`}>
-				<div className="text-lg md:text-xl font-normal link link-hover truncate w-3/4">
+				<div className="text-lg text-amber-500 md:text-xl font-semibold link link-hover truncate w-3/4">
 					{title}{" "}
 				</div>
 			</Link>
@@ -117,7 +120,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					<BiUpvote />
 				</span>
 			</div>
-			<p className="italic text-sm md:text-base">{description}</p>
+			<p className="italic text-sm md:text-base text-white">
+				{description}
+			</p>
 		</div>
 	);
 };

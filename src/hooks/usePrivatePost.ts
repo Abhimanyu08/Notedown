@@ -20,7 +20,7 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: 
         }
         const fetchPost = async () => {
 
-            const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('*, bloggers(name)').eq("id", postId)
+            const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)').eq("id", postId)
             if (error) {
                 setError(error)
                 setLoading(false)
