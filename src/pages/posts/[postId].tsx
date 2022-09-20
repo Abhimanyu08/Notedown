@@ -125,7 +125,6 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	}
 
 	const prepareContainer = async () => {
-		if (!user) return;
 		if (containerId) return;
 		setConnecting(true);
 		try {
@@ -214,7 +213,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							data-tip={` ${
 								user
 									? "Enable remote code execution"
-									: "Please login to enable remote code execution"
+									: "Enable remote code execution"
 							} `}
 							onClick={prepareContainer}
 						>
