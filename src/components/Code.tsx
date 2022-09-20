@@ -54,28 +54,28 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		<div className="flex relative flex-col w-full ">
 			<div className="w-full " id={`${blockNumber}`}></div>
 
-			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-2">
+			<div className="flex items-center justify-between flex-col absolute right-2 text-cyan-400 m-1 gap-2">
 				<button
 					onClick={() => {
 						if (!collectCodeTillBlock) return;
 						collectCodeTillBlock(blockNumber);
 					}}
-					className="tooltip  tooltip-left"
+					className="md:tooltip  md:tooltip-left font-extrabold"
 					data-tip="Run Code (Shift+Enter)"
 					id={`run-${blockNumber}`}
 				>
-					<BsPlayFill />
+					{">"}
 				</button>
 				<button
 					onClick={onUndo}
-					className="tooltip  tooltip-left"
+					className="md:tooltip  md:tooltip-left"
 					data-tip="back to original code"
 				>
 					<FcUndo />
 				</button>
 				<button
 					onClick={() => setHideOutput((prev) => !prev)}
-					className="tooltip  tooltip-left"
+					className="md:tooltip  md:tooltip-left "
 					data-tip="Hide Output"
 				>
 					<MdHideImage />
