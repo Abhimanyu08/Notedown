@@ -266,7 +266,13 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								containerId ? "text-lime-400" : "text-white"
 							}`}
 						/>
-						<span className="text-xs text-white">Activate RCE</span>
+						<span
+							className={`text-xs ${
+								containerId ? "text-lime-400" : "text-white"
+							} `}
+						>
+							Activate RCE
+						</span>
 					</div>
 					<div className="flex flex-col items-center">
 						<IoMdShareAlt size={20} className="text-white" />
@@ -282,7 +288,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								upvoted ? "text-lime-400" : "text-white"
 							}`}
 						/>
-						<span className="text-xs text-white">
+						<span
+							className={`text-xs ${
+								upvoted ? "text-lime-400" : "text-white"
+							}`}
+						>
 							{formatter.current.format(upvotes || 0)} upvotes
 						</span>
 					</div>
