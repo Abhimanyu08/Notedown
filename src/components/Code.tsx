@@ -52,7 +52,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	};
 	return (
 		<div className="flex relative flex-col w-full ">
-			<div className="w-full " id={`${blockNumber}`}></div>
+			<div className="w-full " id={`codearea-${blockNumber}`}></div>
 
 			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-2">
 				<button
