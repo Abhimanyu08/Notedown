@@ -81,37 +81,7 @@ export function UploadModal({
 		}
 		setUploading(true);
 
-		const blogFolder = makeFolderName(userId, postDets.title);
-		const blogFilePath = blogFolder + `/${mdfile.name}`;
-
-		const { data, error } = await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.upload(blogFilePath, mdfile);
-
-		if (error || !data) {
-			console.log(error || "Supabase didn't return any data");
-			setAlertTimer(error?.message || "" + " Please retry");
-			setUploading(false);
-			return;
-		}
-
-		if (images) {
-			const imageResults = await Promise.all(
-				images.map(async (image) => {
-					const imagePath = blogFolder + `/${image.name}`;
-					const result = await supabase.storage
-						.from(SUPABASE_IMAGE_BUCKET)
-						.upload(imagePath, image);
-					return result;
-				})
-			);
-			if (imageResults.some((res) => res.error !== null)) {
-				setAlertTimer("Error in uploading images, please retry");
-				setUploading(false);
-				return;
-			}
-		}
-
+		//insert row in table
 		const { data: postTableData, error: postTableError } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.insert({
@@ -119,9 +89,8 @@ export function UploadModal({
 				title: postDets?.title,
 				language: postDets?.language,
 				description: postDets?.description,
-				filename: `${blogFolder}/${mdfile.name}`,
-				image_folder: blogFolder,
 			});
+
 		if (postTableError || !postTableData || postTableData.length === 0) {
 			setAlertTimer(
 				postTableError?.message ||
@@ -136,6 +105,50 @@ export function UploadModal({
 			...(prev || []),
 		]);
 		setUploadedPostId(postTableData.at(0)?.id || null);
+
+		//upload markdown file
+		const postId = postTableData.at(0)?.id;
+		if (!postId) return;
+		const blogFolder = makeFolderName(userId, postId);
+		const blogFilePath = blogFolder + `/${mdfile.name}`;
+
+		const { data, error } = await supabase.storage
+			.from(SUPABASE_FILES_BUCKET)
+			.upload(blogFilePath, mdfile);
+
+		if (error || !data) {
+			console.log(error || "Supabase didn't return any data");
+			setAlertTimer(error?.message || "" + " Please retry");
+			setUploading(false);
+			return;
+		}
+		//upload images
+		if (images) {
+			const imageResults = await Promise.all(
+				images.map(async (image) => {
+					console.log(image.type);
+					const imagePath = blogFolder + `/${image.name}`;
+					const result = await supabase.storage
+						.from(SUPABASE_IMAGE_BUCKET)
+						.upload(imagePath, image);
+					return result;
+				})
+			);
+			if (imageResults.some((res) => res.error !== null)) {
+				setAlertTimer("Error in uploading images, please retry");
+				setUploading(false);
+				return;
+			}
+		}
+
+		const { error: updateTableError } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.update({ filename: blogFilePath, image_folder: blogFolder })
+			.eq("id", postId);
+		if (updateTableError) {
+			setAlertTimer(`${updateTableError.message}`);
+			return;
+		}
 		setAlertTimer("");
 		cleanUp();
 	};
@@ -194,7 +207,11 @@ export function UploadModal({
 						<label
 							htmlFor="upload"
 							className="btn btn-sm normal-case text-white"
-							ref={cancelButton}
+							onClick={() => {
+								setMdFile(null);
+								setImages(null);
+								setUploaded(false);
+							}}
 						>
 							Cancel
 						</label>

@@ -49,7 +49,7 @@ function htmlToJsx({
 					let code = elem.match(/<code>((.|\r|\n)*)<\/code>/)?.at(1);
 					return (
 						<>
-							<span className="text-xs">
+							<span className="">
 								{string1} <code>{code}</code> {string2}
 							</span>
 						</>
@@ -77,7 +77,7 @@ function htmlToJsx({
 							.getPublicUrl(`${imageFolder}/${imageName}`);
 						return (
 							<>
-								<span className="text-base">
+								<span className="">
 									{htmlToJsx({
 										html: string1 || "",
 										language,
@@ -101,7 +101,7 @@ function htmlToJsx({
 										{attrs["alt"]}
 									</figcaption>
 								</div>
-								<span className="text-base">{string2}</span>
+								<span className="">{string2}</span>
 							</>
 						);
 					});

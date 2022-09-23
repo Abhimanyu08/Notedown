@@ -1,3 +1,3 @@
-export default function makeFolderName(owner: string, blogTitle: string): string {
-    return `${owner}/${blogTitle.toUpperCase()}`
+export default function makeFolderName(owner: string, blogId: number): string {
+    return `${owner}/${blogId}`
 }

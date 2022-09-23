@@ -10,7 +10,7 @@ import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
 export function DeleteModal({
-	post: { id, title, created_by, filename, published },
+	post: { id, title, filename, published, image_folder },
 	modifyPosts,
 }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {
@@ -35,7 +35,7 @@ export function DeleteModal({
 			//delete the image corresponding to this post from image storage
 			supabase.storage
 				.from(SUPABASE_IMAGE_BUCKET)
-				.list(`${created_by}/${title}`)
+				.list(image_folder!)
 				.then((val) => {
 					imageData = val.data;
 					error = val.error;
