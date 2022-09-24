@@ -17,6 +17,7 @@ import {
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
+import { fetchUpvotes } from "../../../utils/fetchUpvotes";
 import mdToHtml from "../../../utils/mdToHtml";
 import { sendRevalidationRequest } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
@@ -137,33 +138,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (data.some((post, idx) => post.id !== greatest[idx].id)) {
 			sendRevalidationRequest(`profile/${id}`);
-		}
-	};
-
-	const fetchUpvotes = async (
-		postArray: Partial<Post>[] | null | undefined,
-		setPostFunc: Dispatch<
-			SetStateAction<Partial<Post>[] | null | undefined>
-		>
-	) => {
-		const idArray = postArray?.map((post) => post.id!);
-		if (idArray) {
-			const { data } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
-				.select("id,upvote_count")
-				.in("id", idArray);
-			if (data) {
-				let idToUpvotes: Record<number, number> = {};
-				data.forEach((post) => {
-					idToUpvotes[post.id] = post.upvote_count;
-				});
-				setPostFunc((prev) =>
-					prev?.map((post) => ({
-						...post,
-						upvote_count: idToUpvotes[post.id!],
-					}))
-				);
-			}
 		}
 	};
 

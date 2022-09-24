@@ -6,8 +6,9 @@ import type {
 } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
+import { fetchUpvotes } from "../../utils/fetchUpvotes";
 import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
 import PostDisplay from "../components/PostDisplay";
@@ -22,11 +23,17 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = ({ posts }) => {
 	const router = useRouter();
 	const { user } = useContext(UserContext);
-	const [homePosts, setHomePosts] = useState(posts);
+	const [homePosts, setHomePosts] = useState<
+		Partial<PostWithBlogger>[] | null | undefined
+	>(posts);
 	const [searchResults, setSearchResults] = useState<
 		PostWithBlogger[] | Post[]
 	>();
 	const [searchQuery, setSearchQuery] = useState("");
+
+	useEffect(() => {
+		fetchUpvotes(homePosts, setHomePosts);
+	}, []);
 
 	const fetchHomePosts = async (cursor: string | number) => {
 		const { data, error } = await supabase
@@ -69,7 +76,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				<title>Rce Blog</title>
 				<meta
 					name="description"
-					content="Home page for the rce blog official website"
+					content="Home page of the rce-blog.xyz website"
 				/>
 				<meta
 					name="keywords"
@@ -109,7 +116,7 @@ export const getStaticProps: GetStaticProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 		.select(
-			`id,created_by,title,description,language,published,published_on,upvote_count, bloggers(name)`
+			`id,created_by,title,description,language,published,published_on,bloggers(name)`
 		)
 		.match({ published: true })
 		.order("published_on", { ascending: false })
