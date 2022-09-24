@@ -28,8 +28,8 @@ export function EditModal({
 			return;
 		}
 		if (published) {
-			sendRevalidationRequest(`posts/${id}`);
-			sendRevalidationRequest(`profile/${created_by}`);
+			sendRevalidationRequest(`/posts/${id}`);
+			sendRevalidationRequest(`/profile/${created_by}`);
 			sendRevalidationRequest(`/`);
 		}
 

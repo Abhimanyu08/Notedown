@@ -9,13 +9,22 @@ import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
-export function DeleteModal({
-	post: { id, title, filename, published, image_folder, created_by },
-	modifyPosts,
-}: ModalProps) {
+export function DeleteModal({ post, modifyPosts }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {
+		let { id, filename, published, image_folder, created_by } = post;
+
 		let postData: Post | undefined, imageData, error;
-		if (!filename) return;
+		if (!filename || !image_folder) {
+			const { data, error } = await supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select("filename, image_folder")
+				.match({ id });
+
+			if (error || !data) return;
+
+			filename = data.at(0)?.filename!;
+			image_folder = data?.at(0)?.image_folder!;
+		}
 		await Promise.all([
 			//delete the row corresponding to this post from the table
 			supabase
@@ -58,8 +67,8 @@ export function DeleteModal({
 		}
 
 		if (published) {
-			sendRevalidationRequest(`posts/${id}`);
-			sendRevalidationRequest(`profile/${created_by}`);
+			sendRevalidationRequest(`/posts/${id}`);
+			sendRevalidationRequest(`/profile/${created_by}`);
 			sendRevalidationRequest(`/`);
 		}
 
@@ -74,7 +83,7 @@ export function DeleteModal({
 				<label className="modal-box bg-cyan-500 relative">
 					<p>
 						Are you sure you want to delete your post{" "}
-						<span className="font-semibold">{title}</span>?
+						<span className="font-semibold">{post.title}</span>?
 					</p>
 					<div className="modal-action">
 						<label

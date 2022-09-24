@@ -22,8 +22,8 @@ export function UnPublishModal({
 			return;
 		}
 
-		sendRevalidationRequest(`posts/${id}`);
-		sendRevalidationRequest(`profile/${created_by}`);
+		sendRevalidationRequest(`/posts/${id}`);
+		sendRevalidationRequest(`/profile/${created_by}`);
 		sendRevalidationRequest(`/`);
 
 		modifyPosts("published", (prev) =>
