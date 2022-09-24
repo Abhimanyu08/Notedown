@@ -10,7 +10,7 @@ import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
 export function DeleteModal({
-	post: { id, title, filename, published, image_folder },
+	post: { id, title, filename, published, image_folder, created_by },
 	modifyPosts,
 }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {
@@ -59,6 +59,8 @@ export function DeleteModal({
 
 		if (published) {
 			sendRevalidationRequest(`posts/${id}`);
+			sendRevalidationRequest(`profile/${created_by}`);
+			sendRevalidationRequest(`/`);
 		}
 
 		modifyPosts(published ? "published" : "unpublished", (prev) =>

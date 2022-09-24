@@ -1,4 +1,9 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type {
+	GetServerSideProps,
+	GetStaticPaths,
+	GetStaticProps,
+	NextPage,
+} from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
@@ -100,7 +105,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async ({}) => {
+export const getStaticProps: GetStaticProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 		.select(

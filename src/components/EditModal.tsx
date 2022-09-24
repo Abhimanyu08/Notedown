@@ -30,6 +30,7 @@ export function EditModal({
 		if (published) {
 			sendRevalidationRequest(`posts/${id}`);
 			sendRevalidationRequest(`profile/${created_by}`);
+			sendRevalidationRequest(`/`);
 		}
 
 		modifyPosts(published ? "published" : "unpublished", (prev) =>
