@@ -4,3 +4,6 @@ export const SUPABASE_POST_TABLE = "posts"
 export const SUPABASE_IMAGE_BUCKET = "blogger-images"
 export const SUPABASE_UPVOTES_TABLE = "upvotes"
 export const LIMIT = 5;
+export const TITLE_LENGTH = 50;
+export const DESCRIPTION_LENGTH = 100;
+export const PHOTO_LIMIT = 10;

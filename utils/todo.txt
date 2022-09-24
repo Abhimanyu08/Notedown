@@ -1,6 +1,8 @@
 1. Limit the number of images a user can upload
-2. Only allow authorized users to create containers
-3. Fetch all the upvotes on visible posts at once.
 4. Cache the home page posts
 5. Enable share option
 6. Limit the length of title and description of the posts
+
+-----------------Done------------------------------
+3. Fetch all the upvotes on visible posts at once.
+2. Only allow authorized users to create containers.

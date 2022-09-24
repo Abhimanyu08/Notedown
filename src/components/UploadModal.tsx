@@ -8,9 +8,12 @@ import {
 	useState,
 } from "react";
 import {
+	DESCRIPTION_LENGTH,
+	PHOTO_LIMIT,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
+	TITLE_LENGTH,
 } from "../../utils/constants";
 import makeFolderName from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
@@ -35,7 +38,12 @@ export function UploadModal({
 	const [uploadedPostId, setUploadedPostId] = useState<number | null>(null);
 	const router = useRouter();
 
-	const cancelButton = useRef<HTMLLabelElement>(null);
+	const cleanUp = () => {
+		setUploading(false);
+		setImages(null);
+		setMdFile(null);
+		setUploaded(true);
+	};
 
 	const setAlertTimer = (text: string) => {
 		setAlert(text);
@@ -51,24 +59,34 @@ export function UploadModal({
 		}
 
 		const contents = await file.text();
-		const { data } = matter(contents);
+		const { data } = matter(contents) as {
+			data: { title?: string; language?: string; description?: string };
+		};
 		if (!data.title) {
 			setAlertTimer(
 				`Please structure your markdown file correctly, title is missing`
 			);
 			return;
 		}
+
+		if (data.title.length > TITLE_LENGTH) {
+			setAlertTimer(
+				`Your title is ${data.title.length} characters long. Max ${TITLE_LENGTH} characters allowed`
+			);
+			return;
+		}
+		if ((data.description?.length || 0) > DESCRIPTION_LENGTH) {
+			setAlertTimer(
+				`Your description is ${data.description?.length} characters long. Max ${DESCRIPTION_LENGTH} characters allowed`
+			);
+			return;
+		}
+
 		setPostDets({ ...(data as FileMetadata) });
 
 		setMdFile(file);
 	};
 
-	const cleanUp = () => {
-		setUploading(false);
-		setImages(null);
-		setMdFile(null);
-		setUploaded(true);
-	};
 	const onFinalUpload = async () => {
 		if (!mdfile) {
 			setAlertTimer("Please select a markdown file");
@@ -181,7 +199,8 @@ export function UploadModal({
 							htmlFor="blogImages"
 							className="text-white font-semibold mr-2"
 						>
-							Please upload images used in your blog (if any)
+							Please upload images used in your blog (if any, max
+							{PHOTO_LIMIT})
 						</label>
 						<input
 							type="file"
@@ -189,6 +208,7 @@ export function UploadModal({
 							multiple
 							accept="image/*"
 							className="file:rounded-xl file:text-sm"
+							max={PHOTO_LIMIT}
 							onChange={(e) =>
 								setImages(Array.from(e.target.files || []))
 							}
