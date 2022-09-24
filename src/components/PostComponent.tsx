@@ -24,19 +24,6 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	const router = useRouter();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 
-	// useEffect(() => {
-	// 	const fetchUpvotes = async () => {
-	// 		const { data, error } = await supabase
-	// 			.from<Post>(SUPABASE_POST_TABLE)
-	// 			.select("upvote_count")
-	// 			.eq("id", id!);
-	// 		if (error || !data || data.length === 0) return;
-	// 		setUpvotes(data.at(0)?.upvote_count || 0);
-	// 	};
-
-	// 	if (upvotes === null && id) fetchUpvotes();
-	// }, []);
-
 	const onAction: MouseEventHandler = () => {
 		if (setPostInAction) setPostInAction(post);
 	};

@@ -5,10 +5,7 @@ import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
-export function UnPublishModal({
-	post: { id, created_by },
-	modifyPosts,
-}: ModalProps) {
+export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
@@ -23,7 +20,7 @@ export function UnPublishModal({
 		}
 
 		sendRevalidationRequest(`/posts/${id}`);
-		sendRevalidationRequest(`/profile/${created_by}`);
+		sendRevalidationRequest(`/profile/${data.at(0)?.created_by}`);
 		sendRevalidationRequest(`/`);
 
 		modifyPosts("published", (prev) =>

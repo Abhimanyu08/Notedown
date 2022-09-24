@@ -14,16 +14,17 @@ export function DeleteModal({ post, modifyPosts }: ModalProps) {
 		let { id, filename, published, image_folder, created_by } = post;
 
 		let postData: Post | undefined, imageData, error;
-		if (!filename || !image_folder) {
+		if (!filename || !image_folder || !created_by) {
 			const { data, error } = await supabase
 				.from<Post>(SUPABASE_POST_TABLE)
-				.select("filename, image_folder")
+				.select("filename, image_folder, created_by")
 				.match({ id });
 
 			if (error || !data) return;
 
 			filename = data.at(0)?.filename!;
 			image_folder = data?.at(0)?.image_folder!;
+			created_by = data?.at(0)?.created_by!;
 		}
 		await Promise.all([
 			//delete the row corresponding to this post from the table
