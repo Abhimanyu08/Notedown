@@ -82,6 +82,13 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					name="keywords"
 					content="Rce Blog, remote code execution, blog, tech blog"
 				/>
+				<meta
+					property="og:title"
+					content="Home Page of the Rce Blog website"
+				/>
+				<meta property="og:url" content="https://rce-blog.xyz" />
+				<meta property="og:site_name" content="Rce Blog" />
+				<meta property="og:type" content="website" />
 			</Head>
 			<div className="w-4/5 md:w-1/3 mx-auto">
 				<SearchComponent

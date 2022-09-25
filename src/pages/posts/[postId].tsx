@@ -174,8 +174,16 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 				<meta name="description" content={props.description} />
 				<meta
 					name="keywords"
-					content={`${props.language}, ${props.title}`}
+					content={`tech blog,Rce Blog,remote code execution,${props.language}, ${props.title}, ${props.description}`}
 				/>
+				<meta property="og:title" content={props.title} />
+				<meta property="og:description" content={props.description} />
+				<meta
+					property="og:url"
+					content={`https://rce-blog.xyz/posts/${props.id}`}
+				/>
+				<meta property="og:site_name" content="Rce Blog" />
+				<meta property="og:type" content="article" />
 			</Head>
 			<Layout
 				user={user || null}

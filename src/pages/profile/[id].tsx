@@ -228,8 +228,22 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				<meta name="author" content={profileUser?.name || ""} />
 				<meta
 					name="description"
-					content={`Rce-Blog profile page for blogger ${profileUser?.name}`}
+					content={`Rce-Blog profile page of ${profileUser?.name}`}
 				/>
+				<meta
+					property="og:title"
+					content={`Rce Blog Profile of ${profileUser?.name}`}
+				/>
+				<meta
+					property="og:description"
+					content={`About - ${profileUser?.about.slice(0, 15)}...`}
+				/>
+				<meta
+					property="og:url"
+					content={`https://rce-blog.xyz/profile/${profileUser?.id}`}
+				/>
+				<meta property="og:site_name" content="Rce Blog" />
+				<meta property="og:type" content="website" />
 			</Head>
 			<>
 				{user?.id === id && (
