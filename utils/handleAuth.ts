@@ -7,7 +7,7 @@ export const handleSignIn = async (provider: "github" | "google", redirectTo: st
     if (hostname === "localhost") {
         redirectUrl = `http://localhost:3000${redirectTo}`
     } else {
-        redirectUrl = `${window.location.protocol}/${window.location.hostname}${redirectTo}`
+        redirectUrl = `${window.location.protocol}//${window.location.hostname}${redirectTo}`
     }
 
     console.log(redirectUrl)

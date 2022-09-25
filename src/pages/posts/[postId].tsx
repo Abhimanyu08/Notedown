@@ -231,8 +231,8 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							onClick={() => {
 								const link =
 									window.location.hostname === "localhost"
-										? `${window.location.protocol}/${window.location.hostname}:3000${router.asPath}`
-										: `${window.location.protocol}/${window.location.hostname}${router.asPath}`;
+										? `${window.location.protocol}//${window.location.hostname}:3000${router.asPath}`
+										: `${window.location.protocol}//${window.location.hostname}${router.asPath}`;
 								navigator.clipboard.writeText(link).then(() => {
 									setLinkCopied(true);
 									setTimeout(
@@ -300,8 +300,8 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						onClick={() => {
 							const link =
 								window.location.hostname === "localhost"
-									? `${window.location.protocol}/${window.location.hostname}:3000${router.asPath}`
-									: `${window.location.protocol}/${window.location.hostname}${router.asPath}`;
+									? `${window.location.protocol}//${window.location.hostname}:3000${router.asPath}`
+									: `${window.location.protocol}//${window.location.hostname}${router.asPath}`;
 							navigator.clipboard.writeText(link).then(() => {
 								setLinkCopied(true);
 								setTimeout(() => setLinkCopied(false), 2000);
