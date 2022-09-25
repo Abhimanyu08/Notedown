@@ -50,6 +50,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const { postId } = props;
 	const [showContent, setShowContents] = useState(false);
+	const [linkCopied, setLinkCopied] = useState(false);
 
 	const fetchUpvote = async () => {
 		if (!user) return;
@@ -79,7 +80,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 		// and I will blow my head off before attempting to revalidate each one of his single posts
 		//just because that maniac changed his username from josh to joshua
 
-		const { data, error } = await supabase
+		const { data } = await supabase
 			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 			.select("name")
 			.eq("id", props.created_by || null);
@@ -225,13 +226,33 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						</div>
 
 						<div
-							className="btn btn-circle btn-ghost tooltip"
+							className="btn btn-circle btn-ghost tooltip relative"
 							data-tip="share"
+							onClick={() => {
+								const link =
+									window.location.hostname === "localhost"
+										? `${window.location.protocol}/${window.location.hostname}:3000${router.asPath}`
+										: `${window.location.protocol}/${window.location.hostname}${router.asPath}`;
+								navigator.clipboard.writeText(link).then(() => {
+									setLinkCopied(true);
+									setTimeout(
+										() => setLinkCopied(false),
+										2000
+									);
+								});
+							}}
 						>
 							<IoMdShareAlt
 								size={30}
 								className="text-white mt-2 ml-2"
 							/>
+							<span
+								className={` normal-case absolute left-10 top-2 text-lime-400 ${
+									linkCopied ? "" : "hidden"
+								}`}
+							>
+								Link Copied!
+							</span>
 						</div>
 
 						<div className="flex items-center">
@@ -274,9 +295,29 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							Activate RCE
 						</span>
 					</div>
-					<div className="flex flex-col items-center">
+					<div
+						className="flex flex-col items-center"
+						onClick={() => {
+							const link =
+								window.location.hostname === "localhost"
+									? `${window.location.protocol}/${window.location.hostname}:3000${router.asPath}`
+									: `${window.location.protocol}/${window.location.hostname}${router.asPath}`;
+							navigator.clipboard.writeText(link).then(() => {
+								setLinkCopied(true);
+								setTimeout(() => setLinkCopied(false), 2000);
+							});
+						}}
+					>
 						<IoMdShareAlt size={20} className="text-white" />
-						<span className="text-xs text-white">Share</span>
+						{linkCopied ? (
+							<span
+								className={` normal-case text-xs left-10 top-2 text-lime-400`}
+							>
+								Link Copied!
+							</span>
+						) : (
+							<span className="text-xs text-white">Share</span>
+						)}
 					</div>
 					<div
 						className="flex flex-col items-center"

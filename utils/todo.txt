@@ -1,10 +1,10 @@
 4. Cache the home page posts
 5. Enable share option
-7. Fetch upvotes on home page after load
 8. Set up codemirror for javascript and rust.
 
 
 -----------------Done------------------------------
+7. Fetch upvotes on home page after load
 1. Limit the number of images a user can upload
 6. Limit the length of title and description of the posts
 3. Fetch all the upvotes on visible posts at once.
