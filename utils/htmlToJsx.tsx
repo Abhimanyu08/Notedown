@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Code from "../src/components/Code";
+import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import makeFolderName from "./makeFolderName";
 import { supabase } from "./supabaseClient";
@@ -8,7 +9,7 @@ import { supabase } from "./supabaseClient";
 let BLOCK_NUMBER = -1;
 interface htmlToJsxProps {
 	html: string;
-	language: string;
+	language: BlogProps["language"];
 	ownerId: string;
 	imageFolder?: string;
 }

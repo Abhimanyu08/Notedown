@@ -331,7 +331,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							(editingAbout ? (
 								<div className="flex">
 									<button
-										className="btn btn-xs btn-ghost tooltip tooltip-left"
+										className="normal-case btn btn-xs btn-ghost "
 										onClick={() =>
 											setPreviewing((prev) => !prev)
 										}
@@ -341,26 +341,26 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 												: "preview"
 										}`}
 									>
-										<VscPreview size={20} />
+										{previewing
+											? "Back to Editing"
+											: "Preview"}
 									</button>
 									<button
-										className="btn btn-xs btn-ghost tooltip tooltip-left"
+										className="btn btn-xs normal-case btn-ghost "
 										onClick={onAboutSave}
-										data-tip="save"
 									>
-										<AiOutlineFileDone size={20} />
+										Save
 									</button>
 
 									<button
-										className="btn btn-xs btn-ghost tooltip tooltip-left"
+										className="normal-case btn btn-xs btn-ghost "
 										onClick={() => {
 											setAbout(profileUser?.about);
 											setEditingAbout(false);
 											setPreviewing(false);
 										}}
-										data-tip="cancel"
 									>
-										<MdCancel className="text-white h-5 w-6" />
+										Cancel
 									</button>
 								</div>
 							) : (

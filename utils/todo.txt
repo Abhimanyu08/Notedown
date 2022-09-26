@@ -1,11 +1,14 @@
-4. Cache the home page posts
-5. Enable share option
 8. Set up codemirror for javascript and rust.
+9. design a logo
+10. Setup meta tags in every page to render that logo
+11. Show someone's upvoted post on their profile page
+12. Only show load more when there are more posts
 
 
 -----------------Done------------------------------
 7. Fetch upvotes on home page after load
 1. Limit the number of images a user can upload
+5. Enable share option
 6. Limit the length of title and description of the posts
 3. Fetch all the upvotes on visible posts at once.
 2. Only allow authorized users to create containers.

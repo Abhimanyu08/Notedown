@@ -5,10 +5,11 @@ import { MdHideImage } from "react-icons/md";
 import { BlogContext } from "../pages/_app";
 
 import useEditor from "../hooks/useEditor";
+import { BlogProps } from "../interfaces/BlogProps";
 
 interface CodeProps {
 	code: string;
-	language: string;
+	language: BlogProps["language"];
 	blockNumber: number;
 }
 

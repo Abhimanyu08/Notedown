@@ -1,4 +1,6 @@
 import { python } from "@codemirror/lang-python";
+import { javascript } from "@codemirror/lang-javascript";
+import { rust } from "@codemirror/lang-rust";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { EditorView } from "codemirror";
 import { useContext, useEffect, useState } from 'react';
@@ -11,10 +13,11 @@ import { lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { crosshairCursor, drawSelection, dropCursor, highlightActiveLineGutter, highlightSpecialChars, keymap, lineNumbers, rectangularSelection } from "@codemirror/view";
 import { BlogContext } from '../pages/_app';
+import { BlogProps } from "../interfaces/BlogProps";
 
 
 interface useEditorProps {
-    language: string
+    language: BlogProps["language"]
     code: string
     blockNumber: number
 }
@@ -81,11 +84,22 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
             }, { dark: true })
         ])()
 
+        const langToExtension = (lang: typeof language): Extension => {
+            switch (lang) {
+                case "javascript":
+                    return languageCompartment.of(javascript())
+                case "python":
+                    return languageCompartment.of(python())
+                case "rust":
+                    return languageCompartment.of(rust())
+
+            }
+        }
         let startState = EditorState.create({
             doc: code,
             extensions: [
                 mySetup,
-                languageCompartment.of(python()),
+                langToExtension(language),
                 tabSize.of(EditorState.tabSize.of(4)),
                 keymap.of([{
                     key: "Shift-Enter",

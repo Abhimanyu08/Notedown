@@ -5,7 +5,7 @@ export default interface Post {
     filename: string,
     title: string,
     description: string
-    language: string
+    language: "python" | "javascript" | "rust"
     published: boolean
     published_on: string | null
     image_folder: string | null

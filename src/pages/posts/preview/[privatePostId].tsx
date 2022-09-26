@@ -32,6 +32,17 @@ export default function PrivateBlog() {
 		setMounted(true);
 	}, [data]);
 
+	useEffect(() => {
+		if (containerId) {
+			window.onbeforeunload = async () =>
+				await sendRequestToRceServer("DELETE", { containerId });
+		}
+
+		return () => {
+			if (containerId) sendRequestToRceServer("DELETE", { containerId });
+		};
+	}, [containerId]);
+
 	if (!mounted) {
 		return null;
 	}
