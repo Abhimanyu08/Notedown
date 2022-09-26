@@ -27,7 +27,9 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
 
     useEffect(() => {
 
-        document.getElementById(`codearea-${blockNumber}`)?.replaceChildren("");
+        // document.getElementById(`codearea-${blockNumber}`)?.replaceChildren("");
+        if (document.getElementById(`codearea-${blockNumber}`)?.children.length !== 0) return
+
         let languageCompartment = new Compartment();
         let tabSize = new Compartment();
 
