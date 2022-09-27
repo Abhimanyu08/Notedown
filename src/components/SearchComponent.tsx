@@ -6,37 +6,37 @@ import {
 	useState,
 } from "react";
 import { MdCancel } from "react-icons/md";
-import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
 import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 
 interface SearchComponentProps {
+	placeholder?: string;
 	setPosts: (newPosts: PostWithBlogger[] | Post[]) => void;
-	profileId?: string;
 	setSearchQuery: Dispatch<SetStateAction<string>>;
+	fetchPosts: ({ searchTerm }: { searchTerm?: string }) => void;
 }
 
 function SearchComponent({
+	placeholder = "Search",
 	setPosts,
-	profileId,
+	fetchPosts,
 	setSearchQuery,
 }: SearchComponentProps) {
 	const [searchTerm, setSearchTerm] = useState<string>();
-	const [_, setTimer] = useState<NodeJS.Timeout>();
+	const [timer, setTimer] = useState<NodeJS.Timeout>();
 
 	const onSearchTermInput: ChangeEventHandler<HTMLInputElement> = (e) => {
 		setSearchTerm(e.target.value.split(" ").join(" | "));
 	};
 
 	useEffect(() => {
-		setTimer((prev) => {
-			clearTimeout(prev);
-			return setTimeout(() => {
+		clearTimeout(timer);
+		setTimer(
+			setTimeout(() => {
 				setSearchQuery(searchTerm || "");
 				search(searchTerm);
-			}, 500);
-		});
+			}, 1000)
+		);
 	}, [searchTerm]);
 
 	const search = async (term?: string) => {
@@ -45,30 +45,32 @@ function SearchComponent({
 			setPosts([]);
 			return;
 		}
-		if (!profileId) {
-			const { data, error } = await supabase
-				.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-				.select("*, bloggers(name)")
-				.textSearch("search_index_col", term)
-				.order("upvote_count", { ascending: false })
-				.limit(LIMIT);
-			console.log(data);
-			if (error || !data) return;
 
-			setPosts(data);
-			return;
-		}
-		const { data, error } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.select()
-			.match({ created_by: profileId })
-			.textSearch("search_index_col", term)
-			.limit(10);
+		fetchPosts({ searchTerm: term });
+		// if (!profileId) {
+		// 	const { data, error } = await supabase
+		// 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+		// 		.select("*, bloggers(name)")
+		// 		.textSearch("search_index_col", term)
+		// 		.order("upvote_count", { ascending: false })
+		// 		.limit(LIMIT);
+		// 	console.log(data);
+		// 	if (error || !data) return;
 
-		console.log(data);
-		if (error || !data) return;
+		// 	setPosts(data);
+		// 	return;
+		// }
+		// const { data, error } = await supabase
+		// 	.from<Post>(SUPABASE_POST_TABLE)
+		// 	.select()
+		// 	.match({ created_by: profileId })
+		// 	.textSearch("search_index_col", term)
+		// 	.limit(10);
 
-		setPosts(data);
+		// console.log(data);
+		// if (error || !data) return;
+
+		// setPosts(data);
 		return;
 	};
 	return (
@@ -77,7 +79,7 @@ function SearchComponent({
 				type="text"
 				name=""
 				id=""
-				placeholder="Search"
+				placeholder={placeholder}
 				className="w-full input input-sm md:input-sm bg-white text-black text-base"
 				value={searchTerm}
 				onChange={onSearchTermInput}

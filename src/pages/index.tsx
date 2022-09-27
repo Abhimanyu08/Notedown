@@ -1,9 +1,4 @@
-import type {
-	GetServerSideProps,
-	GetStaticPaths,
-	GetStaticProps,
-	NextPage,
-} from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -35,7 +30,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 		fetchUpvotes(homePosts, setHomePosts);
 	}, []);
 
-	const fetchHomePosts = async (cursor: string | number) => {
+	const fetchHomePosts = async ({ cursor }: { cursor: string | number }) => {
 		const { data, error } = await supabase
 			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 			.select("*,bloggers(name)")
@@ -51,24 +46,43 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 		setHomePosts((prev) => [...(prev || []), ...data]);
 	};
 
-	const fetchSearchPosts = async (
-		cursor: string | number,
-		searchTerm?: string
-	) => {
+	const fetchSearchPosts = async ({
+		cursor,
+		searchTerm,
+	}: {
+		cursor?: string | number;
+		searchTerm?: string;
+	}) => {
+		console.log("This triggered", searchTerm);
 		if (!searchTerm) return;
-		const { data, error } = await supabase
-			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-			.select("*,bloggers(name)")
-			.textSearch("search_index_col", searchTerm)
-			.lt("upvote_count", cursor)
-			.order("upvote_count", { ascending: false })
-			.limit(LIMIT);
+		if (!cursor) {
+			const { data, error } = await supabase
+				.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+				.select("*, bloggers(name)")
+				.textSearch("search_index_col", searchTerm)
+				.order("upvote_count", { ascending: false })
+				.limit(LIMIT);
+			console.log(data);
+			if (error || !data) return;
 
-		if (error || !data) {
-			console.log(error.message || "data returned is null");
+			setSearchResults(data);
 			return;
 		}
-		setSearchResults((prev) => [...(prev || []), ...data]);
+		if (cursor) {
+			const { data, error } = await supabase
+				.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+				.select("*,bloggers(name)")
+				.textSearch("search_index_col", searchTerm)
+				.lt("upvote_count", cursor)
+				.order("upvote_count", { ascending: false })
+				.limit(LIMIT);
+
+			if (error || !data) {
+				console.log(error.message || "data returned is null");
+				return;
+			}
+			setSearchResults((prev) => [...(prev || []), ...data]);
+		}
 	};
 	return (
 		<Layout user={user || null} route={router.asPath}>
@@ -92,6 +106,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 			</Head>
 			<div className="w-4/5 md:w-1/3 mx-auto">
 				<SearchComponent
+					fetchPosts={fetchSearchPosts}
 					setPosts={setSearchResults}
 					setSearchQuery={setSearchQuery}
 				/>

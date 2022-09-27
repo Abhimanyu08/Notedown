@@ -1,19 +1,13 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { userAgent } from "next/server";
 import {
-	ChangeEventHandler,
 	Dispatch,
 	SetStateAction,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
-import { AiOutlineFileDone } from "react-icons/ai";
-import { BsLayoutTextSidebar } from "react-icons/bs";
-import { MdCancel } from "react-icons/md";
-import { VscPreview } from "react-icons/vsc";
 import {
 	LIMIT,
 	SUPABASE_BLOGGER_TABLE,
@@ -136,7 +130,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (postType === "upvoted") {
 			if (upvotedPosts !== undefined) return;
-			fetchUpvotedPosts();
+			fetchUpvotedPosts({});
 		}
 	}, [postType]);
 
@@ -169,7 +163,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		setPrivatePosts(newPosts);
 	};
 
-	const fetchUpvotedPosts = async (cursor?: string | number) => {
+	const fetchUpvotedPosts = async ({
+		cursor,
+	}: {
+		cursor?: string | number;
+	}) => {
 		if (cursor) {
 			const { data } = await supabase
 				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
@@ -245,7 +243,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		}
 	};
 
-	const fetchPrivatePosts = async (cursor: string | number) => {
+	const fetchPrivatePosts = async ({
+		cursor,
+	}: {
+		cursor: string | number;
+	}) => {
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select()
@@ -261,7 +263,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		setPrivatePosts((prev) => [...(prev || []), ...data]);
 	};
 
-	const fetchGreatestPosts = async (cursor: string | number) => {
+	const fetchGreatestPosts = async ({
+		cursor,
+	}: {
+		cursor?: string | number;
+	}) => {
+		if (!cursor) return;
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select()
@@ -277,7 +284,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		setGreatestPosts((prev) => [...(prev || []), ...data]);
 	};
 
-	const fetchLatestPosts = async (cursor: string | number) => {
+	const fetchLatestPosts = async ({
+		cursor,
+	}: {
+		cursor?: string | number;
+	}) => {
+		if (!cursor) return;
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select()
@@ -293,11 +305,31 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		if (setPublicPosts)
 			setPublicPosts((prev) => [...(prev || []), ...data]);
 	};
-	const fetchSearchPosts = async (
-		cursor: string | number,
-		searchTerm?: string
-	) => {
+
+	const fetchSearchPosts = async ({
+		cursor,
+		searchTerm,
+	}: {
+		cursor?: string | number;
+		searchTerm?: string;
+	}) => {
 		if (!searchTerm) return;
+		if (!cursor) {
+			const { data, error } = await supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select("*")
+				.match({ created_by: profileUser?.id })
+				.textSearch("search_index_col", searchTerm)
+				.order("upvote_count", { ascending: false })
+				.limit(LIMIT);
+
+			if (error || !data) {
+				console.log(error.message || "data returned is null");
+				return;
+			}
+			setSearchResults((prev) => [...(prev || []), ...data]);
+			return;
+		}
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.select("*")
@@ -313,6 +345,47 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		}
 		setSearchResults((prev) => [...(prev || []), ...data]);
 	};
+
+	// const fetchSearchUpvotes= async ({
+	// 	cursor,
+	// 	searchTerm,
+	// }: {
+	// 	cursor?: string | number;
+	// 	searchTerm?: string;
+	// }) => {
+	// 	if (!searchTerm) return;
+	// 	if (!cursor) {
+
+	// 		const { data, error } = await supabase
+	// 			.from<Post>(SUPABASE_POST_TABLE)
+	// 			.select(`*, ${SUPABASE_UPVOTES_TABLE}!inner()`)
+	// 			.match({ created_by: profileUser?.id })
+	// 			.textSearch("search_index_col", searchTerm)
+	// 			.order("upvote_count", { ascending: false })
+	// 			.limit(LIMIT);
+
+	// 		if (error || !data) {
+	// 			console.log(error.message || "data returned is null");
+	// 			return;
+	// 		}
+	// 		setSearchResults((prev) => [...(prev || []), ...data]);
+	// 		return;
+	// 	}
+	// 	const { data, error } = await supabase
+	// 		.from<Post>(SUPABASE_POST_TABLE)
+	// 		.select("*")
+	// 		.match({ created_by: profileUser?.id })
+	// 		.textSearch("search_index_col", searchTerm)
+	// 		.lt("upvote_count", cursor)
+	// 		.order("upvote_count", { ascending: false })
+	// 		.limit(LIMIT);
+
+	// 	if (error || !data) {
+	// 		console.log(error.message || "data returned is null");
+	// 		return;
+	// 	}
+	// 	setSearchResults((prev) => [...(prev || []), ...data]);
+	// }
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
@@ -501,8 +574,17 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 								</div>
 								<div className="my-4 md:w-1/2">
 									<SearchComponent
+										placeholder={
+											postType === "upvoted"
+												? user?.id === profile?.id
+													? "Search posts upvoted by you "
+													: `Search posts upvoted by ${profile?.name} `
+												: user?.id === profile?.id
+												? "Search your posts"
+												: `Search ${profile?.name}'s posts`
+										}
+										fetchPosts={fetchSearchPosts}
 										setPosts={setSearchResults}
-										profileId={profileUser?.id}
 										setSearchQuery={setSearchQuery}
 									/>
 								</div>
