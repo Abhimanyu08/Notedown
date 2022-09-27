@@ -194,10 +194,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						(upvote) =>
 							(modifiedData[upvote.post_id] = upvote.created_at)
 					);
-					let upvotedPosts = posts.map((post) => ({
-						...post,
-						created_at: modifiedData[post.id],
-					}));
+					let upvotedPosts = posts
+						.map((post) => ({
+							...post,
+							created_at: modifiedData[post.id],
+						}))
+						.sort((a, b) => (a.created_at > b.created_at ? -1 : 1));
 					setUpvotedPosts((prev) => [
 						...(prev || []),
 						...upvotedPosts,
@@ -232,10 +234,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						(modifiedData[upvote.post_id] = upvote.created_at)
 				);
 
-				let upvotedPosts = posts.map((post) => ({
-					...post,
-					created_at: modifiedData[post.id],
-				}));
+				let upvotedPosts = posts
+					.map((post) => ({
+						...post,
+						created_at: modifiedData[post.id],
+					}))
+					.sort((a, b) => (a.created_at > b.created_at ? -1 : 1));
 				setUpvotedPosts((prev) => [...(prev || []), ...upvotedPosts]);
 			}
 		}
