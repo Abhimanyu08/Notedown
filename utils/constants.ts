@@ -7,3 +7,4 @@ export const LIMIT = 5;
 export const TITLE_LENGTH = 50;
 export const DESCRIPTION_LENGTH = 100;
 export const PHOTO_LIMIT = 10;
+export const SEARCH_UPVOTED_POSTS_FUNCTION = "search_upvoted_post_by_single_user"

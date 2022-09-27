@@ -10,6 +10,7 @@ import {
 } from "react";
 import {
 	LIMIT,
+	SEARCH_UPVOTED_POSTS_FUNCTION,
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
 	SUPABASE_UPVOTES_TABLE,
@@ -30,6 +31,7 @@ import { UploadModal } from "../../components/UploadModal";
 import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
+import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
 
@@ -56,6 +58,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		Partial<Post>[] | null | undefined
 	>(greatest);
 	const [upvotedPosts, setUpvotedPosts] = useState<Partial<Post>[]>();
+	const [upvotedSearchPosts, setUpvotedSearchPosts] =
+		useState<Partial<Post>[]>();
 	const router = useRouter();
 	const { user } = useContext(UserContext);
 
@@ -346,46 +350,49 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		setSearchResults((prev) => [...(prev || []), ...data]);
 	};
 
-	// const fetchSearchUpvotes= async ({
-	// 	cursor,
-	// 	searchTerm,
-	// }: {
-	// 	cursor?: string | number;
-	// 	searchTerm?: string;
-	// }) => {
-	// 	if (!searchTerm) return;
-	// 	if (!cursor) {
+	const fetchSearchUpvotes = async ({
+		cursor,
+		searchTerm,
+	}: {
+		cursor?: string | number;
+		searchTerm?: string;
+	}) => {
+		console.log("This called");
+		if (!searchTerm) return;
 
-	// 		const { data, error } = await supabase
-	// 			.from<Post>(SUPABASE_POST_TABLE)
-	// 			.select(`*, ${SUPABASE_UPVOTES_TABLE}!inner()`)
-	// 			.match({ created_by: profileUser?.id })
-	// 			.textSearch("search_index_col", searchTerm)
-	// 			.order("upvote_count", { ascending: false })
-	// 			.limit(LIMIT);
-
-	// 		if (error || !data) {
-	// 			console.log(error.message || "data returned is null");
-	// 			return;
-	// 		}
-	// 		setSearchResults((prev) => [...(prev || []), ...data]);
-	// 		return;
-	// 	}
-	// 	const { data, error } = await supabase
-	// 		.from<Post>(SUPABASE_POST_TABLE)
-	// 		.select("*")
-	// 		.match({ created_by: profileUser?.id })
-	// 		.textSearch("search_index_col", searchTerm)
-	// 		.lt("upvote_count", cursor)
-	// 		.order("upvote_count", { ascending: false })
-	// 		.limit(LIMIT);
-
-	// 	if (error || !data) {
-	// 		console.log(error.message || "data returned is null");
-	// 		return;
-	// 	}
-	// 	setSearchResults((prev) => [...(prev || []), ...data]);
-	// }
+		if (!cursor) {
+			const { data } = await supabase.rpc(SEARCH_UPVOTED_POSTS_FUNCTION, {
+				user_id: profile?.id,
+				search_term: searchTerm,
+				cursor: null,
+			});
+			if (data) {
+				let modifiedData = data.map((post) => ({
+					...post,
+					bloggers: { name: post.author },
+				}));
+				setUpvotedSearchPosts((prev) => [
+					...(prev || []),
+					...modifiedData,
+				]);
+			}
+			console.log(data);
+			return;
+		}
+		const { data } = await supabase.rpc(SEARCH_UPVOTED_POSTS_FUNCTION, {
+			user_id: profile?.id,
+			search_term: searchTerm,
+			cursor,
+		});
+		if (data) {
+			let modifiedData = data.map((post) => ({
+				...post,
+				bloggers: { name: post.author },
+			}));
+			setUpvotedSearchPosts((prev) => [...(prev || []), ...modifiedData]);
+		}
+		console.log(data);
+	};
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
@@ -573,32 +580,55 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									)}
 								</div>
 								<div className="my-4 md:w-1/2">
-									<SearchComponent
-										placeholder={
-											postType === "upvoted"
-												? user?.id === profile?.id
-													? "Search posts upvoted by you "
-													: `Search posts upvoted by ${profile?.name} `
-												: user?.id === profile?.id
-												? "Search your posts"
-												: `Search ${profile?.name}'s posts`
-										}
-										fetchPosts={fetchSearchPosts}
-										setPosts={setSearchResults}
-										setSearchQuery={setSearchQuery}
-									/>
+									{postType === "upvoted" ? (
+										<SearchComponent
+											placeholder={
+												user?.id === profile?.id
+													? "Search posts upvoted by you"
+													: `Search posts upvoted by ${profile?.name}`
+											}
+											fetchPosts={fetchSearchUpvotes}
+											setPosts={setUpvotedSearchPosts}
+											setSearchQuery={setSearchQuery}
+										/>
+									) : (
+										<SearchComponent
+											placeholder={
+												user?.id === profile?.id
+													? "Search your posts"
+													: `Search ${profile?.name}'s posts`
+											}
+											fetchPosts={fetchSearchPosts}
+											setPosts={setSearchResults}
+											setSearchQuery={setSearchQuery}
+										/>
+									)}
 								</div>
 							</div>
-							{(searchResults?.length || 0) > 0 ? (
-								<PostDisplay
-									posts={searchResults || []}
-									author={profileUser?.name || ""}
-									cursorKey="upvote_count"
-									searchTerm={searchQuery}
-									owner={user?.id === id}
-									fetchPosts={fetchSearchPosts}
-									setPostInAction={setPostInAction}
-								/>
+							{(searchResults?.length ||
+								upvotedSearchPosts?.length ||
+								0) > 0 ? (
+								<>
+									{postType === "upvoted" ? (
+										<PostDisplay
+											posts={upvotedSearchPosts || []}
+											cursorKey="upvote_count"
+											searchTerm={searchQuery}
+											owner={false}
+											fetchPosts={fetchSearchUpvotes}
+										/>
+									) : (
+										<PostDisplay
+											posts={searchResults || []}
+											author={profileUser?.name || ""}
+											cursorKey="upvote_count"
+											searchTerm={searchQuery}
+											owner={user?.id === id}
+											fetchPosts={fetchSearchPosts}
+											setPostInAction={setPostInAction}
+										/>
+									)}
+								</>
 							) : (
 								<>
 									{postType === "published" && (

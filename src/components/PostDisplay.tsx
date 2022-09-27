@@ -48,7 +48,10 @@ function PostDisplay({
 	const onLoadMore: MouseEventHandler = async () => {
 		if (!fetchPosts || !posts || posts.length === 0) return;
 
-		fetchPosts({ cursor: cursor as string | number, searchTerm });
+		fetchPosts({
+			cursor: cursor as string | number,
+			searchTerm: searchTerm?.split(" ").join(" | "),
+		});
 	};
 
 	return (

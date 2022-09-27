@@ -26,7 +26,7 @@ function SearchComponent({
 	const [timer, setTimer] = useState<NodeJS.Timeout>();
 
 	const onSearchTermInput: ChangeEventHandler<HTMLInputElement> = (e) => {
-		setSearchTerm(e.target.value.split(" ").join(" | "));
+		setSearchTerm(e.target.value);
 	};
 
 	useEffect(() => {
@@ -46,7 +46,7 @@ function SearchComponent({
 			return;
 		}
 
-		fetchPosts({ searchTerm: term });
+		fetchPosts({ searchTerm: term.split(" ").join(" | ") });
 		// if (!profileId) {
 		// 	const { data, error } = await supabase
 		// 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
