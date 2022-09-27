@@ -87,12 +87,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			)}
 
 			<div className="flex text-xs text-white/50">
-				<p
-					onClick={() => router.push(`/profile/${created_by}`)}
-					className="link link-hover"
-				>
-					{author}
-				</p>
+				<Link href={`/profile/${created_by}`}>
+					<p className="link link-hover">{author}</p>
+				</Link>
 				<div className="divider divider-horizontal"></div>
 				<span className="">
 					{published_on

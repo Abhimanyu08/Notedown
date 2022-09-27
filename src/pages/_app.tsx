@@ -1,5 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import { AppProps } from "next/app";
+import { useRouter } from "next/router";
 import {
 	createContext,
 	Dispatch,
@@ -11,7 +12,6 @@ import "../../styles/globals.css";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Blogger from "../interfaces/Blogger";
-import Post from "../interfaces/Post";
 
 export const UserContext = createContext<{
 	user?: User | null;
@@ -27,6 +27,7 @@ export const BlogContext = createContext<{
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 	const [updated, setUpdated] = useState(false);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (user && !updated) {
@@ -71,7 +72,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	return (
 		<UserContext.Provider value={{ user, setUser }}>
-			<Component {...pageProps} />
+			<Component {...pageProps} key={router.asPath} />
 		</UserContext.Provider>
 	);
 }
