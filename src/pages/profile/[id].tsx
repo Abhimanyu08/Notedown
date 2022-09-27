@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { userAgent } from "next/server";
 import {
 	ChangeEventHandler,
 	Dispatch,
@@ -10,12 +11,14 @@ import {
 	useState,
 } from "react";
 import { AiOutlineFileDone } from "react-icons/ai";
+import { BsLayoutTextSidebar } from "react-icons/bs";
 import { MdCancel } from "react-icons/md";
 import { VscPreview } from "react-icons/vsc";
 import {
 	LIMIT,
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
+	SUPABASE_UPVOTES_TABLE,
 } from "../../../utils/constants";
 import { fetchUpvotes } from "../../../utils/fetchUpvotes";
 import mdToHtml from "../../../utils/mdToHtml";
@@ -33,6 +36,7 @@ import { UploadModal } from "../../components/UploadModal";
 import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
+import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
 
 interface ProfileProps {
@@ -41,12 +45,13 @@ interface ProfileProps {
 	profileUser?: Blogger;
 }
 
+type PostType = "published" | "unpublished" | "upvoted";
+type SortType = "greatest" | "latest";
+
 function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [profile, setProfile] = useState(profileUser);
 	const [section, setSection] = useState<"posts" | "about">("posts");
-	const [postType, setPostType] = useState<"published" | "unpublished">(
-		"published"
-	);
+	const [postType, setPostType] = useState<PostType>("published");
 	const [editingAbout, setEditingAbout] = useState(false);
 	const [publicPosts, setPublicPosts] = useState<
 		Partial<Post>[] | null | undefined
@@ -56,13 +61,14 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [greatestPosts, setGreatestPosts] = useState<
 		Partial<Post>[] | null | undefined
 	>(greatest);
+	const [upvotedPosts, setUpvotedPosts] = useState<Partial<Post>[]>();
 	const router = useRouter();
 	const { user } = useContext(UserContext);
 
 	const [about, setAbout] = useState<string | undefined>(profile?.about);
 	const [htmlAbout, setHtmlAbout] = useState("");
 	const [previewing, setPreviewing] = useState(false);
-	const [sortType, setSortType] = useState<"greatest" | "latest">("latest");
+	const [sortType, setSortType] = useState<SortType>("latest");
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
@@ -101,27 +107,38 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		sendRevalidationRequest(`profile/${profile?.id}`);
 	};
 
-	const onPostTypeChange: ChangeEventHandler<HTMLSelectElement> = async (
-		e
-	) => {
-		e.preventDefault();
-
-		setPostType(e.target.value as "published" | "unpublished");
-
-		if (e.target.value === "published") {
+	useEffect(() => {
+		if (postType === "published") {
+			if (!publicPosts || publicPosts.length == 0) {
+				if (profileUser?.id === user?.id) setPostType("unpublished");
+				setPostType("upvoted");
+			}
 			return;
 		}
 
-		if (!privatePosts || privatePosts.length === 0) {
-			const { data } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
-				.select()
-				.match({ created_by: profile?.id, published: false })
-				.order("created_at", { ascending: false })
-				.limit(LIMIT);
-			setPrivatePosts(data);
+		if (postType === "unpublished") {
+			if (!privatePosts || privatePosts.length === 0) {
+				supabase
+					.from<Post>(SUPABASE_POST_TABLE)
+					.select()
+					.match({ created_by: profile?.id, published: false })
+					.order("created_at", { ascending: false })
+					.limit(LIMIT)
+					.then((val) => {
+						if (!val.data || val.data.length === 0) {
+							setPostType("upvoted");
+							return;
+						}
+						setPrivatePosts(val.data);
+					});
+			}
 		}
-	};
+
+		if (postType === "upvoted") {
+			if (upvotedPosts !== undefined) return;
+			fetchUpvotedPosts();
+		}
+	}, [postType]);
 
 	const checkGreatestStillGreatest = async (
 		greatest?: Partial<Post>[] | null
@@ -150,6 +167,78 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 			return;
 		}
 		setPrivatePosts(newPosts);
+	};
+
+	const fetchUpvotedPosts = async (cursor?: string | number) => {
+		if (cursor) {
+			const { data } = await supabase
+				.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+				.select("created_at, post_id")
+				.match({ upvoter: profile?.id })
+				.lt("created_at", cursor)
+				.order("created_at", { ascending: false })
+				.limit(LIMIT);
+			if (data) {
+				const { data: posts } = await supabase
+					.from<Post>(SUPABASE_POST_TABLE)
+					.select(
+						"id,created_by,title,description,language,published,published_on,upvote_count,bloggers(name)"
+					)
+					.in(
+						"id",
+						data.map((upvote) => upvote.post_id)
+					);
+				if (posts) {
+					let modifiedData: Record<number, string> = {};
+					data.forEach(
+						(upvote) =>
+							(modifiedData[upvote.post_id] = upvote.created_at)
+					);
+					let upvotedPosts = posts.map((post) => ({
+						...post,
+						created_at: modifiedData[post.id],
+					}));
+					setUpvotedPosts((prev) => [
+						...(prev || []),
+						...upvotedPosts,
+					]);
+				}
+			}
+			return;
+		}
+
+		const { data } = await supabase
+			.from<Upvotes>(SUPABASE_UPVOTES_TABLE)
+			.select("created_at, post_id")
+			.match({ upvoter: profile?.id })
+			.order("created_at", { ascending: false })
+			.limit(LIMIT);
+
+		if (data) {
+			const { data: posts } = await supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select(
+					"id,created_by,title,description,language,published,published_on,upvote_count,bloggers(name)"
+				)
+				.in(
+					"id",
+					data.map((upvote) => upvote.post_id)
+				);
+
+			if (posts) {
+				let modifiedData: Record<number, string> = {};
+				data.forEach(
+					(upvote) =>
+						(modifiedData[upvote.post_id] = upvote.created_at)
+				);
+
+				let upvotedPosts = posts.map((post) => ({
+					...post,
+					created_at: modifiedData[post.id],
+				}));
+				setUpvotedPosts((prev) => [...(prev || []), ...upvotedPosts]);
+			}
+		}
 	};
 
 	const fetchPrivatePosts = async (cursor: string | number) => {
@@ -302,22 +391,15 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							</p>
 						</div>
 						{user?.id !== id && section === "posts" && (
-							<select
-								name=""
-								id=""
-								className={` select select-sm font-normal ${
-									postType === "published" ? "" : "invisible"
-								}`}
-								value={sortType}
-								onChange={(e) =>
-									setSortType(
-										e.target.value as "greatest" | "latest"
-									)
-								}
-							>
-								<option value="latest">Latest</option>
-								<option value="greatest">Greatest</option>
-							</select>
+							<PostTypeSelecter
+								{...{
+									postType,
+									sortType,
+									setSortType,
+									setPostType,
+									owner: user?.id === profile?.id,
+								}}
+							/>
 						)}
 						{user?.id === id && section === "posts" ? (
 							<label
@@ -382,7 +464,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 											name=""
 											id=""
 											className="select select-sm font-normal"
-											onChange={onPostTypeChange}
+											onChange={(e) =>
+												setPostType(
+													e.target.value as PostType
+												)
+											}
 											value={postType}
 										>
 											<option value="published">
@@ -391,34 +477,22 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 											<option value="unpublished">
 												Unpublished
 											</option>
+											<option value="upvoted">
+												Upvoted
+											</option>
 										</select>
 									)}
 
 									{user?.id === id && (
-										<select
-											name=""
-											id=""
-											className={` select select-sm font-normal ${
-												postType === "published"
-													? ""
-													: "invisible"
-											}`}
-											value={sortType}
-											onChange={(e) =>
-												setSortType(
-													e.target.value as
-														| "greatest"
-														| "latest"
-												)
-											}
-										>
-											<option value="latest">
-												Latest
-											</option>
-											<option value="greatest">
-												Greatest
-											</option>
-										</select>
+										<PostTypeSelecter
+											{...{
+												postType,
+												sortType,
+												setSortType,
+												setPostType,
+												owner: user.id === profile?.id,
+											}}
+										/>
 									)}
 								</div>
 								<div className="my-4 md:w-1/2">
@@ -439,35 +513,78 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									fetchPosts={fetchSearchPosts}
 									setPostInAction={setPostInAction}
 								/>
-							) : postType === "published" ? (
-								sortType === "latest" ? (
-									<PostDisplay
-										posts={publicPosts || []}
-										owner={user?.id === id}
-										setPostInAction={setPostInAction}
-										author={profile?.name || undefined}
-										cursorKey={"published_on"}
-										fetchPosts={fetchLatestPosts}
-									/>
-								) : (
-									<PostDisplay
-										posts={greatestPosts || []}
-										owner={user?.id === id}
-										setPostInAction={setPostInAction}
-										author={profile?.name || undefined}
-										cursorKey={"upvote_count"}
-										fetchPosts={fetchGreatestPosts}
-									/>
-								)
 							) : (
-								<PostDisplay
-									posts={privatePosts || []}
-									owner={user?.id === id}
-									author={profile?.name || undefined}
-									setPostInAction={setPostInAction}
-									cursorKey={"created_at"}
-									fetchPosts={fetchPrivatePosts}
-								/>
+								<>
+									{postType === "published" && (
+										<>
+											<>
+												{sortType === "latest" && (
+													<PostDisplay
+														posts={
+															publicPosts || []
+														}
+														owner={user?.id === id}
+														setPostInAction={
+															setPostInAction
+														}
+														author={
+															profile?.name ||
+															undefined
+														}
+														cursorKey={
+															"published_on"
+														}
+														fetchPosts={
+															fetchLatestPosts
+														}
+													/>
+												)}
+											</>
+											<>
+												{sortType === "greatest" && (
+													<PostDisplay
+														posts={
+															greatestPosts || []
+														}
+														owner={user?.id === id}
+														setPostInAction={
+															setPostInAction
+														}
+														author={
+															profile?.name ||
+															undefined
+														}
+														cursorKey={
+															"upvote_count"
+														}
+														fetchPosts={
+															fetchGreatestPosts
+														}
+													/>
+												)}
+											</>
+										</>
+									)}
+
+									{postType === "unpublished" && (
+										<PostDisplay
+											posts={privatePosts || []}
+											owner={user?.id === id}
+											author={profile?.name || undefined}
+											setPostInAction={setPostInAction}
+											cursorKey={"created_at"}
+											fetchPosts={fetchPrivatePosts}
+										/>
+									)}
+									{postType === "upvoted" && (
+										<PostDisplay
+											posts={upvotedPosts || []}
+											owner={false}
+											cursorKey={"created_at"}
+											fetchPosts={fetchUpvotedPosts}
+										/>
+									)}
+								</>
 							)}
 						</>
 					) : (
@@ -485,6 +602,48 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				</div>
 			</div>
 		</Layout>
+	);
+}
+
+function PostTypeSelecter({
+	postType,
+	setSortType,
+	sortType,
+	setPostType,
+	owner,
+}: {
+	owner: boolean;
+	postType: PostType;
+	sortType: SortType;
+	setSortType: Dispatch<SetStateAction<SortType>>;
+	setPostType: Dispatch<SetStateAction<PostType>>;
+}) {
+	return (
+		<select
+			name=""
+			id=""
+			className={` select select-sm font-normal ${
+				postType === "unpublished" || (postType === "upvoted" && owner)
+					? "invisible"
+					: ""
+			}`}
+			value={postType === "upvoted" ? "upvoted" : sortType}
+			onChange={(e) => {
+				if (
+					e.target.value === "latest" ||
+					e.target.value === "greatest"
+				) {
+					setSortType(e.target.value);
+					setPostType("published");
+					return;
+				}
+				setPostType(e.target.value as "upvoted");
+			}}
+		>
+			<option value="latest">Latest</option>
+			<option value="greatest">Greatest</option>
+			{!owner && <option value="upvoted">Upvoted</option>}
+		</select>
 	);
 }
 

@@ -1,4 +1,3 @@
-8. Set up codemirror for javascript and rust.
 9. design a logo
 10. Setup meta tags in every page to render that logo
 11. Show someone's upvoted post on their profile page
@@ -6,6 +5,7 @@
 
 
 -----------------Done------------------------------
+8. Set up codemirror for javascript and rust.
 7. Fetch upvotes on home page after load
 1. Limit the number of images a user can upload
 5. Enable share option
