@@ -20,7 +20,7 @@ function htmlToJsx({
 	imageFolder,
 }: htmlToJsxProps): JSX.Element {
 	const re =
-		/([^<>]*?)(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)/g;
+		/([^<>]*?)?(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)?/g;
 	const matches = Array.from(html.matchAll(re));
 	if (matches.length === 0) return <>{html}</>;
 	const elem = (
@@ -58,8 +58,7 @@ function htmlToJsx({
 				}
 				const content = elem.match(/<.*?>((.|\n|\r)*)<\/.*>/)?.at(1);
 				const hasImage = Array.from(
-					content?.matchAll(/((.|\n|\r)*?)(<img (.*)>)([^<>]*)/g) ||
-						[]
+					content?.matchAll(/((.|\n|\r)*?)(<img (.*)>)/g) || []
 				);
 				if (hasImage.length !== 0 && imageFolder) {
 					return Array.from(hasImage).map((imageMatch) => {
@@ -78,14 +77,14 @@ function htmlToJsx({
 							.getPublicUrl(`${imageFolder}/${imageName}`);
 						return (
 							<>
-								<span className="">
+								<p>
 									{htmlToJsx({
 										html: string1 || "",
 										language,
 										ownerId,
 										imageFolder,
 									})}
-								</span>
+								</p>
 								<div className="">
 									<div className="relative">
 										<Image

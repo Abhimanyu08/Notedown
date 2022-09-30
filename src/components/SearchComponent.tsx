@@ -47,30 +47,7 @@ function SearchComponent({
 		}
 
 		fetchPosts({ searchTerm: term.split(" ").join(" | ") });
-		// if (!profileId) {
-		// 	const { data, error } = await supabase
-		// 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-		// 		.select("*, bloggers(name)")
-		// 		.textSearch("search_index_col", term)
-		// 		.order("upvote_count", { ascending: false })
-		// 		.limit(LIMIT);
-		// 	console.log(data);
-		// 	if (error || !data) return;
 
-		// 	setPosts(data);
-		// 	return;
-		// }
-		// const { data, error } = await supabase
-		// 	.from<Post>(SUPABASE_POST_TABLE)
-		// 	.select()
-		// 	.match({ created_by: profileId })
-		// 	.textSearch("search_index_col", term)
-		// 	.limit(10);
-
-		// console.log(data);
-		// if (error || !data) return;
-
-		// setPosts(data);
 		return;
 	};
 	return (
