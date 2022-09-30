@@ -128,7 +128,7 @@ export function Blog({
 						</Link>
 					</span>
 				</div>
-				<div className="" id="jsx">
+				<div className="mb-12" id="jsx">
 					{blogJsx}
 				</div>
 			</div>
