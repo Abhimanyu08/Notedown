@@ -13,7 +13,7 @@ function Navbar({
 	logoutCallback?: () => void;
 }) {
 	return (
-		<div className="flex items-center p-2 md:p-4 justify-between grow-0 mb-4 md:mb-10 xl:px-64  pl-5 pr-0 md:px-32 z-10 opacity-100 border-b-2 border-white/10 ">
+		<div className="flex items-center p-3 md:p-4 justify-between grow-0 mb-4 md:mb-10 xl:px-64  pl-5 pr-0 md:px-32 z-10 opacity-100 border-b-2 border-white/10 ">
 			<Link href="/">
 				<p className="link-hover cursor-pointer md:text-base text-xs text-white">
 					Home

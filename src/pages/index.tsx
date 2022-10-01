@@ -41,9 +41,10 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 
 		if (error || !data) {
 			console.log(error.message || "data returned is null");
-			return;
+			return false;
 		}
 		setHomePosts((prev) => [...(prev || []), ...data]);
+		return data.length > 0;
 	};
 
 	const fetchSearchPosts = async ({
@@ -63,10 +64,10 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				.order("upvote_count", { ascending: false })
 				.limit(LIMIT);
 			console.log(data);
-			if (error || !data) return;
+			if (error || !data) return false;
 
 			setSearchResults(data);
-			return;
+			return data.length > 0;
 		}
 		if (cursor) {
 			const { data, error } = await supabase
@@ -79,9 +80,10 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 
 			if (error || !data) {
 				console.log(error.message || "data returned is null");
-				return;
+				return false;
 			}
 			setSearchResults((prev) => [...(prev || []), ...data]);
+			return data.length > 0;
 		}
 	};
 	return (

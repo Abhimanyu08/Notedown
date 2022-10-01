@@ -22,7 +22,7 @@ interface PostDisplayProps {
 	}: {
 		cursor: string | number;
 		searchTerm?: string;
-	}) => void;
+	}) => Promise<boolean | undefined>;
 }
 
 function PostDisplay({
@@ -37,6 +37,7 @@ function PostDisplay({
 	const [cursor, setCursor] = useState(
 		(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] || null
 	);
+	const [hasMore, setHasMore] = useState(true);
 
 	useEffect(() => {
 		setCursor(
@@ -45,13 +46,15 @@ function PostDisplay({
 		);
 	}, [posts]);
 
-	const onLoadMore: MouseEventHandler = async () => {
-		if (!fetchPosts || !posts || posts.length === 0) return;
+	const onLoadMore: MouseEventHandler = async (e) => {
+		e.preventDefault();
+
+		if (!fetchPosts || !posts || posts.length === 0 || !hasMore) return;
 
 		fetchPosts({
 			cursor: cursor as string | number,
 			searchTerm: searchTerm?.split(" ").join(" | "),
-		});
+		}).then((val) => val !== undefined && setHasMore(val));
 	};
 
 	return (
@@ -73,12 +76,12 @@ function PostDisplay({
 				))}
 			</div>
 			{(posts?.length || 0) > 0 && (
-				<div className="flex justify-center pb-10 mt-10">
+				<div className="flex justify-center pb-10 mt-10 mb-10 md:mb-0">
 					<div
-						className="btn btn-xs md:btn-sm normal-case bg-amber-500 text-black"
+						className="normal-case bg-amber-500 rounded-md p-1 text-xs font-semibold cursor-pointer text-black"
 						onClick={onLoadMore}
 					>
-						Load More
+						{hasMore ? "Load More" : "No More"}
 					</div>
 				</div>
 			)}

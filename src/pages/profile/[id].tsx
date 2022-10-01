@@ -208,7 +208,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					]);
 				}
 			}
-			return;
+			return (data?.length || 0) > 0;
 		}
 
 		const { data } = await supabase
@@ -245,6 +245,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				setUpvotedPosts((prev) => [...(prev || []), ...upvotedPosts]);
 			}
 		}
+		return (data?.length || 0) > 0;
 	};
 
 	const fetchPrivatePosts = async ({
@@ -262,9 +263,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (error || !data) {
 			console.log(error.message || "data returned is null");
-			return;
+			return false;
 		}
 		setPrivatePosts((prev) => [...(prev || []), ...data]);
+		return data.length > 0;
 	};
 
 	const fetchGreatestPosts = async ({
@@ -283,9 +285,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (error || !data) {
 			console.log(error.message || "data returned is null");
-			return;
+			return false;
 		}
 		setGreatestPosts((prev) => [...(prev || []), ...data]);
+		return data.length > 0;
 	};
 
 	const fetchLatestPosts = async ({
@@ -304,10 +307,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (error || !data) {
 			console.log(error.message || "data returned is null");
-			return;
+			return false;
 		}
 		if (setPublicPosts)
 			setPublicPosts((prev) => [...(prev || []), ...data]);
+		return data.length > 0;
 	};
 
 	const fetchSearchPosts = async ({
@@ -329,10 +333,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 			if (error || !data) {
 				console.log(error.message || "data returned is null");
-				return;
+				return false;
 			}
 			setSearchResults((prev) => [...(prev || []), ...data]);
-			return;
+			return data.length > 0;
 		}
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
@@ -345,9 +349,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 		if (error || !data) {
 			console.log(error.message || "data returned is null");
-			return;
+			return false;
 		}
 		setSearchResults((prev) => [...(prev || []), ...data]);
+		return data.length > 0;
 	};
 
 	const fetchSearchUpvotes = async ({
@@ -376,8 +381,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					...modifiedData,
 				]);
 			}
-			console.log(data);
-			return;
+			return (data?.length || 0) > 0;
 		}
 		const { data } = await supabase.rpc(SEARCH_UPVOTED_POSTS_FUNCTION, {
 			user_id: profile?.id,
@@ -391,7 +395,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 			}));
 			setUpvotedSearchPosts((prev) => [...(prev || []), ...modifiedData]);
 		}
-		console.log(data);
+		return (data?.length || 0) > 0;
 	};
 
 	return (
@@ -460,7 +464,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							<p
 								className={`tab tab-lifted ${
 									section === "posts" ? "tab-active" : ""
-								} font-normal text-white text-sm md:text-base `}
+								} font-normal text-white text-sm md:text-base`}
 								onClick={() => setSection("posts")}
 							>
 								Posts
