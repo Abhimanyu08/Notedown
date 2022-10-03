@@ -4,7 +4,14 @@ import { MouseEventHandler, useRef } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { TbNews, TbNewsOff } from "react-icons/tb";
+import { ALLOWED_LANGUAGES } from "../../utils/constants";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
+
+const langToBadgeColor: Record<typeof ALLOWED_LANGUAGES[number], string> = {
+	javascript: "text-yellow-500",
+	python: "text-green-500",
+	rust: "text-red-500",
+};
 
 const PostComponent: React.FC<PostComponentProps> = ({
 	post,
@@ -20,6 +27,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		published_on,
 		published,
 		upvote_count: upvotes,
+		language,
 	} = post;
 	const router = useRouter();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
@@ -86,23 +94,29 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				</div>
 			)}
 
-			<div className="flex text-xs text-white/50">
+			<div className="flex text-xs text-white/50 mt-1 mb-1">
 				<Link href={`/profile/${created_by}`}>
-					<p className="link link-hover">{author}</p>
+					<p className="link link-hover border-r-2 border-white/30 pr-3 mr-3">
+						{author}
+					</p>
 				</Link>
-				<div className="divider divider-horizontal"></div>
-				<span className="">
+				{/* <div className="divider divider-horizontal"></div> */}
+				<span className="border-r-2 border-white/30 pr-3 mr-3">
 					{published_on
 						? new Date(published_on).toDateString()
 						: "Not Published"}
 				</span>
-				<div className="divider divider-horizontal"></div>
-				<span className="flex items-center gap-1">
+				{/* <div className="divider divider-horizontal"></div> */}
+				<span className="flex items-center gap-1 border-r-2 border-white/30 pr-3 mr-3">
 					{upvotes &&
 						upvotes > 0 &&
 						formatter.current.format(upvotes)}{" "}
 					<BiUpvote />
 				</span>
+				{/* <div className="divider divider-horizontal"></div> */}
+				<div className={`${language && langToBadgeColor[language]}`}>
+					{language}
+				</div>
 			</div>
 			<p className="italic text-sm md:text-base text-white">
 				{description}
