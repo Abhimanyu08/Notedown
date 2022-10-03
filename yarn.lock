@@ -37,7 +37,31 @@
     "@codemirror/view" "^6.0.0"
     "@lezer/common" "^1.0.0"
 
-"@codemirror/lang-javascript@^6.1.0":
+"@codemirror/lang-css@^6.0.0":
+  "integrity" "sha512-jBqc+BTuwhNOTlrimFghLlSrN6iFuE44HULKWoR4qKYObhOIl9Lci1iYj6zMIte1XTQmZguNvjXMyr43LUKwSw=="
+  "resolved" "https://registry.npmjs.org/@codemirror/lang-css/-/lang-css-6.0.0.tgz"
+  "version" "6.0.0"
+  dependencies:
+    "@codemirror/autocomplete" "^6.0.0"
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@lezer/css" "^1.0.0"
+
+"@codemirror/lang-html@^6.0.0":
+  "integrity" "sha512-e8JAUWyOo7N26tmek+WK0+Zg+pZRe+dQi8TZq0OOVVygpLV+mNAT2n5b5JhknY+TVZIVGLjuhdsoizw1SDFfPg=="
+  "resolved" "https://registry.npmjs.org/@codemirror/lang-html/-/lang-html-6.1.2.tgz"
+  "version" "6.1.2"
+  dependencies:
+    "@codemirror/autocomplete" "^6.0.0"
+    "@codemirror/lang-css" "^6.0.0"
+    "@codemirror/lang-javascript" "^6.0.0"
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.2.2"
+    "@lezer/common" "^1.0.0"
+    "@lezer/html" "^1.0.1"
+
+"@codemirror/lang-javascript@^6.0.0", "@codemirror/lang-javascript@^6.1.0":
   "integrity" "sha512-wAWEY1Wdis2cKDy9A5q/rUmzLHFbZgoupJBcGaeMMsDPi68Rm90NsmzAEODE5kW8mYdRKFhQ157WJghOZ3yYdg=="
   "resolved" "https://registry.npmjs.org/@codemirror/lang-javascript/-/lang-javascript-6.1.0.tgz"
   "version" "6.1.0"
@@ -49,6 +73,18 @@
     "@codemirror/view" "^6.0.0"
     "@lezer/common" "^1.0.0"
     "@lezer/javascript" "^1.0.0"
+
+"@codemirror/lang-markdown@^6.0.1":
+  "integrity" "sha512-pHPQuRwf9cUrmkmsTHRjtS9ZnGu3fA9YzAdh2++d+L9wbfnC2XbKh0Xvm/0YiUjdCnoCx9wDFEoCuAnkqKWLIw=="
+  "resolved" "https://registry.npmjs.org/@codemirror/lang-markdown/-/lang-markdown-6.0.1.tgz"
+  "version" "6.0.1"
+  dependencies:
+    "@codemirror/lang-html" "^6.0.0"
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
+    "@lezer/common" "^1.0.0"
+    "@lezer/markdown" "^1.0.0"
 
 "@codemirror/lang-python@^6.0.1":
   "integrity" "sha512-w2jTSY+LgXnK7iIBLgMxk6xtJhZHkcxcGGveuq9zYmncURmOTFXKnDvBaBClNIHKgjkHXZqGK8ZduCMK23hZPA=="
@@ -101,10 +137,10 @@
   "resolved" "https://registry.npmjs.org/@codemirror/state/-/state-6.1.1.tgz"
   "version" "6.1.1"
 
-"@codemirror/view@^6.0.0":
-  "integrity" "sha512-3emW1symh+GoteFMBPsltjmF790U/trouLILATh3JodbF/z98HvcQh2g3+H6dfNIHx16uNonsAF4mNzVr1TJNA=="
-  "resolved" "https://registry.npmjs.org/@codemirror/view/-/view-6.2.0.tgz"
-  "version" "6.2.0"
+"@codemirror/view@^6.0.0", "@codemirror/view@^6.2.2", "@codemirror/view@^6.3.0":
+  "integrity" "sha512-jMN9OGKmzRPJ+kksfMrB5e/A9heQncirHsz8XNBpgEbYONCk5tWHMKVWKTNwznkUGD5mnigXI1i5YIcWpscSPg=="
+  "resolved" "https://registry.npmjs.org/@codemirror/view/-/view-6.3.0.tgz"
+  "version" "6.3.0"
   dependencies:
     "@codemirror/state" "^6.0.0"
     "style-mod" "^4.0.0"
@@ -149,12 +185,29 @@
   "resolved" "https://registry.npmjs.org/@lezer/common/-/common-1.0.0.tgz"
   "version" "1.0.0"
 
+"@lezer/css@^1.0.0":
+  "integrity" "sha512-616VqgDKumHmYIuxs3tnX1irEQmoDHgF/TlP4O5ICWwyHwLMErq+8iKVuzTkOdBqvYAVmObqThcDEAaaMJjAdg=="
+  "resolved" "https://registry.npmjs.org/@lezer/css/-/css-1.0.0.tgz"
+  "version" "1.0.0"
+  dependencies:
+    "@lezer/highlight" "^1.0.0"
+    "@lezer/lr" "^1.0.0"
+
 "@lezer/highlight@^1.0.0":
   "integrity" "sha512-nsCnNtim90UKsB5YxoX65v3GEIw3iCHw9RM2DtdgkiqAbKh9pCdvi8AWNwkYf10Lu6fxNhXPpkpHbW6mihhvJA=="
   "resolved" "https://registry.npmjs.org/@lezer/highlight/-/highlight-1.0.0.tgz"
   "version" "1.0.0"
   dependencies:
     "@lezer/common" "^1.0.0"
+
+"@lezer/html@^1.0.1":
+  "integrity" "sha512-sC00zEt3GBh3vVO6QaGX4YZCl41S9dHWN/WGBsDixy9G+sqOC7gsa4cxA/fmRVAiBvhqYkJk+5Ul4oul92CPVw=="
+  "resolved" "https://registry.npmjs.org/@lezer/html/-/html-1.0.1.tgz"
+  "version" "1.0.1"
+  dependencies:
+    "@lezer/common" "^1.0.0"
+    "@lezer/highlight" "^1.0.0"
+    "@lezer/lr" "^1.0.0"
 
 "@lezer/javascript@^1.0.0":
   "integrity" "sha512-IjOVeIRhM8IuafWNnk+UzRz7p4/JSOKBNINLYLsdSGuJS9Ju7vFdc82AlTt0jgtV5D8eBZf4g0vK4d3ttBNz7A=="
@@ -170,6 +223,14 @@
   "version" "1.2.3"
   dependencies:
     "@lezer/common" "^1.0.0"
+
+"@lezer/markdown@^1.0.0":
+  "integrity" "sha512-8CY0OoZ6V5EzPjSPeJ4KLVbtXdLBd8V6sRCooN5kHnO28ytreEGTyrtU/zUwo/XLRzGr/e1g44KlzKi3yWGB5A=="
+  "resolved" "https://registry.npmjs.org/@lezer/markdown/-/markdown-1.0.2.tgz"
+  "version" "1.0.2"
+  dependencies:
+    "@lezer/common" "^1.0.0"
+    "@lezer/highlight" "^1.0.0"
 
 "@lezer/python@^1.0.0":
   "integrity" "sha512-FVPp2usfj3zZuc+2RidXAY94WAcsHQ3dbKDbXuZgoAwUungAcXwd3EWXiWQvwNqbae+ek51bWi8dwbiQqweWCg=="

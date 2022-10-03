@@ -1,12 +1,6 @@
 import matter from "gray-matter";
-import Router, { useRouter } from "next/router";
-import {
-	ChangeEventHandler,
-	Dispatch,
-	SetStateAction,
-	useRef,
-	useState,
-} from "react";
+import { useRouter } from "next/router";
+import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
 import {
 	DESCRIPTION_LENGTH,
 	PHOTO_LIMIT,
@@ -199,7 +193,7 @@ export function UploadModal({
 							htmlFor="blogImages"
 							className="text-white font-semibold mr-2"
 						>
-							Please upload images used in your blog (if any, max
+							Please upload images used in your blog (if any, max{" "}
 							{PHOTO_LIMIT})
 						</label>
 						<input

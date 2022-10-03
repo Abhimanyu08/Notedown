@@ -215,7 +215,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							author={author}
 						/>
 					</div>
-					<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
+					<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6">
 						<div
 							className={` btn btn-circle  btn-ghost tooltip`}
 							data-tip={` ${
@@ -391,7 +391,7 @@ export const getStaticProps: GetStaticProps<
 		.download(filename);
 
 	if (fileError || !fileData) return { props: {}, redirect: "/" };
-	const content = await getHtmlFromMarkdown(fileData);
+	const content = (await getHtmlFromMarkdown(fileData)).content;
 
 	return {
 		props: {

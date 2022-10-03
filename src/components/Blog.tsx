@@ -33,7 +33,7 @@ export function Blog({
 			ownerId: created_by!,
 			imageFolder: image_folder || undefined,
 		});
-	}, []);
+	}, [content]);
 
 	useEffect(() => {
 		const func = (blockNumber: number) => {

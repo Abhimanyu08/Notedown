@@ -1,9 +1,10 @@
 import { python } from "@codemirror/lang-python";
 import { javascript } from "@codemirror/lang-javascript";
 import { rust } from "@codemirror/lang-rust";
+import { markdown } from "@codemirror/lang-markdown";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { EditorView } from "codemirror";
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
@@ -16,19 +17,22 @@ import { BlogContext } from '../pages/_app';
 import { BlogProps } from "../interfaces/BlogProps";
 
 
+
 interface useEditorProps {
-    language: BlogProps["language"]
+    language: BlogProps["language"] | "markdown"
     code: string
-    blockNumber: number
+    blockNumber?: number
 }
 function useEditor({ language, blockNumber, code }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     const { collectCodeTillBlock } = useContext(BlogContext)
+    const elemId = useRef(language === "markdown" ? "markdown-textarea" : `codearea-${blockNumber}`)
+
 
     useEffect(() => {
 
         // document.getElementById(`codearea-${blockNumber}`)?.replaceChildren("");
-        if (document.getElementById(`codearea-${blockNumber}`)?.children.length !== 0) return
+        if (document.getElementById(elemId.current)?.children.length !== 0) return
 
         let languageCompartment = new Compartment();
         let tabSize = new Compartment();
@@ -66,7 +70,8 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
                 },
                 ".cm-content": {
                     caretColor: "#0e9",
-                    marginLeft: "4px"
+                    marginLeft: "4px",
+                    fontSize: "18px"
                 },
                 "&.cm-focused .cm-cursor": {
                     borderLeftColor: "#0e9"
@@ -94,6 +99,8 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
                     return languageCompartment.of(python())
                 case "rust":
                     return languageCompartment.of(rust())
+                case "markdown":
+                    return languageCompartment.of(markdown())
 
             }
         }
@@ -106,7 +113,7 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
                 keymap.of([{
                     key: "Shift-Enter",
                     run() {
-                        if (!collectCodeTillBlock) return false;
+                        if (!collectCodeTillBlock || !blockNumber) return false;
                         collectCodeTillBlock(blockNumber)
                         return true;
                     }
@@ -116,11 +123,11 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
 
         let view = new EditorView({
             state: startState,
-            parent: document.getElementById(`codearea-${blockNumber}`)!,
+            parent: document.getElementById(elemId.current)!,
         });
 
         setEditorView(view);
-    }, [collectCodeTillBlock]);
+    }, [collectCodeTillBlock, code]);
 
     return {
         editorView

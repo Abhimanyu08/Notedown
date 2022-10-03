@@ -11,7 +11,6 @@ export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			.from<Post>(SUPABASE_POST_TABLE)
 			.update({
 				published: false,
-				published_on: null,
 			})
 			.match({ id });
 		if (error || !data || data.length === 0) {

@@ -3,7 +3,6 @@ import React from "react";
 import Code from "../src/components/Code";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
-import makeFolderName from "./makeFolderName";
 import { supabase } from "./supabaseClient";
 
 let BLOCK_NUMBER = -1;
@@ -58,12 +57,15 @@ function htmlToJsx({
 				}
 				const content = elem.match(/<.*?>((.|\n|\r)*)<\/.*>/)?.at(1);
 				const hasImage = Array.from(
-					content?.matchAll(/((.|\n|\r)*?)(<img (.*)>)/g) || []
+					content?.matchAll(
+						/((.|\n|\r)*?)?(<img (.*)>)((.|\n|\r)*)/g
+					) || []
 				);
 				if (hasImage.length !== 0 && imageFolder) {
 					return Array.from(hasImage).map((imageMatch) => {
 						const string1 = imageMatch.at(1);
 						const string2 = imageMatch.at(5);
+						console.log(string2);
 						let attrString = imageMatch.at(4);
 						let attrs = makeAttrMap({ match: attrString });
 
@@ -101,7 +103,12 @@ function htmlToJsx({
 										{attrs["alt"]}
 									</figcaption>
 								</div>
-								<span className="">{string2}</span>
+								{htmlToJsx({
+									html: `<p>${string2}</p>` || "",
+									language,
+									ownerId,
+									imageFolder,
+								})}
 							</>
 						);
 					});

@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.0",
+    "@codemirror/lang-markdown": "^6.0.1",
     "@codemirror/lang-python": "^6.0.1",
     "@codemirror/lang-rust": "^6.0.0",
+    "@codemirror/view": "^6.3.0",
     "@supabase/supabase-js": "^1.35.6",
     "codemirror": "^6.0.1",
     "daisyui": "^2.22.0",

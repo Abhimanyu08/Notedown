@@ -19,6 +19,12 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: 
             router.replace("/")
         }
         const fetchPost = async () => {
+            const { data: createdByData } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by').eq("id", postId)
+
+            if (createdByData?.at(0)?.created_by !== loggedInUser?.id) {
+                router.replace("/")
+                return
+            }
 
             const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)').eq("id", postId)
             if (error) {
@@ -58,14 +64,14 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: 
                 return
             }
 
-            const content = await getHtmlFromMarkdown(fileData);
-            setPrivatePost({ ...post, content })
+            const { content } = await getHtmlFromMarkdown(fileData);
+            setPrivatePost({ ...post, content, markdown: await fileData.text() })
 
 
             setLoading(false)
         }
 
-        if (fetch && !isNaN(postId)) {
+        if (fetch.current && !isNaN(postId)) {
             fetchPost()
         }
 

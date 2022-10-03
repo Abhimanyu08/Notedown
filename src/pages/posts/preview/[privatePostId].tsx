@@ -1,12 +1,19 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
+import { FaFileUpload } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { VscPreview } from "react-icons/vsc";
+import { SUPABASE_FILES_BUCKET } from "../../../../utils/constants";
+import { getHtmlFromMarkdown } from "../../../../utils/getResources";
 import { sendRequestToRceServer } from "../../../../utils/sendRequest";
+import { supabase } from "../../../../utils/supabaseClient";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
 import { Toc } from "../../../components/TableOfContents";
+import useEditor from "../../../hooks/useEditor";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
 import { UserContext } from "../../_app";
 
@@ -22,37 +29,63 @@ export default function PrivateBlog() {
 	const [mounted, setMounted] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
 	const [connecting, setConnecting] = useState(false);
+	const [editingMarkdown, setEditingMarkdown] = useState(false);
+	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
+	const [uploadingChanges, setUploadingChanges] = useState(false);
+
+	const [blogData, setBlogData] = useState({
+		content: data?.content,
+		title: data?.title,
+		description: data?.description,
+		language: data?.language,
+	});
+
+	const { editorView } = useEditor({
+		language: "markdown",
+		code: data?.markdown || "",
+	});
+
+	const [initialMarkdown, setIntialMarkdown] = useState(
+		editorView?.state.doc
+	);
+
+	useEffect(() => {
+		if (editorView && initialMarkdown === undefined)
+			setIntialMarkdown(editorView.state.doc);
+	}, [editorView]);
+
+	useEffect(() => {
+		if (editingMarkdown) return;
+
+		const markdown = editorView?.state.doc.toJSON().join("\n");
+		if (!markdown) return;
+		getHtmlFromMarkdown(markdown)
+			.then(({ data, content }) => {
+				setBlogData({
+					title: data.title,
+					description: data.description,
+					language: data.language,
+					content,
+				});
+			})
+			.catch((e) => alert(e.message));
+	}, [editingMarkdown]);
 
 	useEffect(() => {
 		if (!user) router.replace("/");
-		if (data) {
-			if (data.created_by !== user?.id) router.replace("/");
-		}
-
-		setMounted(true);
-	}, [data]);
+		if (!mounted) setMounted(true);
+	}, []);
 
 	useEffect(() => {
 		if (containerId) {
 			window.onbeforeunload = async () =>
 				await sendRequestToRceServer("DELETE", { containerId });
 		}
-
 		return () => {
 			if (containerId) sendRequestToRceServer("DELETE", { containerId });
 		};
 	}, [containerId]);
 
-	if (!mounted) {
-		return null;
-	}
-	if (error) {
-		return (
-			<Layout user={user || null} route={"/"} logoutCallback={() => null}>
-				<p>Error in fetching post {error.message}</p>
-			</Layout>
-		);
-	}
 	const prepareContainer = async () => {
 		if (!user) return;
 		if (containerId) return;
@@ -76,8 +109,54 @@ export default function PrivateBlog() {
 			alert("Couldn't enable remote code execution");
 		}
 	};
+
+	useEffect(() => {
+		if (!initialMarkdown || !editorView) return;
+
+		setHasMarkdownChanged(
+			!(
+				initialMarkdown.toJSON().join("\n") ===
+				editorView.state.doc.toJSON().join("\n")
+			)
+		);
+	}, [editingMarkdown]);
+
+	const onUploadChange: MouseEventHandler<HTMLDivElement> = async () => {
+		if (!hasMarkdownChanged || !user || !editorView) return;
+
+		setUploadingChanges(true);
+
+		const newFile = new File(
+			[editorView.state.doc.toJSON().join("\n")],
+			""
+		);
+
+		await supabase.storage
+			.from(SUPABASE_FILES_BUCKET)
+			.update(data!.filename!, newFile)
+			.then((val) => {
+				setUploadingChanges(false);
+				if (val?.error) alert(val.error.message);
+				if (val && val.data) {
+					setHasMarkdownChanged(false);
+					setEditingMarkdown(false);
+					alert("Changes Uploaded Successfully");
+				}
+			});
+	};
+
+	if (!mounted) {
+		return null;
+	}
+	if (error) {
+		return (
+			<Layout user={user || null} route={"/"} logoutCallback={() => null}>
+				<p>Error in fetching post {error.message}</p>
+			</Layout>
+		);
+	}
+
 	if (loading) {
-		console.log("rendering this");
 		return (
 			<Layout user={user || null} route={"/"} logoutCallback={() => null}>
 				<div>
@@ -101,32 +180,39 @@ export default function PrivateBlog() {
 		>
 			<BlogLayout>
 				<div
-					className={` md:basis-1/5 md:flex md:flex-col justify-center ${
-						showContent
-							? "absolute z-50 top-0 left-0 opacity-100 w-screen"
-							: "hidden"
+					className={` md:basis-1/5 md:flex md:flex-col md:justify-center ${
+						showContent ? "w-screen" : "hidden"
 					}`}
 				>
 					<Toc
-						html={data?.content}
+						html={blogData.content || data?.content}
 						setShowContents={setShowContents}
 					/>
 				</div>
 				<div
-					className={`md:basis-3/5 ${
-						showContent ? "opacity-0 w-screen" : "w-screen"
+					className={`md:basis-3/5 relative ${
+						showContent ? "hidden" : "w-screen"
 					}`}
 				>
-					<Blog {...data} containerId={containerId} />
+					<Blog
+						{...data}
+						content={blogData.content || data?.content}
+						title={blogData.title || data?.title}
+						language={blogData.language || data?.language}
+						description={blogData.description || data?.description}
+						containerId={containerId}
+					/>
+					<div
+						className={`h-full overflow-y-auto absolute top-0 left-0 z-10 w-full ${
+							editingMarkdown ? "" : "invisible"
+						}`}
+						id="markdown-textarea"
+					></div>
 				</div>
-				<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-4">
+				<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6 z-20">
 					<div
 						className={` btn btn-circle  btn-ghost tooltip`}
-						data-tip={` ${
-							user
-								? "Enable remote code execution"
-								: "Please login to enable remote code execution"
-						} `}
+						data-tip="Activate remote code execution"
 						onClick={prepareContainer}
 					>
 						<BiCodeAlt
@@ -135,6 +221,45 @@ export default function PrivateBlog() {
 								containerId ? "text-lime-400" : "text-white"
 							}${connecting ? "hidden" : ""} mt-2 ml-2 `}
 						/>
+					</div>
+					<div
+						className="btn btn-circle btn-ghost tooltip"
+						data-tip={editingMarkdown ? "Preview" : "Edit Markdown"}
+						onClick={() => setEditingMarkdown((prev) => !prev)}
+					>
+						{editingMarkdown ? (
+							<VscPreview
+								size={28}
+								className="text-white mt-2 ml-2"
+							/>
+						) : (
+							<AiFillEdit
+								size={28}
+								className="text-white mt-2 ml-2"
+							/>
+						)}
+					</div>
+					<div className="relative w-fit" onClick={onUploadChange}>
+						<span
+							className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
+								hasMarkdownChanged ? "" : "hidden"
+							} ${uploadingChanges ? "animate-ping" : ""}`}
+						></span>
+						<div
+							className="btn btn-circle btn-ghost tooltip"
+							data-tip={
+								hasMarkdownChanged
+									? "Upload Changes"
+									: "No changes"
+							}
+						>
+							<FaFileUpload
+								size={28}
+								className={` ${
+									hasMarkdownChanged ? "text-white" : ""
+								} mt-2 ml-2`}
+							/>
+						</div>
 					</div>
 				</div>
 			</BlogLayout>

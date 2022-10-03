@@ -31,7 +31,6 @@ import { UploadModal } from "../../components/UploadModal";
 import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
-import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
 
