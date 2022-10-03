@@ -21,7 +21,6 @@ import { sendRevalidationRequest } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import { About } from "../../components/About";
 import { DeleteModal } from "../../components/DeleteModal";
-import { EditModal } from "../../components/EditModal";
 import Layout from "../../components/Layout";
 import PostDisplay from "../../components/PostDisplay";
 import { PublishModal } from "../../components/PublishModal";
@@ -435,10 +434,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							post={postInAction}
 							modifyPosts={modifyPosts}
 						/>
-						<EditModal
+						{/* <EditModal
 							post={postInAction}
 							modifyPosts={modifyPosts}
-						/>
+						/> */}
 						<PublishModal
 							post={postInAction}
 							modifyPosts={modifyPosts}

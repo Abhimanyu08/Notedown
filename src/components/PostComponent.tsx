@@ -28,6 +28,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		published,
 		upvote_count: upvotes,
 		language,
+		created_at,
 	} = post;
 	const router = useRouter();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
@@ -44,17 +45,20 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			</Link>
 			{owner && (
 				<div className="flex absolute top-0 right-0 gap-2">
-					<label
-						htmlFor={`edit`}
-						className="btn btn-xs btn-circle btn-ghost  tooltip tooltip-left capitalize"
-						data-tip="edit"
-						onClick={onAction}
-					>
-						<AiFillEdit
-							className="ml-1 mt-1 text-white"
-							size={15}
-						/>
-					</label>
+					{!published && (
+						<label
+							className="btn btn-xs btn-circle btn-ghost  tooltip tooltip-left capitalize"
+							data-tip="edit"
+							onClick={() =>
+								router.push(`/posts/preview/${id}?edit=1`)
+							}
+						>
+							<AiFillEdit
+								className="ml-1 mt-1 text-white"
+								size={15}
+							/>
+						</label>
+					)}
 					{published ? (
 						<label
 							htmlFor={`unpublish`}
@@ -100,20 +104,19 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						{author}
 					</p>
 				</Link>
-				{/* <div className="divider divider-horizontal"></div> */}
 				<span className="border-r-2 border-white/30 pr-3 mr-3">
-					{published_on
+					{published && published_on
 						? new Date(published_on).toDateString()
-						: "Not Published"}
+						: new Date(created_at!).toDateString()}
 				</span>
-				{/* <div className="divider divider-horizontal"></div> */}
-				<span className="flex items-center gap-1 border-r-2 border-white/30 pr-3 mr-3">
-					{upvotes &&
-						upvotes > 0 &&
-						formatter.current.format(upvotes)}{" "}
-					<BiUpvote />
-				</span>
-				{/* <div className="divider divider-horizontal"></div> */}
+				{published && (
+					<span className="flex items-center gap-1 border-r-2 border-white/30 pr-3 mr-3">
+						{upvotes &&
+							upvotes > 0 &&
+							formatter.current.format(upvotes)}{" "}
+						<BiUpvote />
+					</span>
+				)}
 				<div className={`${language && langToBadgeColor[language]}`}>
 					{language}
 				</div>

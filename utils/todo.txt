@@ -1,11 +1,12 @@
 9. design a logo
 10. Setup meta tags in every page to render that logo
 11. Add latex support
-12. Allow bloggers to update their markdown on the site itself
-13. add language badges on post components.
+14. Allow users to add their twitter, github and web profiles
 
 
 -----------------Done------------------------------
+12. Allow bloggers to update their markdown on the site itself
+13. add language badges on post components.
 12. Only show load more when there are more posts
 11. Show someone's upvoted post on their profile page
 8. Set up codemirror for javascript and rust.

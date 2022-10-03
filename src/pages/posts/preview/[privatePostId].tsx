@@ -5,7 +5,10 @@ import { BiCodeAlt } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
-import { SUPABASE_FILES_BUCKET } from "../../../../utils/constants";
+import {
+	SUPABASE_FILES_BUCKET,
+	SUPABASE_POST_TABLE,
+} from "../../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../../utils/getResources";
 import { sendRequestToRceServer } from "../../../../utils/sendRequest";
 import { supabase } from "../../../../utils/supabaseClient";
@@ -15,11 +18,12 @@ import Layout from "../../../components/Layout";
 import { Toc } from "../../../components/TableOfContents";
 import useEditor from "../../../hooks/useEditor";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
+import Post from "../../../interfaces/Post";
 import { UserContext } from "../../_app";
 
 export default function PrivateBlog() {
 	const router = useRouter();
-	const { privatePostId } = router.query;
+	const { edit, privatePostId } = router.query;
 	const { user } = useContext(UserContext);
 	const { data, error, loading } = usePrivatePostQuery({
 		postId: parseInt(privatePostId as string),
@@ -29,7 +33,9 @@ export default function PrivateBlog() {
 	const [mounted, setMounted] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
 	const [connecting, setConnecting] = useState(false);
-	const [editingMarkdown, setEditingMarkdown] = useState(false);
+	const [editingMarkdown, setEditingMarkdown] = useState(
+		edit && edit === "1"
+	);
 	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
 
@@ -134,6 +140,16 @@ export default function PrivateBlog() {
 		await supabase.storage
 			.from(SUPABASE_FILES_BUCKET)
 			.update(data!.filename!, newFile)
+			.then((val) => {
+				if (val.error) return;
+				return supabase
+					.from<Post>(SUPABASE_POST_TABLE)
+					.update({
+						title: blogData.title,
+						description: blogData.description,
+					})
+					.eq("id", privatePostId as string);
+			})
 			.then((val) => {
 				setUploadingChanges(false);
 				if (val?.error) alert(val.error.message);
@@ -263,23 +279,62 @@ export default function PrivateBlog() {
 					</div>
 				</div>
 			</BlogLayout>
-			<footer className="w-full flex items-center md:hidden justify-evenly p-3  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
+			<footer className="w-full flex items-end md:hidden justify-between p-3  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
 				<div
-					className="flex flex-col items-center"
+					className="flex flex-col items-center text-white gap-1"
 					onClick={prepareContainer}
 				>
 					<BiCodeAlt
 						size={20}
-						className={` ${containerId ? "text-lime-400" : ""}`}
+						className={` ${
+							containerId ? "text-lime-400" : "text-white"
+						}`}
 					/>
 					<span className="text-xs">Activate RCE</span>
 				</div>
 
 				<div
-					className="flex flex-col items-center"
+					className="flex flex-col items-center text-white gap-1"
+					onClick={() => setEditingMarkdown((prev) => !prev)}
+				>
+					{editingMarkdown ? (
+						<>
+							<VscPreview size={20} className="text-white" />
+							<span className="text-xs">Preview</span>
+						</>
+					) : (
+						<>
+							<AiFillEdit size={20} className="text-white" />
+							<span className="text-xs">Edit</span>
+						</>
+					)}
+				</div>
+
+				<div
+					className="flex flex-col items-center relative w-fit gap-1"
+					onClick={onUploadChange}
+				>
+					<span
+						className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-1 ${
+							hasMarkdownChanged ? "" : "hidden"
+						} ${uploadingChanges ? "animate-ping" : ""}`}
+					></span>
+					<FaFileUpload
+						size={16}
+						className={` ${
+							hasMarkdownChanged ? "text-white" : ""
+						} mt-2 ml-2`}
+					/>
+
+					<span className="text-xs text-white">
+						{hasMarkdownChanged ? "Save File" : "No changes"}
+					</span>
+				</div>
+				<div
+					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}
 				>
-					<GiHamburgerMenu size={14} />
+					<GiHamburgerMenu size={16} />
 					<span className="text-xs">Contents</span>
 				</div>
 			</footer>
