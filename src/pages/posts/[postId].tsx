@@ -284,7 +284,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						</div>
 					</div>
 				</BlogLayout>
-				<footer className="w-full flex items-center md:hidden justify-between p-3  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
+				<footer className="w-full flex items-center md:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
 					<div
 						className="flex flex-col items-center"
 						onClick={prepareContainer}

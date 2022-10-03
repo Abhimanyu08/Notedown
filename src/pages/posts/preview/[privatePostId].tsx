@@ -210,14 +210,22 @@ export default function PrivateBlog() {
 						showContent ? "hidden" : "w-screen"
 					}`}
 				>
-					<Blog
-						{...data}
-						content={blogData.content || data?.content}
-						title={blogData.title || data?.title}
-						language={blogData.language || data?.language}
-						description={blogData.description || data?.description}
-						containerId={containerId}
-					/>
+					<div
+						className={`h-full ${
+							editingMarkdown ? "invisible" : ""
+						}`}
+					>
+						<Blog
+							{...data}
+							content={blogData.content || data?.content}
+							title={blogData.title || data?.title}
+							language={blogData.language || data?.language}
+							description={
+								blogData.description || data?.description
+							}
+							containerId={containerId}
+						/>
+					</div>
 					<div
 						className={`h-full pb-20 md:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
 							editingMarkdown ? "" : "invisible"
@@ -279,7 +287,7 @@ export default function PrivateBlog() {
 					</div>
 				</div>
 			</BlogLayout>
-			<footer className="w-full flex items-end md:hidden justify-between p-3 absolute bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
+			<footer className="w-full flex items-end md:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={prepareContainer}
