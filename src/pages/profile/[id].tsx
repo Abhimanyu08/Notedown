@@ -772,7 +772,7 @@ export const getStaticProps: GetStaticProps<
 	Partial<ProfileProps>,
 	{ id: string }
 > = async (context) => {
-	if (!context.params) throw Error("context params are undefined");
+	if (!context.params) return { props: {}, redirect: "/" };
 	const { id } = context.params;
 
 	let userData: Blogger | undefined;
@@ -784,7 +784,7 @@ export const getStaticProps: GetStaticProps<
 	await Promise.all([
 		supabase
 			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.select("id, name, avatar_url,about,twitter,github,web")
+			.select("id,name,avatar_url,about,twitter,github,web")
 			.eq("id", id)
 			.then((val) => {
 				userData = val.data?.at(0);
@@ -793,7 +793,7 @@ export const getStaticProps: GetStaticProps<
 
 		supabase
 			.from<Post>(SUPABASE_POST_TABLE)
-			.select("id, published,published_on,title,description,language")
+			.select("id,published,published_on,title,description,language")
 			.eq("created_by", id)
 			.order("published_on", { ascending: false })
 			.limit(LIMIT)
@@ -804,7 +804,7 @@ export const getStaticProps: GetStaticProps<
 
 		supabase
 			.from<Post>(SUPABASE_POST_TABLE)
-			.select("id, published,published_on,title,description,language")
+			.select("id,published,published_on,title,description,language")
 			.eq("created_by", id)
 			.order("upvote_count", { ascending: false })
 			.limit(LIMIT)

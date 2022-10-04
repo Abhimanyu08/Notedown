@@ -40,7 +40,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 			}
 		});
 
-		if (currProfile.name && currProfile.name !== profile?.name) {
+		if (currProfile?.name && currProfile.name !== profile?.name) {
 			changes["name"] = currProfile.name;
 		}
 		if (newPic) {
@@ -98,6 +98,9 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 		setEditing(false);
 	};
 
+	if (!currProfile) {
+		return <></>;
+	}
 	return (
 		<div className="flex flex-col items-center md:items-start gap-2 w-full md:w-40 h-3/4 ">
 			<div className="avatar ">
@@ -147,7 +150,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 						name=""
 						id="name"
 						className="input input-xs bg-white text-black"
-						value={currProfile.name}
+						value={currProfile?.name}
 						onChange={(e) =>
 							setCurrProfile((prev) => ({
 								...prev,
@@ -161,7 +164,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 						id=""
 						className="input input-xs bg-white text-black"
 						placeholder="Add twitter username"
-						value={currProfile.twitter}
+						value={currProfile?.twitter}
 						onChange={(e) =>
 							setCurrProfile((prev) => ({
 								...prev,
@@ -175,7 +178,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 						id=""
 						className="input input-xs bg-white text-black"
 						placeholder="Add github username"
-						value={currProfile.github}
+						value={currProfile?.github}
 						onChange={(e) =>
 							setCurrProfile((prev) => ({
 								...prev,
@@ -203,7 +206,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					<h1 className={` text-xs font-bold md:text-lg`}>
 						{currProfile.name}
 					</h1>
-					<div className="flex md:flex-col w-full mx-2 items-center justify-center gap-4">
+					<div className="flex md:flex-col w-full md:w-fit mx-2 items-center justify-center gap-4">
 						{currProfile.twitter && (
 							<Links
 								badge={AiOutlineTwitter}
@@ -275,9 +278,10 @@ function Links({
 }) {
 	return (
 		<a
-			className="flex gap-1 w-1/3 md:w-full self-center"
+			className="flex gap-1 w-1/3 md:w-fit self-center"
 			href={link}
 			target="_blank"
+			rel="noreferrer"
 		>
 			{badge({})}
 			<span className="text-xs truncate">{label.slice(0, 20)}</span>

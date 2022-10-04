@@ -83,7 +83,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 		const { data } = await supabase
 			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 			.select("name")
-			.eq("id", props.created_by || null);
+			.eq("id", props.created_by || "");
 		if (data) setAuthor(data.at(0)?.name || undefined);
 	};
 
