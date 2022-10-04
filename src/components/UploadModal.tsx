@@ -227,7 +227,7 @@ export function UploadModal({
 								setUploaded(false);
 							}}
 						>
-							Cancel
+							{uploaded ? "Done" : "Cancel"}
 						</label>
 					</div>
 				</div>

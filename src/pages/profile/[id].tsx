@@ -451,12 +451,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 			</>
 			<div className="md:grid flex flex-col grow md:min-h-0 h-max overflow-y-auto  md:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
 				<div
-					className={` lg:col-span-2 h-fit 
+					className={` lg:col-span-2 h-fit md:h-full
 					`}
 				>
-					<UserDisplay profile={profile} user={user || null} />
+					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  md:min-h-0 px-1">
+				<div className="lg:col-span-5 flex flex-col  md:min-h-0 ">
 					<div className="flex justify-between grow-0 items-center mb-4 sticky top-0 z-20 bg-slate-900">
 						<div className="tabs">
 							<p
@@ -490,7 +490,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						{user?.id === id && section === "posts" ? (
 							<label
 								htmlFor="upload"
-								className="btn font-normal btn-sm normal-case btn-ghost text-white"
+								className="btn font-normal btn-sm normal-case bg-base-100  text-white"
 							>
 								New Post
 							</label>
@@ -784,7 +784,7 @@ export const getStaticProps: GetStaticProps<
 	await Promise.all([
 		supabase
 			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.select("id, name, avatar_url,about")
+			.select("id, name, avatar_url,about,twitter,github,web")
 			.eq("id", id)
 			.then((val) => {
 				userData = val.data?.at(0);

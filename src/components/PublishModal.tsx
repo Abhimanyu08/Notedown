@@ -5,7 +5,7 @@ import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 
 export function PublishModal({
-	post: { id, created_by },
+	post: { id, created_by, title },
 	modifyPosts,
 }: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
@@ -36,7 +36,8 @@ export function PublishModal({
 			<input type="checkbox" id={`publish`} className="modal-toggle" />
 			<label className="modal" htmlFor={`publish`}>
 				<label className="modal-box bg-cyan-500 text-black relative">
-					Are you ready to make your post public?
+					Are you ready to publish your post{" "}
+					<span className="font-bold text-black">{title}</span> ?
 					<div className="modal-action">
 						<label
 							htmlFor={`publish`}

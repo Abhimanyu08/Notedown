@@ -38,7 +38,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 				.then((val) => {
 					const { name, avatar_url } = val.data!.at(0)!;
 					if (!name) {
-						console.log("name changed", user.user_metadata.name);
 						supabase
 							.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 							.update({ name: user.user_metadata.name })
@@ -47,10 +46,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 					}
 
 					if (!avatar_url) {
-						console.log(
-							"avatar changed",
-							user.user_metadata.avatar_url
-						);
 						supabase
 							.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 							.update({

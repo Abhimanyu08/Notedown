@@ -5,7 +5,10 @@ import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 import Post from "../interfaces/Post";
 
-export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
+export function UnPublishModal({
+	post: { id, title },
+	modifyPosts,
+}: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
@@ -33,7 +36,8 @@ export function UnPublishModal({ post: { id }, modifyPosts }: ModalProps) {
 			<input type="checkbox" id={`unpublish`} className="modal-toggle" />
 			<label className="modal" htmlFor={`unpublish`}>
 				<label className="modal-box bg-cyan-500 text-black relative">
-					Are you sure you want to unpublish this post?
+					Are you sure you want to unpublish the post{" "}
+					<span className="text-black font-bold">{title}</span> ?
 					<div className="modal-action">
 						<label
 							htmlFor={`unpublish`}
