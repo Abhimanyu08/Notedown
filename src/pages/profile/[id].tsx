@@ -107,7 +107,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		if (postType === "published") {
 			if (!publicPosts || publicPosts.length == 0) {
 				if (profileUser?.id === user?.id) setPostType("unpublished");
-				setPostType("upvoted");
 			}
 			return;
 		}
@@ -122,7 +121,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					.limit(LIMIT)
 					.then((val) => {
 						if (!val.data || val.data.length === 0) {
-							setPostType("upvoted");
 							return;
 						}
 						setPrivatePosts(val.data);
@@ -460,17 +458,17 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					<div className="flex justify-between grow-0 items-center mb-4 sticky top-0 z-20 bg-slate-900">
 						<div className="tabs">
 							<p
-								className={`tab tab-lifted ${
+								className={`tab tab-sm md:tab-md tab-lifted ${
 									section === "posts" ? "tab-active" : ""
-								} font-normal text-white text-sm md:text-base`}
+								} font-normal text-white text-xs  md:text-base`}
 								onClick={() => setSection("posts")}
 							>
 								Posts
 							</p>
 							<p
-								className={`tab tab-lifted ${
+								className={`tab tab-sm md:tab-md tab-lifted ${
 									section === "about" ? "tab-active" : ""
-								}  font-normal text-white text-sm md:text-base `}
+								}  font-normal text-white text-xs md:text-base `}
 								onClick={() => setSection("about")}
 							>
 								About
@@ -490,7 +488,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						{user?.id === id && section === "posts" ? (
 							<label
 								htmlFor="upload"
-								className="btn font-normal btn-sm normal-case bg-base-100  text-white"
+								className="btn font-normal  btn-xs md:btn-sm normal-case bg-base-100  text-white"
 							>
 								New Post
 							</label>
@@ -549,7 +547,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										<select
 											name=""
 											id=""
-											className="select select-sm font-normal"
+											className="select select-xs md:select-sm font-normal "
 											onChange={(e) =>
 												setPostType(
 													e.target.value as PostType
@@ -740,7 +738,7 @@ function PostTypeSelecter({
 		<select
 			name=""
 			id=""
-			className={` select select-sm font-normal ${
+			className={` select select-xs md:select-sm font-normal ${
 				postType === "unpublished" || (postType === "upvoted" && owner)
 					? "invisible"
 					: ""

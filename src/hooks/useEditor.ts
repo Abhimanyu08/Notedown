@@ -71,7 +71,7 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
                 ".cm-content": {
                     caretColor: "#0e9",
                     marginLeft: "4px",
-                    fontSize: "18px"
+                    fontSize: "16px"
                 },
                 "&.cm-focused .cm-cursor": {
                     borderLeftColor: "#0e9"

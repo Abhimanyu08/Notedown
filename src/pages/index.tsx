@@ -106,7 +106,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				<meta property="og:site_name" content="Rce Blog" />
 				<meta property="og:type" content="website" />
 			</Head>
-			<div className="w-4/5 md:w-1/3 mx-auto">
+			<div className="w-full px-5 md:px-0 md:w-1/3 mx-auto">
 				<SearchComponent
 					fetchPosts={fetchSearchPosts}
 					setPosts={setSearchResults}

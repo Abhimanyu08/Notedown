@@ -78,7 +78,7 @@ function PostDisplay({
 			{(posts?.length || 0) > 0 && (
 				<div className="flex justify-center pb-10 mt-10 mb-10 md:mb-0">
 					<div
-						className="normal-case bg-base-100 rounded-md p-2 text-xs font-semibold cursor-pointer text-white"
+						className="normal-case bg-base-100 rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer text-white"
 						onClick={onLoadMore}
 					>
 						{hasMore ? "Load More" : "No More"}

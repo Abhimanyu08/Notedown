@@ -1,7 +1,8 @@
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+	AiFillEdit,
 	AiOutlineGithub,
 	AiOutlineLink,
 	AiOutlineTwitter,
@@ -23,7 +24,8 @@ interface UserDisplayProps {
 function UserDisplay({ profile, user }: UserDisplayProps) {
 	const [editing, setEditing] = useState(false);
 	const [newPic, setNewPic] = useState<File | null>(null);
-	const [currProfile, setCurrProfile] = useState(profile);
+	const localProfile = useRef(profile);
+	const [currProfile, setCurrProfile] = useState(localProfile.current);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
 
 	const onSave = async () => {
@@ -95,6 +97,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 			.eq("id", profile.id!);
 		setUploadingChanges(false);
 		sendRevalidationRequest(`profile/${profile.id}`);
+		localProfile.current = { ...localProfile.current, ...changes };
 		setEditing(false);
 	};
 
@@ -102,10 +105,16 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 		return <></>;
 	}
 	return (
-		<div className="flex flex-col items-center md:items-start gap-2 w-full md:w-40 h-3/4 ">
+		<div className="flex flex-col items-center md:items-start gap-2 w-full md:w-40 h-3/4 relative">
+			<div
+				className="absolute top-0 right-0 md:hidden"
+				onClick={() => setEditing(true)}
+			>
+				<AiFillEdit />
+			</div>
 			<div className="avatar ">
 				<div
-					className={`rounded-xl ${
+					className={`rounded-full ${
 						editing ? "border-2 border-base-200" : ""
 					}`}
 				>
@@ -143,6 +152,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					)}
 				</div>
 			</div>
+
 			{editing ? (
 				<div className="flex flex-col gap-2 items-start">
 					<input
@@ -234,9 +244,9 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 			)}
 			{(user?.id || null) === profile?.id &&
 				(editing ? (
-					<div className="flex gap-1 justify-center w-full ">
+					<div className="flex gap-1 justify-center w-full">
 						<div
-							className={` btn btn-xs  bg-base-200 normal-case md:mt-10 text-white ${
+							className={` btn btn-xs font-normal  bg-base-100 normal-case md:mt-10 text-white ${
 								uploadingChanges ? "loading" : ""
 							}`}
 							onClick={onSave}
@@ -244,19 +254,19 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 							Save
 						</div>
 						<div
-							className="btn btn-xs bg-base-200 normal-case md:mt-10 text-white"
+							className="btn btn-xs bg-base-100 font-normal normal-case md:mt-10 text-white"
 							onClick={() => {
 								setEditing(false);
-								setCurrProfile(profile);
+								setCurrProfile(localProfile.current);
 							}}
 						>
 							Cancel
 						</div>
 					</div>
 				) : (
-					<div className="flex w-full justify-center">
+					<div className="md:flex w-full justify-center hidden">
 						<div
-							className="btn btn-xs bg-base-200 normal-case w-fit md:mt-10 text-white"
+							className="btn btn-xs font-normal bg-base-100 normal-case w-fit md:mt-10 text-white"
 							onClick={() => setEditing((prev) => !prev)}
 						>
 							Edit Profile
