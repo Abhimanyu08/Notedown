@@ -5,7 +5,7 @@ import { supabase } from "../../utils/supabaseClient";
 import ModalProps from "../interfaces/ModalProps";
 
 export function PublishModal({
-	post: { id, created_by, title },
+	post: { id, created_by, title, published_on },
 	modifyPosts,
 }: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
@@ -13,7 +13,9 @@ export function PublishModal({
 			.from(SUPABASE_POST_TABLE)
 			.update({
 				published: true,
-				published_on: new Date().toISOString(),
+				published_on: published_on
+					? published_on
+					: new Date().toISOString(),
 			})
 			.match({ id });
 		if (error || !data || data.length === 0) {
