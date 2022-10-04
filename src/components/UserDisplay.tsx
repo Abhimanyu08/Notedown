@@ -106,12 +106,18 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 	}
 	return (
 		<div className="flex flex-col items-center md:items-start gap-2 w-full md:w-40 h-3/4 relative">
-			<div
-				className="absolute top-0 right-0 md:hidden"
-				onClick={() => setEditing(true)}
-			>
-				<AiFillEdit />
-			</div>
+			{profile &&
+				profile.id &&
+				user &&
+				user.id &&
+				profile.id === user.id && (
+					<div
+						className="absolute top-0 right-0 md:hidden"
+						onClick={() => setEditing(true)}
+					>
+						<AiFillEdit />
+					</div>
+				)}
 			<div className="avatar ">
 				<div
 					className={`rounded-full ${
