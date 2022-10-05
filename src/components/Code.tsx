@@ -55,7 +55,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		<div className="flex relative flex-col w-full ">
 			<div className="w-full " id={`codearea-${blockNumber}`}></div>
 
-			<div className="flex flex-row absolute right-2 text-cyan-400 m-1 gap-2">
+			<div className="flex flex-row absolute right-2 m-1 gap-2">
 				<button
 					onClick={() => {
 						if (!collectCodeTillBlock) return;
@@ -65,21 +65,21 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					data-tip="Run Code (Shift+Enter)"
 					id={`run-${blockNumber}`}
 				>
-					<BsPlayFill />
+					<BsPlayFill className="text-cyan-400" />
 				</button>
 				<button
 					onClick={onUndo}
 					className="tooltip  tooltip-left"
 					data-tip="back to original code"
 				>
-					<FcUndo />
+					<FcUndo className="text-cyan-400" />
 				</button>
 				<button
 					onClick={() => setHideOutput((prev) => !prev)}
 					className="tooltip  tooltip-left"
 					data-tip="Hide Output"
 				>
-					<MdHideImage />
+					<MdHideImage className="text-cyan-400" />
 				</button>
 			</div>
 			{blockToOutput && blockToOutput[blockNumber] && (
