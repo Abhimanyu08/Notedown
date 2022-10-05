@@ -332,7 +332,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						onClick={onUpvote}
 					>
 						<BiUpvote
-							size={16}
+							size={20}
 							className={`${
 								upvoted ? "text-lime-400" : "text-white"
 							}`}
@@ -342,14 +342,15 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								upvoted ? "text-lime-400" : "text-white"
 							}`}
 						>
-							{formatter.current.format(upvotes || 0)} upvotes
+							{formatter.current.format(upvotes || 0)}{" "}
+							{(upvotes || 0) === 1 ? "upvote" : "upvotes"}
 						</span>
 					</div>
 					<div
 						className="flex flex-col items-center"
 						onClick={() => setShowContents((prev) => !prev)}
 					>
-						<GiHamburgerMenu size={14} className="text-white" />
+						<GiHamburgerMenu size={20} className="text-white" />
 						<span className="text-xs text-white">Contents</span>
 					</div>
 				</footer>

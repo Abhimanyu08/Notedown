@@ -3,12 +3,10 @@
 @tailwind utilities;
 
 .tooltip-left::before {
-	background-color: black;
 	color: white;
 	text-transform: capitalize;
 }
-.tooltip::before {
-	background-color: black;
+.tooltip {
 	color: white;
 	text-transform: capitalize;
 }
@@ -25,4 +23,12 @@
 		line-height: 1.75rem; /* 28px */
 		text-align: justify;
 	}
+}
+
+.btn:not(.btn-ghost),
+.select,
+.tab-active,
+.lm,
+.tab-lifted.tab-active {
+	background-color: rgb(51 65 85);
 }

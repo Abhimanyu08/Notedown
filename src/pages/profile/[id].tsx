@@ -454,19 +454,19 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				>
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  md:min-h-0 ">
-					<div className="flex justify-between grow-0 items-center mb-4 sticky top-0 z-20 bg-slate-900">
+				<div className="lg:col-span-5 flex flex-col  md:min-h-0 grow ">
+					<div className="flex justify-between grow-0 items-center sticky top-0 z-20 bg-slate-900 pb-2 md:pb-0">
 						<div className="tabs">
 							<p
-								className={`tab tab-sm md:tab-md tab-lifted ${
+								className={`tab tab-md  tab-lifted ${
 									section === "posts" ? "tab-active" : ""
-								} font-normal text-white text-xs  md:text-base`}
+								} font-medium text-white text-xs  md:text-base`}
 								onClick={() => setSection("posts")}
 							>
 								Posts
 							</p>
 							<p
-								className={`tab tab-sm md:tab-md tab-lifted ${
+								className={`tab tab-md  tab-lifted ${
 									section === "about" ? "tab-active" : ""
 								}  font-normal text-white text-xs md:text-base `}
 								onClick={() => setSection("about")}
@@ -495,9 +495,9 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						) : (
 							user?.id === id &&
 							(editingAbout ? (
-								<div className="flex">
+								<div className="flex gap-2">
 									<button
-										className="normal-case btn btn-xs btn-ghost "
+										className="normal-case btn btn-xs md:btn-sm text-white"
 										onClick={() =>
 											setPreviewing((prev) => !prev)
 										}
@@ -512,14 +512,14 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 											: "Preview"}
 									</button>
 									<button
-										className="btn btn-xs normal-case btn-ghost "
+										className="normal-case btn btn-xs md:btn-sm text-white"
 										onClick={onAboutSave}
 									>
 										Save
 									</button>
 
 									<button
-										className="normal-case btn btn-xs btn-ghost "
+										className="normal-case btn btn-xs md:btn-sm text-white"
 										onClick={() => {
 											setAbout(profileUser?.about);
 											setEditingAbout(false);
@@ -531,7 +531,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 								</div>
 							) : (
 								<div
-									className="btn font-normal btn-sm normal-case btn-ghost text-white"
+									className="btn font-normal btn-xs md:btn-sm normal-case  text-white"
 									onClick={() => setEditingAbout(true)}
 								>
 									Edit
@@ -541,13 +541,15 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</div>
 					{section === "posts" ? (
 						<>
-							<div className="sticky top-8 pt-1 z-20 bg-slate-900">
+							<div
+								className={`sticky top-10 z-20 bg-slate-900 md:my-4 pb-2 md:pb-0`}
+							>
 								<div className="flex justify-between grow-0">
 									{user?.id === id && (
 										<select
 											name=""
 											id=""
-											className="select select-xs md:select-sm font-normal "
+											className="select select-sm text-xs md:text-sm font-medium"
 											onChange={(e) =>
 												setPostType(
 													e.target.value as PostType
@@ -579,7 +581,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										/>
 									)}
 								</div>
-								<div className="my-4 md:w-1/2">
+								<div className="mt-2 md:mt-4 md:w-1/2">
 									{postType === "upvoted" ? (
 										<SearchComponent
 											placeholder={
@@ -738,7 +740,7 @@ function PostTypeSelecter({
 		<select
 			name=""
 			id=""
-			className={` select select-xs md:select-sm font-normal ${
+			className={` select select-sm text-xs md:text-sm font-medium ${
 				postType === "unpublished" || (postType === "upvoted" && owner)
 					? "invisible"
 					: ""

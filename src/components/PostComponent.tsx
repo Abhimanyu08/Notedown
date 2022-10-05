@@ -44,10 +44,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				</div>
 			</Link>
 			{owner && (
-				<div className="flex absolute top-0 right-0 gap-2">
+				<div className="flex absolute top-0 right-0 gap-3">
 					{!published && (
 						<label
-							className="btn btn-xs btn-circle btn-ghost  md:tooltip md:tooltip-left capitalize"
+							className="md:tooltip md:tooltip-left capitalize"
 							data-tip="edit"
 							onClick={() =>
 								router.push(`/posts/preview/${id}?edit=1`)
@@ -62,7 +62,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					{published ? (
 						<label
 							htmlFor={`unpublish`}
-							className="btn btn-xs btn-circle btn-ghost  md:tooltip md:tooltip-left capitalize"
+							className="md:tooltip md:tooltip-left capitalize"
 							data-tip="unpublish"
 							onClick={onAction}
 						>
@@ -74,7 +74,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					) : (
 						<label
 							htmlFor={`publish`}
-							className="btn btn-xs btn-circle btn-ghost md:tooltip-left md:tooltip capitalize"
+							className="md:tooltip-left md:tooltip capitalize"
 							data-tip="publish"
 							onClick={onAction}
 						>
@@ -86,7 +86,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					)}
 					<label
 						htmlFor={`delete`}
-						className="btn btn-xs btn-circle btn-ghost  md:tooltip md:tooltip-left capitalize"
+						className="md:tooltip md:tooltip-left capitalize"
 						data-tip="delete"
 						onClick={onAction}
 					>

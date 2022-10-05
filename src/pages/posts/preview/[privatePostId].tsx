@@ -328,7 +328,7 @@ export default function PrivateBlog() {
 						} ${uploadingChanges ? "animate-ping" : ""}`}
 					></span>
 					<FaFileUpload
-						size={16}
+						size={20}
 						className={` ${
 							hasMarkdownChanged ? "text-white" : ""
 						} mt-2 ml-2`}
@@ -342,7 +342,7 @@ export default function PrivateBlog() {
 					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}
 				>
-					<GiHamburgerMenu size={16} />
+					<GiHamburgerMenu size={20} />
 					<span className="text-xs">Contents</span>
 				</div>
 			</footer>
