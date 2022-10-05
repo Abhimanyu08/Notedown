@@ -9,7 +9,7 @@ import { BlogProps } from "../interfaces/BlogProps";
 
 interface CodeProps {
 	code: string;
-	language: BlogProps["language"];
+	language: BlogProps["language"] | "markdown";
 	blockNumber: number;
 }
 
@@ -19,6 +19,11 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		useContext(BlogContext);
 
 	const { editorView } = useEditor({ language, blockNumber, code });
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	useEffect(() => {
 		const playButton = document.getElementById(
@@ -53,15 +58,16 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	};
 	return (
 		<div className="flex relative flex-col w-full ">
-			<div className="w-full " id={`codearea-${blockNumber}`}></div>
-
+			{mounted && (
+				<div className="w-full " id={`codearea-${blockNumber}`}></div>
+			)}
 			<div className="flex flex-row absolute right-2 m-1 gap-2">
 				<button
 					onClick={() => {
 						if (!collectCodeTillBlock) return;
 						collectCodeTillBlock(blockNumber);
 					}}
-					className="tooltip  tooltip-left"
+					className="md:tooltip  md:tooltip-left"
 					data-tip="Run Code (Shift+Enter)"
 					id={`run-${blockNumber}`}
 				>
@@ -69,14 +75,14 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				</button>
 				<button
 					onClick={onUndo}
-					className="tooltip  tooltip-left"
+					className="md:tooltip  md:tooltip-left"
 					data-tip="back to original code"
 				>
 					<FcUndo className="text-cyan-400" />
 				</button>
 				<button
 					onClick={() => setHideOutput((prev) => !prev)}
-					className="tooltip  tooltip-left"
+					className="md:tooltip  md:tooltip-left"
 					data-tip="Hide Output"
 				>
 					<MdHideImage className="text-cyan-400" />

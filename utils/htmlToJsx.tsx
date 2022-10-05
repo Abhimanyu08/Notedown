@@ -65,7 +65,6 @@ function htmlToJsx({
 					return Array.from(hasImage).map((imageMatch) => {
 						const string1 = imageMatch.at(1);
 						const string2 = imageMatch.at(5);
-						console.log(string2);
 						let attrString = imageMatch.at(4);
 						let attrs = makeAttrMap({ match: attrString });
 

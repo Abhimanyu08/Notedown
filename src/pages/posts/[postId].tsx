@@ -46,7 +46,6 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const [connecting, setConnecting] = useState(false);
 	const [upvoted, setUpvoted] = useState<boolean | null>(null);
 	const [upvotes, setUpvotes] = useState<number | null>(null);
-	const [author, setAuthor] = useState<string>();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const { postId } = props;
 	const [showContent, setShowContents] = useState(false);
@@ -75,21 +74,8 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 		setUpvotes(data.at(0)?.upvote_count || 0);
 	};
 
-	const fetchAuthor = async () => {
-		//fetching author here because author may have changed his displayname
-		// and I will blow my head off before attempting to revalidate each one of his single posts
-		//just because that maniac changed his username from josh to joshua
-
-		const { data } = await supabase
-			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.select("name")
-			.eq("id", props.created_by || "");
-		if (data) setAuthor(data.at(0)?.name || undefined);
-	};
-
 	useEffect(() => {
 		if (typeof upvotes !== "number") fetchUpvotes();
-		if (!author) fetchAuthor();
 		if (user && typeof upvoted !== "boolean") fetchUpvote();
 	}, [user]);
 
@@ -209,11 +195,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							showContent ? "opacity-0 w-screen" : "w-screen"
 						}`}
 					>
-						<Blog
-							{...props}
-							containerId={containerId}
-							author={author}
-						/>
+						<Blog {...props} containerId={containerId} />
 					</div>
 					<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6">
 						<div
@@ -360,16 +342,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const { data } = await supabase
-		.from<Post>(SUPABASE_POST_TABLE)
-		.select("id")
-		.limit(5);
-	return {
-		paths: data?.map((post) => ({ params: { postId: `${post.id}` } })) || [
-			{ params: { postId: "69" } },
-		],
-		fallback: true,
-	};
+	return { paths: [], fallback: true };
 };
 
 export const getStaticProps: GetStaticProps<

@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import htmlToJsx from "../../utils/htmlToJsx";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
+import { supabase } from "../../utils/supabaseClient";
+import Blogger from "../interfaces/Blogger";
 import { BlogProps } from "../interfaces/BlogProps";
 import { BlogContext } from "../pages/_app";
 
@@ -13,7 +16,6 @@ export function Blog({
 	containerId,
 	created_by,
 	image_folder,
-	author,
 	bloggers,
 }: Partial<BlogProps>) {
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
@@ -24,6 +26,7 @@ export function Blog({
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
+	// const [author, setAuthor] = useState<string>();
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
@@ -101,6 +104,18 @@ export function Blog({
 		});
 	}, [runningCode]);
 
+	// const fetchAuthor = async () => {
+	// 	//fetching author here because author may have changed his displayname
+	// 	// and I will blow my head off before attempting to revalidate each one of his single posts
+	// 	//just because that maniac changed his username from josh to joshua
+
+	// 	const { data } = await supabase
+	// 		.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+	// 		.select("name")
+	// 		.eq("id", created_by || "");
+	// 	if (data) setAuthor(data.at(0)?.name || undefined);
+	// };
+
 	// useEffect(() => {
 	// 	if (!runningCode || !runningBlock || !language || !containerId) return;
 	// }, [runningCode]);
@@ -124,7 +139,7 @@ export function Blog({
 					<span>by</span>
 					<span className="link link-hover">
 						<Link href={`/profile/${created_by}`}>
-							{author || bloggers?.name || ""}
+							{bloggers?.name || ""}
 						</Link>
 					</span>
 				</div>
