@@ -22,8 +22,9 @@ interface useEditorProps {
     language: BlogProps["language"] | "markdown"
     code: string
     blockNumber?: number
+    mounted?: boolean
 }
-function useEditor({ language, blockNumber, code }: useEditorProps): { editorView: EditorView | null; } {
+function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     const { collectCodeTillBlock } = useContext(BlogContext)
     const elemId = useRef(language === "markdown" ? "markdown-textarea" : `codearea-${blockNumber}`)
@@ -31,10 +32,7 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
 
     useEffect(() => {
 
-        document.getElementById(`codearea-${blockNumber}`)?.replaceChildren("");
-        // console.log(document.getElementById(elemId.current))
-        // if (document.getElementById(elemId.current)?.children.length !== 0) return
-
+        if (document.getElementById(elemId.current)?.children.length !== 0 || mounted === false) return
         let languageCompartment = new Compartment();
         let tabSize = new Compartment();
 
@@ -128,7 +126,7 @@ function useEditor({ language, blockNumber, code }: useEditorProps): { editorVie
         });
 
         setEditorView(view);
-    }, [collectCodeTillBlock, code]);
+    }, [collectCodeTillBlock, code, blockNumber, mounted]);
 
     return {
         editorView

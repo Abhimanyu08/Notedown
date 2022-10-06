@@ -18,8 +18,8 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	const { blockToOutput, setBlockToCode, collectCodeTillBlock } =
 		useContext(BlogContext);
 
-	const { editorView } = useEditor({ language, blockNumber, code });
 	const [mounted, setMounted] = useState(false);
+	const { editorView } = useEditor({ language, blockNumber, code, mounted });
 
 	useEffect(() => {
 		setMounted(true);

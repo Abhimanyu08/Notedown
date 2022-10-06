@@ -26,7 +26,7 @@ export function Blog({
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
-	// const [author, setAuthor] = useState<string>();
+	const [author, setAuthor] = useState<string>();
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
@@ -53,6 +53,7 @@ export function Blog({
 			setRunningCode(true);
 		};
 		setCollectCodeTillBlock(() => func);
+		fetchAuthor();
 	}, []);
 
 	const runCodeRequest = async (
@@ -104,21 +105,17 @@ export function Blog({
 		});
 	}, [runningCode]);
 
-	// const fetchAuthor = async () => {
-	// 	//fetching author here because author may have changed his displayname
-	// 	// and I will blow my head off before attempting to revalidate each one of his single posts
-	// 	//just because that maniac changed his username from josh to joshua
+	const fetchAuthor = async () => {
+		//fetching author here because author may have changed his displayname
+		// and I will blow my head off before attempting to revalidate each one of his single posts
+		//just because that maniac changed his username from josh to joshua
 
-	// 	const { data } = await supabase
-	// 		.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-	// 		.select("name")
-	// 		.eq("id", created_by || "");
-	// 	if (data) setAuthor(data.at(0)?.name || undefined);
-	// };
-
-	// useEffect(() => {
-	// 	if (!runningCode || !runningBlock || !language || !containerId) return;
-	// }, [runningCode]);
+		const { data } = await supabase
+			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+			.select("name")
+			.eq("id", created_by || "");
+		if (data) setAuthor(data.at(0)?.name || undefined);
+	};
 
 	return (
 		<BlogContext.Provider
@@ -139,7 +136,7 @@ export function Blog({
 					<span>by</span>
 					<span className="link link-hover">
 						<Link href={`/profile/${created_by}`}>
-							{bloggers?.name || ""}
+							{author || bloggers?.name || ""}
 						</Link>
 					</span>
 				</div>
