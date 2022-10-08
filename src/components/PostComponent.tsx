@@ -96,27 +96,35 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				</div>
 			)}
 
-			<div className="flex text-xs text-white/50 mt-1 mb-1 max-w-full">
+			<div className="flex text-xs text-white/50 mt-1 mb-1 max-w-full divide-x-2 divide-white/30">
 				<Link href={`/profile/${created_by}`}>
-					<p className="link link-hover border-r-2 border-white/30 pr-3 mr-3 w-1/3 md:w-1/5 truncate">
+					<p className="link link-hover w-1/3 md:w-1/5 truncate">
 						{author}
 					</p>
 				</Link>
-				<span className="border-r-2 border-white/30 pr-3 mr-3">
-					{published && published_on
-						? new Date(published_on).toDateString().slice(4)
-						: new Date(created_at!).toDateString().slice(4)}
-				</span>
-				{published && (
-					<span className="flex items-center gap-1 border-r-2 border-white/30 pr-3 mr-3">
-						{upvotes &&
-							upvotes > 0 &&
-							formatter.current.format(upvotes)}{" "}
-						<BiUpvote />
+				<div className="px-1 w-24  flex justify-center ">
+					<span>
+						{published && published_on
+							? new Date(published_on).toDateString().slice(4)
+							: new Date(created_at!).toDateString().slice(4)}
 					</span>
+				</div>
+				{published && (
+					<div className="flex justify-center w-16 ">
+						<span className="flex items-center gap-1">
+							{upvotes &&
+								upvotes > 0 &&
+								formatter.current.format(upvotes)}{" "}
+							<BiUpvote />
+						</span>
+					</div>
 				)}
-				<div className={`${language && langToBadgeColor[language]}`}>
-					{language}
+				<div
+					className={`${
+						language && langToBadgeColor[language]
+					} px-1 flex justify-center w-20`}
+				>
+					<span>{language}</span>
 				</div>
 			</div>
 			<p className="italic text-sm md:text-base text-white">

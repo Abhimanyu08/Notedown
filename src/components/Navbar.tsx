@@ -39,31 +39,35 @@ function Navbar({
 				</div>
 			) : (
 				<div className="flex items-center text-white">
-					<span className="pr-4 text-xs md:text-sm">Login with</span>
-					<div
-						onClick={(e) => {
-							e.preventDefault();
-							handleSignIn("github", route);
-						}}
-						// className="btn btn-xs md:btn-sm normal-case w-fit text-white"
-					>
-						<AiFillGithub
-							size={20}
-							className=" w-4 md:w-6 text-white"
-						/>
-					</div>
-					<div className="divider divider-horizontal"></div>
-					<div
-						onClick={(e) => {
-							e.preventDefault();
-							handleSignIn("google", route);
-						}}
-						// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"
-					>
-						<AiFillGoogleCircle
-							size={20}
-							className="w-4 md:w-6 text-white"
-						/>
+					<span className="pr-2 text-xs md:text-sm">Login with</span>
+					<div className="flex divide-x-2 ">
+						<div
+							onClick={(e) => {
+								e.preventDefault();
+								handleSignIn("github", route);
+							}}
+							className="px-3"
+							// className="btn btn-xs md:btn-sm normal-case w-fit text-white"
+						>
+							<AiFillGithub
+								size={20}
+								className="w-4 md:w-6 text-white hover:text-white/50"
+							/>
+						</div>
+						{/* <div className="divider divider-horizontal divide-white/30"></div> */}
+						<div
+							onClick={(e) => {
+								e.preventDefault();
+								handleSignIn("google", route);
+							}}
+							className="px-3"
+							// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"
+						>
+							<AiFillGoogleCircle
+								size={20}
+								className="w-4 md:w-6 text-white hover:text-white/50"
+							/>
+						</div>
 					</div>
 				</div>
 			)}
