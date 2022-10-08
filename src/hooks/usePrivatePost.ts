@@ -7,26 +7,39 @@ import { supabase } from "../../utils/supabaseClient";
 import { BlogProps } from "../interfaces/BlogProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 
-export default function usePrivatePostQuery({ postId, loggedInUser }: { postId: number, loggedInUser: User | null }): { data: Partial<BlogProps> | undefined; error: PostgrestError | Error | undefined; loading: boolean; } {
+interface PrivatePostQueryData extends BlogProps {
+    markdown: string
+}
+export default function usePrivatePostQuery({ postId, loggedInUser }: { postId?: number, loggedInUser: User | null }): { data: Partial<PrivatePostQueryData> | undefined; error: PostgrestError | Error | undefined; loading: boolean; } {
+
+
     const router = useRouter()
-    const [privatePost, setPrivatePost] = useState<Partial<BlogProps>>();
+    const [privatePost, setPrivatePost] = useState<Partial<PrivatePostQueryData>>();
     const [error, setError] = useState<PostgrestError | Error>();
     const [loading, setLoading] = useState(true);
     const fetch = useRef(true)
 
+
     useEffect(() => {
+        if (!postId || typeof postId !== "number") {
+            setPrivatePost({ markdown: '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n--- \n ' })
+            setLoading(false)
+            return
+        }
         if (!loggedInUser) {
             router.replace("/")
+            return
         }
         const fetchPost = async () => {
-            const { data: createdByData } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by').eq("id", postId)
+            const { data: checkData } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,published').match({ id: postId, published: false })
 
-            if (createdByData?.at(0)?.created_by !== loggedInUser?.id) {
+            if (!checkData || checkData.length === 0 || checkData.at(0)?.created_by !== loggedInUser.id) {
+
                 router.replace("/")
                 return
             }
 
-            const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)').eq("id", postId)
+            const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)').match({ id: postId, published: false });
             if (error) {
                 setError(error)
                 setLoading(false)

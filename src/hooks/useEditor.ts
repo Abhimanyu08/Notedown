@@ -31,8 +31,8 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
 
 
     useEffect(() => {
-
-        if (document.getElementById(elemId.current)?.children.length !== 0 || mounted === false) return
+        if (mounted === false) return
+        document.getElementById(elemId.current)?.replaceChildren("")
         let languageCompartment = new Compartment();
         let tabSize = new Compartment();
 

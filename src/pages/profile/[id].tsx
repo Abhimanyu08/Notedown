@@ -468,7 +468,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							<p
 								className={`tab tab-md  tab-lifted ${
 									section === "about" ? "tab-active" : ""
-								}  font-normal text-white text-xs md:text-base `}
+								}  font-medium text-white text-xs md:text-base`}
 								onClick={() => setSection("about")}
 							>
 								About
@@ -488,9 +488,9 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						{user?.id === id && section === "posts" ? (
 							<label
 								htmlFor="upload"
-								className="btn font-normal  btn-xs md:btn-sm normal-case bg-base-100  text-white"
+								className="btn btn-sm text-xs font-medium   normal-case md:text-sm text-white"
 							>
-								New Post
+								New post
 							</label>
 						) : (
 							user?.id === id &&

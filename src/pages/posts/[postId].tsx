@@ -211,7 +211,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								size={30}
 								className={` ${
 									containerId ? "text-lime-400" : "text-white"
-								}${connecting ? "hidden" : ""} mt-2 ml-2 `}
+								} mt-2 ml-2 `}
 							/>
 						</div>
 

@@ -49,9 +49,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						<label
 							className="md:tooltip md:tooltip-left capitalize"
 							data-tip="edit"
-							onClick={() =>
-								router.push(`/posts/preview/${id}?edit=1`)
-							}
+							onClick={() => router.push(`/edit?postId=${id}`)}
 						>
 							<AiFillEdit
 								className="ml-1 mt-1 text-white"

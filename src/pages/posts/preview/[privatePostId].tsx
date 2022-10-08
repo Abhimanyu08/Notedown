@@ -1,29 +1,19 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
-import { FaFileUpload } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { VscPreview } from "react-icons/vsc";
-import {
-	SUPABASE_FILES_BUCKET,
-	SUPABASE_POST_TABLE,
-} from "../../../../utils/constants";
-import { getHtmlFromMarkdown } from "../../../../utils/getResources";
 import { sendRequestToRceServer } from "../../../../utils/sendRequest";
-import { supabase } from "../../../../utils/supabaseClient";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
 import { Toc } from "../../../components/TableOfContents";
-import useEditor from "../../../hooks/useEditor";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
-import Post from "../../../interfaces/Post";
 import { UserContext } from "../../_app";
 
 export default function PrivateBlog() {
 	const router = useRouter();
-	const { edit, privatePostId } = router.query;
+	const { privatePostId } = router.query;
 	const { user } = useContext(UserContext);
 	const { data, error, loading } = usePrivatePostQuery({
 		postId: parseInt(privatePostId as string),
@@ -32,50 +22,6 @@ export default function PrivateBlog() {
 	const [showContent, setShowContents] = useState(false);
 	const [mounted, setMounted] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
-	const [connecting, setConnecting] = useState(false);
-	const [editingMarkdown, setEditingMarkdown] = useState(
-		edit && edit === "1"
-	);
-	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
-	const [uploadingChanges, setUploadingChanges] = useState(false);
-
-	const [blogData, setBlogData] = useState({
-		content: data?.content,
-		title: data?.title,
-		description: data?.description,
-		language: data?.language,
-	});
-
-	const { editorView } = useEditor({
-		language: "markdown",
-		code: data?.markdown || "",
-	});
-
-	const [initialMarkdown, setIntialMarkdown] = useState(
-		editorView?.state.doc
-	);
-
-	useEffect(() => {
-		if (editorView && initialMarkdown === undefined)
-			setIntialMarkdown(editorView.state.doc);
-	}, [editorView]);
-
-	useEffect(() => {
-		if (editingMarkdown) return;
-
-		const markdown = editorView?.state.doc.toJSON().join("\n");
-		if (!markdown) return;
-		getHtmlFromMarkdown(markdown)
-			.then(({ data, content }) => {
-				setBlogData({
-					title: data.title,
-					description: data.description,
-					language: data.language,
-					content,
-				});
-			})
-			.catch((e) => alert(e.message));
-	}, [editingMarkdown]);
 
 	useEffect(() => {
 		if (!user) router.replace("/");
@@ -95,70 +41,22 @@ export default function PrivateBlog() {
 	const prepareContainer = async () => {
 		if (!user) return;
 		if (containerId) return;
-		setConnecting(true);
 		try {
 			const resp = await sendRequestToRceServer("POST", {
 				language: data?.language || "",
 			});
 
 			if (resp.status !== 201) {
-				console.log(resp.statusText);
-				alert("Couldn't set up remote code execution");
-				setConnecting(false);
+				alert(
+					`Couldn't set up remote code execution, ${resp.statusText}`
+				);
 				return;
 			}
 			const body: { containerId: string } = await resp.json();
 			setContainerId(body.containerId);
-			setConnecting(false);
 		} catch (_) {
-			setConnecting(false);
 			alert("Couldn't enable remote code execution");
 		}
-	};
-
-	useEffect(() => {
-		if (!initialMarkdown || !editorView) return;
-
-		setHasMarkdownChanged(
-			!(
-				initialMarkdown.toJSON().join("\n") ===
-				editorView.state.doc.toJSON().join("\n")
-			)
-		);
-	}, [editingMarkdown]);
-
-	const onUploadChange: MouseEventHandler<HTMLDivElement> = async () => {
-		if (!hasMarkdownChanged || !user || !editorView) return;
-
-		setUploadingChanges(true);
-
-		const newFile = new File(
-			[editorView.state.doc.toJSON().join("\n")],
-			""
-		);
-
-		await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.update(data!.filename!, newFile)
-			.then((val) => {
-				if (val.error) return;
-				return supabase
-					.from<Post>(SUPABASE_POST_TABLE)
-					.update({
-						title: blogData.title,
-						description: blogData.description,
-					})
-					.eq("id", privatePostId as string);
-			})
-			.then((val) => {
-				setUploadingChanges(false);
-				if (val?.error) alert(val.error.message);
-				if (val && val.data) {
-					setHasMarkdownChanged(false);
-					setEditingMarkdown(false);
-					alert("Changes Uploaded Successfully");
-				}
-			});
 	};
 
 	if (!mounted) {
@@ -174,8 +72,12 @@ export default function PrivateBlog() {
 
 	if (loading) {
 		return (
-			<Layout user={user || null} route={"/"} logoutCallback={() => null}>
-				<div>
+			<Layout user={null} route={"/"} logoutCallback={() => null}>
+				<div
+					className={`mx-auto prose  max-w-none lg:w-5/6 xl:w-4/6 prose-headings:text-cyan-500 text-white prose-a:text-amber-400 prose-strong:text-amber-500
+				prose-pre:m-0 prose-pre:p-0 animate-pulse
+				`}
+				>
 					<h1 className="h-5 text-center bg-slate-600 rounded w-1/2 mx-auto"></h1>
 					<p className="h-3 text-center italic bg-slate-600 rounded"></p>
 					<div className="h-32 bg-slate-600 rounded"></div>
@@ -201,7 +103,7 @@ export default function PrivateBlog() {
 					}`}
 				>
 					<Toc
-						html={blogData.content || data?.content}
+						html={data?.content}
 						setShowContents={setShowContents}
 					/>
 				</div>
@@ -210,28 +112,7 @@ export default function PrivateBlog() {
 						showContent ? "hidden" : "w-screen"
 					}`}
 				>
-					<div
-						className={`h-full ${
-							editingMarkdown ? "invisible" : ""
-						}`}
-					>
-						<Blog
-							{...data}
-							content={blogData.content || data?.content}
-							title={blogData.title || data?.title}
-							language={blogData.language || data?.language}
-							description={
-								blogData.description || data?.description
-							}
-							containerId={containerId}
-						/>
-					</div>
-					<div
-						className={`h-full pb-20 md:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
-							editingMarkdown ? "" : "invisible"
-						}`}
-						id="markdown-textarea"
-					></div>
+					<Blog {...data} containerId={containerId} />
 				</div>
 				<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6 z-20">
 					<div
@@ -243,57 +124,30 @@ export default function PrivateBlog() {
 							size={30}
 							className={` ${
 								containerId ? "text-lime-400" : "text-white"
-							}${connecting ? "hidden" : ""} mt-2 ml-2 `}
+							} mt-2 ml-2 `}
 						/>
 					</div>
 					<div
 						className="btn btn-circle btn-ghost tooltip"
-						data-tip={editingMarkdown ? "Preview" : "Edit Markdown"}
-						onClick={() => setEditingMarkdown((prev) => !prev)}
+						data-tip={"Edit Markdown"}
+						onClick={() =>
+							router.push(`/edit?postId=${privatePostId}`)
+						}
 					>
-						{editingMarkdown ? (
-							<VscPreview
-								size={28}
-								className="text-white mt-2 ml-2"
-							/>
-						) : (
-							<AiFillEdit
-								size={28}
-								className="text-white mt-2 ml-2"
-							/>
-						)}
-					</div>
-					<div className="relative w-fit" onClick={onUploadChange}>
-						<span
-							className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
-								hasMarkdownChanged ? "" : "hidden"
-							} ${uploadingChanges ? "animate-ping" : ""}`}
-						></span>
-						<div
-							className="btn btn-circle btn-ghost tooltip"
-							data-tip={
-								hasMarkdownChanged
-									? "Upload Changes"
-									: "No changes"
-							}
-						>
-							<FaFileUpload
-								size={28}
-								className={` ${
-									hasMarkdownChanged ? "text-white" : ""
-								} mt-2 ml-2`}
-							/>
-						</div>
+						<AiFillEdit
+							size={28}
+							className="text-white mt-2 ml-2"
+						/>
 					</div>
 				</div>
 			</BlogLayout>
-			<footer className="w-full flex items-end md:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
+			<footer className="w-full flex items-end md:hidden justify-between py-3 px-4  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={prepareContainer}
 				>
 					<BiCodeAlt
-						size={20}
+						size={22}
 						className={` ${
 							containerId ? "text-lime-400" : "text-white"
 						}`}
@@ -303,41 +157,12 @@ export default function PrivateBlog() {
 
 				<div
 					className="flex flex-col items-center text-white gap-1"
-					onClick={() => setEditingMarkdown((prev) => !prev)}
+					onClick={() => router.push(`/edit?postId=${privatePostId}`)}
 				>
-					{editingMarkdown ? (
-						<>
-							<VscPreview size={20} className="text-white" />
-							<span className="text-xs">Preview</span>
-						</>
-					) : (
-						<>
-							<AiFillEdit size={20} className="text-white" />
-							<span className="text-xs">Edit</span>
-						</>
-					)}
+					<AiFillEdit size={20} className="text-white" />
+					<span className="text-xs">Edit</span>
 				</div>
 
-				<div
-					className="flex flex-col items-center relative w-fit gap-1"
-					onClick={onUploadChange}
-				>
-					<span
-						className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-1 ${
-							hasMarkdownChanged ? "" : "hidden"
-						} ${uploadingChanges ? "animate-ping" : ""}`}
-					></span>
-					<FaFileUpload
-						size={20}
-						className={` ${
-							hasMarkdownChanged ? "text-white" : ""
-						} mt-2 ml-2`}
-					/>
-
-					<span className="text-xs text-white">
-						{hasMarkdownChanged ? "Save File" : "No changes"}
-					</span>
-				</div>
 				<div
 					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}

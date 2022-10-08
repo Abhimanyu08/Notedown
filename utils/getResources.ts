@@ -34,6 +34,10 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
         content = fileMatter.content
 
     }
+
+    if (!data.title) {
+        throw Error("Give your post a title");
+    }
     if (data.language !== undefined && !ALLOWED_LANGUAGES.some(val => val === data.language)) {
         throw Error("Mind Your Language");
     }

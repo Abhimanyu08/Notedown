@@ -11,12 +11,14 @@ interface htmlToJsxProps {
 	language: BlogProps["language"];
 	ownerId: string;
 	imageFolder?: string;
+	imageToUrl?: Record<string, string>;
 }
 function htmlToJsx({
 	html,
 	language,
 	ownerId,
 	imageFolder,
+	imageToUrl,
 }: htmlToJsxProps): JSX.Element {
 	const re =
 		/([^<>]*?)?(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)?/g;
@@ -61,21 +63,31 @@ function htmlToJsx({
 						/((.|\n|\r)*?)?(<img (.*)>)((.|\n|\r)*)/g
 					) || []
 				);
-				if (hasImage.length !== 0 && imageFolder) {
+				if (hasImage.length !== 0 && (imageFolder || imageToUrl)) {
 					return Array.from(hasImage).map((imageMatch) => {
 						const string1 = imageMatch.at(1);
 						const string2 = imageMatch.at(5);
 						let attrString = imageMatch.at(4);
 						let attrs = makeAttrMap({ match: attrString });
-
 						if (!Object.hasOwn(attrs, "src")) {
 							return <></>;
 						}
 						let src = attrs["src"];
 						let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
-						const { publicURL } = supabase.storage
-							.from(SUPABASE_IMAGE_BUCKET)
-							.getPublicUrl(`${imageFolder}/${imageName}`);
+						let imageUrl = undefined;
+						if (imageToUrl) {
+							let coreImageName =
+								imageName?.split(".").at(0) || "";
+							if (imageToUrl[coreImageName])
+								imageUrl = imageToUrl[coreImageName];
+						}
+						if (imageUrl === undefined) {
+							const { publicURL } = supabase.storage
+								.from(SUPABASE_IMAGE_BUCKET)
+								.getPublicUrl(`${imageFolder}/${imageName}`);
+							imageUrl = publicURL;
+						}
+
 						return (
 							<>
 								<p>
@@ -84,12 +96,13 @@ function htmlToJsx({
 										language,
 										ownerId,
 										imageFolder,
+										imageToUrl,
 									})}
 								</p>
 								<div className="">
 									<div className="relative">
 										<Image
-											src={publicURL!}
+											src={imageUrl!}
 											layout="responsive"
 											objectFit="contain"
 											className="resize w-full"
@@ -107,6 +120,7 @@ function htmlToJsx({
 									language,
 									ownerId,
 									imageFolder,
+									imageToUrl,
 								})}
 							</>
 						);
@@ -125,6 +139,7 @@ function htmlToJsx({
 								language,
 								ownerId,
 								imageFolder,
+								imageToUrl,
 							})
 						)}
 						<span>{string2}</span>

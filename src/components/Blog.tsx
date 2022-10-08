@@ -17,6 +17,7 @@ export function Blog({
 	created_by,
 	image_folder,
 	bloggers,
+	imageToUrl,
 }: Partial<BlogProps>) {
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
@@ -35,6 +36,7 @@ export function Blog({
 			language: language!,
 			ownerId: created_by!,
 			imageFolder: image_folder || undefined,
+			imageToUrl,
 		});
 	}, [content]);
 
@@ -122,7 +124,7 @@ export function Blog({
 			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
 		>
 			<div
-				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-4  lg:px-28 prose-headings:text-amber-500  prose-p:text-justify text-white prose-a:text-lime-500
+				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-4  lg:px-24 prose-headings:text-amber-500  prose-p:text-justify text-white prose-a:text-lime-500
 				prose-strong:text-violet-500 prose-strong:font-bold prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-yellow-400  h-full overflow-y-auto prose-p:text-sm prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
 				pb-20 md:pb-10`}
 			>

@@ -1,4 +1,5 @@
 import matter from "gray-matter";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
 import {
@@ -174,61 +175,74 @@ export function UploadModal({
 			<input type="checkbox" id="upload" className="modal-toggle" />
 			<div className="modal">
 				<div className="modal-box shadow-md shadow-slate-600 bg-slate-800">
-					<label
-						htmlFor="file"
-						className="text-white font-semibold mr-2"
-					>
-						Select markdown file:
-					</label>
-					<input
-						type="file"
-						name=""
-						id="file"
-						onChange={onFileSelect}
-						accept=".md"
-						className="file:rounded-xl file:text-sm"
-					/>
-					<div className="mt-4">
+					<div className="flex flex-col">
+						<Link href={`/edit`}>
+							<label
+								htmlFor="upload"
+								className="btn btn-sm normal-case text-white"
+							>
+								Write a file in markdown
+							</label>
+						</Link>
+						<div className="divider text-white">Or</div>
 						<label
-							htmlFor="blogImages"
+							htmlFor="file"
 							className="text-white font-semibold mr-2"
 						>
-							Please upload images used in your blog (if any, max{" "}
-							{PHOTO_LIMIT})
+							Select markdown file:
 						</label>
 						<input
 							type="file"
-							id="blogImages"
-							multiple
-							accept="image/*"
+							name=""
+							id="file"
+							onChange={onFileSelect}
+							accept=".md"
 							className="file:rounded-xl file:text-sm"
-							max={PHOTO_LIMIT}
-							onChange={(e) =>
-								setImages(Array.from(e.target.files || []))
-							}
 						/>
-					</div>
-					{alertText && <p className="text-red-400">{alertText}</p>}
-					<div className="modal-action">
-						<div
-							className={`btn btn-sm normal-case text-white ${
-								uploading ? "loading" : ""
-							}`}
-							onClick={uploaded ? onPreview : onFinalUpload}
-						>
-							{uploaded ? "Preview" : "Upload"}
+						<div className="mt-4">
+							<label
+								htmlFor="blogImages"
+								className="text-white font-semibold mr-2"
+							>
+								Please upload images used in your blog (if any,
+								max {PHOTO_LIMIT})
+							</label>
+							<input
+								type="file"
+								id="blogImages"
+								multiple
+								accept="image/*"
+								className="file:rounded-xl file:text-sm"
+								max={PHOTO_LIMIT}
+								onChange={(e) =>
+									setImages(Array.from(e.target.files || []))
+								}
+							/>
 						</div>
-						<label
-							htmlFor="upload"
-							className="btn btn-sm normal-case text-white"
-							onClick={() => {
-								setMdFile(null);
-								setImages(null);
-								setUploaded(false);
-							}}
-						>
-							{uploaded ? "Done" : "Cancel"}
-						</label>
+						{alertText && (
+							<p className="text-red-400">{alertText}</p>
+						)}
+						<div className="modal-action">
+							<div
+								className={`btn btn-sm normal-case text-white ${
+									uploading ? "loading" : ""
+								}`}
+								onClick={uploaded ? onPreview : onFinalUpload}
+							>
+								{uploaded ? "Preview" : "Upload"}
+							</div>
+							<label
+								htmlFor="upload"
+								className="btn btn-sm normal-case text-white"
+								onClick={() => {
+									setMdFile(null);
+									setImages(null);
+									setUploaded(false);
+								}}
+							>
+								{uploaded ? "Done" : "Cancel"}
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -42,7 +42,7 @@ export function Toc({
 
 	return (
 		<div
-			className="flex flex-col gap-5 md:ml-10 text-white"
+			className="flex flex-col gap-5 md:ml-10 text-white max-w-full"
 			onClick={() => setShowContents(false)}
 		>
 			<h3
@@ -74,7 +74,9 @@ export function Toc({
 				{matches?.map((match) => {
 					return (
 						<li
-							className={`${headingToMargin[match.at(1)!]}`}
+							className={`${
+								headingToMargin[match.at(1)!]
+							} break-words`}
 							key={match.at(4)}
 						>
 							<a
