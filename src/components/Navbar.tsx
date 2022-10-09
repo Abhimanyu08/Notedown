@@ -38,16 +38,16 @@ function Navbar({
 					</div>
 				</div>
 			) : (
-				<div className="flex items-center text-white">
-					<span className="pr-2 text-xs md:text-sm">Login with</span>
-					<div className="flex divide-x-2 ">
+				<div className="flex items-center text-white gap-1">
+					<span className="text-xs md:text-sm">Login with</span>
+					<div className="flex divide-x-2">
 						<div
 							onClick={(e) => {
 								e.preventDefault();
 								handleSignIn("github", route);
 							}}
-							className="px-3"
 							// className="btn btn-xs md:btn-sm normal-case w-fit text-white"
+							className="px-3"
 						>
 							<AiFillGithub
 								size={20}
@@ -60,8 +60,8 @@ function Navbar({
 								e.preventDefault();
 								handleSignIn("google", route);
 							}}
-							className="px-3"
 							// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"
+							className="pl-3"
 						>
 							<AiFillGoogleCircle
 								size={20}

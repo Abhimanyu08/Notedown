@@ -8,8 +8,8 @@ export default interface Post {
     description: string
     language: typeof ALLOWED_LANGUAGES[number]
     published: boolean
-    published_on: string | null
-    image_folder: string | null
+    published_on: string
+    image_folder: string
     upvote_count: number
     search_index_col: string
 }

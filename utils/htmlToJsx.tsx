@@ -76,10 +76,8 @@ function htmlToJsx({
 						let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
 						let imageUrl = undefined;
 						if (imageToUrl) {
-							let coreImageName =
-								imageName?.split(".").at(0) || "";
-							if (imageToUrl[coreImageName])
-								imageUrl = imageToUrl[coreImageName];
+							if (imageToUrl[imageName || ""])
+								imageUrl = imageToUrl[imageName || ""];
 						}
 						if (imageUrl === undefined) {
 							const { publicURL } = supabase.storage

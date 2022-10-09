@@ -3,10 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
+import { FiCopy } from "react-icons/fi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
 import {
 	ALLOWED_LANGUAGES,
+	PHOTO_LIMIT,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
@@ -16,6 +18,7 @@ import makeFolderName from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
 import { Blog } from "../components/Blog";
 import BlogLayout from "../components/BlogLayout";
+import DeleteImagesModal from "../components/DeleteImagesModal";
 import Layout from "../components/Layout";
 import { Toc } from "../components/TableOfContents";
 import useEditor from "../hooks/useEditor";
@@ -38,9 +41,12 @@ function Edit() {
 	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
 	const [images, setImages] = useState<File[]>([]);
+	const [prevImages, setPrevImages] = useState<string[]>([]);
 	const [imageToUrl, setImageToUrl] = useState<Record<string, string>>({});
-	// const [uploaded, setUploaded] = useState(postId ? true : false);
-	// const [loggedInUser, setLoggedInUser] = useState<Blogger>();
+	const [toBeDeletedFromStorage, setToBeDeletedFromStorage] = useState<
+		string[]
+	>([]);
+
 	const [blogData, setBlogData] = useState<{
 		title?: string;
 		description?: string;
@@ -54,8 +60,19 @@ function Edit() {
 	});
 
 	useEffect(() => {
-		if (currPostId === undefined && typeof postId === "string")
+		if (user && currPostId === undefined && typeof postId === "string") {
 			setCurrPostId(parseInt(postId));
+			let imageFolder =
+				data?.image_folder || makeFolderName(user.id, postId);
+			supabase.storage
+				.from(SUPABASE_IMAGE_BUCKET)
+				.list(imageFolder)
+				.then((val) => {
+					if (val.data) {
+						setPrevImages(val.data.map((i) => i.name));
+					}
+				});
+		}
 	}, [postId]);
 
 	useEffect(() => {
@@ -68,18 +85,16 @@ function Edit() {
 	}, [data]);
 
 	useEffect(() => {
-		if (images.length === 0) return;
-
+		let obj: Record<string, string> = {};
 		images.forEach((image) => {
-			const imageName = image.name.split(".")[0];
-			if (Object.hasOwn(imageToUrl, imageName)) return;
-			setImageToUrl((prev) => ({
-				...prev,
-				[imageName]: (window.URL || window.webkitURL).createObjectURL(
-					image
-				),
-			}));
+			const imageName = image.name;
+			if (Object.hasOwn(obj, imageName)) return;
+			obj[imageName] = (window.URL || window.webkitURL).createObjectURL(
+				image
+			);
 		});
+
+		setImageToUrl(obj);
 	}, [images]);
 
 	useEffect(() => {
@@ -112,18 +127,26 @@ function Edit() {
 
 		setUploadingChanges(true);
 
-		const newFile = new File(
-			[editorView.state.doc.toJSON().join("\n")],
-			""
-		);
+		const markdown = editorView.state.doc.toJSON().join("\n");
+		const newFile = new File([markdown], "");
 
 		if (currPostId && data) {
+			console.log(data.filename);
 			const imageFolder = makeFolderName(user.id, currPostId);
+			if (toBeDeletedFromStorage.length > 0) {
+				await supabase.storage
+					.from(SUPABASE_IMAGE_BUCKET)
+					.remove(
+						toBeDeletedFromStorage.map(
+							(name) => `${imageFolder}/${name}`
+						)
+					);
+			}
+
 			//in case user didn't upload any images the first time
 			if (images) {
 				const imageResults = await Promise.all(
 					images.map(async (image) => {
-						console.log(image.type);
 						const imagePath = imageFolder + `/${image.name}`;
 						const result = await supabase.storage
 							.from(SUPABASE_IMAGE_BUCKET)
@@ -236,6 +259,16 @@ function Edit() {
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
+			<DeleteImagesModal
+				imageNames={[...prevImages, ...images.map((i) => i.name)]}
+				{...{
+					images,
+					setImages,
+					prevImages,
+					setPrevImages,
+					setToBeDeletedFromStorage,
+				}}
+			/>
 			<BlogLayout>
 				<div
 					className={` md:basis-1/5 md:min-h-0 overflow-auto md:flex md:flex-col md:justify-center ${
@@ -274,7 +307,7 @@ function Edit() {
 						id="markdown-textarea"
 					></div>
 				</div>
-				<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6 z-20">
+				<div className="hidden md:flex md:flex-col basis-1/5 max-w-full min-w-0 mt-44 pl-5 gap-6 z-20">
 					<div
 						className="btn btn-circle btn-ghost tooltip"
 						data-tip={editingMarkdown ? "Preview" : "Edit Markdown"}
@@ -292,52 +325,76 @@ function Edit() {
 							/>
 						)}
 					</div>
-					<div className="relative w-fit" onClick={onNewPostUpload}>
-						<span
-							className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
-								hasMarkdownChanged ? "" : "hidden"
-							} ${uploadingChanges ? "animate-ping" : ""}`}
-						></span>
+					{user && (
 						<div
-							className="btn btn-circle btn-ghost tooltip"
-							data-tip={
-								hasMarkdownChanged
-									? `${
-											currPostId
-												? "Upload Changes"
-												: "Upload Post"
-									  }`
-									: "No changes"
-							}
+							className="relative w-fit"
+							onClick={onNewPostUpload}
 						>
-							<FaFileUpload
-								size={28}
-								className={` ${
-									hasMarkdownChanged ? "text-white" : ""
-								} mt-2 ml-2`}
-							/>
+							<span
+								className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
+									hasMarkdownChanged ? "" : "hidden"
+								} ${uploadingChanges ? "animate-ping" : ""}`}
+							></span>
+							<div
+								className="btn btn-circle btn-ghost tooltip"
+								data-tip={
+									hasMarkdownChanged
+										? `${
+												currPostId
+													? "Upload Changes"
+													: "Upload Post"
+										  }`
+										: "No changes"
+								}
+							>
+								<FaFileUpload
+									size={28}
+									className={` ${
+										hasMarkdownChanged ? "text-white" : ""
+									} mt-2 ml-2`}
+								/>
+							</div>
 						</div>
-					</div>
+					)}
 					<div className="">
 						<label
 							className="btn btn-circle btn-ghost tooltip"
-							data-tip={`Add Images`}
-							htmlFor="extra-images"
+							data-tip={`Add Image`}
+							htmlFor={
+								images.length + prevImages.length < PHOTO_LIMIT
+									? "extra-images"
+									: "delete-images"
+							}
 						>
 							<BiImageAdd size={32} className="mt-2 ml-2" />
 						</label>
+						<div
+							className={`flex  bg-black p-1 rounded-lg text-white tooltip normal-case break-words w-2/3 cursor-pointer 
+							${images.length > 0 ? "" : "hidden"}`}
+							data-tip="Double click to copy"
+							onDoubleClick={(e) =>
+								navigator.clipboard.writeText(
+									images.at(images.length - 1)?.name || ""
+								)
+							}
+						>
+							<span className="w-full select-all">
+								{images.at(images.length - 1)?.name}
+							</span>
+						</div>
 						<input
 							type="file"
 							name=""
 							id="extra-images"
 							className="hidden"
 							accept="image/*"
-							onChange={(e) =>
+							max={1}
+							onChange={(e) => {
 								setImages((prev) => [
 									...prev,
 									...Array.from(e.target.files || []),
-								])
-							}
+								]);
+							}}
 						/>
 					</div>
 				</div>
@@ -359,10 +416,10 @@ function Edit() {
 
 				<label
 					className="flex flex-col items-center gap-1 text-white"
-					htmlFor="extra-images"
+					htmlFor={false ? "extra-images" : "delete-images"}
 				>
 					<BiImageAdd size={22} className="mt-2 ml-2" />
-					<span className="text-xs">Add Images</span>
+					<span className="text-xs">Add Image</span>
 				</label>
 				<input
 					type="file"
@@ -370,6 +427,7 @@ function Edit() {
 					id="extra-images"
 					className="hidden"
 					accept="image/*"
+					max={1}
 					onChange={(e) =>
 						setImages((prev) => [
 							...prev,
@@ -378,35 +436,52 @@ function Edit() {
 					}
 				/>
 
-				<div
-					className="flex flex-col items-center w-fit gap-1"
-					onClick={onNewPostUpload}
-				>
-					<div className="relative">
-						<FaFileUpload
-							size={18}
-							className={` ${
-								hasMarkdownChanged ? "text-white" : ""
-							} mt-2 ml-2`}
-						/>
-						<span
-							className={`absolute rounded-full bg-yellow-400 w-2 h-2 top-0 left-6 ${
-								hasMarkdownChanged ? "" : "hidden"
-							} ${uploadingChanges ? "animate-ping" : ""}`}
-						></span>
+				{images.length > 0 && (
+					<div
+						className="flex flex-col items-center gap-1 text-white w-1/5"
+						onClick={() =>
+							navigator.clipboard.writeText(
+								images.at(images.length - 1)?.name || ""
+							)
+						}
+					>
+						<FiCopy size={20} />
+						<span className="text-xs w-full truncate">
+							Copy {images.at(images.length - 1)?.name}
+						</span>
 					</div>
+				)}
+				{user && (
+					<div
+						className="flex flex-col items-center w-fit gap-1"
+						onClick={onNewPostUpload}
+					>
+						<div className="relative">
+							<FaFileUpload
+								size={18}
+								className={` ${
+									hasMarkdownChanged ? "text-white" : ""
+								} mt-2 ml-2`}
+							/>
+							<span
+								className={`absolute rounded-full bg-yellow-400 w-2 h-2 top-0 left-6 ${
+									hasMarkdownChanged ? "" : "hidden"
+								} ${uploadingChanges ? "animate-ping" : ""}`}
+							></span>
+						</div>
 
-					<span className="text-xs text-white">
-						{hasMarkdownChanged
-							? `${currPostId ? "Save" : "Upload"}`
-							: "No changes"}
-					</span>
-				</div>
+						<span className="text-xs text-white">
+							{hasMarkdownChanged
+								? `${currPostId ? "Save" : "Upload"}`
+								: "No changes"}
+						</span>
+					</div>
+				)}
 				<div
 					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}
 				>
-					<GiHamburgerMenu size={20} />
+					<GiHamburgerMenu size={18} />
 					<span className="text-xs">Contents</span>
 				</div>
 			</footer>
