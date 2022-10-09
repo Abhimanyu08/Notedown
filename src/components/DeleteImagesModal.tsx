@@ -71,8 +71,8 @@ function DeleteImagesModal({
 					show ? "" : "hidden"
 				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50`}
 			>
-				<label className=" bg-cyan-500 w-1/2 p-6 rounded-lg">
-					<div className="grid grid-cols-2 auto-cols-max divide-x-2 divide-black">
+				<label className=" bg-cyan-500 mx-2 max-h-full max-w-full md:mx-0 md:w-1/2 p-6 rounded-lg">
+					<div className="grid grid-rows-2 md:grid-cols-2 md:auto-cols-max md:divide-y-0 md:divide-x-2 divide-black divide-y-2">
 						{okToDelete ? (
 							<>
 								<div className="flex flex-col gap-2 col-span-1">
@@ -129,11 +129,11 @@ function DeleteImagesModal({
 								</div>
 							</>
 						) : (
-							<p className="col-span-2">
+							<div className="col-span-2 text-sm md:text-base">
 								{deleted ? (
 									<span>
 										Deletion Successfull! Do not forget to
-										edit your markdown so that you do not
+										edit your markdown so that you {"don't"}{" "}
 										end up having empty image tags
 									</span>
 								) : (
@@ -147,7 +147,7 @@ function DeleteImagesModal({
 										be deleted only if you save the changes
 									</span>
 								)}
-							</p>
+							</div>
 						)}
 					</div>
 					<div className="mt-10 flex gap-2 justify-end">

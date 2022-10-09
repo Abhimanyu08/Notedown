@@ -46,6 +46,7 @@ function Edit() {
 	const [toBeDeletedFromStorage, setToBeDeletedFromStorage] = useState<
 		string[]
 	>([]);
+	const [copiedImageName, setCopiedImageName] = useState(false);
 
 	const [blogData, setBlogData] = useState<{
 		title?: string;
@@ -361,9 +362,8 @@ function Edit() {
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={`Add Image`}
 							htmlFor={
-								images.length + prevImages.length < PHOTO_LIMIT
-									? "extra-images"
-									: "delete-images"
+								// images.length + prevImages.length < PHOTO_LIMIT
+								false ? "extra-images" : "delete-images"
 							}
 						>
 							<BiImageAdd size={32} className="mt-2 ml-2" />
@@ -372,7 +372,7 @@ function Edit() {
 							className={`flex  bg-black p-1 rounded-lg text-white tooltip normal-case break-words w-2/3 cursor-pointer 
 							${images.length > 0 ? "" : "hidden"}`}
 							data-tip="Double click to copy"
-							onDoubleClick={(e) =>
+							onDoubleClick={() =>
 								navigator.clipboard.writeText(
 									images.at(images.length - 1)?.name || ""
 								)
@@ -416,7 +416,11 @@ function Edit() {
 
 				<label
 					className="flex flex-col items-center gap-1 text-white"
-					htmlFor={false ? "extra-images" : "delete-images"}
+					htmlFor={
+						images.length + prevImages.length < PHOTO_LIMIT
+							? "extra-images"
+							: "delete-images"
+					}
 				>
 					<BiImageAdd size={22} className="mt-2 ml-2" />
 					<span className="text-xs">Add Image</span>
@@ -438,11 +442,21 @@ function Edit() {
 
 				{images.length > 0 && (
 					<div
-						className="flex flex-col items-center gap-1 text-white w-1/5"
+						className={`flex flex-col items-center gap-1 text-white w-1/5 ${
+							copiedImageName ? "text-lime-400" : "text-white"
+						} `}
 						onClick={() =>
-							navigator.clipboard.writeText(
-								images.at(images.length - 1)?.name || ""
-							)
+							navigator.clipboard
+								.writeText(
+									images.at(images.length - 1)?.name || ""
+								)
+								.then(() => {
+									setCopiedImageName(true);
+									setTimeout(
+										() => setCopiedImageName(false),
+										2000
+									);
+								})
 						}
 					>
 						<FiCopy size={20} />
