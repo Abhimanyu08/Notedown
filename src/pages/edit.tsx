@@ -272,7 +272,7 @@ function Edit() {
 			/>
 			<BlogLayout>
 				<div
-					className={` md:basis-1/5 md:min-h-0 overflow-auto md:flex md:flex-col md:justify-center ${
+					className={` lg:basis-1/5 md:min-h-0 overflow-auto lg:flex lg:flex-col lg:justify-center ${
 						showContent ? "w-screen" : "hidden"
 					}`}
 				>
@@ -282,7 +282,7 @@ function Edit() {
 					/>
 				</div>
 				<div
-					className={`md:basis-3/5 relative ${
+					className={`lg:basis-3/5 relative ${
 						showContent ? "hidden" : "w-screen"
 					}`}
 				>
@@ -308,7 +308,7 @@ function Edit() {
 						id="markdown-textarea"
 					></div>
 				</div>
-				<div className="hidden md:flex md:flex-col basis-1/5 max-w-full min-w-0 mt-44 pl-5 gap-6 z-20">
+				<div className="hidden lg:flex lg:flex-col basis-1/5 max-w-full min-w-0 mt-44 pl-5 gap-6 z-20">
 					<div
 						className="btn btn-circle btn-ghost tooltip"
 						data-tip={editingMarkdown ? "Preview" : "Edit Markdown"}
@@ -399,7 +399,7 @@ function Edit() {
 					</div>
 				</div>
 			</BlogLayout>
-			<footer className="w-full flex items-end md:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
+			<footer className="w-full flex items-end lg:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={() => setEditingMarkdown((prev) => !prev)}

@@ -98,7 +98,7 @@ export default function PrivateBlog() {
 		>
 			<BlogLayout>
 				<div
-					className={` md:basis-1/5 md:flex md:flex-col md:justify-center ${
+					className={` lg:basis-1/5 lg:flex lg:flex-col lg:justify-center ${
 						showContent ? "w-screen" : "hidden"
 					}`}
 				>
@@ -108,13 +108,13 @@ export default function PrivateBlog() {
 					/>
 				</div>
 				<div
-					className={`md:basis-3/5 relative ${
+					className={`lg:basis-3/5 relative ${
 						showContent ? "hidden" : "w-screen"
 					}`}
 				>
 					<Blog {...data} containerId={containerId} />
 				</div>
-				<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6 z-20">
+				<div className="hidden lg:flex lg:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6 z-20">
 					<div
 						className={` btn btn-circle  btn-ghost tooltip`}
 						data-tip="Activate remote code execution"
@@ -141,7 +141,7 @@ export default function PrivateBlog() {
 					</div>
 				</div>
 			</BlogLayout>
-			<footer className="w-full flex items-end md:hidden justify-between py-3 px-4  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
+			<footer className="w-full flex items-end lg:hidden justify-between md:justify-evenly py-3 px-4  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={prepareContainer}

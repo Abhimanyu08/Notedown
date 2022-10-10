@@ -105,7 +105,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 		return <></>;
 	}
 	return (
-		<div className="flex flex-col items-center md:items-start gap-2 w-full md:w-40 h-3/4 relative">
+		<div className="flex flex-col items-center lg:items-start gap-2 w-full lg:w-40 h-3/4 relative">
 			{profile &&
 				profile.id &&
 				user &&
@@ -222,7 +222,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					<h1 className={` text-xs font-bold md:text-lg`}>
 						{currProfile.name}
 					</h1>
-					<div className="flex md:flex-col w-full md:w-fit mx-2 items-center justify-center gap-4">
+					<div className="flex lg:flex-col w-full lg:w-fit mx-2 items-center justify-center gap-4">
 						{currProfile.twitter && (
 							<Links
 								badge={AiOutlineTwitter}

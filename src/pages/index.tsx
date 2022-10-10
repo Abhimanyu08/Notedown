@@ -92,14 +92,14 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				<meta property="og:site_name" content="Rce Blog" />
 				<meta property="og:type" content="website" />
 			</Head>
-			<div className="w-full px-5 md:px-0 md:w-1/3 mx-auto">
+			<div className="w-full px-5 lg:px-0 md:w-3/5 lg:w-1/3 mx-auto">
 				<SearchComponent
 					fetchPosts={fetchSearchPosts}
 					setPosts={setSearchResults}
 					setSearchQuery={setSearchQuery}
 				/>
 			</div>
-			<div className="px-4 md:px-32 xl:px-64 grow mt-5 overflow-hidden">
+			<div className="px-4 lg:px-32 xl:px-64 grow mt-5 overflow-hidden">
 				{(searchResults?.length || 0) > 0 ? (
 					<PostDisplay
 						posts={searchResults || []}

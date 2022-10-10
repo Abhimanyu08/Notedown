@@ -408,15 +408,15 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</>
 				)}
 			</>
-			<div className="md:grid flex flex-col grow md:min-h-0 h-max overflow-y-auto  md:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 md:px-32">
+			<div className="lg:grid flex flex-col grow lg:min-h-0 h-max overflow-y-auto  lg:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 lg:px-32">
 				<div
-					className={` lg:col-span-2 h-fit md:h-full
+					className={` lg:col-span-2 h-fit lg:h-full
 					`}
 				>
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  md:min-h-0 grow ">
-					<div className="flex justify-between grow-0 items-center sticky top-0 z-20 bg-slate-900 pb-2 md:pb-0">
+				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow ">
+					<div className="flex justify-between grow-0 items-center sticky top-0 z-20 bg-slate-900 pb-2 lg:pb-0">
 						<div className="tabs">
 							<p
 								className={`tab tab-md  tab-lifted ${
@@ -503,7 +503,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					{section === "posts" ? (
 						<>
 							<div
-								className={`sticky top-10 z-20 bg-slate-900 md:my-4 pb-2 md:pb-0`}
+								className={`sticky top-10 z-20 bg-slate-900 md:my-4 pb-2 lg:pb-0`}
 							>
 								<div className="flex justify-between grow-0">
 									{user?.id === id && (
@@ -542,7 +542,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										/>
 									)}
 								</div>
-								<div className="mt-2 md:mt-4 md:w-1/2">
+								<div className="mt-2 md:mt-4 md:w-3/5 lg:w-1/2">
 									{postType === "upvoted" ? (
 										<SearchComponent
 											placeholder={
@@ -568,6 +568,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									)}
 								</div>
 							</div>
+
 							{(searchResults?.length ||
 								upvotedSearchPosts?.length ||
 								0) > 0 ? (

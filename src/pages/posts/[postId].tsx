@@ -178,7 +178,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 			>
 				<BlogLayout>
 					<div
-						className={`md:basis-1/5  md:flex-col justify-center md:flex ${
+						className={`lg:basis-1/5  md:flex-col justify-center lg:flex ${
 							showContent
 								? "absolute z-50 top-0 left-0 opacity-100 w-screen"
 								: "hidden"
@@ -191,13 +191,13 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					</div>
 
 					<div
-						className={`md:basis-3/5 ${
+						className={`lg:basis-3/5 ${
 							showContent ? "opacity-0 w-screen" : "w-screen"
 						}`}
 					>
 						<Blog {...props} containerId={containerId} />
 					</div>
-					<div className="hidden md:flex md:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6">
+					<div className="hidden lg:flex lg:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6">
 						<div
 							className={` btn btn-circle  btn-ghost tooltip`}
 							data-tip={` ${
@@ -266,7 +266,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						</div>
 					</div>
 				</BlogLayout>
-				<footer className="w-full flex items-center md:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
+				<footer className="w-full text-xs md:text-sm flex items-center lg:hidden justify-between md:justify-evenly p-3 py-5 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
 					<div
 						className="flex flex-col items-center"
 						onClick={prepareContainer}
@@ -278,7 +278,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							}`}
 						/>
 						<span
-							className={`text-xs ${
+							className={` ${
 								containerId ? "text-lime-400" : "text-white"
 							} `}
 						>
@@ -306,7 +306,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								Link Copied!
 							</span>
 						) : (
-							<span className="text-xs text-white">Share</span>
+							<span className=" text-white">Share</span>
 						)}
 					</div>
 					<div
@@ -320,7 +320,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							}`}
 						/>
 						<span
-							className={`text-xs ${
+							className={` ${
 								upvoted ? "text-lime-400" : "text-white"
 							}`}
 						>
@@ -333,7 +333,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						onClick={() => setShowContents((prev) => !prev)}
 					>
 						<GiHamburgerMenu size={20} className="text-white" />
-						<span className="text-xs text-white">Contents</span>
+						<span className=" text-white">Contents</span>
 					</div>
 				</footer>
 			</Layout>
