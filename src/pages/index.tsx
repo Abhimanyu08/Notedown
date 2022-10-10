@@ -2,7 +2,11 @@ import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { LIMIT, SUPABASE_POST_TABLE } from "../../utils/constants";
+import {
+	LIMIT,
+	SEARCH_PUBLC,
+	SUPABASE_POST_TABLE,
+} from "../../utils/constants";
 import { fetchUpvotes } from "../../utils/fetchUpvotes";
 import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
@@ -10,6 +14,7 @@ import PostDisplay from "../components/PostDisplay";
 import SearchComponent from "../components/SearchComponent";
 import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
+import SearchResults from "../interfaces/SearchResult";
 import { UserContext } from "./_app";
 
 interface HomeProps {
@@ -21,9 +26,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	const [homePosts, setHomePosts] = useState<
 		Partial<PostWithBlogger>[] | null | undefined
 	>(posts);
-	const [searchResults, setSearchResults] = useState<
-		PostWithBlogger[] | Post[]
-	>();
+	const [searchResults, setSearchResults] = useState<SearchResults[]>();
 	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
@@ -54,37 +57,20 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 		cursor?: string | number;
 		searchTerm?: string;
 	}) => {
-		console.log("This triggered", searchTerm);
 		if (!searchTerm) return;
-		if (!cursor) {
-			const { data, error } = await supabase
-				.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-				.select("*, bloggers(name)")
-				.textSearch("search_index_col", searchTerm)
-				.order("upvote_count", { ascending: false })
-				.limit(LIMIT);
-			console.log(data);
-			if (error || !data) return false;
 
-			setSearchResults(data);
-			return data.length > 0;
-		}
-		if (cursor) {
-			const { data, error } = await supabase
-				.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-				.select("*,bloggers(name)")
-				.textSearch("search_index_col", searchTerm)
-				.lt("upvote_count", cursor)
-				.order("upvote_count", { ascending: false })
-				.limit(LIMIT);
-
-			if (error || !data) {
-				console.log(error.message || "data returned is null");
-				return false;
+		const { data, error } = await supabase.rpc<SearchResults>(
+			SEARCH_PUBLC,
+			{
+				search_term: searchTerm,
+				cursor: cursor || null,
 			}
-			setSearchResults((prev) => [...(prev || []), ...data]);
-			return data.length > 0;
-		}
+		);
+
+		if (error || !data) return false;
+
+		setSearchResults((prev) => [...(prev || []), ...data]);
+		return data.length > 0;
 	};
 	return (
 		<Layout user={user || null} route={router.asPath}>
@@ -117,9 +103,8 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				{(searchResults?.length || 0) > 0 ? (
 					<PostDisplay
 						posts={searchResults || []}
-						cursorKey="upvote_count"
+						cursorKey="search_rank"
 						searchTerm={searchQuery}
-						owner={false}
 						fetchPosts={fetchSearchPosts}
 					/>
 				) : (
@@ -127,7 +112,6 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 						posts={homePosts || []}
 						cursorKey="published_on"
 						searchTerm={searchQuery}
-						owner={false}
 						fetchPosts={fetchHomePosts}
 					/>
 				)}

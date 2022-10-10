@@ -2,19 +2,20 @@ import {
 	Dispatch,
 	MouseEventHandler,
 	SetStateAction,
+	useContext,
 	useEffect,
 	useState,
 } from "react";
 import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
+import SearchResult from "../interfaces/SearchResult";
+import { UserContext } from "../pages/_app";
 import PostComponent from "./PostComponent";
 
 interface PostDisplayProps {
-	owner: boolean;
-	author?: string;
 	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
-	posts: Partial<PostWithBlogger>[] | null;
-	cursorKey: keyof Post;
+	posts: Partial<SearchResult>[] | null;
+	cursorKey: keyof SearchResult | "upvoted_on";
 	searchTerm?: string;
 	fetchPosts: ({
 		cursor,
@@ -27,8 +28,6 @@ interface PostDisplayProps {
 
 function PostDisplay({
 	posts,
-	owner = false,
-	author,
 	cursorKey,
 	setPostInAction,
 	searchTerm,
@@ -38,6 +37,8 @@ function PostDisplay({
 		(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] || null
 	);
 	const [hasMore, setHasMore] = useState(true);
+
+	const { user } = useContext(UserContext);
 
 	useEffect(() => {
 		setCursor(
@@ -68,8 +69,8 @@ function PostDisplay({
 						key={post.id!}
 						{...{
 							post,
-							author: author || post.bloggers?.name,
-							owner: owner || false,
+							author: post.author || post.bloggers?.name,
+							owner: user?.id === post.created_by,
 							setPostInAction,
 						}}
 					/>

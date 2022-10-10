@@ -8,10 +8,11 @@ import {
 import { MdCancel } from "react-icons/md";
 import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
+import SearchResult from "../interfaces/SearchResult";
 
 interface SearchComponentProps {
 	placeholder?: string;
-	setPosts: (newPosts: PostWithBlogger[] | Post[]) => void;
+	setPosts: (newPosts: SearchResult[]) => void;
 	setSearchQuery: Dispatch<SetStateAction<string>>;
 	fetchPosts: ({ searchTerm }: { searchTerm?: string }) => void;
 }
@@ -35,7 +36,7 @@ function SearchComponent({
 			setTimeout(() => {
 				setSearchQuery(searchTerm || "");
 				search(searchTerm);
-			}, 1000)
+			}, 300)
 		);
 	}, [searchTerm]);
 
@@ -46,7 +47,7 @@ function SearchComponent({
 			return;
 		}
 
-		fetchPosts({ searchTerm: term.split(" ").join(" | ") });
+		fetchPosts({ searchTerm: term.trim().split(" ").join(" | ") });
 
 		return;
 	};

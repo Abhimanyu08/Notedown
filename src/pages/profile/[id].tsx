@@ -10,6 +10,7 @@ import {
 } from "react";
 import {
 	LIMIT,
+	SEARCH_PRIVATE,
 	SEARCH_UPVOTED_POSTS_FUNCTION,
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
@@ -30,13 +31,19 @@ import { UploadModal } from "../../components/UploadModal";
 import UserDisplay from "../../components/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
+import PostWithBlogger from "../../interfaces/PostWithBlogger";
+import SearchResult from "../../interfaces/SearchResult";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
 
 interface ProfileProps {
-	latest?: Partial<Post>[];
-	greatest?: Partial<Post>[];
+	latest?: Partial<PostWithBlogger>[];
+	greatest?: Partial<PostWithBlogger>[];
 	profileUser?: Blogger;
+}
+
+interface UpvotedPost extends Post {
+	upvoted_on: string;
 }
 
 type PostType = "published" | "unpublished" | "upvoted";
@@ -51,11 +58,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		Partial<Post>[] | null | undefined
 	>(latest);
 	const [privatePosts, setPrivatePosts] = useState<Partial<Post>[] | null>();
-	const [searchResults, setSearchResults] = useState<Post[]>();
+	const [searchResults, setSearchResults] = useState<SearchResult[]>();
 	const [greatestPosts, setGreatestPosts] = useState<
 		Partial<Post>[] | null | undefined
 	>(greatest);
-	const [upvotedPosts, setUpvotedPosts] = useState<Partial<Post>[]>();
+	const [upvotedPosts, setUpvotedPosts] = useState<Partial<UpvotedPost>[]>();
 	const [upvotedSearchPosts, setUpvotedSearchPosts] =
 		useState<Partial<Post>[]>();
 	const router = useRouter();
@@ -104,13 +111,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	};
 
 	useEffect(() => {
-		if (postType === "published") {
-			if (!publicPosts || publicPosts.length == 0) {
-				if (profileUser?.id === user?.id) setPostType("unpublished");
-			}
-			return;
-		}
-
 		if (postType === "unpublished") {
 			if (!privatePosts || privatePosts.length === 0) {
 				supabase
@@ -195,7 +195,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					let upvotedPosts = posts
 						.map((post) => ({
 							...post,
-							created_at: modifiedData[post.id],
+							upvoted_on: modifiedData[post.id],
 						}))
 						.sort((a, b) => (a.created_at > b.created_at ? -1 : 1));
 					setUpvotedPosts((prev) => [
@@ -235,7 +235,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				let upvotedPosts = posts
 					.map((post) => ({
 						...post,
-						created_at: modifiedData[post.id],
+						upvoted_on: modifiedData[post.id],
 					}))
 					.sort((a, b) => (a.created_at > b.created_at ? -1 : 1));
 				setUpvotedPosts((prev) => [...(prev || []), ...upvotedPosts]);
@@ -318,35 +318,16 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		searchTerm?: string;
 	}) => {
 		if (!searchTerm) return;
-		if (!cursor) {
-			const { data, error } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
-				.select("*")
-				.match({ created_by: profileUser?.id })
-				.textSearch("search_index_col", searchTerm)
-				.order("upvote_count", { ascending: false })
-				.limit(LIMIT);
-
-			if (error || !data) {
-				console.log(error.message || "data returned is null");
-				return false;
+		const { data, error } = await supabase.rpc<SearchResult>(
+			SEARCH_PRIVATE,
+			{
+				user_id: profile?.id,
+				search_term: searchTerm,
+				cursor: cursor || null,
 			}
-			setSearchResults((prev) => [...(prev || []), ...data]);
-			return data.length > 0;
-		}
-		const { data, error } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.select("*")
-			.match({ created_by: profileUser?.id })
-			.textSearch("search_index_col", searchTerm)
-			.lt("upvote_count", cursor)
-			.order("upvote_count", { ascending: false })
-			.limit(LIMIT);
+		);
 
-		if (error || !data) {
-			console.log(error.message || "data returned is null");
-			return false;
-		}
+		if (error || !data) return;
 		setSearchResults((prev) => [...(prev || []), ...data]);
 		return data.length > 0;
 	};
@@ -358,38 +339,18 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		cursor?: string | number;
 		searchTerm?: string;
 	}) => {
-		console.log("This called");
 		if (!searchTerm) return;
 
-		if (!cursor) {
-			const { data } = await supabase.rpc(SEARCH_UPVOTED_POSTS_FUNCTION, {
+		const { data } = await supabase.rpc<SearchResult>(
+			SEARCH_UPVOTED_POSTS_FUNCTION,
+			{
 				user_id: profile?.id,
 				search_term: searchTerm,
-				cursor: null,
-			});
-			if (data) {
-				let modifiedData = data.map((post) => ({
-					...post,
-					bloggers: { name: post.author },
-				}));
-				setUpvotedSearchPosts((prev) => [
-					...(prev || []),
-					...modifiedData,
-				]);
+				cursor: cursor || null,
 			}
-			return (data?.length || 0) > 0;
-		}
-		const { data } = await supabase.rpc(SEARCH_UPVOTED_POSTS_FUNCTION, {
-			user_id: profile?.id,
-			search_term: searchTerm,
-			cursor,
-		});
+		);
 		if (data) {
-			let modifiedData = data.map((post) => ({
-				...post,
-				bloggers: { name: post.author },
-			}));
-			setUpvotedSearchPosts((prev) => [...(prev || []), ...modifiedData]);
+			setUpvotedSearchPosts((prev) => [...(prev || []), ...data]);
 		}
 		return (data?.length || 0) > 0;
 	};
@@ -614,18 +575,15 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									{postType === "upvoted" ? (
 										<PostDisplay
 											posts={upvotedSearchPosts || []}
-											cursorKey="upvote_count"
+											cursorKey="search_rank"
 											searchTerm={searchQuery}
-											owner={false}
 											fetchPosts={fetchSearchUpvotes}
 										/>
 									) : (
 										<PostDisplay
 											posts={searchResults || []}
-											author={profileUser?.name || ""}
-											cursorKey="upvote_count"
+											cursorKey="search_rank"
 											searchTerm={searchQuery}
-											owner={user?.id === id}
 											fetchPosts={fetchSearchPosts}
 											setPostInAction={setPostInAction}
 										/>
@@ -641,13 +599,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 														posts={
 															publicPosts || []
 														}
-														owner={user?.id === id}
 														setPostInAction={
 															setPostInAction
-														}
-														author={
-															profile?.name ||
-															undefined
 														}
 														cursorKey={
 															"published_on"
@@ -664,13 +617,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 														posts={
 															greatestPosts || []
 														}
-														owner={user?.id === id}
 														setPostInAction={
 															setPostInAction
-														}
-														author={
-															profile?.name ||
-															undefined
 														}
 														cursorKey={
 															"upvote_count"
@@ -687,8 +635,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									{postType === "unpublished" && (
 										<PostDisplay
 											posts={privatePosts || []}
-											owner={user?.id === id}
-											author={profile?.name || undefined}
 											setPostInAction={setPostInAction}
 											cursorKey={"created_at"}
 											fetchPosts={fetchPrivatePosts}
@@ -697,8 +643,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									{postType === "upvoted" && (
 										<PostDisplay
 											posts={upvotedPosts || []}
-											owner={false}
-											cursorKey={"created_at"}
+											cursorKey={"upvoted_on"}
 											fetchPosts={fetchUpvotedPosts}
 										/>
 									)}
@@ -792,8 +737,10 @@ export const getStaticProps: GetStaticProps<
 			}),
 
 		supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.select("id,published,published_on,title,description,language")
+			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+			.select(
+				"id,published,published_on,title,description,language,bloggers(name),created_by"
+			)
 			.eq("created_by", id)
 			.order("published_on", { ascending: false })
 			.limit(LIMIT)
@@ -803,8 +750,10 @@ export const getStaticProps: GetStaticProps<
 			}),
 
 		supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.select("id,published,published_on,title,description,language")
+			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+			.select(
+				"id,published,published_on,title,description,language,bloggers(name),created_by"
+			)
 			.eq("created_by", id)
 			.order("upvote_count", { ascending: false })
 			.limit(LIMIT)

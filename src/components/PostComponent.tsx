@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MouseEventHandler, useRef } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import { ALLOWED_LANGUAGES } from "../../utils/constants";
+import formatDate from "../../utils/dateFormatter";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 
 const langToBadgeColor: Record<typeof ALLOWED_LANGUAGES[number], string> = {
@@ -29,10 +30,15 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		upvote_count: upvotes,
 		language,
 		created_at,
+		upvoted_on,
 	} = post;
 	const router = useRouter();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
+	const [mounted, setMounted] = useState(false);
 
+	useEffect(() => {
+		if (!mounted) setMounted(true);
+	}, []);
 	const onAction: MouseEventHandler = () => {
 		if (setPostInAction) setPostInAction(post);
 	};
@@ -43,7 +49,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					{title}{" "}
 				</div>
 			</Link>
-			{owner && (
+			{owner && mounted && (
 				<div className="flex absolute top-0 right-0 gap-3">
 					{!published && (
 						<label
@@ -103,11 +109,17 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					</p>
 				</Link>
 				<div className="px-1 w-24  flex justify-center ">
-					<span>
-						{published && published_on
-							? new Date(published_on).toDateString().slice(4)
-							: new Date(created_at!).toDateString().slice(4)}
-					</span>
+					{upvoted_on ? (
+						<span className="flex items-center">
+							<BiUpvote /> - {formatDate(upvoted_on)}
+						</span>
+					) : (
+						<span>
+							{published && published_on
+								? new Date(published_on).toDateString().slice(4)
+								: new Date(created_at!).toDateString().slice(4)}
+						</span>
+					)}
 				</div>
 				{published && (
 					<div className="flex justify-center w-16 ">
