@@ -113,7 +113,7 @@ function Edit() {
 
 		const markdown = editorView?.state.doc.toJSON().join("\n");
 		if (!markdown) return;
-		localStorage.setItem(LOCAL_MARKDOWN_KEY, markdown);
+		if (!postId) localStorage.setItem(LOCAL_MARKDOWN_KEY, markdown);
 		getHtmlFromMarkdown(markdown)
 			.then(({ data, content }) => {
 				setBlogData({

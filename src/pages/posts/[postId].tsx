@@ -82,8 +82,10 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 
 	useEffect(() => {
 		if (containerId) {
-			window.onbeforeunload = async () =>
-				await sendRequestToRceServer("DELETE", { containerId });
+			window.onbeforeunload = async () => {
+				setContainerId(undefined);
+				sendRequestToRceServer("DELETE", { containerId });
+			};
 		}
 
 		return () => {
