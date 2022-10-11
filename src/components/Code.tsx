@@ -59,20 +59,29 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	return (
 		<div className="flex relative flex-col w-full ">
 			{mounted && (
-				<div className="w-full " id={`codearea-${blockNumber}`}></div>
-			)}
-			<div className="flex flex-row absolute right-2 m-1 gap-2">
-				<button
-					onClick={() => {
+				<div
+					className="w-full "
+					id={`codearea-${blockNumber}`}
+					onDoubleClick={() => {
 						if (!collectCodeTillBlock) return;
 						collectCodeTillBlock(blockNumber);
 					}}
-					className="md:tooltip  md:tooltip-left"
-					data-tip="Run Code (Shift+Enter)"
-					id={`run-${blockNumber}`}
-				>
-					<BsPlayFill className="text-cyan-400" />
-				</button>
+				></div>
+			)}
+			<div className="flex flex-row absolute right-2 m-1 gap-2">
+				{mounted && (
+					<button
+						onClick={() => {
+							if (!collectCodeTillBlock) return;
+							collectCodeTillBlock(blockNumber);
+						}}
+						className="md:tooltip  md:tooltip-left"
+						data-tip="Run Code (Shift+Enter)"
+						id={`run-${blockNumber}`}
+					>
+						<BsPlayFill className="text-cyan-400" />
+					</button>
+				)}
 				<button
 					onClick={onUndo}
 					className="md:tooltip  md:tooltip-left"
