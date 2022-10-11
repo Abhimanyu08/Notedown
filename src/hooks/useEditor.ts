@@ -112,7 +112,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
                 keymap.of([{
                     key: "Shift-Enter",
                     run() {
-                        if (!collectCodeTillBlock || !blockNumber) return false;
+                        if (!collectCodeTillBlock || blockNumber === undefined) return false;
                         collectCodeTillBlock(blockNumber)
                         return true;
                     }
