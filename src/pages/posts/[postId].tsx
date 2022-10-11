@@ -84,7 +84,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 		if (containerId) {
 			window.onbeforeunload = async () => {
 				setContainerId(undefined);
-				sendRequestToRceServer("DELETE", { containerId });
+				await sendRequestToRceServer("DELETE", { containerId });
 			};
 		}
 
