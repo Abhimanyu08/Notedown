@@ -62,7 +62,6 @@ export function Blog({
 		blockNumber: number,
 		blockToCode: Record<number, string>
 	) => {
-		console.log(blockToCode);
 		let code = Object.values(blockToCode).join("\n");
 		code = code.trim();
 
