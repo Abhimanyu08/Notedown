@@ -1,12 +1,13 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "../../utils/constants";
+import { LOCAL_MARKDOWN_KEY, SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "../../utils/constants";
 import { getHtmlFromMarkdown } from "../../utils/getResources";
 import { supabase } from "../../utils/supabaseClient";
 import { BlogProps } from "../interfaces/BlogProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 
+const initialMarkdown = '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n--- \n';
 interface PrivatePostQueryData extends BlogProps {
     markdown: string
 }
@@ -22,7 +23,8 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId?:
 
     useEffect(() => {
         if (!postId || typeof postId !== "number") {
-            setPrivatePost({ markdown: '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n--- \n ' })
+            const markdown = localStorage.getItem(LOCAL_MARKDOWN_KEY) || initialMarkdown
+            setPrivatePost({ markdown })
             setLoading(false)
             return
         }
@@ -31,7 +33,7 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId?:
             return
         }
         const fetchPost = async () => {
-            const { data: checkData } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,published').match({ id: postId, published: false })
+            const { data: checkData } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by').match({ id: postId, published: false })
 
             if (!checkData || checkData.length === 0 || checkData.at(0)?.created_by !== loggedInUser.id) {
 

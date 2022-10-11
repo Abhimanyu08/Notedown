@@ -14,7 +14,7 @@ const headingToFontSize: Record<string, string> = {
 	h3: "text-lg",
 	h4: "text-base",
 	h5: "text-sm",
-	h6: "text-xs",
+	h6: "text-sm",
 };
 const headingToFontWeight: Record<string, string> = {
 	h2: "font-bold",
@@ -42,17 +42,23 @@ export function Toc({
 
 	return (
 		<div
-			className="flex flex-col gap-5 md:ml-10 text-white max-w-full"
+			className="flex flex-col gap-5  text-white max-w-full"
 			onClick={() => setShowContents(false)}
 		>
 			<h3
-				className="text-xl font-semibold flex flex-row items-center"
+				className="ml-8 lg:ml-0 text-xl font-semibold flex flex-row items-center"
 				onClick={() => setOpen((prev) => !prev)}
 			>
 				{open ? (
-					<MdOutlineArrowDropDown size={36} />
+					<MdOutlineArrowDropDown
+						size={36}
+						className="hidden lg:block"
+					/>
 				) : (
-					<MdOutlineArrowRight size={36} />
+					<MdOutlineArrowRight
+						size={36}
+						className="hidden lg:block"
+					/>
 				)}
 				<span>Table of Contents</span>
 			</h3>
@@ -66,11 +72,6 @@ export function Toc({
 						Title
 					</a>
 				</li>
-				<li>
-					<a href="#jsx" className="text-xl font-bold">
-						Introduction
-					</a>
-				</li>
 				{matches?.map((match) => {
 					return (
 						<li
@@ -82,7 +83,7 @@ export function Toc({
 							<a
 								href={`#${match.at(4)}`}
 								className={`${headingToFontSize[match.at(1)!]}
-							${headingToFontWeight[match.at(1)!]}
+							font-semibold
 						 link-hover`}
 							>
 								{match.at(4)}

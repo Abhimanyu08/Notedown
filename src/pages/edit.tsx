@@ -8,6 +8,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
 import {
 	ALLOWED_LANGUAGES,
+	LOCAL_MARKDOWN_KEY,
 	PHOTO_LIMIT,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
@@ -100,7 +101,7 @@ function Edit() {
 	}, [images]);
 
 	useEffect(() => {
-		if (!editorView) return;
+		if (!editorView || !user) return;
 
 		setHasMarkdownChanged(
 			!(data?.markdown === editorView.state.doc.toJSON().join("\n"))
@@ -112,6 +113,7 @@ function Edit() {
 
 		const markdown = editorView?.state.doc.toJSON().join("\n");
 		if (!markdown) return;
+		localStorage.setItem(LOCAL_MARKDOWN_KEY, markdown);
 		getHtmlFromMarkdown(markdown)
 			.then(({ data, content }) => {
 				setBlogData({

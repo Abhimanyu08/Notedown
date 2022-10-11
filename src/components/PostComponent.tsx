@@ -49,7 +49,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					{title}{" "}
 				</div>
 			</Link>
-			{owner && mounted && (
+			{owner && mounted && router.asPath.startsWith("/profile") && (
 				<div className="flex absolute top-0 right-0 gap-3">
 					{!published && (
 						<label

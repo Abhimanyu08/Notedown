@@ -12,3 +12,4 @@ export const SEARCH_PUBLC = "ranked_search_public"
 export const SEARCH_PRIVATE = "ranked_search_private"
 export const FILE_CHANGE_LIMIT = 5
 export const ALLOWED_LANGUAGES = ["python", "javascript", "rust"] as const
+export const LOCAL_MARKDOWN_KEY = "rce-markdown"

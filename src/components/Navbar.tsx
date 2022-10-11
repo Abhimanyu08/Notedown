@@ -1,6 +1,7 @@
 import { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
+import { FaFeatherAlt } from "react-icons/fa";
 import { handleLogout, handleSignIn } from "../../utils/handleAuth";
 
 function Navbar({
@@ -21,6 +22,11 @@ function Navbar({
 			</Link>
 			{user ? (
 				<div className="flex gap-5">
+					<Link href={`/edit`}>
+						<p className="link-hover cursor-pointer text-xs md:text-base text-white">
+							Write
+						</p>
+					</Link>
 					<Link href={`/profile/${user.id}`}>
 						<p className="link-hover cursor-pointer text-xs md:text-base text-white">
 							Profile
@@ -38,7 +44,12 @@ function Navbar({
 					</div>
 				</div>
 			) : (
-				<div className="flex items-center text-white gap-1">
+				<div className="flex items-center text-white md:gap-1">
+					<Link href={`/edit`}>
+						<p className="link-hover cursor-pointer text-xs md:text-base text-white pr-5">
+							Write
+						</p>
+					</Link>
 					<span className="text-xs md:text-sm">Login with</span>
 					<div className="flex divide-x-2">
 						<div
