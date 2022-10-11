@@ -125,8 +125,8 @@ export function Blog({
 		>
 			<div
 				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-4 lg:px-20 prose-headings:text-amber-500  prose-p:text-justify text-white prose-a:text-lime-500
-				prose-strong:text-violet-500 prose-strong:font-bold prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-yellow-400  h-full overflow-y-auto prose-p:text-sm prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
-				pb-20 md:pb-10`}
+				prose-strong:text-purple-500 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-yellow-400  h-full overflow-y-auto prose-p:text-sm prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
+				pb-20 md:pb-10 prose-em:text-cyan-500`}
 			>
 				<h1 className="text-center" id="title">
 					{title}

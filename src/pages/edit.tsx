@@ -20,6 +20,7 @@ import { Blog } from "../components/Blog";
 import BlogLayout from "../components/BlogLayout";
 import DeleteImagesModal from "../components/DeleteImagesModal";
 import Layout from "../components/Layout";
+import SmallScreenFooter from "../components/SmallScreenFooter";
 import { Toc } from "../components/TableOfContents";
 import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
@@ -270,22 +271,12 @@ function Edit() {
 					setToBeDeletedFromStorage,
 				}}
 			/>
-			<BlogLayout>
-				<div
-					className={` lg:basis-1/5 md:min-h-0 overflow-auto lg:flex lg:flex-col lg:justify-center ${
-						showContent ? "w-screen" : "hidden"
-					}`}
-				>
-					<Toc
-						html={blogData?.content || ""}
-						setShowContents={setShowContents}
-					/>
-				</div>
-				<div
-					className={`lg:basis-3/5 relative ${
-						showContent ? "hidden" : "w-screen"
-					}`}
-				>
+			<BlogLayout showContent={showContent}>
+				<Toc
+					html={blogData?.content || ""}
+					setShowContents={setShowContents}
+				/>
+				<>
 					<div
 						className={`h-full ${
 							editingMarkdown ? "invisible" : ""
@@ -302,13 +293,14 @@ function Edit() {
 						/>
 					</div>
 					<div
-						className={`h-full pb-20 md:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
+						className={`h-full pb-20 lg:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
 							editingMarkdown ? "" : "invisible"
 						}`}
 						id="markdown-textarea"
 					></div>
-				</div>
-				<div className="hidden lg:flex lg:flex-col basis-1/5 max-w-full min-w-0 mt-44 pl-5 gap-6 z-20">
+				</>
+
+				<>
 					<div
 						className="btn btn-circle btn-ghost tooltip"
 						data-tip={editingMarkdown ? "Preview" : "Edit Markdown"}
@@ -397,9 +389,9 @@ function Edit() {
 							}}
 						/>
 					</div>
-				</div>
+				</>
 			</BlogLayout>
-			<footer className="w-full flex items-end lg:hidden justify-between p-3 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
+			<SmallScreenFooter>
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={() => setEditingMarkdown((prev) => !prev)}
@@ -409,7 +401,7 @@ function Edit() {
 					) : (
 						<AiFillEdit size={20} className="text-white" />
 					)}
-					<span className="text-xs">
+					<span className="">
 						{editingMarkdown ? "Preview" : "Edit"}
 					</span>
 				</div>
@@ -423,7 +415,7 @@ function Edit() {
 					}
 				>
 					<BiImageAdd size={22} className="mt-2 ml-2" />
-					<span className="text-xs">Add Image</span>
+					<span className="">Add Image</span>
 				</label>
 				<input
 					type="file"
@@ -440,7 +432,7 @@ function Edit() {
 					}
 				/>
 
-				{images.length > 0 && (
+				{images.length > 0 ? (
 					<div
 						className={`flex flex-col items-center gap-1 text-white w-1/5 ${
 							copiedImageName ? "text-lime-400" : "text-white"
@@ -460,12 +452,14 @@ function Edit() {
 						}
 					>
 						<FiCopy size={20} />
-						<span className="text-xs w-full truncate">
+						<span className=" w-full truncate">
 							Copy {images.at(images.length - 1)?.name}
 						</span>
 					</div>
+				) : (
+					<></>
 				)}
-				{user && (
+				{user ? (
 					<div
 						className="flex flex-col items-center w-fit gap-1"
 						onClick={onNewPostUpload}
@@ -484,21 +478,23 @@ function Edit() {
 							></span>
 						</div>
 
-						<span className="text-xs text-white">
+						<span className=" text-white">
 							{hasMarkdownChanged
 								? `${currPostId ? "Save" : "Upload"}`
 								: "No changes"}
 						</span>
 					</div>
+				) : (
+					<></>
 				)}
 				<div
 					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}
 				>
 					<GiHamburgerMenu size={18} />
-					<span className="text-xs">Contents</span>
+					<span className="">Contents</span>
 				</div>
-			</footer>
+			</SmallScreenFooter>
 		</Layout>
 	);
 }

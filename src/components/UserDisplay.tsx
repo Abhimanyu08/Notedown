@@ -112,7 +112,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 				user.id &&
 				profile.id === user.id && (
 					<div
-						className="absolute top-0 right-0 md:hidden"
+						className="absolute top-0 right-0 lg:hidden"
 						onClick={() => setEditing(true)}
 					>
 						<AiFillEdit />
@@ -270,7 +270,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 						</div>
 					</div>
 				) : (
-					<div className="md:flex w-full justify-center hidden">
+					<div className="lg:flex w-full justify-center hidden">
 						<div
 							className="btn btn-xs font-normal bg-base-100 normal-case w-fit md:mt-10 text-white"
 							onClick={() => setEditing((prev) => !prev)}

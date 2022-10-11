@@ -30,6 +30,7 @@ import Post from "../../interfaces/Post";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
+import SmallScreenFooter from "../../components/SmallScreenFooter";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -176,28 +177,15 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 				route={router.asPath}
 				logoutCallback={() => null}
 			>
-				<BlogLayout>
-					<div
-						className={`lg:basis-1/5  md:flex-col justify-center lg:flex ${
-							showContent
-								? "absolute z-50 top-0 left-0 opacity-100 w-screen"
-								: "hidden"
-						}`}
-					>
-						<Toc
-							html={props?.content}
-							setShowContents={setShowContents}
-						/>
-					</div>
+				<BlogLayout showContent={showContent}>
+					<Toc
+						html={props?.content}
+						setShowContents={setShowContents}
+					/>
 
-					<div
-						className={`lg:basis-3/5 ${
-							showContent ? "opacity-0 w-screen" : "w-screen"
-						}`}
-					>
-						<Blog {...props} containerId={containerId} />
-					</div>
-					<div className="hidden lg:flex lg:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6">
+					<Blog {...props} containerId={containerId} />
+
+					<>
 						<div
 							className={` btn btn-circle  btn-ghost tooltip`}
 							data-tip={` ${
@@ -264,9 +252,9 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								{formatter.current.format(upvotes || 0)}
 							</span>
 						</div>
-					</div>
+					</>
 				</BlogLayout>
-				<footer className="w-full text-xs md:text-sm flex items-center lg:hidden justify-between md:justify-evenly p-3 py-5 sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25">
+				<SmallScreenFooter>
 					<div
 						className="flex flex-col items-center"
 						onClick={prepareContainer}
@@ -335,7 +323,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						<GiHamburgerMenu size={20} className="text-white" />
 						<span className=" text-white">Contents</span>
 					</div>
-				</footer>
+				</SmallScreenFooter>
 			</Layout>
 		</>
 	);

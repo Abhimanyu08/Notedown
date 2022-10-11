@@ -7,6 +7,7 @@ import { sendRequestToRceServer } from "../../../../utils/sendRequest";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
+import SmallScreenFooter from "../../../components/SmallScreenFooter";
 import { Toc } from "../../../components/TableOfContents";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
 import { UserContext } from "../../_app";
@@ -96,25 +97,11 @@ export default function PrivateBlog() {
 			route={router.asPath}
 			logoutCallback={() => null}
 		>
-			<BlogLayout>
-				<div
-					className={` lg:basis-1/5 lg:flex lg:flex-col lg:justify-center ${
-						showContent ? "w-screen" : "hidden"
-					}`}
-				>
-					<Toc
-						html={data?.content}
-						setShowContents={setShowContents}
-					/>
-				</div>
-				<div
-					className={`lg:basis-3/5 relative ${
-						showContent ? "hidden" : "w-screen"
-					}`}
-				>
-					<Blog {...data} containerId={containerId} />
-				</div>
-				<div className="hidden lg:flex lg:flex-col basis-1/5 w-fit mt-44 pl-5 gap-6 z-20">
+			<BlogLayout showContent={showContent}>
+				<Toc html={data?.content} setShowContents={setShowContents} />
+
+				<Blog {...data} containerId={containerId} />
+				<>
 					<div
 						className={` btn btn-circle  btn-ghost tooltip`}
 						data-tip="Activate remote code execution"
@@ -139,9 +126,9 @@ export default function PrivateBlog() {
 							className="text-white mt-2 ml-2"
 						/>
 					</div>
-				</div>
+				</>
 			</BlogLayout>
-			<footer className="w-full flex items-end lg:hidden justify-between md:justify-evenly py-3 px-4  sticky bottom-0 left-0 bg-slate-800 border-t-2 border-white/25 z-50">
+			<SmallScreenFooter>
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={prepareContainer}
@@ -170,7 +157,7 @@ export default function PrivateBlog() {
 					<GiHamburgerMenu size={20} />
 					<span className="text-xs">Contents</span>
 				</div>
-			</footer>
+			</SmallScreenFooter>
 		</Layout>
 	);
 }
