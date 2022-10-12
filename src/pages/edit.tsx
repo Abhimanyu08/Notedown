@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
-import { FiCopy } from "react-icons/fi";
+import { FcGallery } from "react-icons/fc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
 import {
@@ -20,6 +20,7 @@ import { supabase } from "../../utils/supabaseClient";
 import { Blog } from "../components/Blog";
 import BlogLayout from "../components/BlogLayout";
 import DeleteImagesModal from "../components/DeleteImagesModal";
+import ImageCopy from "../components/ImageCopy";
 import Layout from "../components/Layout";
 import SmallScreenFooter from "../components/SmallScreenFooter";
 import { Toc } from "../components/TableOfContents";
@@ -48,7 +49,8 @@ function Edit() {
 	const [toBeDeletedFromStorage, setToBeDeletedFromStorage] = useState<
 		string[]
 	>([]);
-	const [copiedImageName, setCopiedImageName] = useState(false);
+	const [copiedImageName, setCopiedImageName] = useState("");
+	const [showGallery, setShowGallery] = useState(false);
 
 	const [blogData, setBlogData] = useState<{
 		title?: string;
@@ -369,20 +371,7 @@ function Edit() {
 						>
 							<BiImageAdd size={32} className="mt-2 ml-2" />
 						</label>
-						<div
-							className={`flex  bg-black p-1 rounded-lg text-white tooltip normal-case break-words w-2/3 cursor-pointer 
-							${images.length > 0 ? "" : "hidden"}`}
-							data-tip="Double click to copy"
-							onDoubleClick={() =>
-								navigator.clipboard.writeText(
-									images.at(images.length - 1)?.name || ""
-								)
-							}
-						>
-							<span className="w-full select-all">
-								{images.at(images.length - 1)?.name}
-							</span>
-						</div>
+
 						<input
 							type="file"
 							name=""
@@ -397,6 +386,22 @@ function Edit() {
 								]);
 							}}
 						/>
+					</div>
+					<div
+						className={`flex flex-col text-white normal-case cursor-pointer 
+							${images.length > 0 ? "" : "hidden"} h-20 overflow-y-auto`}
+					>
+						{images.map((i) => (
+							<ImageCopy
+								key={i.name}
+								name={i.name}
+								{...{
+									setImages,
+									copiedImageName,
+									setCopiedImageName,
+								}}
+							/>
+						))}
 					</div>
 				</>
 			</BlogLayout>
@@ -443,31 +448,35 @@ function Edit() {
 
 				{images.length > 0 ? (
 					<div
-						className={`flex flex-col items-center gap-1 text-white w-1/5 ${
-							copiedImageName ? "text-lime-400" : "text-white"
-						} `}
-						onClick={() =>
-							navigator.clipboard
-								.writeText(
-									images.at(images.length - 1)?.name || ""
-								)
-								.then(() => {
-									setCopiedImageName(true);
-									setTimeout(
-										() => setCopiedImageName(false),
-										2000
-									);
-								})
-						}
+						className={`flex flex-col items-center gap-1 text-white 
+						 relative`}
+						onClick={(e) => {
+							e.preventDefault();
+							setShowGallery((prev) => !prev);
+						}}
 					>
-						<FiCopy size={20} />
-						<span className=" w-full truncate">
-							Copy {images.at(images.length - 1)?.name}
-						</span>
+						{showGallery && (
+							<div className="flex h-32 flex-col gap-2 absolute -top-40 border-0 rounded-md -left-24 w-64 z-50 p-2 overflow-y-auto bg-slate-800">
+								{images.map((i) => (
+									<ImageCopy
+										key={i.name}
+										name={i.name}
+										{...{
+											copiedImageName,
+											setImages,
+											setCopiedImageName,
+										}}
+									/>
+								))}
+							</div>
+						)}
+						<FcGallery size={20} className="text-white" />
+						<span className=" w-full truncate">Gallery</span>
 					</div>
 				) : (
 					<></>
 				)}
+
 				<div
 					className="flex flex-col items-center w-fit gap-1"
 					onClick={onNewPostUpload}
