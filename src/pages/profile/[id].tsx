@@ -57,10 +57,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [publicPosts, setPublicPosts] = useState<
 		Partial<Post>[] | null | undefined
 	>(latest);
-	const [privatePosts, setPrivatePosts] = useState<Partial<Post>[] | null>();
+	const [privatePosts, setPrivatePosts] = useState<
+		Partial<PostWithBlogger>[] | null
+	>();
 	const [searchResults, setSearchResults] = useState<SearchResult[]>();
 	const [greatestPosts, setGreatestPosts] = useState<
-		Partial<Post>[] | null | undefined
+		Partial<PostWithBlogger>[] | null | undefined
 	>(greatest);
 	const [upvotedPosts, setUpvotedPosts] = useState<Partial<UpvotedPost>[]>();
 	const [upvotedSearchPosts, setUpvotedSearchPosts] =
@@ -123,7 +125,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						if (!val.data || val.data.length === 0) {
 							return;
 						}
-						setPrivatePosts(val.data);
+						let modifiedPosts = val.data.map((p) => ({
+							...p,
+							bloggers: { name: profileUser!.name },
+						}));
+						setPrivatePosts(modifiedPosts);
 					});
 			}
 		}

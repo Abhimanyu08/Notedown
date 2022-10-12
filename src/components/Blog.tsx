@@ -55,8 +55,11 @@ export function Blog({
 			setRunningCode(true);
 		};
 		setCollectCodeTillBlock(() => func);
-		fetchAuthor();
 	}, []);
+
+	useEffect(() => {
+		fetchAuthor();
+	}, [created_by]);
 
 	const runCodeRequest = async (
 		blockNumber: number,

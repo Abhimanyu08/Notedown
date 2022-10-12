@@ -362,8 +362,9 @@ function Edit() {
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={`Add Image`}
 							htmlFor={
-								// images.length + prevImages.length < PHOTO_LIMIT
-								false ? "extra-images" : "delete-images"
+								images.length + prevImages.length < PHOTO_LIMIT
+									? "extra-images"
+									: "delete-images"
 							}
 						>
 							<BiImageAdd size={32} className="mt-2 ml-2" />
