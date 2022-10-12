@@ -101,7 +101,7 @@ function Edit() {
 	}, [images]);
 
 	useEffect(() => {
-		if (!editorView || !user) return;
+		if (!editorView) return;
 
 		setHasMarkdownChanged(
 			!(data?.markdown === editorView.state.doc.toJSON().join("\n"))
@@ -113,7 +113,6 @@ function Edit() {
 
 		const markdown = editorView?.state.doc.toJSON().join("\n");
 		if (!markdown) return;
-		if (!postId) localStorage.setItem(LOCAL_MARKDOWN_KEY, markdown);
 		getHtmlFromMarkdown(markdown)
 			.then(({ data, content }) => {
 				setBlogData({
@@ -127,11 +126,17 @@ function Edit() {
 	}, [editingMarkdown]);
 
 	const onNewPostUpload = async () => {
-		if (!hasMarkdownChanged || !user || !editorView) return;
+		if (!editorView || !hasMarkdownChanged) return;
+		const markdown = editorView.state.doc.toJSON().join("\n");
+		if (!postId && !user) {
+			localStorage.setItem(LOCAL_MARKDOWN_KEY, markdown);
+			setHasMarkdownChanged(false);
+			return;
+		}
+		if (!user) return;
 
 		setUploadingChanges(true);
 
-		const markdown = editorView.state.doc.toJSON().join("\n");
 		const newFile = new File([markdown], "");
 
 		if (currPostId && data) {
@@ -320,37 +325,38 @@ function Edit() {
 							/>
 						)}
 					</div>
-					{user && (
+
+					<div className="relative w-fit" onClick={onNewPostUpload}>
+						<span
+							className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
+								hasMarkdownChanged ? "" : "hidden"
+							} ${uploadingChanges ? "animate-ping" : ""}`}
+						></span>
 						<div
-							className="relative w-fit"
-							onClick={onNewPostUpload}
+							className="btn btn-circle btn-ghost tooltip"
+							data-tip={
+								hasMarkdownChanged
+									? `${
+											currPostId
+												? "Upload Changes"
+												: `${
+														user
+															? "Upload Post"
+															: "Save Changes"
+												  }`
+									  }`
+									: "No changes"
+							}
 						>
-							<span
-								className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
-									hasMarkdownChanged ? "" : "hidden"
-								} ${uploadingChanges ? "animate-ping" : ""}`}
-							></span>
-							<div
-								className="btn btn-circle btn-ghost tooltip"
-								data-tip={
-									hasMarkdownChanged
-										? `${
-												currPostId
-													? "Upload Changes"
-													: "Upload Post"
-										  }`
-										: "No changes"
-								}
-							>
-								<FaFileUpload
-									size={28}
-									className={` ${
-										hasMarkdownChanged ? "text-white" : ""
-									} mt-2 ml-2`}
-								/>
-							</div>
+							<FaFileUpload
+								size={28}
+								className={` ${
+									hasMarkdownChanged ? "text-white" : ""
+								} mt-2 ml-2`}
+							/>
 						</div>
-					)}
+					</div>
+
 					<div className="">
 						<label
 							className="btn btn-circle btn-ghost tooltip"
@@ -461,34 +467,34 @@ function Edit() {
 				) : (
 					<></>
 				)}
-				{user ? (
-					<div
-						className="flex flex-col items-center w-fit gap-1"
-						onClick={onNewPostUpload}
-					>
-						<div className="relative">
-							<FaFileUpload
-								size={18}
-								className={` ${
-									hasMarkdownChanged ? "text-white" : ""
-								} mt-2 ml-2`}
-							/>
-							<span
-								className={`absolute rounded-full bg-yellow-400 w-2 h-2 top-0 left-6 ${
-									hasMarkdownChanged ? "" : "hidden"
-								} ${uploadingChanges ? "animate-ping" : ""}`}
-							></span>
-						</div>
-
-						<span className=" text-white">
-							{hasMarkdownChanged
-								? `${currPostId ? "Save" : "Upload"}`
-								: "No changes"}
-						</span>
+				<div
+					className="flex flex-col items-center w-fit gap-1"
+					onClick={onNewPostUpload}
+				>
+					<div className="relative">
+						<FaFileUpload
+							size={18}
+							className={` ${
+								hasMarkdownChanged ? "text-white" : ""
+							} mt-2 ml-2`}
+						/>
+						<span
+							className={`absolute rounded-full bg-yellow-400 w-2 h-2 top-0 left-6 ${
+								hasMarkdownChanged ? "" : "hidden"
+							} ${uploadingChanges ? "animate-ping" : ""}`}
+						></span>
 					</div>
-				) : (
-					<></>
-				)}
+
+					<span className=" text-white">
+						{hasMarkdownChanged
+							? `${
+									currPostId
+										? "Save"
+										: `${user ? "Upload" : "Save Locally"}`
+							  }`
+							: "No changes"}
+					</span>
+				</div>
 				<div
 					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}

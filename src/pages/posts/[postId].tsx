@@ -44,7 +44,6 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
 	const [containerId, setContainerId] = useState<string>();
-	const [connecting, setConnecting] = useState(false);
 	const [upvoted, setUpvoted] = useState<boolean | null>(null);
 	const [upvotes, setUpvotes] = useState<number | null>(null);
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
@@ -77,7 +76,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 
 	useEffect(() => {
 		if (typeof upvotes !== "number") fetchUpvotes();
-		if (user && typeof upvoted !== "boolean") fetchUpvote();
+		if (user) fetchUpvote();
 	}, [user]);
 
 	useEffect(() => {
@@ -115,7 +114,6 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 
 	const prepareContainer = async () => {
 		if (containerId) return;
-		setConnecting(true);
 		try {
 			const resp = await sendRequestToRceServer("POST", {
 				language: props.language,
@@ -124,14 +122,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 			if (resp.status !== 201) {
 				console.log(resp.statusText);
 				alert("Couldn't set up remote code execution");
-				setConnecting(false);
 				return;
 			}
 			const body: { containerId: string } = await resp.json();
 			setContainerId(body.containerId);
-			setConnecting(false);
 		} catch (_) {
-			setConnecting(false);
 			alert("Couldn't enable remote code execution");
 		}
 	};

@@ -70,7 +70,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
                 ".cm-content": {
                     caretColor: "#0e9",
                     marginLeft: "4px",
-                    fontSize: "16px"
+                    fontSize: "16px",
                 },
                 "&.cm-focused .cm-cursor": {
                     borderLeftColor: "#0e9"

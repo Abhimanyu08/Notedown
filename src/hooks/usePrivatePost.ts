@@ -7,7 +7,7 @@ import { supabase } from "../../utils/supabaseClient";
 import { BlogProps } from "../interfaces/BlogProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 
-const initialMarkdown = '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n--- \n';
+const initialMarkdown = '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---';
 interface PrivatePostQueryData extends BlogProps {
     markdown: string
 }
@@ -23,7 +23,11 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId?:
 
     useEffect(() => {
         if (!postId || typeof postId !== "number") {
-            const markdown = localStorage.getItem(LOCAL_MARKDOWN_KEY) || initialMarkdown
+            let defaultMarkdown = initialMarkdown
+            if (!loggedInUser) {
+                defaultMarkdown = initialMarkdown + '\n\nSince you are not logged in, the changes you make will be saved locally in the browser.\nMake sure to click `Preview` and then `Save Changes` before logging in if you\'ve made any changes'
+            }
+            const markdown = localStorage.getItem(LOCAL_MARKDOWN_KEY) || defaultMarkdown
             setPrivatePost({ markdown })
             setLoading(false)
             return

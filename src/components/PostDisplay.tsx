@@ -61,7 +61,7 @@ function PostDisplay({
 	return (
 		<div className="flex flex-col h-full overflow-x-hidden  md:overflow-y-auto">
 			<div
-				className="flex flex-col gap-8 md:basis-11/12 basis-10/12"
+				className="flex flex-col gap-8 lg:basis-11/12 basis-10/12"
 				onScroll={(e) => e.currentTarget}
 			>
 				{posts?.map((post) => (
@@ -77,7 +77,7 @@ function PostDisplay({
 				))}
 			</div>
 			{(posts?.length || 0) > 0 && (
-				<div className="flex justify-center py-20 md:basis-1/12 basis-2/12">
+				<div className="flex justify-center pt-12 pb-28 lg:pb-10 lg:basis-1/12 basis-2/12">
 					<div
 						className="lm h-fit normal-case rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer text-white"
 						onClick={onLoadMore}
