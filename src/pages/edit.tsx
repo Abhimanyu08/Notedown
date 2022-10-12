@@ -456,7 +456,10 @@ function Edit() {
 						}}
 					>
 						{showGallery && (
-							<div className="flex h-32 flex-col gap-2 absolute -top-40 border-0 rounded-md -left-24 w-64 z-50 p-2 overflow-y-auto bg-slate-800">
+							<div
+								className="flex h-32 flex-col gap-2 absolute -top-40 border-0 rounded-md -left-24 w-64 z-50 p-2 overflow-y-auto bg-slate-800"
+								onClick={(e) => e.stopPropagation()}
+							>
 								{images.map((i) => (
 									<ImageCopy
 										key={i.name}
