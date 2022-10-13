@@ -96,6 +96,7 @@ function DrawingArea({
 	};
 
 	const onMouseDown = (e: any) => {
+		if (!router.asPath.startsWith("/edit")) return;
 		e.stopPropagation();
 		e.preventDefault();
 		if (saved) setSaved(false);
@@ -200,7 +201,7 @@ function DrawingArea({
 				// onMouseDown={onMouseDown}
 				// onTouchStart={onMouseDown}
 				onPointerDown={onMouseDown}
-				width={1920}
+				width={1440}
 				height={1080}
 			></canvas>
 			{router.asPath.startsWith("/edit") && (
