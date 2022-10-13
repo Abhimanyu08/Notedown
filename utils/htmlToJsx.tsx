@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Carousel from "../src/components/Carousel";
 import Code from "../src/components/Code";
+import DrawingArea from "../src/components/DrawingArea";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import { supabase } from "./supabaseClient";
@@ -59,6 +60,20 @@ function htmlToJsx({
 					);
 				}
 				const content = elem.match(/<.*?>((.|\n|\r)*)<\/.*>/)?.at(1);
+
+				if (type === "p" && content?.trim().match(/^canvas\d$/)) {
+					let name = content.trim();
+					if (parseInt(name.at(name.length - 1) as string) > 5) {
+						return <></>;
+					}
+					return (
+						<DrawingArea
+							fileName={name}
+							imageFolder={imageFolder}
+						/>
+					);
+				}
+
 				const hasImage = Array.from(
 					content?.matchAll(
 						/((.|\n|\r)*?)?(<img (.*)>)((.|\n|\r)*)/g

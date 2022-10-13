@@ -55,6 +55,7 @@ function Carousel({
 			</div>
 			{images.map((image, idx) => (
 				<div
+					key={idx}
 					className="w-1/6 h-full transition-transform duration-300"
 					style={{ transform: `translateX(-${100 * show}%)` }}
 				>

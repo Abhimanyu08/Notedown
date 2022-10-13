@@ -27,7 +27,7 @@ import { Toc } from "../components/TableOfContents";
 import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
 import Post from "../interfaces/Post";
-import { UserContext } from "./_app";
+import { CanvasImageContext, UserContext } from "./_app";
 
 function Edit() {
 	const { user } = useContext(UserContext);
@@ -44,6 +44,7 @@ function Edit() {
 	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
 	const [images, setImages] = useState<File[]>([]);
+	const [canvasImages, setCanvasImages] = useState<File[]>([]);
 	const [prevImages, setPrevImages] = useState<string[]>([]);
 	const [imageToUrl, setImageToUrl] = useState<Record<string, string>>({});
 	const [toBeDeletedFromStorage, setToBeDeletedFromStorage] = useState<
@@ -140,10 +141,21 @@ function Edit() {
 		setUploadingChanges(true);
 
 		const newFile = new File([markdown], "");
-
+		let validImages = images.slice(0, PHOTO_LIMIT - prevImages.length);
 		if (currPostId && data) {
 			console.log(data.filename);
 			const imageFolder = makeFolderName(user.id, currPostId);
+
+			if (canvasImages) {
+				Promise.all(
+					canvasImages.map((ci) => {
+						supabase.storage
+							.from(SUPABASE_IMAGE_BUCKET)
+							.upload(`${imageFolder}/${ci.name}`, ci);
+					})
+				);
+			}
+
 			if (toBeDeletedFromStorage.length > 0) {
 				await supabase.storage
 					.from(SUPABASE_IMAGE_BUCKET)
@@ -154,15 +166,13 @@ function Edit() {
 					);
 			}
 
-			//in case user didn't upload any images the first time
-			if (images) {
+			if (validImages.length > 0) {
 				const imageResults = await Promise.all(
-					images.map(async (image) => {
+					validImages.map((image) => {
 						const imagePath = imageFolder + `/${image.name}`;
-						const result = await supabase.storage
+						return supabase.storage
 							.from(SUPABASE_IMAGE_BUCKET)
 							.upload(imagePath, image);
-						return result;
 					})
 				);
 				if (imageResults.some((res) => res.error !== null)) {
@@ -221,6 +231,30 @@ function Edit() {
 			return;
 		}
 
+		if (canvasImages) {
+			Promise.all(
+				canvasImages.map((ci) => {
+					supabase.storage
+						.from(SUPABASE_IMAGE_BUCKET)
+						.upload(`${blogFolder}/${ci.name}`, ci);
+				})
+			).catch((e) => console.log(e));
+		}
+
+		if (validImages.length > 0) {
+			const imageResults = await Promise.all(
+				validImages.map((image) => {
+					return supabase.storage
+						.from(SUPABASE_IMAGE_BUCKET)
+						.upload(`${blogFolder}/${image.name}`, image);
+				})
+			);
+			if (imageResults.some((res) => res.error !== null)) {
+				alert("Error in uploading images, please retry");
+				setUploadingChanges(false);
+				return;
+			}
+		}
 		await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.update({ image_folder: blogFolder, filename: filePath })
@@ -280,134 +314,146 @@ function Edit() {
 					setToBeDeletedFromStorage,
 				}}
 			/>
-			<BlogLayout showContent={showContent}>
-				<Toc
-					html={blogData?.content || ""}
-					setShowContents={setShowContents}
-				/>
-				<>
-					<div
-						className={`h-full ${
-							editingMarkdown ? "invisible" : ""
-						}`}
-					>
-						<Blog
-							content={blogData?.content}
-							title={blogData?.title}
-							language={blogData?.language}
-							description={blogData?.description}
-							created_by={user?.id}
-							imageToUrl={imageToUrl}
-							image_folder={data?.image_folder}
-						/>
-					</div>
-					<div
-						className={`h-full pb-20 lg:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
-							editingMarkdown ? "" : "invisible"
-						}`}
-						id="markdown-textarea"
-					></div>
-				</>
-
-				<>
-					<div
-						className="btn btn-circle btn-ghost tooltip"
-						data-tip={editingMarkdown ? "Preview" : "Edit Markdown"}
-						onClick={() => setEditingMarkdown((prev) => !prev)}
-					>
-						{editingMarkdown ? (
-							<VscPreview
-								size={28}
-								className="text-white mt-2 ml-2"
+			<CanvasImageContext.Provider
+				value={{ canvasImages, setCanvasImages }}
+			>
+				<BlogLayout showContent={showContent}>
+					<Toc
+						html={blogData?.content || ""}
+						setShowContents={setShowContents}
+					/>
+					<>
+						<div
+							className={`h-full ${
+								editingMarkdown ? "invisible" : ""
+							}`}
+						>
+							<Blog
+								content={blogData?.content}
+								title={blogData?.title}
+								language={blogData?.language}
+								description={blogData?.description}
+								created_by={user?.id}
+								imageToUrl={imageToUrl}
+								image_folder={data?.image_folder}
 							/>
-						) : (
-							<AiFillEdit
-								size={28}
-								className="text-white mt-2 ml-2"
-							/>
-						)}
-					</div>
+						</div>
+						<div
+							className={`h-full pb-20 lg:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
+								editingMarkdown ? "" : "invisible"
+							}`}
+							id="markdown-textarea"
+						></div>
+					</>
 
-					<div className="relative w-fit" onClick={onNewPostUpload}>
-						<span
-							className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
-								hasMarkdownChanged ? "" : "hidden"
-							} ${uploadingChanges ? "animate-ping" : ""}`}
-						></span>
+					<>
 						<div
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={
-								hasMarkdownChanged
-									? `${
-											currPostId
-												? "Upload Changes"
-												: `${
-														user
-															? "Upload Post"
-															: "Save Changes"
-												  }`
-									  }`
-									: "No changes"
+								editingMarkdown ? "Preview" : "Edit Markdown"
 							}
+							onClick={() => setEditingMarkdown((prev) => !prev)}
 						>
-							<FaFileUpload
-								size={28}
-								className={` ${
-									hasMarkdownChanged ? "text-white" : ""
-								} mt-2 ml-2`}
-							/>
+							{editingMarkdown ? (
+								<VscPreview
+									size={28}
+									className="text-white mt-2 ml-2"
+								/>
+							) : (
+								<AiFillEdit
+									size={28}
+									className="text-white mt-2 ml-2"
+								/>
+							)}
 						</div>
-					</div>
 
-					<div className="">
-						<label
-							className="btn btn-circle btn-ghost tooltip"
-							data-tip={`Add Image`}
-							htmlFor={
-								images.length + prevImages.length < PHOTO_LIMIT
-									? "extra-images"
-									: "delete-images"
-							}
+						<div
+							className="relative w-fit"
+							onClick={onNewPostUpload}
 						>
-							<BiImageAdd size={32} className="mt-2 ml-2" />
-						</label>
+							<span
+								className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
+									hasMarkdownChanged ? "" : "hidden"
+								} ${uploadingChanges ? "animate-ping" : ""}`}
+							></span>
+							<div
+								className="btn btn-circle btn-ghost tooltip"
+								data-tip={
+									hasMarkdownChanged
+										? `${
+												currPostId
+													? "Upload Changes"
+													: `${
+															user
+																? "Upload Post"
+																: "Save changes Locally"
+													  }`
+										  }`
+										: "No changes"
+								}
+							>
+								<FaFileUpload
+									size={28}
+									className={` ${
+										hasMarkdownChanged ? "text-white" : ""
+									} mt-2 ml-2`}
+								/>
+							</div>
+						</div>
 
-						<input
-							type={"file"}
-							name=""
-							id="extra-images"
-							className="hidden"
-							accept="image/*"
-							multiple
-							max={
-								PHOTO_LIMIT - images.length - prevImages.length
-							}
-							onChange={(e) => {
-								setImages((prev) => [
-									...prev,
-									...Array.from(e.target.files || []),
-								]);
-							}}
-						/>
-					</div>
-					<div
-						className={`flex flex-col text-white normal-case cursor-pointer 
-							${images.length > 0 ? "" : "hidden"} h-20 overflow-y-auto`}
-					>
-						{images.map((i) => (
-							<ImageCopy
-								key={i.name}
-								name={i.name}
-								{...{
-									setImages,
-									copiedImageName,
-									setCopiedImageName,
+						<div className="">
+							<label
+								className="btn btn-circle btn-ghost tooltip"
+								data-tip={`Add Image`}
+								htmlFor={
+									images.length + prevImages.length <
+									PHOTO_LIMIT
+										? "extra-images"
+										: "delete-images"
+								}
+							>
+								<BiImageAdd size={32} className="mt-2 ml-2" />
+							</label>
+
+							<input
+								type={"file"}
+								name=""
+								id="extra-images"
+								className="hidden"
+								accept="image/*"
+								multiple
+								max={
+									PHOTO_LIMIT -
+									images.length -
+									prevImages.length
+								}
+								onChange={(e) => {
+									setImages((prev) => [
+										...prev,
+										...Array.from(e.target.files || []),
+									]);
 								}}
 							/>
-						))}
-					</div>
-				</>
-			</BlogLayout>
+						</div>
+						<div
+							className={`flex flex-col text-white normal-case cursor-pointer 
+							${images.length > 0 ? "" : "hidden"} h-20 overflow-y-auto`}
+						>
+							{images.map((i) => (
+								<ImageCopy
+									key={i.name}
+									name={i.name}
+									{...{
+										setImages,
+										copiedImageName,
+										setCopiedImageName,
+									}}
+								/>
+							))}
+						</div>
+					</>
+				</BlogLayout>
+			</CanvasImageContext.Provider>
 			<SmallScreenFooter>
 				<div
 					className="flex flex-col items-center text-white gap-1"

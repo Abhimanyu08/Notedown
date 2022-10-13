@@ -24,6 +24,11 @@ export const BlogContext = createContext<{
 	collectCodeTillBlock?: (blockNumber: number) => void;
 }>({});
 
+export const CanvasImageContext = createContext<{
+	canvasImages: File[];
+	setCanvasImages: Dispatch<SetStateAction<File[]>>;
+}>({ canvasImages: [], setCanvasImages: () => [] });
+
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 	const [updated, setUpdated] = useState(false);
