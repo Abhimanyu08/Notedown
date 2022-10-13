@@ -1,15 +1,13 @@
-import matter from "gray-matter";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
 import {
-	DESCRIPTION_LENGTH,
 	PHOTO_LIMIT,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
-	TITLE_LENGTH,
 } from "../../utils/constants";
+import { getHtmlFromMarkdown } from "../../utils/getResources";
 import makeFolderName from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
 import FileMetadata from "../interfaces/FileMetdata";
@@ -53,33 +51,14 @@ export function UploadModal({
 			return;
 		}
 
-		const contents = await file.text();
-		const { data } = matter(contents) as {
-			data: { title?: string; language?: string; description?: string };
-		};
-		if (!data.title) {
-			setAlertTimer(
-				`Please structure your markdown file correctly, title is missing`
-			);
-			return;
-		}
-
-		if (data.title.length > TITLE_LENGTH) {
-			setAlertTimer(
-				`Your title is ${data.title.length} characters long. Max ${TITLE_LENGTH} characters allowed`
-			);
-			return;
-		}
-		if ((data.description?.length || 0) > DESCRIPTION_LENGTH) {
-			setAlertTimer(
-				`Your description is ${data.description?.length} characters long. Max ${DESCRIPTION_LENGTH} characters allowed`
-			);
-			return;
-		}
-
-		setPostDets({ ...(data as FileMetadata) });
-
-		setMdFile(file);
+		getHtmlFromMarkdown(file)
+			.then(({ data }) => {
+				setPostDets({ ...(data as FileMetadata) });
+				setMdFile(file);
+			})
+			.catch((err: Error) => {
+				setAlertTimer(err.message);
+			});
 	};
 
 	const onFinalUpload = async () => {

@@ -113,7 +113,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	}
 
 	const prepareContainer = async () => {
-		if (containerId) return;
+		if (containerId || !props.language) return;
 		try {
 			const resp = await sendRequestToRceServer("POST", {
 				language: props.language,
@@ -183,22 +183,26 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					<Blog {...props} containerId={containerId} />
 
 					<>
-						<div
-							className={` btn btn-circle  btn-ghost tooltip`}
-							data-tip={` ${
-								user
-									? "Enable remote code execution"
-									: "Enable remote code execution"
-							} `}
-							onClick={prepareContainer}
-						>
-							<BiCodeAlt
-								size={30}
-								className={` ${
-									containerId ? "text-lime-400" : "text-white"
-								} mt-2 ml-2 `}
-							/>
-						</div>
+						{props.language && (
+							<div
+								className={` btn btn-circle  btn-ghost tooltip`}
+								data-tip={` ${
+									user
+										? "Enable remote code execution"
+										: "Enable remote code execution"
+								} `}
+								onClick={prepareContainer}
+							>
+								<BiCodeAlt
+									size={30}
+									className={` ${
+										containerId
+											? "text-lime-400"
+											: "text-white"
+									} mt-2 ml-2 `}
+								/>
+							</div>
+						)}
 
 						<div
 							className="btn btn-circle btn-ghost tooltip relative"
@@ -252,24 +256,26 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					</>
 				</BlogLayout>
 				<SmallScreenFooter>
-					<div
-						className="flex flex-col items-center"
-						onClick={prepareContainer}
-					>
-						<BiCodeAlt
-							size={20}
-							className={` ${
-								containerId ? "text-lime-400" : "text-white"
-							}`}
-						/>
-						<span
-							className={` ${
-								containerId ? "text-lime-400" : "text-white"
-							} `}
+					{props.language && (
+						<div
+							className="flex flex-col items-center"
+							onClick={prepareContainer}
 						>
-							Activate RCE
-						</span>
-					</div>
+							<BiCodeAlt
+								size={20}
+								className={` ${
+									containerId ? "text-lime-400" : "text-white"
+								}`}
+							/>
+							<span
+								className={` ${
+									containerId ? "text-lime-400" : "text-white"
+								} `}
+							>
+								Activate RCE
+							</span>
+						</div>
+					)}
 					<div
 						className="flex flex-col items-center"
 						onClick={() => {

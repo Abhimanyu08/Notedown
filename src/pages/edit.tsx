@@ -373,12 +373,15 @@ function Edit() {
 						</label>
 
 						<input
-							type="file"
+							type={"file"}
 							name=""
 							id="extra-images"
 							className="hidden"
 							accept="image/*"
-							max={1}
+							multiple
+							max={
+								PHOTO_LIMIT - images.length - prevImages.length
+							}
 							onChange={(e) => {
 								setImages((prev) => [
 									...prev,
@@ -437,7 +440,8 @@ function Edit() {
 					id="extra-images"
 					className="hidden"
 					accept="image/*"
-					max={1}
+					multiple
+					max={PHOTO_LIMIT - images.length - prevImages.length}
 					onChange={(e) =>
 						setImages((prev) => [
 							...prev,

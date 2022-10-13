@@ -41,7 +41,7 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
     if (data.language !== undefined && !ALLOWED_LANGUAGES.some(val => val === data.language)) {
         throw Error("Mind Your Language");
     }
-    if (data.title.length > TITLE_LENGTH || data.description.length > DESCRIPTION_LENGTH) {
+    if (data.title.length > TITLE_LENGTH || (data.description?.length || 0) > DESCRIPTION_LENGTH) {
         throw Error(`Either title or description is bigger than your dick. Max title length - ${TITLE_LENGTH}, Max description length - ${DESCRIPTION_LENGTH}`)
     }
     let html = await mdToHtml(content);

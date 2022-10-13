@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import Carousel from "../src/components/Carousel";
 import Code from "../src/components/Code";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
@@ -73,6 +74,45 @@ function htmlToJsx({
 							return <></>;
 						}
 						let src = attrs["src"];
+
+						let imageNames = src.split(",").slice(0, 6);
+						if (imageNames.length > 1) {
+							let imageUrls: string[] = [];
+							let imageCaptions = attrs["alt"]
+								.split(",")
+								.slice(0, 6);
+							imageNames.forEach((imageNameWithExt, idx) => {
+								let imageName = imageNameWithExt
+									.match(/([^\/]*\..*$)/)
+									?.at(0)
+									?.trim();
+								let imageUrl = undefined;
+								if (imageToUrl) {
+									if (imageToUrl[imageName || ""])
+										imageUrl = imageToUrl[imageName || ""];
+								}
+								if (imageUrl === undefined) {
+									const { publicURL } = supabase.storage
+										.from(SUPABASE_IMAGE_BUCKET)
+										.getPublicUrl(
+											`${imageFolder}/${imageName}`
+										);
+									imageUrl = publicURL;
+								}
+								imageUrls.push(imageUrl || "");
+							});
+
+							return (
+								<Carousel
+									key={src}
+									images={imageUrls}
+									captions={imageCaptions}
+									width={175}
+									height={120}
+								/>
+							);
+						}
+
 						let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
 						let imageUrl = undefined;
 						if (imageToUrl) {
@@ -97,22 +137,20 @@ function htmlToJsx({
 										imageToUrl,
 									})}
 								</p>
-								<div className="">
-									<div className="relative">
-										<Image
-											src={imageUrl!}
-											layout="responsive"
-											objectFit="contain"
-											className="resize w-full"
-											width={175}
-											alt={attrs["alt"]}
-											height={120}
-										/>
-									</div>
-									<figcaption className="text-center text-white italic">
-										{attrs["alt"]}
-									</figcaption>
-								</div>
+								{/* <div className=""> */}
+								<Image
+									src={imageUrl!}
+									layout="responsive"
+									objectFit="contain"
+									// className="w-full"
+									width={175}
+									alt={attrs["alt"]}
+									height={120}
+								/>
+								<figcaption className="text-center text-white italic">
+									{attrs["alt"]}
+								</figcaption>
+								{/* </div> */}
 								{htmlToJsx({
 									html: `<p>${string2}</p>` || "",
 									language,

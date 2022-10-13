@@ -102,18 +102,20 @@ export default function PrivateBlog() {
 
 				<Blog {...data} containerId={containerId} />
 				<>
-					<div
-						className={` btn btn-circle  btn-ghost tooltip`}
-						data-tip="Activate remote code execution"
-						onClick={prepareContainer}
-					>
-						<BiCodeAlt
-							size={30}
-							className={` ${
-								containerId ? "text-lime-400" : "text-white"
-							} mt-2 ml-2 `}
-						/>
-					</div>
+					{data?.language && (
+						<div
+							className={` btn btn-circle  btn-ghost tooltip`}
+							data-tip="Activate remote code execution"
+							onClick={prepareContainer}
+						>
+							<BiCodeAlt
+								size={30}
+								className={` ${
+									containerId ? "text-lime-400" : "text-white"
+								} mt-2 ml-2 `}
+							/>
+						</div>
+					)}
 					<div
 						className="btn btn-circle btn-ghost tooltip"
 						data-tip={"Edit Markdown"}
@@ -129,18 +131,22 @@ export default function PrivateBlog() {
 				</>
 			</BlogLayout>
 			<SmallScreenFooter>
-				<div
-					className="flex flex-col items-center text-white gap-1"
-					onClick={prepareContainer}
-				>
-					<BiCodeAlt
-						size={22}
-						className={` ${
-							containerId ? "text-lime-400" : "text-white"
-						}`}
-					/>
-					<span className="text-xs">Activate RCE</span>
-				</div>
+				{data?.language ? (
+					<div
+						className="flex flex-col items-center text-white gap-1"
+						onClick={prepareContainer}
+					>
+						<BiCodeAlt
+							size={22}
+							className={` ${
+								containerId ? "text-lime-400" : "text-white"
+							}`}
+						/>
+						<span className="text-xs">Activate RCE</span>
+					</div>
+				) : (
+					<></>
+				)}
 
 				<div
 					className="flex flex-col items-center text-white gap-1"
