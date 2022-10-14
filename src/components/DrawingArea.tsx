@@ -207,7 +207,7 @@ function DrawingArea({
 			{router.asPath.startsWith("/edit") && (
 				<div className="flex items-center gap-2 justify-center flex-wrap">
 					<div
-						className={` btn btn-xs lg:btn-sm normal-case ${
+						className={` btn btn-xs md:btn-sm normal-case ${
 							saved ? "text-lime-400" : "text-white"
 						}`}
 						onClick={onSave}
@@ -262,7 +262,7 @@ function ToolSelect({
 		<div className="flex gap-2 items-center">
 			{/* <span className="font-bold">Tool:</span> */}
 			<button
-				className={`btn lg:btn-sm btn-xs ${
+				className={`btn md:btn-sm btn-xs ${
 					tool === "pen" ? "text-lime-400" : ""
 				}`}
 				onClick={() => setTool("pen")}
@@ -270,7 +270,7 @@ function ToolSelect({
 				<FaPencilAlt />
 			</button>
 			<button
-				className={`btn lg:btn-sm btn-xs ${
+				className={`btn md:btn-sm btn-xs ${
 					tool === "eraser" ? "text-lime-400" : ""
 				}`}
 				onClick={() => setTool("eraser")}
@@ -296,7 +296,7 @@ function ColorSelect({
 				type="color"
 				name=""
 				id="color"
-				className="input input-xs input-ghost"
+				className=""
 				onChange={(e) => setColor(e.target.value)}
 				value={color}
 			/>

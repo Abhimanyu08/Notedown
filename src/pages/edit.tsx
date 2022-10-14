@@ -52,6 +52,7 @@ function Edit() {
 	>([]);
 	const [copiedImageName, setCopiedImageName] = useState("");
 	const [showGallery, setShowGallery] = useState(false);
+	const [cumulativeImageName, setCumulativeImageName] = useState("");
 
 	const [blogData, setBlogData] = useState<{
 		title?: string;
@@ -343,6 +344,10 @@ function Edit() {
 								editingMarkdown ? "" : "invisible"
 							}`}
 							id="markdown-textarea"
+							onPaste={() => {
+								setCumulativeImageName("");
+								setCopiedImageName("");
+							}}
 						></div>
 					</>
 
@@ -447,6 +452,8 @@ function Edit() {
 										setImages,
 										copiedImageName,
 										setCopiedImageName,
+										cumulativeImageName,
+										setCumulativeImageName,
 									}}
 								/>
 							))}
@@ -518,6 +525,8 @@ function Edit() {
 											copiedImageName,
 											setImages,
 											setCopiedImageName,
+											cumulativeImageName,
+											setCumulativeImageName,
 										}}
 									/>
 								))}

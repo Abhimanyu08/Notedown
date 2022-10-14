@@ -1,4 +1,6 @@
-15. optimise website for tablets ffs.
+
+1. Add tips to write page
+2. Modify carousel UX.
 
 9. design a logo
 10. Setup meta tags in every page to render that logo

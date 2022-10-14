@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { AiFillDelete } from "react-icons/ai";
+import { AiFillDelete, AiFillPlusCircle } from "react-icons/ai";
 import { BsCheck2 } from "react-icons/bs";
 import { FiCopy } from "react-icons/fi";
 
@@ -8,8 +8,12 @@ function ImageCopy({
 	copiedImageName,
 	setCopiedImageName,
 	setImages,
+	cumulativeImageName,
+	setCumulativeImageName,
 }: {
 	name: string;
+	cumulativeImageName: string;
+	setCumulativeImageName: Dispatch<SetStateAction<string>>;
 	copiedImageName: string;
 	setCopiedImageName: Dispatch<SetStateAction<string>>;
 	setImages: Dispatch<SetStateAction<File[]>>;
@@ -24,7 +28,6 @@ function ImageCopy({
 				onClick={() => {
 					navigator.clipboard.writeText(name).then(() => {
 						setCopiedImageName(name);
-						setTimeout(() => setCopiedImageName(""), 2000);
 					});
 				}}
 			>
@@ -35,7 +38,25 @@ function ImageCopy({
 				)}
 			</div>
 			<div
-				className="btn btn-xs lg:btn-ghost"
+				className="btn btn-xs"
+				onClick={() => {
+					const newName =
+						cumulativeImageName !== ""
+							? cumulativeImageName + `,${name}`
+							: name;
+					navigator.clipboard.writeText(newName).then(() => {
+						setCumulativeImageName(newName);
+					});
+				}}
+			>
+				{cumulativeImageName.split(",").some((n) => n === name) ? (
+					<BsCheck2 className="text-white" />
+				) : (
+					<AiFillPlusCircle className="text-white" />
+				)}
+			</div>
+			<div
+				className="btn btn-xs"
 				onClick={() =>
 					setImages((prev) => prev.filter((im) => im.name !== name))
 				}
