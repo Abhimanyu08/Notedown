@@ -5,6 +5,7 @@ import Code from "../src/components/Code";
 import DrawingArea from "../src/components/DrawingArea";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
+import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
 import { supabase } from "./supabaseClient";
 
 let BLOCK_NUMBER = -1;
@@ -177,7 +178,35 @@ function htmlToJsx({
 						);
 					});
 				}
+				let attrMap = makeAttrMap({
+					type,
+					content,
+					match: match.at(4),
+				});
+				let src = attrMap["href"];
 
+				if (
+					type === "a" &&
+					src &&
+					(src.startsWith("https://www.youtube.com") ||
+						src.startsWith("https://youtu.be")) &&
+					!content
+				) {
+					return (
+						<div className="flex justify-center">
+							<div className="w-full lg:w-3/5">
+								<iframe
+									className="w-full aspect-[4/3]"
+									src={getYoutubeEmbedLink(src)}
+									title="YouTube video player"
+									frameBorder="0"
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowFullScreen
+								></iframe>
+							</div>
+						</div>
+					);
+				}
 				return (
 					<>
 						<span>{string1}</span>
