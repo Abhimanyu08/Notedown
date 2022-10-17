@@ -32,7 +32,7 @@ export function EditModal({
 			sendRevalidationRequest(`/profile/${data.at(0)?.created_by}`);
 			sendRevalidationRequest(`/`);
 		}
-
+		if (!modifyPosts) return;
 		modifyPosts(published ? "published" : "unpublished", (prev) =>
 			prev?.map((post) => {
 				if (post.id !== id) return post;

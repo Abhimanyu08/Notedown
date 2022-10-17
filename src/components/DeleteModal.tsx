@@ -73,6 +73,7 @@ export function DeleteModal({ post, modifyPosts }: ModalProps) {
 			sendRevalidationRequest(`/`);
 		}
 
+		if (!modifyPosts) return;
 		modifyPosts(published ? "published" : "unpublished", (prev) =>
 			prev?.filter((post) => post.id !== id)
 		);
