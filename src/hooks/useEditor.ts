@@ -72,6 +72,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
                     marginLeft: "4px",
                     fontSize: "16px",
                 },
+
                 "&.cm-focused .cm-cursor": {
                     borderLeftColor: "#0e9"
                 },

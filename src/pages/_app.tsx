@@ -19,8 +19,10 @@ export const UserContext = createContext<{
 }>({});
 
 export const BlogContext = createContext<{
+	containerId?: string;
 	blockToOutput?: Record<number, string>;
 	setBlockToCode?: Dispatch<SetStateAction<Record<number, string>>>;
+	setBlockToOutput?: Dispatch<SetStateAction<Record<number, string>>>;
 	collectCodeTillBlock?: (blockNumber: number) => void;
 }>({});
 

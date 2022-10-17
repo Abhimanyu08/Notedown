@@ -59,7 +59,7 @@ function Carousel({
 					className="w-1/6 h-full transition-transform duration-300"
 					style={{ transform: `translateX(-${100 * show}%)` }}
 				>
-					<figure
+					<div
 						className={` w-full  ${
 							show === idx ? "" : "invisible"
 						}`}
@@ -73,7 +73,7 @@ function Carousel({
 							objectFit="contain"
 							layout={"responsive"}
 						/>
-					</figure>
+					</div>
 
 					<figcaption className="text-center text-white italic">
 						{captions.at(idx) || ""}

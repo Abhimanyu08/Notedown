@@ -123,7 +123,13 @@ export function Blog({
 
 	return (
 		<BlogContext.Provider
-			value={{ blockToOutput, setBlockToCode, collectCodeTillBlock }}
+			value={{
+				containerId,
+				blockToOutput,
+				setBlockToCode,
+				collectCodeTillBlock,
+				setBlockToOutput,
+			}}
 		>
 			<div
 				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-4 lg:px-20 prose-headings:text-amber-500 prose-p:text-left text-white prose-a:text-lime-500
