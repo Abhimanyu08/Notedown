@@ -27,6 +27,7 @@ export function PublishModal({
 		sendRevalidationRequest(`/posts/${id}`);
 		sendRevalidationRequest("/");
 
+		if (!modifyPosts) return;
 		modifyPosts("unpublished", (prev) =>
 			prev?.filter((post) => post.id !== id)
 		);

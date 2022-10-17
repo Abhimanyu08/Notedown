@@ -16,13 +16,6 @@ const headingToFontSize: Record<string, string> = {
 	h5: "text-sm",
 	h6: "text-sm",
 };
-const headingToFontWeight: Record<string, string> = {
-	h2: "font-bold",
-	h3: "font-semibold",
-	h4: "font-medium",
-	h5: "font-normal",
-	h6: "font-light",
-};
 
 export function Toc({
 	html,
@@ -35,7 +28,10 @@ export function Toc({
 	const [open, setOpen] = useState(true);
 
 	useEffect(() => {
-		if (!html) return;
+		if (!html) {
+			setMatches([]);
+			return;
+		}
 		const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
 		setMatches(Array.from(html.matchAll(re)));
 	}, [html]);

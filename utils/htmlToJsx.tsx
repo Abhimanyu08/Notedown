@@ -158,10 +158,9 @@ function htmlToJsx({
 									src={imageUrl!}
 									layout="responsive"
 									objectFit="contain"
-									// className="w-full"
-									width={175}
+									width={1440}
 									alt={attrs["alt"]}
-									height={120}
+									height={1080}
 								/>
 								<figcaption className="text-center text-white italic">
 									{attrs["alt"]}

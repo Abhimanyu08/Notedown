@@ -3,10 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { TbNews } from "react-icons/tb";
 import { sendRequestToRceServer } from "../../../../utils/sendRequest";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
+import { PublishModal } from "../../../components/PublishModal";
 import SmallScreenFooter from "../../../components/SmallScreenFooter";
 import { Toc } from "../../../components/TableOfContents";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
@@ -97,6 +99,7 @@ export default function PrivateBlog() {
 			route={router.asPath}
 			logoutCallback={() => null}
 		>
+			{data ? <PublishModal post={data} /> : <></>}
 			<BlogLayout showContent={showContent}>
 				<Toc html={data?.content} setShowContents={setShowContents} />
 
@@ -128,6 +131,13 @@ export default function PrivateBlog() {
 							className="text-white mt-2 ml-2"
 						/>
 					</div>
+					<label
+						htmlFor={`publish`}
+						className="md:tooltip-left md:tooltip capitalize btn btn-circle btn-ghost"
+						data-tip="publish"
+					>
+						<TbNews className="ml-2 mt-2 text-white" size={30} />
+					</label>
 				</>
 			</BlogLayout>
 			<SmallScreenFooter>
@@ -156,6 +166,14 @@ export default function PrivateBlog() {
 					<span className="text-xs">Edit</span>
 				</div>
 
+				<label
+					htmlFor={`publish`}
+					className="flex flex-col items-center text-white gap-1"
+					data-tip="publish"
+				>
+					<TbNews className="ml-2 mt-2 text-white" size={20} />
+					<span className="text-xs">Publish</span>
+				</label>
 				<div
 					className="flex flex-col items-center gap-1 text-white"
 					onClick={() => setShowContents((prev) => !prev)}

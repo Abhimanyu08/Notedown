@@ -1,6 +1,7 @@
 
-1. Add tips to write page
-2. Modify carousel UX.
+1. Add tips to write page/Add a minimal editor panel.
+2. Add publish button to preview page
+
 
 9. design a logo
 10. Setup meta tags in every page to render that logo
@@ -8,6 +9,7 @@
 
 
 -----------------Done------------------------------
+2. Modify carousel UX.
 14. Allow users to add their twitter, github and web profiles
 12. Allow bloggers to update their markdown on the site itself
 13. add language badges on post components.
