@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!lexicaResp.body) {
 
-        res.status(lexicaResp.status).end()
+        res.status(lexicaResp.status).json({ error: lexicaResp.statusText })
     }
     const lexicaRespBody = await lexicaResp.json() as { images: LexicaResponse[] }
     const resBody = lexicaRespBody.images.map(val => val.srcSmall)
