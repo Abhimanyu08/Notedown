@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
+import getImagesFromLexica from "../../utils/getImagesFromLexica";
 import htmlToJsx from "../../utils/htmlToJsx";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";
@@ -28,6 +29,20 @@ export function Blog({
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
 	const [author, setAuthor] = useState<string>();
+
+	useEffect(() => {
+		const captions: string[] = [];
+		const lexicaImageElems = Array.from(
+			document.getElementsByClassName("lexica")
+		);
+		if (!lexicaImageElems || lexicaImageElems.length === 0) return;
+		lexicaImageElems.map((elem) => {
+			captions.push((elem as HTMLImageElement).alt);
+		});
+		getImagesFromLexica({ caption: captions[0] }).then((imageLink) => {
+			(lexicaImageElems.at(0) as HTMLImageElement).src = imageLink || "";
+		});
+	}, [content]);
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;

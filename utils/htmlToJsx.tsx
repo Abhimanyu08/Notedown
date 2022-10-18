@@ -5,6 +5,7 @@ import Code from "../src/components/Code";
 import DrawingArea from "../src/components/DrawingArea";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
+import getImagesFromLexica from "./getImagesFromLexica";
 import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
 import { supabase } from "./supabaseClient";
 
@@ -129,17 +130,23 @@ function htmlToJsx({
 							);
 						}
 
-						let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
 						let imageUrl = undefined;
-						if (imageToUrl) {
-							if (imageToUrl[imageName || ""])
-								imageUrl = imageToUrl[imageName || ""];
-						}
-						if (imageUrl === undefined) {
-							const { publicURL } = supabase.storage
-								.from(SUPABASE_IMAGE_BUCKET)
-								.getPublicUrl(`${imageFolder}/${imageName}`);
-							imageUrl = publicURL;
+						if (src === "") {
+							imageUrl = "";
+						} else {
+							let imageName = src.match(/([^\/]*\..*$)/)?.at(0);
+							if (imageToUrl) {
+								if (imageToUrl[imageName || ""])
+									imageUrl = imageToUrl[imageName || ""];
+							}
+							if (imageUrl === undefined) {
+								const { publicURL } = supabase.storage
+									.from(SUPABASE_IMAGE_BUCKET)
+									.getPublicUrl(
+										`${imageFolder}/${imageName}`
+									);
+								imageUrl = publicURL;
+							}
 						}
 
 						return (
@@ -161,6 +168,9 @@ function htmlToJsx({
 									width={1440}
 									alt={attrs["alt"]}
 									height={1080}
+									className={`${
+										imageUrl === "" ? "lexica" : ""
+									}`}
 								/>
 								<figcaption className="text-center text-white italic">
 									{attrs["alt"]}

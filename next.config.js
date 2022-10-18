@@ -7,6 +7,7 @@ const nextConfig = {
 			"avatars.githubusercontent.com",
 			"newnblwzrgvnhplztbua.supabase.co",
 			"lh3.googleusercontent.com",
+			"image.lexica.art",
 		],
 	},
 };
