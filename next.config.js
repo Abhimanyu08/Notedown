@@ -8,6 +8,7 @@ const nextConfig = {
 			"newnblwzrgvnhplztbua.supabase.co",
 			"lh3.googleusercontent.com",
 			"image.lexica.art",
+			"lexica-serve-encoded-images.sharif.workers.dev",
 		],
 	},
 };
