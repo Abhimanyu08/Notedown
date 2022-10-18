@@ -1,11 +1,11 @@
 import Image from "next/image";
 import React from "react";
+import { BsArrowRepeat } from "react-icons/bs";
 import Carousel from "../src/components/Carousel";
 import Code from "../src/components/Code";
 import DrawingArea from "../src/components/DrawingArea";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
-import getImagesFromLexica from "./getImagesFromLexica";
 import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
 import { supabase } from "./supabaseClient";
 
@@ -179,9 +179,16 @@ function htmlToJsx({
 										height={1080}
 									/>
 								)}
-								<figcaption className="text-center text-white italic">
-									{attrs["alt"]}
-								</figcaption>
+								<div className="flex items-end justify-center gap-4 ">
+									<figcaption className="text-center text-white italic">
+										{attrs["alt"]}
+									</figcaption>
+									{imageUrl === "" && (
+										<div className=" text-white lexica-regen">
+											<BsArrowRepeat />
+										</div>
+									)}
+								</div>
 								{/* </div> */}
 								{htmlToJsx({
 									html: `<p>${string2}</p>` || "",

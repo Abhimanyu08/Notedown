@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import getImagesFromLexica from "../../utils/getImagesFromLexica";
+import { getImages } from "../../utils/sendRequest";
 import htmlToJsx from "../../utils/htmlToJsx";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";
@@ -28,21 +28,44 @@ export function Blog({
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
+	const [lexicaLinks, setLexicaLinks] = useState<string[]>([]);
+	const [lexicaLinkNumber, setLexicaLinkNumber] = useState(0);
 	const [author, setAuthor] = useState<string>();
 
 	useEffect(() => {
+		const regenButton = document
+			.getElementsByClassName("lexica-regen")
+			.item(0) as HTMLDivElement | null;
+
+		if (!regenButton) return;
+		regenButton.onclick = (e) => {
+			setLexicaLinkNumber((prev) => {
+				return (prev + 1) % lexicaLinks.length;
+			});
+		};
+	}, [content, lexicaLinks]);
+
+	useEffect(() => {
 		const captions: string[] = [];
-		const lexicaImageElems = Array.from(
+		const lexicaImageElem = Array.from(
 			document.getElementsByClassName("lexica")
-		);
-		if (!lexicaImageElems || lexicaImageElems.length === 0) return;
-		lexicaImageElems.map((elem) => {
-			captions.push((elem as HTMLImageElement).alt);
-		});
-		getImagesFromLexica({ caption: captions[0] }).then((imageLink) => {
-			(lexicaImageElems.at(0) as HTMLImageElement).src = imageLink || "";
+		).at(0);
+		if (!lexicaImageElem) return;
+		captions.push((lexicaImageElem as HTMLImageElement).alt);
+		getImages({ caption: captions[0] }).then((imageLinks) => {
+			setLexicaLinks(imageLinks);
+			setLexicaLinkNumber(0);
 		});
 	}, [content]);
+
+	useEffect(() => {
+		const lexicaImageElem = Array.from(
+			document.getElementsByClassName("lexica")
+		).at(0);
+		if (!lexicaImageElem) return;
+		(lexicaImageElem as HTMLImageElement).src =
+			lexicaLinks[lexicaLinkNumber];
+	}, [lexicaLinkNumber, lexicaLinks]);
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
@@ -149,7 +172,8 @@ export function Blog({
 		>
 			<div
 				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-2 lg:px-20 prose-headings:text-amber-500 prose-p:text-left text-white prose-a:text-lime-500
-				prose-strong:text-purple-500 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-amber-400  h-full overflow-y-auto prose-p:text-sm prose-figcaption:mb-6 prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-500 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
+				prose-strong:text-purple-500 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-amber-400  h-full overflow-y-auto 
+				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-500 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
 				prose-code:select-all
 				pb-20 md:pb-10 prose-em:text-cyan-500`}
 			>

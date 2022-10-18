@@ -25,3 +25,13 @@ export async function sendRevalidationRequest(pathToRevalidate: string) {
         body: JSON.stringify({ pathToRevalidate })
     });
 }
+
+export async function getImages({ caption }: { caption: string }) {
+
+    if (caption === "") return [""]
+
+    const resp = await fetch(`/api/generateImage?q=${caption}`, { method: "GET" })
+
+    const { links } = await resp.json() as { links: string[] }
+    return links
+}
