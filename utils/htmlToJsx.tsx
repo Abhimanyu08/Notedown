@@ -161,17 +161,24 @@ function htmlToJsx({
 									})}
 								</p>
 								{/* <div className=""> */}
-								<Image
-									src={imageUrl!}
-									layout="responsive"
-									objectFit="contain"
-									width={1440}
-									alt={attrs["alt"]}
-									height={1080}
-									className={`${
-										imageUrl === "" ? "lexica" : ""
-									}`}
-								/>
+								{imageUrl === "" ? (
+									<div className="w-full aspect-[4/3] flex justify-center">
+										<img
+											src=""
+											alt={attrs["alt"]}
+											className="lexica object-contain"
+										/>
+									</div>
+								) : (
+									<Image
+										src={imageUrl!}
+										layout="responsive"
+										objectFit="contain"
+										width={1440}
+										alt={attrs["alt"]}
+										height={1080}
+									/>
+								)}
 								<figcaption className="text-center text-white italic">
 									{attrs["alt"]}
 								</figcaption>
