@@ -1,8 +1,9 @@
+import { on } from "events";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
-import { FaFileUpload } from "react-icons/fa";
+import { FaBold, FaFileUpload, FaItalic } from "react-icons/fa";
 import { FcGallery } from "react-icons/fc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
@@ -14,6 +15,17 @@ import {
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
+import {
+	onBlockQuote,
+	onBold,
+	onCodeBlock,
+	onCodeWord,
+	onImage,
+	onItalic,
+	onOrdererdList,
+	onSelect,
+	onUnordererdList,
+} from "../../utils/editorToolFunctions";
 import { getHtmlFromMarkdown } from "../../utils/getResources";
 import makeFolderName from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
@@ -340,15 +352,107 @@ function Edit() {
 							/>
 						</div>
 						<div
-							className={`h-full pb-20 lg:pb-0 overflow-y-auto absolute top-0 left-0 z-10 w-full ${
+							className={`flex flex-col absolute top-0 left-0 h-full w-full ${
 								editingMarkdown ? "" : "invisible"
 							}`}
-							id="markdown-textarea"
-							onPaste={() => {
-								setCumulativeImageName("");
-								setCopiedImageName("");
-							}}
-						></div>
+						>
+							<div className="flex w-full justify-start md:justify-center gap-1 pb-1 flex-wrap ">
+								<div
+									className="btn btn-xs tool"
+									onClick={() => {
+										if (editorView) onBold(editorView);
+									}}
+								>
+									<FaBold />
+								</div>
+								<div
+									className="btn btn-xs tool"
+									onClick={() => {
+										if (editorView) onItalic(editorView);
+									}}
+								>
+									<FaItalic />
+								</div>
+								<select
+									className="select select-xs tool focus:outline-none"
+									onChange={(e) => {
+										if (editorView)
+											onSelect(
+												editorView,
+												e.target.value
+											);
+									}}
+								>
+									<option disabled selected>
+										Heading
+									</option>
+									<option value="heading2">heading 2</option>
+									<option value="heading3">heading 3</option>
+									<option value="heading4">heading 4</option>
+									<option value="heading5">heading 5</option>
+									<option value="heading6">heading 6</option>
+								</select>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView) onCodeWord(editorView);
+									}}
+								>
+									Code word
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView) onCodeBlock(editorView);
+									}}
+								>
+									Code block
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView) onImage(editorView);
+									}}
+								>
+									Image
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView)
+											onOrdererdList(editorView);
+									}}
+								>
+									Ordered List
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView)
+											onUnordererdList(editorView);
+									}}
+								>
+									Unordered List
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView)
+											onBlockQuote(editorView);
+									}}
+								>
+									BlockQuote
+								</div>
+							</div>
+							<div
+								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
+								id="markdown-textarea"
+								onPaste={() => {
+									setCumulativeImageName("");
+									setCopiedImageName("");
+								}}
+							></div>
+						</div>
 					</>
 
 					<>
