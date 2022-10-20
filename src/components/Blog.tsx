@@ -172,10 +172,10 @@ export function Blog({
 		>
 			<div
 				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-2 lg:px-20 prose-headings:text-amber-500 prose-p:text-left text-white prose-a:text-lime-500
-				prose-strong:text-purple-500 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-amber-400  h-full overflow-y-auto 
-				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-500 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
-				prose-code:select-all
-				pb-20 md:pb-10 prose-em:text-cyan-500`}
+				 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-amber-400 h-full overflow-y-auto 
+				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
+				prose-code:select-all 
+				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif prose-strong:text-white prose-blockquote:border-l-white/60 prose-blockquote:border-l-2`}
 			>
 				<h1 className="text-center" id="title">
 					{title}
@@ -185,7 +185,7 @@ export function Blog({
 				</div>
 				<div className="flex gap-1 not-prose text-xs md:text-sm justify-center mb-10 md:mb-12 mt-8 font-mono">
 					<span>by</span>
-					<span className="link link-hover">
+					<span className="link">
 						<Link href={`/profile/${created_by}`}>
 							{author || bloggers?.name || ""}
 						</Link>

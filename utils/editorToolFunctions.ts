@@ -2,17 +2,18 @@ import { EditorView } from "codemirror";
 
 function insertAndChangeCursor({ editorView, toInsert, cursorOffest }: { editorView: EditorView, toInsert: string, cursorOffest: number }) {
 
-    const docLength =
-        editorView?.state.doc.length;
-    if (!docLength) return;
+    // const docLength =
+    //     editorView?.state.doc.length;
+    // if (!docLength) return;
+    const cursorPos = editorView.state.selection.ranges[0].from
     editorView?.dispatch({
         changes: {
-            from: docLength,
+            from: cursorPos,
             insert: toInsert,
         },
         selection: {
-            anchor: docLength + cursorOffest,
-            head: docLength + cursorOffest,
+            anchor: cursorPos + cursorOffest,
+            head: cursorPos + cursorOffest,
         },
     });
 
