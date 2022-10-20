@@ -104,7 +104,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
 			<div className="flex text-xs text-white/50 mt-1 mb-1 max-w-full divide-x-2 divide-white/30">
 				<Link href={`/profile/${created_by}`}>
-					<p className="link link-hover w-1/3 md:w-1/5 truncate">
+					<p className="link underline-offset-2  w-1/3 md:w-1/5 truncate">
 						{author}
 					</p>
 				</Link>

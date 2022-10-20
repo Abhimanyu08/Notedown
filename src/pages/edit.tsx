@@ -22,6 +22,7 @@ import {
 	onCodeWord,
 	onImage,
 	onItalic,
+	onLink,
 	onOrdererdList,
 	onSelect,
 	onUnordererdList,
@@ -442,6 +443,14 @@ function Edit() {
 									}}
 								>
 									BlockQuote
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView) onLink(editorView);
+									}}
+								>
+									Link
 								</div>
 							</div>
 							<div
