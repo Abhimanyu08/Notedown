@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import {
+import React, {
 	Dispatch,
 	SetStateAction,
 	useContext,
@@ -45,27 +45,30 @@ function DrawingArea({
 		let canvas = drawingArea.current;
 		if (!canvas) return;
 		let { left, top, width, height } = canvas.getBoundingClientRect();
-		let context = canvas.getContext("2d");
 		if (fileName && imageFolder) {
-			supabase.storage
-				.from(SUPABASE_IMAGE_BUCKET)
-				.download(`${imageFolder}/${fileName}.png`)
-				.then((val) => {
-					if (val.data) {
-						val.data.text().then((blobString) => {
-							let image = new Image(width, height);
-
-							image.src = blobString;
-							context?.drawImage(image, 0, 0);
-						});
-						if (val.error) console.log(val.error);
-					}
-				});
+			drawImage(canvas);
 		}
 		setCoords({ left, top, width, height });
 		setCwidth(canvas.width);
 		setCheight(canvas.height);
 	}, []);
+
+	const drawImage = async (canvas: HTMLCanvasElement) => {
+		let { width, height } = canvas.getBoundingClientRect();
+		let context = canvas.getContext("2d");
+		const { data } = await supabase.storage
+			.from(SUPABASE_IMAGE_BUCKET)
+			.download(`${imageFolder}/${fileName}.png`);
+
+		if (data) {
+			const blobString = await data.text();
+
+			let image = new Image(width, height);
+
+			image.src = blobString;
+			image.onload = () => context?.drawImage(image, 0, 0);
+		}
+	};
 
 	const calculatePos = ({
 		e,
@@ -188,22 +191,23 @@ function DrawingArea({
 			setSaved(true);
 		}
 	};
+
 	return (
 		<div className="w-full">
-			<canvas
-				ref={drawingArea}
-				// className="border-4 w-full md:h-[550px] h-64 lg:h-[500px] border-black bg-white"
-				className="border-4 w-full aspect-[4/3] border-black bg-white"
-				style={{
-					cursor: cursor_style[tool],
-					touchAction: "none",
-				}}
-				// onMouseDown={onMouseDown}
-				// onTouchStart={onMouseDown}
-				onPointerDown={onMouseDown}
-				width={1440}
-				height={1080}
-			></canvas>
+			<div className="" id={fileName}>
+				<canvas
+					ref={drawingArea}
+					className={` border-4 w-full aspect-[4/3] border-black bg-white 
+				`}
+					style={{
+						cursor: cursor_style[tool],
+						touchAction: "none",
+					}}
+					onPointerDown={onMouseDown}
+					width={1440}
+					height={1080}
+				></canvas>
+			</div>
 			{router.asPath.startsWith("/edit") && (
 				<div className="flex items-center gap-2 justify-center flex-wrap">
 					<div
