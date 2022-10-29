@@ -164,7 +164,12 @@ function Edit() {
 					canvasImages.map((ci) => {
 						supabase.storage
 							.from(SUPABASE_IMAGE_BUCKET)
-							.upload(`${imageFolder}/${ci.name}`, ci);
+							.remove([`${imageFolder}/${ci.name}`])
+							.then(() => {
+								supabase.storage
+									.from(SUPABASE_IMAGE_BUCKET)
+									.upload(`${imageFolder}/${ci.name}`, ci);
+							});
 					})
 				);
 			}
@@ -219,6 +224,7 @@ function Edit() {
 				});
 			return;
 		}
+
 		const { data: insertPostData, error: insertPostError } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.insert({
@@ -268,6 +274,7 @@ function Edit() {
 				return;
 			}
 		}
+
 		await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.update({ image_folder: blogFolder, filename: filePath })
