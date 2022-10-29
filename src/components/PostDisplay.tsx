@@ -7,7 +7,6 @@ import {
 	useState,
 } from "react";
 import Post from "../interfaces/Post";
-import PostWithBlogger from "../interfaces/PostWithBlogger";
 import SearchResult from "../interfaces/SearchResult";
 import { UserContext } from "../pages/_app";
 import PostComponent from "./PostComponent";

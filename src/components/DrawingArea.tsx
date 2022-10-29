@@ -194,20 +194,18 @@ function DrawingArea({
 
 	return (
 		<div className="w-full">
-			<div className="" id={fileName}>
-				<canvas
-					ref={drawingArea}
-					className={` border-4 w-full aspect-[4/3] border-black bg-white 
+			<canvas
+				ref={drawingArea}
+				className={`select-none border-4 w-full aspect-[4/3] border-black bg-white 
 				`}
-					style={{
-						cursor: cursor_style[tool],
-						touchAction: "none",
-					}}
-					onPointerDown={onMouseDown}
-					width={1440}
-					height={1080}
-				></canvas>
-			</div>
+				style={{
+					cursor: cursor_style[tool],
+					touchAction: "none",
+				}}
+				onPointerDown={onMouseDown}
+				width={1440}
+				height={1080}
+			></canvas>
 			{router.asPath.startsWith("/edit") && (
 				<div className="flex items-center gap-2 justify-center flex-wrap">
 					<div

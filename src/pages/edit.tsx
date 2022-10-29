@@ -157,7 +157,6 @@ function Edit() {
 		const newFile = new File([markdown], "");
 		let validImages = images.slice(0, PHOTO_LIMIT - prevImages.length);
 		if (currPostId && data) {
-			console.log(data.filename);
 			const imageFolder = makeFolderName(user.id, currPostId);
 
 			if (canvasImages) {
