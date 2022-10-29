@@ -34,7 +34,7 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div className={`relative h-full flex w-[600%] `}>
+		<div className={`relative h-full flex w-[600%]`}>
 			<div
 				className={`absolute top-1/2 z-10 flex w-1/6  justify-between px-1`}
 			>
@@ -56,13 +56,11 @@ function Carousel({
 			{images.map((image, idx) => (
 				<div
 					key={idx}
-					className="w-1/6 h-full transition-transform duration-300"
+					className="w-1/6 h-full transition-transform duration-300 overflow-x-clip"
 					style={{ transform: `translateX(-${100 * show}%)` }}
 				>
 					<div
-						className={` w-full  ${
-							show === idx ? "" : "invisible"
-						}`}
+						className={`w-full  ${show === idx ? "" : "invisible"}`}
 						key={idx}
 					>
 						<Image

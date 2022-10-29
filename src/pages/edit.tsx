@@ -1,4 +1,3 @@
-import { on } from "events";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
@@ -286,10 +285,10 @@ function Edit() {
 				}
 
 				if (val.data) {
-					alert("Post Uploaded sucessfully");
 					setCurrPostId(val.data.at(0)?.id);
 					setUploadingChanges(false);
 					setHasMarkdownChanged(false);
+					alert("Post Uploaded sucessfully");
 				}
 			});
 	};
