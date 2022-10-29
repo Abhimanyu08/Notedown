@@ -173,6 +173,7 @@ export function Blog({
 			<div
 				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-2 lg:px-20 prose-headings:text-amber-500 prose-p:text-left text-white 
 				 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full overflow-y-auto prose-a:text-white
+				overflow-x-hidden		
 				 prose-a:font-mono prose-a:decoration-amber-400 prose-a:decoration-2 
 				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:px-2 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
 				md:prose-ol:text-lg 

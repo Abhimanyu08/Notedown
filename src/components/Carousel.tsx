@@ -34,19 +34,22 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div className={`relative h-full flex w-[600%]`}>
+		<div
+			className={`relative h-full flex w-[600%]`}
+			// style={{ transform: `translateX(-${100 * show}%)` }}
+		>
 			<div
 				className={`absolute top-1/2 z-10 flex w-1/6  justify-between px-1`}
 			>
 				<div
-					className="btn btn-active glass btn-circle btn-sm text-black"
+					className="btn glass btn-circle btn-sm text-black"
 					id="pre"
 					onClick={onSlide}
 				>
 					❮
 				</div>
 				<div
-					className="btn btn-active glass btn-circle btn-sm text-black"
+					className="btn glass btn-circle btn-sm text-black"
 					id="post"
 					onClick={onSlide}
 				>
@@ -56,11 +59,11 @@ function Carousel({
 			{images.map((image, idx) => (
 				<div
 					key={idx}
-					className="w-1/6 h-full transition-transform duration-300 overflow-x-clip"
+					className="w-1/6 h-full transition-transform duration-300"
 					style={{ transform: `translateX(-${100 * show}%)` }}
 				>
 					<div
-						className={`w-full  ${show === idx ? "" : "invisible"}`}
+						className={`w-full  ${show === idx ? "" : "hidden"}`}
 						key={idx}
 					>
 						<Image
@@ -73,7 +76,11 @@ function Carousel({
 						/>
 					</div>
 
-					<figcaption className="text-center text-white italic">
+					<figcaption
+						className={`text-center ${
+							show === idx ? "" : "hidden"
+						} text-white italic`}
+					>
 						{captions.at(idx) || ""}
 					</figcaption>
 				</div>
