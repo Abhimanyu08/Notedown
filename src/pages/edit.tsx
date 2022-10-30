@@ -218,6 +218,14 @@ function Edit() {
 					if (val && val.data) {
 						setHasMarkdownChanged(false);
 						setEditingMarkdown(false);
+						if (images) {
+							setPrevImages((prev) => [
+								...prev,
+								...images.map((i) => i.name),
+							]);
+						}
+
+						setImages([]);
 						alert("Changes Uploaded Successfully");
 					}
 				});
@@ -288,6 +296,14 @@ function Edit() {
 					setCurrPostId(val.data.at(0)?.id);
 					setUploadingChanges(false);
 					setHasMarkdownChanged(false);
+					if (images) {
+						setPrevImages((prev) => [
+							...prev,
+							...images.map((i) => i.name),
+						]);
+					}
+
+					setImages([]);
 					alert("Post Uploaded sucessfully");
 				}
 			});
