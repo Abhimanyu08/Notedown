@@ -569,7 +569,14 @@ function Edit() {
 								onChange={(e) => {
 									setImages((prev) => [
 										...prev,
-										...Array.from(e.target.files || []),
+										...Array.from(
+											e.target.files || []
+										).slice(
+											0,
+											PHOTO_LIMIT -
+												prev.length -
+												prevImages.length
+										),
 									]);
 								}}
 							/>
@@ -629,12 +636,15 @@ function Edit() {
 					accept="image/*"
 					multiple
 					max={PHOTO_LIMIT - images.length - prevImages.length}
-					onChange={(e) =>
+					onChange={(e) => {
 						setImages((prev) => [
 							...prev,
-							...Array.from(e.target.files || []),
-						])
-					}
+							...Array.from(e.target.files || []).slice(
+								0,
+								PHOTO_LIMIT - prev.length - prevImages.length
+							),
+						]);
+					}}
 				/>
 
 				{images.length > 0 ? (

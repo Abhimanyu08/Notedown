@@ -71,11 +71,11 @@ function DeleteImagesModal({
 					show ? "" : "hidden"
 				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50`}
 			>
-				<label className=" bg-cyan-500 mx-2 max-h-full max-w-full md:mx-0 md:w-1/2 p-6 rounded-lg">
-					<div className="grid grid-rows-2 md:grid-cols-2 md:auto-cols-max md:divide-y-0 md:divide-x-2 divide-black divide-y-2">
+				<label className=" bg-cyan-500 mx-2 w-full md:w-5/6 h-fit max-h-80 max-w-full md:mx-0 lg:w-1/2 p-6 rounded-lg flex flex-col justify-between">
+					<div className="grid grid-rows-2 md:grid-cols-2  md:divide-y-0 md:divide-x-2 md:grid-rows-none divide-black divide-y-2 h-fit max-h-60">
 						{okToDelete ? (
 							<>
-								<div className="flex flex-col gap-2 col-span-1">
+								<div className="flex flex-col gap-2 col-span-1 min-h-0 overflow-y-scroll">
 									{currImages.map((i, idx) => (
 										<div
 											className="flex items-end gap-2"
@@ -101,7 +101,7 @@ function DeleteImagesModal({
 										</div>
 									))}
 								</div>
-								<div className="flex flex-col gap-2 col-span-1 pl-2">
+								<div className="flex flex-col gap-2 col-span-1 min-h-0 overflow-y-scroll md:pl-2">
 									{toBeDeleted.map((i, idx) => (
 										<div
 											className="flex items-end gap-2"
@@ -143,14 +143,14 @@ function DeleteImagesModal({
 										uploading their entire photo gallery on
 										my measly servers. Do you want to delete
 										some of your previously uploaded images?
-										Your images already on the server will
-										be deleted only if you save the changes
+										Your already uploaded images will be
+										deleted only if you save the changes
 									</span>
 								)}
 							</div>
 						)}
 					</div>
-					<div className="mt-10 flex gap-2 justify-end">
+					<div className="flex gap-2 justify-end mt-4">
 						{okToDelete ? (
 							<span
 								className={` btn-sm btn capitalize  text-white ${
@@ -166,23 +166,26 @@ function DeleteImagesModal({
 								onClick={() => {
 									if (!deleted)
 										setOkToDelete((prev) => !prev);
+									setDeleted(false);
 								}}
-								htmlFor={deleted ? "delete-images" : "anon"}
+								htmlFor="delete-images"
 							>
-								{deleted ? "Done" : "Ok"}
+								Ok
 							</label>
 						)}
-						<label
-							className="btn-sm btn capitalize  text-white"
-							htmlFor="delete-images"
-							onClick={() => {
-								setOkToDelete(false);
-								setToBeDeleted([]);
-								setCurrImages(imageNames);
-							}}
-						>
-							Cancel
-						</label>
+						{okToDelete && (
+							<label
+								className="btn-sm btn capitalize  text-white"
+								htmlFor="delete-images"
+								onClick={() => {
+									setOkToDelete(false);
+									setToBeDeleted([]);
+									setCurrImages(imageNames);
+								}}
+							>
+								Cancel
+							</label>
+						)}
 					</div>
 				</label>
 			</div>
