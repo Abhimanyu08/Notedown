@@ -34,57 +34,57 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div
-			className={`relative h-full flex w-[600%]`}
-			// style={{ transform: `translateX(-${100 * show}%)` }}
-		>
+		<div className="flex flex-col">
 			<div
-				className={`absolute top-1/2 z-10 flex w-1/6  justify-between px-1`}
+				className={`relative h-full flex w-[600%]`}
+				// style={{ transform: `translateX(-${100 * show}%)` }}
 			>
+				{images.map((image, idx) => (
+					<div
+						key={idx}
+						className="w-1/6 h-full transition-transform duration-300"
+						style={{ transform: `translateX(-${100 * show}%)` }}
+					>
+						<div
+							className={`w-full  ${
+								show === idx ? "" : "hidden"
+							}`}
+							key={idx}
+						>
+							<Image
+								src={image}
+								alt={captions[idx] || ""}
+								width={width}
+								height={height}
+								objectFit="contain"
+								layout={"responsive"}
+							/>
+						</div>
+					</div>
+				))}
+			</div>
+			<div className="flex justify-between items-center">
 				<div
-					className="btn glass btn-circle btn-sm text-black"
+					className="btn btn-circle btn-xs text-black"
 					id="pre"
 					onClick={onSlide}
 				>
 					❮
 				</div>
+				<figcaption
+					className={`text-center 
+					text-white italic`}
+				>
+					{captions.at(show) || ""}
+				</figcaption>
 				<div
-					className="btn glass btn-circle btn-sm text-black"
+					className="btn btn-circle btn-xs text-black"
 					id="post"
 					onClick={onSlide}
 				>
 					❯
 				</div>
 			</div>
-			{images.map((image, idx) => (
-				<div
-					key={idx}
-					className="w-1/6 h-full transition-transform duration-300"
-					style={{ transform: `translateX(-${100 * show}%)` }}
-				>
-					<div
-						className={`w-full  ${show === idx ? "" : "hidden"}`}
-						key={idx}
-					>
-						<Image
-							src={image}
-							alt={captions[idx] || ""}
-							width={width}
-							height={height}
-							objectFit="contain"
-							layout={"responsive"}
-						/>
-					</div>
-
-					<figcaption
-						className={`text-center ${
-							show === idx ? "" : "hidden"
-						} text-white italic`}
-					>
-						{captions.at(idx) || ""}
-					</figcaption>
-				</div>
-			))}
 		</div>
 	);
 }

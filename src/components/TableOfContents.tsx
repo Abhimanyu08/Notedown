@@ -61,7 +61,7 @@ export function Toc({
 			<div
 				className={`ml-10 flex flex-col gap-3 ${
 					open ? "" : "invisible"
-				} prose prose-sm prose-li:text-amber-400 prose-a:text-white prose-a:no-underline`}
+				} prose prose-sm prose-li:text-amber-400 prose-a:text-white prose-a:no-underline pb-10`}
 			>
 				<li>
 					<a href="#title" className="text-xl font-bold">

@@ -122,14 +122,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					}}
 				></div>
 			)}
-			<div className="flex flex-row absolute right-2 m-1 gap-2">
-				<button
-					className="md:tooltip  md:tooltip-left mr-1"
-					data-tip="Shell"
-					onClick={() => setOpenShell((prev) => !prev)}
-				>
-					<SiPowershell className="text-cyan-400" />
-				</button>
+			<div className="flex flex-row absolute right-2 m-1 gap-3">
 				{mounted && (
 					<button
 						onClick={() => {
@@ -145,9 +138,17 @@ function Code({ code, language, blockNumber }: CodeProps) {
 							className={`text-cyan-400 ${
 								awaitingResult ? "animate-pulse" : ""
 							}`}
+							size={16}
 						/>
 					</button>
 				)}
+				<button
+					className="md:tooltip  md:tooltip-left mr-1"
+					data-tip="Shell"
+					onClick={() => setOpenShell((prev) => !prev)}
+				>
+					<SiPowershell className="text-cyan-400" size={14} />
+				</button>
 				<button
 					onClick={onUndo}
 					className="md:tooltip  md:tooltip-left"

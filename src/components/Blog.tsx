@@ -178,6 +178,7 @@ export function Blog({
 				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:px-2 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
 				md:prose-ol:text-lg 
 				marker:prose-ul:text-amber-400
+				prose-code:rounded-md
 				marker:prose-li:text-amber-400
 				prose-code:select-all
 				prose-p:leading-relaxed

@@ -117,11 +117,20 @@ function Edit() {
 	}, [images]);
 
 	useEffect(() => {
+		if (toBeDeletedFromStorage.length > 0 || canvasImages.length > 0)
+			setHasMarkdownChanged(true);
+	}, [toBeDeletedFromStorage, canvasImages]);
+
+	useEffect(() => {
 		if (!editorView) return;
 
-		setHasMarkdownChanged(
-			!(data?.markdown === editorView.state.doc.toJSON().join("\n"))
-		);
+		if (!editingMarkdown) {
+			const changed =
+				toBeDeletedFromStorage.length > 0 ||
+				canvasImages.length > 0 ||
+				data?.markdown !== editorView.state.doc.toJSON().join("\n");
+			setHasMarkdownChanged(changed);
+		}
 	}, [editingMarkdown]);
 
 	useEffect(() => {
