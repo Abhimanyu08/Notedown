@@ -120,13 +120,31 @@ function htmlToJsx({
 							});
 
 							return (
-								<Carousel
-									key={src}
-									images={imageUrls}
-									captions={imageCaptions}
-									width={175}
-									height={120}
-								/>
+								<>
+									<p>
+										{htmlToJsx({
+											html: string1 || "",
+											language,
+											ownerId,
+											imageFolder,
+											imageToUrl,
+										})}
+									</p>
+									<Carousel
+										key={src}
+										images={imageUrls}
+										captions={imageCaptions}
+										width={175}
+										height={120}
+									/>
+									{htmlToJsx({
+										html: `<p>${string2}</p>` || "",
+										language,
+										ownerId,
+										imageFolder,
+										imageToUrl,
+									})}
+								</>
 							);
 						}
 
