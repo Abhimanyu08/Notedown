@@ -21,6 +21,7 @@ import {
 	onCodeWord,
 	onImage,
 	onItalic,
+	onLatex,
 	onLink,
 	onOrdererdList,
 	onSelect,
@@ -481,6 +482,14 @@ function Edit() {
 									}}
 								>
 									Link
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView) onLatex(editorView);
+									}}
+								>
+									LaTeX
 								</div>
 							</div>
 							<div

@@ -42,3 +42,4 @@ export const onUnordererdList = (editorView: EditorView) => insertAndChangeCurso
 export const onOrdererdList = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n1. ", cursorOffest: 4 })
 export const onBlockQuote = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "> ", cursorOffest: 2 })
 export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "[text](link)", cursorOffest: 1 })
+export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
