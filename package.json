@@ -23,6 +23,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
+    "react-latex": "^2.0.0",
     "remark": "^14.0.2",
     "remark-html": "^15.0.1",
     "sharp": "^0.31.0"
@@ -33,6 +34,7 @@
     "@types/node": "18.6.3",
     "@types/react": "^18.0.18",
     "@types/react-dom": "18.0.6",
+    "@types/react-latex": "^2.0.0",
     "autoprefixer": "^10.4.8",
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.3",

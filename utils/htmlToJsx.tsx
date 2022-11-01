@@ -8,7 +8,7 @@ import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
 import { supabase } from "./supabaseClient";
-import katex from "katex";
+import Latex from "react-latex";
 
 let BLOCK_NUMBER = -1;
 interface htmlToJsxProps {
@@ -56,24 +56,11 @@ function htmlToJsx({
 					const code = elem
 						.match(/<code>((.|\r|\n)*)<\/code>/)
 						?.at(1);
-					const mathEquation = (code || "")
-						.match(/^\$((.|\r|\n)*)\$$/)
-						?.at(1);
-					if (mathEquation) {
-						const renderedEquation = katex.renderToString(
-							mathEquation,
-							{ throwOnError: false }
-						);
-						console.log(renderedEquation);
+					if (code?.startsWith("$") && code.endsWith("$")) {
 						return (
 							<>
-								<span className="katex">
-									{string1}{" "}
-									<code
-										dangerouslySetInnerHTML={{
-											__html: renderedEquation,
-										}}
-									></code>{" "}
+								<span>
+									{string1} <Latex>{code}</Latex>
 									{string2}
 								</span>
 							</>
