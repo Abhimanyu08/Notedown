@@ -25,6 +25,10 @@
 	}
 }
 
+.katex-html {
+	display: none;
+}
+
 .btn:not(.btn-ghost, .tool),
 .select,
 .tab-active,
