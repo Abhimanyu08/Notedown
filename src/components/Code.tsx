@@ -113,7 +113,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		<div className="flex relative flex-col w-full ">
 			{mounted && (
 				<div
-					className="w-full "
+					className="w-full"
 					id={`codearea-${blockNumber}`}
 					onDoubleClick={() => {
 						setAwaitingResult(true);
