@@ -6,6 +6,7 @@ export const SUPABASE_UPVOTES_TABLE = "upvotes"
 export const LIMIT = 4;
 export const TITLE_LENGTH = 50;
 export const DESCRIPTION_LENGTH = 100;
+export const ABOUT_LENGTH = 1000;
 export const PHOTO_LIMIT = 15;
 export const CANVAS_LIMIT = 5;
 export const SEARCH_UPVOTED_POSTS_FUNCTION = "search_upvotes_of_user"

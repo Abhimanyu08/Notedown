@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { ABOUT_LENGTH } from "../../utils/constants";
 
 export function About({
 	about,
@@ -33,12 +34,20 @@ export function About({
 						dangerouslySetInnerHTML={{ __html: htmlAbout }}
 					></div>
 				) : (
-					<textarea
-						className="textarea w-full h-1/2"
-						placeholder="Markdown enabled"
-						onChange={(e) => setAbout(e.target.value)}
-						value={about}
-					/>
+					<div className="w-full lg:h-1/2 relative">
+						<p className="absolute top-3 lg:right-8 right-6 text-sm text-amber-400">
+							{about.length}/{ABOUT_LENGTH}
+						</p>
+						<textarea
+							className="textarea w-full h-full"
+							placeholder="Markdown enabled"
+							onChange={(e) => {
+								if (e.target.value.length <= ABOUT_LENGTH)
+									setAbout(e.target.value);
+							}}
+							value={about}
+						/>
+					</div>
 				)}
 			</>
 		);

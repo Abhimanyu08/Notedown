@@ -414,7 +414,10 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					</>
 				)}
 			</>
-			<div className="lg:grid flex flex-col grow lg:min-h-0 h-max overflow-y-auto  lg:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-5 lg:px-32">
+			<div
+				className="lg:grid flex flex-col grow lg:min-h-0 h-max overflow-y-auto  lg:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-3
+			md:px-5 lg:px-32"
+			>
 				<div
 					className={` lg:col-span-2 h-fit lg:h-full
 					`}
@@ -658,7 +661,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							)}
 						</>
 					) : (
-						<div className="mt-6 pl-2 h-full">
+						<div className="mt-6 lg:pl-2 h-full">
 							<About
 								about={about || ""}
 								htmlAbout={htmlAbout || ""}
