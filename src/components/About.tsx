@@ -34,7 +34,7 @@ export function About({
 						dangerouslySetInnerHTML={{ __html: htmlAbout }}
 					></div>
 				) : (
-					<div className="w-full lg:h-1/2 relative">
+					<div className="w-full h-full lg:h-1/2 relative">
 						<p className="absolute top-3 lg:right-8 right-6 text-sm text-amber-400">
 							{about.length}/{ABOUT_LENGTH}
 						</p>
