@@ -661,7 +661,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							)}
 						</>
 					) : (
-						<div className="mt-6 lg:pl-2 h-full">
+						<div className="mt-6 lg:pl-2 h-full mb-10">
 							<About
 								about={about || ""}
 								htmlAbout={htmlAbout || ""}
