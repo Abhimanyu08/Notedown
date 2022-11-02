@@ -51,7 +51,7 @@ type SortType = "greatest" | "latest";
 
 function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [profile, setProfile] = useState(profileUser);
-	const [section, setSection] = useState<"posts" | "about">("posts");
+	const [section, setSection] = useState<"posts" | "about">("about");
 	const [postType, setPostType] = useState<PostType>("published");
 	const [editingAbout, setEditingAbout] = useState(false);
 	const [publicPosts, setPublicPosts] = useState<
@@ -426,19 +426,19 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						<div className="tabs">
 							<p
 								className={`tab tab-md  tab-lifted ${
-									section === "posts" ? "tab-active" : ""
-								} font-medium text-white text-xs  md:text-base`}
-								onClick={() => setSection("posts")}
-							>
-								Posts
-							</p>
-							<p
-								className={`tab tab-md  tab-lifted ${
 									section === "about" ? "tab-active" : ""
 								}  font-medium text-white text-xs md:text-base`}
 								onClick={() => setSection("about")}
 							>
 								About
+							</p>
+							<p
+								className={`tab tab-md  tab-lifted ${
+									section === "posts" ? "tab-active" : ""
+								} font-medium text-white text-xs  md:text-base`}
+								onClick={() => setSection("posts")}
+							>
+								Posts
 							</p>
 						</div>
 						{user?.id !== id && section === "posts" && (
@@ -658,7 +658,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							)}
 						</>
 					) : (
-						<div className="mt-6 pl-2">
+						<div className="mt-6 pl-2 h-full">
 							<About
 								about={about || ""}
 								htmlAbout={htmlAbout || ""}

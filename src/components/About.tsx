@@ -18,7 +18,7 @@ export function About({
 	if (!owner) {
 		return (
 			<div
-				className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base"
+				className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
 				dangerouslySetInnerHTML={{ __html: htmlAbout }}
 			></div>
 		);
@@ -29,12 +29,12 @@ export function About({
 			<>
 				{previewing ? (
 					<div
-						className="prose prose-code:p-1"
+						className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
 						dangerouslySetInnerHTML={{ __html: htmlAbout }}
 					></div>
 				) : (
 					<textarea
-						className="textarea w-full"
+						className="textarea w-full h-1/2"
 						placeholder="Markdown enabled"
 						onChange={(e) => setAbout(e.target.value)}
 						value={about}
@@ -45,7 +45,7 @@ export function About({
 	}
 	return (
 		<div
-			className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base"
+			className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
 			dangerouslySetInnerHTML={{ __html: htmlAbout }}
 		></div>
 	);
