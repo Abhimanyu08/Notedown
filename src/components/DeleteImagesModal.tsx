@@ -69,7 +69,7 @@ function DeleteImagesModal({
 			<div
 				className={` text-black ${
 					show ? "" : "hidden"
-				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50`}
+				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50 bg-slate-800/80`}
 			>
 				<label className=" bg-cyan-500 mx-2 w-full md:w-5/6 h-fit max-h-80 max-w-full md:mx-0 lg:w-1/2 p-6 rounded-lg flex flex-col justify-between">
 					<div className="grid grid-rows-2 md:grid-cols-2  md:divide-y-0 md:divide-x-2 md:grid-rows-none divide-black divide-y-2 h-fit max-h-60">
@@ -173,19 +173,17 @@ function DeleteImagesModal({
 								Ok
 							</label>
 						)}
-						{okToDelete && (
-							<label
-								className="btn-sm btn capitalize  text-white"
-								htmlFor="delete-images"
-								onClick={() => {
-									setOkToDelete(false);
-									setToBeDeleted([]);
-									setCurrImages(imageNames);
-								}}
-							>
-								Cancel
-							</label>
-						)}
+						<label
+							className="btn-sm btn capitalize  text-white"
+							htmlFor="delete-images"
+							onClick={() => {
+								setOkToDelete(false);
+								setToBeDeleted([]);
+								setCurrImages(imageNames);
+							}}
+						>
+							Cancel
+						</label>
 					</div>
 				</label>
 			</div>
