@@ -1,6 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
 	AiFillEdit,
 	AiOutlineGithub,
@@ -8,6 +8,7 @@ import {
 	AiOutlineTwitter,
 } from "react-icons/ai";
 import { IconType } from "react-icons/lib";
+import { IoPersonCircle, IoPersonCircleOutline } from "react-icons/io5";
 import {
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_IMAGE_BUCKET,
@@ -146,15 +147,19 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 							/>
 						</div>
 					) : (
-						currProfile?.avatar_url && (
-							<Image
-								src={currProfile.avatar_url}
-								width={160}
-								height={160}
-								layout="intrinsic"
-								objectFit="contain"
-							/>
-						)
+						<>
+							{currProfile.avatar_url ? (
+								<Image
+									src={currProfile.avatar_url}
+									width={160}
+									height={160}
+									layout="intrinsic"
+									objectFit="contain"
+								/>
+							) : (
+								<IoPersonCircleOutline className="w-40 h-40 text-gray-400" />
+							)}
+						</>
 					)}
 				</div>
 			</div>

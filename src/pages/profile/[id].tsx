@@ -364,7 +364,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<Head>
-				<title>{`Profile-${profileUser?.name}`}</title>
+				<title>{`${profileUser?.name} - RCE-Blog Profile`}</title>
 				<meta name="author" content={profileUser?.name || ""} />
 				<meta
 					name="description"
@@ -376,7 +376,9 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				/>
 				<meta
 					property="og:description"
-					content={`About - ${profileUser?.about.slice(0, 15)}...`}
+					content={`About - ${
+						profileUser?.about?.slice(0, 15) || ""
+					}...`}
 				/>
 				<meta
 					property="og:url"

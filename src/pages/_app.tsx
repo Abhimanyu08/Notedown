@@ -40,24 +40,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 		if (user && !updated) {
 			supabase
 				.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-				.select("name, avatar_url")
+				.select("name")
 				.eq("id", user.id)
 				.then((val) => {
-					const { name, avatar_url } = val.data!.at(0)!;
+					const { name } = val.data!.at(0)!;
 					if (!name) {
 						supabase
 							.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 							.update({ name: user.user_metadata.name })
-							.match({ id: user.id })
-							.then(() => null);
-					}
-
-					if (!avatar_url) {
-						supabase
-							.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-							.update({
-								avatar_url: user.user_metadata.avatar_url,
-							})
 							.match({ id: user.id })
 							.then(() => null);
 					}
