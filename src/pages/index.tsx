@@ -69,7 +69,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 
 		if (error || !data) return false;
 
-		setSearchResults((prev) => [...(prev || []), ...data]);
+		setSearchResults(data);
 		return data.length > 0;
 	};
 	return (

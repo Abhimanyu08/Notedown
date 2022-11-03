@@ -334,7 +334,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 		);
 
 		if (error || !data) return;
-		setSearchResults((prev) => [...(prev || []), ...data]);
+		setSearchResults(data);
 		return data.length > 0;
 	};
 
@@ -356,7 +356,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 			}
 		);
 		if (data) {
-			setUpvotedSearchPosts((prev) => [...(prev || []), ...data]);
+			setUpvotedSearchPosts(data);
 		}
 		return (data?.length || 0) > 0;
 	};
