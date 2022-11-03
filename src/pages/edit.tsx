@@ -80,6 +80,15 @@ function Edit() {
 	});
 
 	useEffect(() => {
+		if (!editorView) return;
+
+		const docLength = editorView?.state.doc.length;
+		editorView.dispatch({
+			selection: { anchor: docLength, head: docLength },
+		});
+	}, [editorView]);
+
+	useEffect(() => {
 		if (user && currPostId === undefined && typeof postId === "string") {
 			setCurrPostId(parseInt(postId));
 			let imageFolder =
