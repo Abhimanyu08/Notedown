@@ -238,7 +238,6 @@ function htmlToJsx({
 					match: match.at(4),
 				});
 				let src = attrMap["href"];
-
 				if (
 					type === "a" &&
 					src &&
@@ -247,18 +246,14 @@ function htmlToJsx({
 					!content
 				) {
 					return (
-						<div className="flex justify-center">
-							<div className="w-full lg:w-3/5">
-								<iframe
-									className="w-full aspect-[4/3]"
-									src={getYoutubeEmbedLink(src)}
-									title="YouTube video player"
-									frameBorder="0"
-									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-									allowFullScreen
-								></iframe>
-							</div>
-						</div>
+						<iframe
+							className="w-full"
+							src={getYoutubeEmbedLink(src)}
+							title="YouTube video player"
+							frameBorder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							allowFullScreen
+						></iframe>
 					);
 				}
 				return (
@@ -267,7 +262,7 @@ function htmlToJsx({
 
 						{React.createElement(
 							type!,
-							makeAttrMap({ type, content, match: match.at(4) }),
+							attrMap,
 							htmlToJsx({
 								html: content!,
 								language,

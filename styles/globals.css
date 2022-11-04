@@ -17,6 +17,10 @@
 	text-align: left;
 }
 
+#jsx iframe {
+	aspect-ratio: 16/9;
+}
+
 .cm-content {
 	font-size: 14px;
 }
