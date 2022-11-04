@@ -16,14 +16,14 @@ export function About({
 	editing: boolean;
 	previewing: boolean;
 }) {
-	if (!owner) {
-		return (
-			<div
-				className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
-				dangerouslySetInnerHTML={{ __html: htmlAbout }}
-			></div>
-		);
-	}
+	// if (!owner) {
+	// 	return (
+	// 		<div
+	// 			className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
+	// 			dangerouslySetInnerHTML={{ __html: htmlAbout }}
+	// 		></div>
+	// 	);
+	// }
 
 	if (editing) {
 		return (
@@ -50,6 +50,20 @@ export function About({
 					</div>
 				)}
 			</>
+		);
+	}
+	if (htmlAbout === "") {
+		return (
+			<div className="flex h-full w-full justify-center">
+				{owner ? (
+					<p className="mt-10 text-white/70">
+						Write something about yourself by clicking the Edit
+						button
+					</p>
+				) : (
+					<p>This person is still finding about himself</p>
+				)}
+			</div>
 		);
 	}
 	return (

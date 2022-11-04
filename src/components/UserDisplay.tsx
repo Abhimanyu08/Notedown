@@ -2,6 +2,7 @@ import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import {
+	AiFillDelete,
 	AiFillEdit,
 	AiOutlineGithub,
 	AiOutlineLink,
@@ -25,9 +26,11 @@ interface UserDisplayProps {
 function UserDisplay({ profile, user }: UserDisplayProps) {
 	const [editing, setEditing] = useState(false);
 	const [newPic, setNewPic] = useState<File | null>(null);
-	const localProfile = useRef(profile);
-	const [currProfile, setCurrProfile] = useState(localProfile.current);
+	const [currProfile, setCurrProfile] = useState(profile);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
+	const [deleteProfilePicture, setDeleteProfilePicture] = useState(false);
+	const [showProfileChangeButtons, setShowProfileChangeButtons] =
+		useState(false);
 
 	const onSave = async () => {
 		if (!profile) return;
@@ -46,11 +49,19 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 		if (currProfile?.name && currProfile.name !== profile?.name) {
 			changes["name"] = currProfile.name;
 		}
-		if (newPic) {
-			const { data, error } = await supabase.storage
+		const { data, error } = await supabase.storage
+			.from(SUPABASE_IMAGE_BUCKET)
+			.list(makeFolderName(profile.id!, "AVATAR"));
+
+		if (deleteProfilePicture) {
+			await supabase.storage
 				.from(SUPABASE_IMAGE_BUCKET)
-				.list(makeFolderName(profile.id!, "AVATAR"));
-			console.log(data);
+				.remove([
+					makeFolderName(profile.id!, `AVATAR/${data?.at(0)?.name}`),
+				]);
+			changes["avatar_url"] = "";
+		}
+		if (newPic) {
 			if (error || !data) {
 				const imagePath = makeFolderName(
 					profile?.id!,
@@ -64,7 +75,6 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					.getPublicUrl(imagePath);
 				if (publicURL) {
 					changes["avatar_url"] = publicURL;
-					currProfile["avatar_url"] = publicURL;
 				}
 			} else {
 				await supabase.storage
@@ -87,18 +97,20 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					.getPublicUrl(imagePath);
 				if (publicURL) {
 					changes["avatar_url"] = publicURL;
-					currProfile["avatar_url"] = publicURL;
 				}
 			}
 		}
 
-		await supabase
+		console.log(changes);
+
+		const { data: updatedData } = await supabase
 			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 			.update(changes)
 			.eq("id", profile.id!);
+
 		setUploadingChanges(false);
 		sendRevalidationRequest(`profile/${profile.id}`);
-		localProfile.current = { ...localProfile.current, ...changes };
+		if (updatedData) setCurrProfile(updatedData.at(0)!);
 		setEditing(false);
 	};
 
@@ -120,47 +132,84 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					</div>
 				)}
 			<div className="avatar ">
-				<div
-					className={`rounded-full ${
-						editing ? "border-2 border-base-200" : ""
-					}`}
-				>
-					{editing ? (
-						<div className="w-32 h-32 flex items-center justify-center">
-							<label
-								htmlFor="dp"
-								className="btn btn-xs capitalize bg-base-200 w-fit
-                                truncate text-white"
-							>
-								{newPic ? newPic.name : "Upload"}
-							</label>
-							<input
-								type="file"
-								name=""
-								id="dp"
-								max={1}
-								accept="image/*"
-								className="hidden"
-								onChange={(e) =>
-									setNewPic(e.target?.files?.item(0) || null)
+				{editing && (
+					<span
+						className={`w-full h-full absolute opacity-100 lg:opacity-0 hover:lg:opacity-100 rounded-full flex gap-2 
+						items-center justify-center ${showProfileChangeButtons ? "" : "opacity-0"}
+					z-50`}
+						onTouchStart={() =>
+							setShowProfileChangeButtons((prev) => !prev)
+						}
+					>
+						<label
+							className="btn btn-xs btn-circle text-white"
+							htmlFor="dp"
+						>
+							<AiFillEdit />
+						</label>
+						<input
+							type="file"
+							name=""
+							id="dp"
+							max={1}
+							accept="image/*"
+							className="hidden"
+							onChange={(e) => {
+								if (e.target.files?.item(0)) {
+									setDeleteProfilePicture(false);
+									setNewPic(e.target.files.item(0));
+									const avatarUrl = (
+										window.URL || window.webkitURL
+									).createObjectURL(e.target.files.item(0)!);
+
+									setCurrProfile((prev) => ({
+										...prev,
+										avatar_url: avatarUrl,
+									}));
 								}
+							}}
+						/>
+						<span
+							className="btn btn-xs btn-circle text-white"
+							onClick={() => {
+								setNewPic(null);
+
+								if (
+									currProfile.avatar_url ===
+									profile.avatar_url
+								) {
+									//user wants to delete his profile picture
+									setDeleteProfilePicture(true);
+									setCurrProfile((prev) => ({
+										...prev,
+										avatar_url: undefined,
+									}));
+									return;
+								}
+								setCurrProfile((prev) => ({
+									...prev,
+									avatar_url: profile.avatar_url,
+								}));
+							}}
+						>
+							<AiFillDelete />
+						</span>
+					</span>
+				)}
+				<div className={`rounded-full`}>
+					<>
+						{currProfile.avatar_url ? (
+							<Image
+								src={currProfile.avatar_url}
+								width={160}
+								height={160}
+								layout="intrinsic"
+								objectFit="contain"
 							/>
-						</div>
-					) : (
-						<>
-							{currProfile.avatar_url ? (
-								<Image
-									src={currProfile.avatar_url}
-									width={160}
-									height={160}
-									layout="intrinsic"
-									objectFit="contain"
-								/>
-							) : (
-								<IoPersonCircleOutline className="w-40 h-40 text-gray-400" />
-							)}
-						</>
-					)}
+						) : (
+							<IoPersonCircleOutline className="w-40 h-40 text-gray-400" />
+						)}
+					</>
 				</div>
 			</div>
 
@@ -268,7 +317,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 							className="btn btn-xs bg-base-100 font-normal normal-case md:mt-10 text-white"
 							onClick={() => {
 								setEditing(false);
-								setCurrProfile(localProfile.current);
+								setCurrProfile(profile);
 							}}
 						>
 							Cancel

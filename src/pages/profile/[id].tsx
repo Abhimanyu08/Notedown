@@ -479,9 +479,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 												: "preview"
 										}`}
 									>
-										{previewing
-											? "Back to Editing"
-											: "Preview"}
+										{previewing ? "Edit" : "Preview"}
 									</button>
 									<button
 										className="normal-case btn btn-xs md:btn-sm text-white"
@@ -495,6 +493,9 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										onClick={() => {
 											setAbout(profileUser?.about);
 											setEditingAbout(false);
+											setHtmlAbout(
+												profileUser?.about || ""
+											);
 											setPreviewing(false);
 										}}
 									>

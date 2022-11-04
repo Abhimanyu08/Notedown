@@ -59,22 +59,26 @@ function PostDisplay({
 
 	return (
 		<div className="flex flex-col h-full overflow-x-hidden  md:overflow-y-auto">
-			<div
-				className="flex flex-col gap-8 lg:basis-11/12 basis-10/12"
-				onScroll={(e) => e.currentTarget}
-			>
-				{posts?.map((post) => (
-					<PostComponent
-						key={post.id!}
-						{...{
-							post,
-							author: post.author || post.bloggers?.name,
-							owner: user?.id === post.created_by,
-							setPostInAction,
-						}}
-					/>
-				))}
-			</div>
+			{(posts?.length || 0) > 0 ? (
+				<div
+					className="flex flex-col gap-8 lg:basis-11/12 basis-10/12"
+					onScroll={(e) => e.currentTarget}
+				>
+					{posts?.map((post) => (
+						<PostComponent
+							key={post.id!}
+							{...{
+								post,
+								author: post.author || post.bloggers?.name,
+								owner: user?.id === post.created_by,
+								setPostInAction,
+							}}
+						/>
+					))}
+				</div>
+			) : (
+				<p className="self-center mt-10 text-white/70">No Posts yet</p>
+			)}
 			{(posts?.length || 0) > 0 && (
 				<div className="flex justify-center pt-12 pb-28 lg:pb-10 lg:basis-1/12 basis-2/12">
 					<div
