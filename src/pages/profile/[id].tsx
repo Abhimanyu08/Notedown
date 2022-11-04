@@ -84,13 +84,16 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 	useEffect(() => {
 		const aboutMd2Html = async () => {
-			if (!about) return;
-			const html = await mdToHtml(about);
+			const html = await mdToHtml(about || "");
 			setHtmlAbout(html);
 		};
 
 		aboutMd2Html();
 	}, [about]);
+
+	useEffect(() => {
+		setAbout(profile?.about);
+	}, [profile]);
 
 	useEffect(() => {
 		checkGreatestStillGreatest(greatest);
@@ -100,15 +103,16 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 	const onAboutSave = async () => {
 		const { data, error } = await supabase
-			.from(SUPABASE_BLOGGER_TABLE)
+			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
 			.update({ about })
-			.eq("id", profile?.id);
+			.eq("id", profile!.id);
 		if (error || !data || data.length == 0) {
 			alert("Error in updating about");
 			return;
 		}
 		setProfile(data.at(0));
 		setEditingAbout(false);
+		setPreviewing(false);
 		sendRevalidationRequest(`profile/${profile?.id}`);
 	};
 
@@ -493,9 +497,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										onClick={() => {
 											setAbout(profileUser?.about);
 											setEditingAbout(false);
-											setHtmlAbout(
-												profileUser?.about || ""
-											);
 											setPreviewing(false);
 										}}
 									>
