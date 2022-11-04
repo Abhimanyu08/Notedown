@@ -7,7 +7,7 @@ import { supabase } from "../../utils/supabaseClient";
 import { BlogProps } from "../interfaces/BlogProps";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 
-const initialMarkdown = '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---';
+const initialMarkdown = '---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
 interface PrivatePostQueryData extends BlogProps {
     markdown: string
 }

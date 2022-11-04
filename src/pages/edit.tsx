@@ -86,7 +86,6 @@ function Edit() {
 		editorView.dispatch({
 			selection: { anchor: docLength, head: docLength },
 		});
-		editorView.dom.focus();
 	}, [editorView]);
 
 	useEffect(() => {
