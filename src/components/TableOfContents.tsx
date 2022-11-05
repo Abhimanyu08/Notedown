@@ -38,7 +38,7 @@ export function Toc({
 
 	return (
 		<div
-			className="flex flex-col gap-5  text-white max-w-full"
+			className="flex flex-col gap-5  text-white max-w-full pr-1"
 			onClick={() => setShowContents(false)}
 		>
 			<h3

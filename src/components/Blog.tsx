@@ -172,9 +172,10 @@ export function Blog({
 		>
 			<div
 				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-2 lg:px-20 prose-headings:text-amber-500 prose-p:text-left text-white 
-				 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full overflow-y-auto prose-a:text-white
+				 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full prose-a:text-white
 				overflow-x-hidden		
-				 prose-a:font-mono prose-a:decoration-amber-400 prose-a:decoration-2 
+				overflow-y-visible
+				 prose-a:font-serif prose-a:decoration-amber-400 prose-a:decoration-2 
 				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-yellow-400 prose-code:px-2 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
 				md:prose-ol:text-lg 
 				marker:prose-ul:text-amber-400
@@ -182,7 +183,10 @@ export function Blog({
 				marker:prose-li:text-amber-400
 				prose-code:select-all
 				prose-p:leading-relaxed
-				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif prose-strong:text-white prose-blockquote:border-l-white/60 prose-blockquote:border-l-2`}
+				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif prose-strong:text-white prose-blockquote:border-l-white/60 prose-blockquote:border-l-2
+
+lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+				`}
 			>
 				<h1 className="text-center" id="title">
 					{title}

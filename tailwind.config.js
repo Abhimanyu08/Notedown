@@ -7,7 +7,11 @@ module.exports = {
 	theme: {
 		extend: {},
 	},
-	plugins: [require("daisyui"), require("@tailwindcss/typography")],
+	plugins: [
+		require("daisyui"),
+		require("@tailwindcss/typography"),
+		require("tailwind-scrollbar"),
+	],
 	corePlugins: {
 		preflight: true,
 	},
