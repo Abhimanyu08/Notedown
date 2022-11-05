@@ -1,2 +1,2 @@
-Client side code for rce blog i'm working on
+Client side code for the [RCE-Blog](https://rce-blog.xyz/).
 
