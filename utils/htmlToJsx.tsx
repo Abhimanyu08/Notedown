@@ -76,11 +76,9 @@ function htmlToJsx({
 				}
 				const content = elem.match(/<.*?>((.|\n|\r)*)<\/.*>/)?.at(1);
 
-				if (type === "p" && content?.trim().match(/^canvas(\d)*$/)) {
-					let canvasName = content
-						.trim()
-						.match(/^(canvas(\d)*)$/)
-						?.at(1);
+				const hasCanvas = content?.trim().match(/^(canvas-?(\d*))$/);
+				if (type === "p" && hasCanvas) {
+					let canvasName = hasCanvas?.at(1);
 					return (
 						<DrawingArea
 							fileName={canvasName}

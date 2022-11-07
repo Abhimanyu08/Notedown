@@ -1,7 +1,12 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { AiFillEdit } from "react-icons/ai";
+import {
+	AiFillEdit,
+	AiOutlineOrderedList,
+	AiOutlineUnorderedList,
+} from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
+import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { FaBold, FaFileUpload, FaItalic } from "react-icons/fa";
 import { FcGallery } from "react-icons/fc";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -17,6 +22,7 @@ import {
 import {
 	onBlockQuote,
 	onBold,
+	onCanvas,
 	onCodeBlock,
 	onCodeWord,
 	onImage,
@@ -464,7 +470,9 @@ function Edit() {
 											onOrdererdList(editorView);
 									}}
 								>
-									Ordered List
+									{/* <AiOutlineOrderedList size={20} /> */}
+									<GoListOrdered size={20} />
+									{/* O.L */}
 								</div>
 								<div
 									className="btn btn-xs normal-case tool"
@@ -473,7 +481,9 @@ function Edit() {
 											onUnordererdList(editorView);
 									}}
 								>
-									Unordered List
+									{/* <AiOutlineUnorderedList size={20} /> */}
+									<GoListUnordered size={20} />
+									{/* U.L */}
 								</div>
 								<div
 									className="btn btn-xs normal-case tool"
@@ -499,6 +509,14 @@ function Edit() {
 									}}
 								>
 									LaTeX
+								</div>
+								<div
+									className="btn btn-xs normal-case tool"
+									onClick={() => {
+										if (editorView) onCanvas(editorView);
+									}}
+								>
+									Canvas
 								</div>
 							</div>
 							<div
