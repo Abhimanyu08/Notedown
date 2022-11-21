@@ -8,7 +8,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 
 
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from "@codemirror/autocomplete";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { bracketMatching, defaultHighlightStyle, foldGutter, foldKeymap, indentOnInput, syntaxHighlighting } from "@codemirror/language";
 import { lintKeymap } from "@codemirror/lint";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
@@ -16,7 +16,7 @@ import { crosshairCursor, drawSelection, dropCursor, highlightActiveLineGutter, 
 import { BlogContext } from '../pages/_app';
 import { BlogProps } from "../interfaces/BlogProps";
 
-
+import { vim } from "@replit/codemirror-vim";
 
 interface useEditorProps {
     language: BlogProps["language"] | "markdown"
@@ -54,6 +54,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
             crosshairCursor(),
             highlightSelectionMatches(),
             keymap.of([
+                indentWithTab,
                 ...closeBracketsKeymap,
                 ...defaultKeymap,
                 ...searchKeymap,
@@ -106,6 +107,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
         let startState = EditorState.create({
             doc: code,
             extensions: [
+                vim(),
                 mySetup,
                 langToExtension(language),
                 tabSize.of(EditorState.tabSize.of(4)),
