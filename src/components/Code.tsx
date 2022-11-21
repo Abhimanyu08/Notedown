@@ -1,21 +1,18 @@
-import {
-	EventHandler,
-	KeyboardEventHandler,
-	MouseEventHandler,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
-import { SiPowershell } from "react-icons/si";
 import { MdHideImage } from "react-icons/md";
+import { SiPowershell, SiVim } from "react-icons/si";
 import { BlogContext } from "../pages/_app";
 
+import { sendRequestToRceServer } from "../../utils/sendRequest";
 import useEditor from "../hooks/useEditor";
 import { BlogProps } from "../interfaces/BlogProps";
-import { sendRequestToRceServer } from "../../utils/sendRequest";
+import { EditorView } from "codemirror";
 
+import { vim } from "@replit/codemirror-vim";
+import { StateEffect } from "@codemirror/state";
+import getExtensions from "../../utils/getExtensions";
 interface CodeProps {
 	code: string;
 	language: BlogProps["language"] | "markdown";
@@ -30,6 +27,8 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		setBlockToCode,
 		collectCodeTillBlock,
 		setBlockToOutput,
+		vimEnabled,
+		setVimEnabled,
 	} = useContext(BlogContext);
 
 	const [mounted, setMounted] = useState(false);
@@ -37,7 +36,12 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	const [shellCommand, setShellCommand] = useState("");
 	const [awaitingResult, setAwaitingResult] = useState(false);
 	const [awaitingShellResult, setAwaitingShellResult] = useState(false);
-	const { editorView } = useEditor({ language, blockNumber, code, mounted });
+	const { editorView } = useEditor({
+		language,
+		blockNumber,
+		code,
+		mounted,
+	});
 
 	useEffect(() => {
 		setMounted(true);
@@ -77,10 +81,38 @@ function Code({ code, language, blockNumber }: CodeProps) {
 
 	const onUndo: MouseEventHandler = () => {
 		const docLength = editorView?.state.doc.length;
+
 		editorView?.dispatch({
 			changes: { from: 0, to: docLength, insert: code },
 		});
 	};
+
+	useEffect(() => {
+		if (!editorView) return;
+		if (vimEnabled) {
+			editorView.dispatch({
+				effects: StateEffect.reconfigure.of([
+					vim(),
+					...getExtensions({
+						language,
+						blockNumber,
+						collectCodeTillBlock,
+					}),
+				]),
+			});
+		}
+		if (!vimEnabled) {
+			editorView.dispatch({
+				effects: StateEffect.reconfigure.of(
+					getExtensions({
+						language,
+						blockNumber,
+						collectCodeTillBlock,
+					})
+				),
+			});
+		}
+	}, [vimEnabled]);
 
 	const onShellCommandRun = async ({
 		language,
@@ -111,18 +143,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 
 	return (
 		<div className="flex relative flex-col w-full ">
-			{mounted && (
-				<div
-					className="w-full"
-					id={`codearea-${blockNumber}`}
-					onDoubleClick={() => {
-						setAwaitingResult(true);
-						if (!collectCodeTillBlock) return;
-						collectCodeTillBlock(blockNumber);
-					}}
-				></div>
-			)}
-			<div className="flex flex-row absolute right-2 m-1 gap-3">
+			<div className="flex flex-row  gap-3 w-fit self-end bg-black py-1 px-3 rounded-t-md">
 				{mounted && (
 					<button
 						onClick={() => {
@@ -163,7 +184,33 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				>
 					<MdHideImage className="text-cyan-400" />
 				</button>
+				<button
+					className="md:tooltip hidden lg:block mr-1"
+					data-tip="Enable Vim"
+					onClick={() => {
+						if (setVimEnabled) setVimEnabled((prev) => !prev);
+					}}
+				>
+					<SiVim
+						className={`${
+							vimEnabled ? "text-lime-400" : "text-cyan-400"
+						}`}
+						size={14}
+					/>
+				</button>
 			</div>
+			{mounted && (
+				<div
+					className="w-full"
+					id={`codearea-${blockNumber}`}
+					onDoubleClick={() => {
+						setAwaitingResult(true);
+						if (!collectCodeTillBlock) return;
+						collectCodeTillBlock(blockNumber);
+					}}
+				></div>
+			)}
+
 			{openShell && (
 				<div className="flex items-center font-mono bg-black rounded-md text-white mt-2 pl-2 p-1 gap-4">
 					<span

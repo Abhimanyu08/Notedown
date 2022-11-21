@@ -20,6 +20,8 @@ export const UserContext = createContext<{
 
 export const BlogContext = createContext<{
 	containerId?: string;
+	vimEnabled?: boolean;
+	setVimEnabled?: Dispatch<SetStateAction<boolean>>;
 	blockToOutput?: Record<number, string>;
 	setBlockToCode?: Dispatch<SetStateAction<Record<number, string>>>;
 	setBlockToOutput?: Dispatch<SetStateAction<Record<number, string>>>;

@@ -25,6 +25,7 @@ export function Blog({
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
 		{}
 	);
+	const [vimEnabled, setVimEnabled] = useState(false);
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
@@ -168,6 +169,8 @@ export function Blog({
 				setBlockToCode,
 				collectCodeTillBlock,
 				setBlockToOutput,
+				vimEnabled,
+				setVimEnabled,
 			}}
 		>
 			<div

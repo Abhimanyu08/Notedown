@@ -15,8 +15,8 @@ import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { crosshairCursor, drawSelection, dropCursor, highlightActiveLineGutter, highlightSpecialChars, keymap, lineNumbers, rectangularSelection } from "@codemirror/view";
 import { BlogContext } from '../pages/_app';
 import { BlogProps } from "../interfaces/BlogProps";
+import getExtensions from "../../utils/getExtensions";
 
-import { vim } from "@replit/codemirror-vim";
 
 interface useEditorProps {
     language: BlogProps["language"] | "markdown"
@@ -31,96 +31,101 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
 
 
     useEffect(() => {
-        if (mounted === false) return
+        if (mounted === false || blockNumber === undefined) return
         document.getElementById(elemId.current)?.replaceChildren("")
-        let languageCompartment = new Compartment();
-        let tabSize = new Compartment();
+        // let languageCompartment = new Compartment();
+        // let tabSize = new Compartment();
 
-        const mySetup: Extension = (() => [
-            lineNumbers(),
-            highlightActiveLineGutter(),
-            highlightSpecialChars(),
-            history(),
-            foldGutter(),
-            drawSelection(),
-            dropCursor(),
-            EditorState.allowMultipleSelections.of(true),
-            indentOnInput(),
-            syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-            bracketMatching(),
-            closeBrackets(),
-            autocompletion(),
-            rectangularSelection(),
-            crosshairCursor(),
-            highlightSelectionMatches(),
-            keymap.of([
-                indentWithTab,
-                ...closeBracketsKeymap,
-                ...defaultKeymap,
-                ...searchKeymap,
-                ...historyKeymap,
-                ...foldKeymap,
-                ...completionKeymap,
-                ...lintKeymap
-            ]),
-            EditorView.theme({
-                "&": {
-                    color: "#fff",
-                    backgroundColor: "rgb(0 0 0)",
-                },
-                ".cm-content": {
-                    caretColor: "#0e9",
-                    marginLeft: "4px",
-                },
+        // const mySetup: Extension = (() => [
+        //     lineNumbers(),
+        //     highlightActiveLineGutter(),
+        //     highlightSpecialChars(),
+        //     history(),
+        //     foldGutter(),
+        //     drawSelection(),
+        //     dropCursor(),
+        //     EditorState.allowMultipleSelections.of(true),
+        //     indentOnInput(),
+        //     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        //     bracketMatching(),
+        //     closeBrackets(),
+        //     autocompletion(),
+        //     rectangularSelection(),
+        //     crosshairCursor(),
+        //     highlightSelectionMatches(),
+        //     keymap.of([
+        //         indentWithTab,
+        //         ...closeBracketsKeymap,
+        //         ...defaultKeymap,
+        //         ...searchKeymap,
+        //         ...historyKeymap,
+        //         ...foldKeymap,
+        //         ...completionKeymap,
+        //         ...lintKeymap
+        //     ]),
+        //     EditorView.theme({
+        //         "&": {
+        //             color: "#fff",
+        //             backgroundColor: "rgb(0 0 0)",
+        //         },
+        //         ".cm-content": {
+        //             caretColor: "#0e9",
+        //             marginLeft: "4px",
+        //         },
 
-                "&.cm-focused .cm-cursor": {
-                    borderLeftColor: "#0e9"
-                },
-                "&.cm-focused .cm-selectionBackground, ::selection": {
-                    backgroundColor: "rgb(56 189 248)"
-                },
-                ".cm-gutters": {
-                    backgroundColor: "rgb(0 0 0)",
-                    color: "#ddd",
-                    borderRightWidth: "1px",
-                    borderColor: "#fff",
-                },
-                ".cm-gutterElement": {
-                    color: "rgb(34 211 238)"
-                }
-            }, { dark: true })
-        ])()
+        //         "&.cm-focused .cm-cursor": {
+        //             borderLeftColor: "#0e9"
+        //         },
+        //         "&.cm-focused .cm-selectionBackground, ::selection": {
+        //             backgroundColor: "rgb(56 189 248)"
+        //         },
+        //         ".cm-gutters": {
+        //             backgroundColor: "rgb(0 0 0)",
+        //             color: "#ddd",
+        //             borderRightWidth: "1px",
+        //             borderColor: "#fff",
+        //         },
+        //         ".cm-gutterElement": {
+        //             color: "rgb(34 211 238)"
+        //         }
+        //     }, { dark: true })
+        // ])()
 
-        const langToExtension = (lang: typeof language): Extension => {
-            switch (lang) {
-                case "javascript":
-                    return languageCompartment.of(javascript())
-                case "python":
-                    return languageCompartment.of(python())
-                case "rust":
-                    return languageCompartment.of(rust())
-                case "markdown":
-                    return languageCompartment.of(markdown())
+        // const langToExtension = (lang: typeof language): Extension => {
+        //     switch (lang) {
+        //         case "javascript":
+        //             return languageCompartment.of(javascript())
+        //         case "python":
+        //             return languageCompartment.of(python())
+        //         case "rust":
+        //             return languageCompartment.of(rust())
+        //         case "markdown":
+        //             return languageCompartment.of(markdown())
 
-            }
-        }
+        //     }
+        // }
+        // let startState = EditorState.create({
+        //     doc: code,
+        //     extensions: [
+        //         [],
+        //         mySetup,
+        //         langToExtension(language),
+        //         tabSize.of(EditorState.tabSize.of(4)),
+        //         keymap.of([{
+        //             key: "Shift-Enter",
+        //             run() {
+        //                 if (!collectCodeTillBlock || blockNumber === undefined) return false;
+        //                 collectCodeTillBlock(blockNumber)
+        //                 return true;
+        //             }
+        //         }])
+        //     ],
+        // });
+
         let startState = EditorState.create({
             doc: code,
-            extensions: [
-                vim(),
-                mySetup,
-                langToExtension(language),
-                tabSize.of(EditorState.tabSize.of(4)),
-                keymap.of([{
-                    key: "Shift-Enter",
-                    run() {
-                        if (!collectCodeTillBlock || blockNumber === undefined) return false;
-                        collectCodeTillBlock(blockNumber)
-                        return true;
-                    }
-                }])
-            ],
-        });
+            extensions: getExtensions({ language, blockNumber, collectCodeTillBlock })
+        })
 
         let view = new EditorView({
             state: startState,
