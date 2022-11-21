@@ -20,8 +20,8 @@ import { ALLOWED_LANGUAGES } from "./constants";
 
 interface getExtensionInput {
     language: typeof ALLOWED_LANGUAGES[number] | "markdown"
-    blockNumber: number;
-    collectCodeTillBlock: ((blockNumber: number) => void) | undefined
+    blockNumber?: number;
+    collectCodeTillBlock?: ((blockNumber: number) => void) | undefined
 }
 
 

@@ -21,7 +21,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
 
 
     useEffect(() => {
-        if (mounted === false || blockNumber === undefined) return
+        if (mounted === false) return
         document.getElementById(elemId.current)?.replaceChildren("")
 
         let startState = EditorState.create({
