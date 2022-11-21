@@ -77,7 +77,7 @@ export function Blog({
 			imageFolder: image_folder || undefined,
 			imageToUrl,
 		});
-	}, [content]);
+	}, [content, language]);
 
 	useEffect(() => {
 		const func = (blockNumber: number) => {

@@ -6,7 +6,7 @@ import {
 	AiOutlineOrderedList,
 	AiOutlineUnorderedList,
 } from "react-icons/ai";
-import { BiImageAdd } from "react-icons/bi";
+import { BiCodeAlt, BiImageAdd } from "react-icons/bi";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { FaBold, FaFileUpload, FaItalic } from "react-icons/fa";
 import { FcGallery } from "react-icons/fc";
@@ -51,6 +51,7 @@ import { CanvasImageContext, UserContext } from "./_app";
 import { SiVim } from "react-icons/si";
 import getExtensions from "../../utils/getExtensions";
 import { vim } from "@replit/codemirror-vim";
+import { sendRequestToRceServer } from "../../utils/sendRequest";
 
 function Edit() {
 	const { user } = useContext(UserContext);
@@ -77,6 +78,7 @@ function Edit() {
 	const [showGallery, setShowGallery] = useState(false);
 	const [cumulativeImageName, setCumulativeImageName] = useState("");
 	const [enabledVimForMarkdown, setEnabledVimForMarkdown] = useState(false);
+	const [containerId, setContainerId] = useState<string>();
 
 	const [blogData, setBlogData] = useState<{
 		title?: string;
@@ -154,6 +156,25 @@ function Edit() {
 		}
 	}, [editingMarkdown]);
 
+	const onLanguageChange = (containerId: string | undefined) => {
+		// kills the container if the user changes the language
+		if (containerId) sendRequestToRceServer("DELETE", { containerId });
+		setContainerId(undefined);
+	};
+
+	useEffect(() => {
+		if (containerId) {
+			window.onbeforeunload = async () => {
+				setContainerId(undefined);
+				await sendRequestToRceServer("DELETE", { containerId });
+			};
+		}
+
+		return () => {
+			if (containerId) sendRequestToRceServer("DELETE", { containerId });
+		};
+	}, [containerId]);
+
 	useEffect(() => {
 		if (editingMarkdown) return;
 
@@ -161,6 +182,9 @@ function Edit() {
 		if (!markdown) return;
 		getHtmlFromMarkdown(markdown)
 			.then(({ data, content }) => {
+				if (data.language !== blogData.language) {
+					onLanguageChange(containerId);
+				}
 				setBlogData({
 					title: data.title,
 					description: data.description,
@@ -367,6 +391,25 @@ function Edit() {
 			});
 	};
 
+	const prepareContainer = async () => {
+		if (containerId || !blogData.language) return;
+		try {
+			const resp = await sendRequestToRceServer("POST", {
+				language: blogData.language,
+			});
+
+			if (resp.status !== 201) {
+				console.log(resp.statusText);
+				alert("Couldn't set up remote code execution");
+				return;
+			}
+			const body: { containerId: string } = await resp.json();
+			setContainerId(body.containerId);
+		} catch (_) {
+			alert("Couldn't enable remote code execution");
+		}
+	};
+
 	if (error) {
 		return (
 			<Layout user={user || null} route={"/"} logoutCallback={() => null}>
@@ -429,6 +472,7 @@ function Edit() {
 								created_by={user?.id}
 								imageToUrl={imageToUrl}
 								image_folder={data?.image_folder}
+								containerId={containerId}
 							/>
 						</div>
 						<div
@@ -583,6 +627,26 @@ function Edit() {
 					</>
 
 					<>
+						{blogData.language && (
+							<div
+								className={` btn btn-circle  btn-ghost tooltip`}
+								data-tip={` ${
+									user
+										? "Enable remote code execution"
+										: "Enable remote code execution"
+								} `}
+								onClick={prepareContainer}
+							>
+								<BiCodeAlt
+									size={30}
+									className={` ${
+										containerId
+											? "text-lime-400"
+											: "text-white"
+									} mt-2 ml-2 `}
+								/>
+							</div>
+						)}
 						<div
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={
