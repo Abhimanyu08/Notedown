@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { StateEffect } from "@codemirror/state";
 import { useContext, useEffect, useState } from "react";
 import {
 	AiFillEdit,
@@ -47,6 +48,9 @@ import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
 import Post from "../interfaces/Post";
 import { CanvasImageContext, UserContext } from "./_app";
+import { SiVim } from "react-icons/si";
+import getExtensions from "../../utils/getExtensions";
+import { vim } from "@replit/codemirror-vim";
 
 function Edit() {
 	const { user } = useContext(UserContext);
@@ -72,6 +76,7 @@ function Edit() {
 	const [copiedImageName, setCopiedImageName] = useState("");
 	const [showGallery, setShowGallery] = useState(false);
 	const [cumulativeImageName, setCumulativeImageName] = useState("");
+	const [enabledVimForMarkdown, setEnabledVimForMarkdown] = useState(false);
 
 	const [blogData, setBlogData] = useState<{
 		title?: string;
@@ -163,8 +168,36 @@ function Edit() {
 					content,
 				});
 			})
-			.catch((e) => alert(e.message));
+			.catch((e) => {
+				alert(e.message);
+				setEditingMarkdown(true);
+			});
 	}, [editingMarkdown]);
+
+	useEffect(() => {
+		if (!editorView) return;
+
+		if (enabledVimForMarkdown) {
+			editorView.dispatch({
+				effects: StateEffect.reconfigure.of([
+					vim(),
+					...getExtensions({
+						language: "markdown",
+					}),
+				]),
+			});
+		}
+
+		if (!enabledVimForMarkdown) {
+			editorView.dispatch({
+				effects: StateEffect.reconfigure.of(
+					getExtensions({
+						language: "markdown",
+					})
+				),
+			});
+		}
+	}, [enabledVimForMarkdown]);
 
 	const onNewPostUpload = async () => {
 		if (!editorView || !hasMarkdownChanged) return;
@@ -519,14 +552,33 @@ function Edit() {
 									Canvas
 								</div>
 							</div>
-							<div
-								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
-								id="markdown-textarea"
-								onPaste={() => {
-									setCumulativeImageName("");
-									setCopiedImageName("");
-								}}
-							></div>
+							<div className="grow relative">
+								<div
+									className={`pb-20 lg:pb-0 overflow-y-auto  w-full `}
+									id="markdown-textarea"
+									onPaste={() => {
+										setCumulativeImageName("");
+										setCopiedImageName("");
+									}}
+								></div>
+								<div
+									className="absolute top-2 right-2 tooltip tooltip-left"
+									data-tip="Enable Vim"
+									onClick={() =>
+										setEnabledVimForMarkdown(
+											(prev) => !prev
+										)
+									}
+								>
+									<SiVim
+										className={` ${
+											enabledVimForMarkdown
+												? "text-lime-400"
+												: "text-cyan-400"
+										}`}
+									/>
+								</div>
+							</div>
 						</div>
 					</>
 
