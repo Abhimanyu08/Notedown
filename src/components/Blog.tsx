@@ -73,7 +73,6 @@ export function Blog({
 		return htmlToJsx({
 			html: content,
 			language: language || "python",
-			ownerId: created_by!,
 			imageFolder: image_folder || undefined,
 			imageToUrl,
 		});

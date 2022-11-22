@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { ABOUT_LENGTH } from "../../utils/constants";
+import htmlToJsx from "../../utils/htmlToJsx";
 
 export function About({
 	about,
@@ -16,23 +17,21 @@ export function About({
 	editing: boolean;
 	previewing: boolean;
 }) {
-	// if (!owner) {
-	// 	return (
-	// 		<div
-	// 			className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
-	// 			dangerouslySetInnerHTML={{ __html: htmlAbout }}
-	// 		></div>
-	// 	);
-	// }
+	const aboutJSX = useMemo(() => {
+		return (
+			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full">
+				{htmlToJsx({
+					html: htmlAbout,
+				})}
+			</div>
+		);
+	}, [htmlAbout]);
 
 	if (editing) {
 		return (
 			<>
 				{previewing ? (
-					<div
-						className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
-						dangerouslySetInnerHTML={{ __html: htmlAbout }}
-					></div>
+					aboutJSX
 				) : (
 					<div className="w-full h-full lg:h-1/2 relative">
 						<p className="absolute top-3 lg:right-8 right-6 text-sm text-amber-400">
@@ -66,10 +65,5 @@ export function About({
 			</div>
 		);
 	}
-	return (
-		<div
-			className="prose prose-code:p-1 text-white prose-headings:text-white prose-sm md:prose-base max-w-full"
-			dangerouslySetInnerHTML={{ __html: htmlAbout }}
-		></div>
-	);
+	return aboutJSX;
 }

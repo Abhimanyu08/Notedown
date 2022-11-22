@@ -25,7 +25,7 @@ export function Toc({
 	setShowContents: Dispatch<SetStateAction<boolean>>;
 }) {
 	const [matches, setMatches] = useState<RegExpMatchArray[]>();
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
 		if (!html) {
@@ -56,11 +56,13 @@ export function Toc({
 						className="hidden lg:block"
 					/>
 				)}
-				<span>Table of Contents</span>
+				<span className="underline underline-offset-2 cursor-pointer">
+					Table of Contents
+				</span>
 			</h3>
 			<div
 				className={`ml-10 flex flex-col gap-3 ${
-					open ? "" : "invisible"
+					open ? "" : "lg:invisible"
 				} prose prose-sm prose-li:text-amber-400 prose-a:text-white prose-a:no-underline pb-10`}
 			>
 				<li>

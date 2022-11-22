@@ -1,12 +1,6 @@
-
-1. Add tips to write page/Add a minimal editor panel.
-2. Add publish button to preview page
-
-
-9. design a logo
-10. Setup meta tags in every page to render that logo
-11. Add latex support
-
+1. Add twitter cards
+2. Solve the problem of statically generating profile page
+3. Improve terminal experience
 
 -----------------Done------------------------------
 2. Modify carousel UX.

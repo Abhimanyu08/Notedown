@@ -70,7 +70,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const router = useRouter();
 	const { user } = useContext(UserContext);
 
-	const [about, setAbout] = useState<string | undefined>(profile?.about);
+	const [about, setAbout] = useState<string | undefined>(profileUser?.about);
 	const [htmlAbout, setHtmlAbout] = useState("");
 	const [previewing, setPreviewing] = useState(false);
 	const [sortType, setSortType] = useState<SortType>("latest");

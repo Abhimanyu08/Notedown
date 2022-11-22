@@ -8,7 +8,7 @@ function BlogLayout({
 	return (
 		<div className="grow flex flex-row min-h-0 relative">
 			<div
-				className={`lg:basis-1/5 w-full flex-col lg:pt-44 max-w-full overflow-y-auto justify-start ${
+				className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start ${
 					showContent ? "flex" : "hidden lg:flex"
 				} 
 				

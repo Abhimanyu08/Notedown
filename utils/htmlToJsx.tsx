@@ -13,15 +13,13 @@ import Latex from "react-latex";
 let BLOCK_NUMBER = -1;
 interface htmlToJsxProps {
 	html: string;
-	language: BlogProps["language"];
-	ownerId: string;
+	language?: BlogProps["language"];
 	imageFolder?: string;
 	imageToUrl?: Record<string, string>;
 }
 function htmlToJsx({
 	html,
 	language,
-	ownerId,
 	imageFolder,
 	imageToUrl,
 }: htmlToJsxProps): JSX.Element {
@@ -36,7 +34,7 @@ function htmlToJsx({
 				const string2 = match.at(6);
 				const elem = match.at(2)!;
 				const type = match.at(3);
-				if (type === "pre") {
+				if (type === "pre" && language) {
 					let code = elem.match(/<code>((.|\r|\n)*)<\/code>/)?.at(1);
 					BLOCK_NUMBER += 1;
 					return (
@@ -68,9 +66,7 @@ function htmlToJsx({
 					}
 					return (
 						<>
-							<span className="">
-								{string1} <code>{code}</code> {string2}
-							</span>
+							{string1} <code>{code}</code> {string2}
 						</>
 					);
 				}
@@ -136,7 +132,6 @@ function htmlToJsx({
 										{htmlToJsx({
 											html: string1 || "",
 											language,
-											ownerId,
 											imageFolder,
 											imageToUrl,
 										})}
@@ -151,7 +146,6 @@ function htmlToJsx({
 									{htmlToJsx({
 										html: `<p>${string2}</p>` || "",
 										language,
-										ownerId,
 										imageFolder,
 										imageToUrl,
 									})}
@@ -184,7 +178,6 @@ function htmlToJsx({
 									{htmlToJsx({
 										html: string1 || "",
 										language,
-										ownerId,
 										imageFolder,
 										imageToUrl,
 									})}
@@ -222,7 +215,6 @@ function htmlToJsx({
 								{htmlToJsx({
 									html: `<p>${string2}</p>` || "",
 									language,
-									ownerId,
 									imageFolder,
 									imageToUrl,
 								})}
@@ -264,7 +256,6 @@ function htmlToJsx({
 							htmlToJsx({
 								html: content!,
 								language,
-								ownerId,
 								imageFolder,
 								imageToUrl,
 							})
