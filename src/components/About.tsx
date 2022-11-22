@@ -51,7 +51,7 @@ export function About({
 			</>
 		);
 	}
-	if (htmlAbout === "") {
+	if (about === "") {
 		return (
 			<div className="flex h-full w-full justify-center">
 				{owner ? (
