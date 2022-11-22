@@ -36,10 +36,14 @@ import SearchResult from "../../interfaces/SearchResult";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
 
+interface ProfileUser extends Blogger {
+	htmlAbout?: string;
+}
+
 interface ProfileProps {
 	latest?: Partial<PostWithBlogger>[];
 	greatest?: Partial<PostWithBlogger>[];
-	profileUser?: Blogger;
+	profileUser?: ProfileUser;
 }
 
 interface UpvotedPost extends Post {
@@ -53,7 +57,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const [profile, setProfile] = useState(profileUser);
 	const [section, setSection] = useState<"posts" | "about">("about");
 	const [postType, setPostType] = useState<PostType>("published");
-	const [editingAbout, setEditingAbout] = useState(false);
 	const [publicPosts, setPublicPosts] = useState<
 		Partial<Post>[] | null | undefined
 	>(latest);
@@ -70,8 +73,13 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const router = useRouter();
 	const { user } = useContext(UserContext);
 
-	const [about, setAbout] = useState<string | undefined>(profileUser?.about);
-	const [htmlAbout, setHtmlAbout] = useState("");
+	const [editingAbout, setEditingAbout] = useState(false);
+	const [editedAbout, setEditedAbout] = useState<string | undefined>(
+		profileUser?.about
+	);
+	const [editedHtmlAbout, setEditedHtmlAbout] = useState(
+		profileUser?.htmlAbout
+	);
 	const [previewing, setPreviewing] = useState(false);
 	const [sortType, setSortType] = useState<SortType>("latest");
 	const [searchQuery, setSearchQuery] = useState("");
@@ -84,15 +92,15 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 
 	useEffect(() => {
 		const aboutMd2Html = async () => {
-			const html = await mdToHtml(about || "");
-			setHtmlAbout(html);
+			const html = await mdToHtml(editedAbout || "");
+			setEditedHtmlAbout(html);
 		};
 
 		aboutMd2Html();
-	}, [about]);
+	}, [editedAbout]);
 
 	useEffect(() => {
-		setAbout(profile?.about);
+		setEditedAbout(profile?.about);
 	}, [profile]);
 
 	useEffect(() => {
@@ -104,13 +112,18 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	const onAboutSave = async () => {
 		const { data, error } = await supabase
 			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.update({ about })
+			.update({ about: editedAbout })
 			.eq("id", profile!.id);
 		if (error || !data || data.length == 0) {
 			alert("Error in updating about");
 			return;
 		}
-		setProfile(data.at(0));
+		const newUserData = data.at(0);
+		if (newUserData)
+			setProfile({
+				...newUserData,
+				htmlAbout: await mdToHtml(newUserData?.about),
+			});
 		setEditingAbout(false);
 		setPreviewing(false);
 		sendRevalidationRequest(`profile/${profile?.id}`);
@@ -405,10 +418,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							post={postInAction}
 							modifyPosts={modifyPosts}
 						/>
-						{/* <EditModal
-							post={postInAction}
-							modifyPosts={modifyPosts}
-						/> */}
 						<PublishModal
 							post={postInAction}
 							modifyPosts={modifyPosts}
@@ -421,7 +430,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				)}
 			</>
 			<div
-				className="lg:grid flex flex-col grow lg:min-h-0 h-max overflow-y-auto  lg:overflow-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-3
+				className="lg:grid flex flex-col grow lg:min-h-0 h-max overflow-y-auto lg:overflow-y-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-3
 			md:px-5 lg:px-32"
 			>
 				<div
@@ -430,7 +439,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				>
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow ">
+				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-clip">
 					<div className="flex justify-between grow-0 items-center sticky top-0 z-20 bg-slate-900 pb-2 md:pb-4 lg:pb-0">
 						<div className="tabs">
 							<p
@@ -495,7 +504,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									<button
 										className="normal-case btn btn-xs md:btn-sm text-white"
 										onClick={() => {
-											setAbout(profileUser?.about);
+											setEditedAbout(profile?.about);
 											setEditingAbout(false);
 											setPreviewing(false);
 										}}
@@ -513,12 +522,28 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							))
 						)}
 					</div>
-					{section === "posts" ? (
-						<>
+
+					<div
+						className={` flex flex-row w-[200%] ${
+							section === "about" ? "" : "-translate-x-1/2"
+						} transition-all duration-500 min-h-0 grow`}
+					>
+						<div className="mt-6 lg:pl-2 h-full mb-10 w-1/2">
+							<About
+								editedAbout={editedAbout || ""}
+								originalHtmlAbout={profile?.htmlAbout || ""}
+								editedHtmlAbout={editedHtmlAbout || ""}
+								previewing={previewing}
+								setAbout={setEditedAbout}
+								editing={editingAbout}
+								owner={user?.id === id}
+							/>
+						</div>
+						<div className="w-1/2 flex flex-col overflow-visible h-full">
 							<div
-								className={`sticky top-10 md:top-12 z-20 bg-slate-900 lg:my-4 pb-2 lg:pb-0`}
+								className={`sticky grow-0 flex flex-col gap-2 md:gap-4 py-2 md:py-4 top-10 z-10 bg-slate-900`}
 							>
-								<div className="flex justify-between grow-0">
+								<div className="flex justify-between ">
 									{user?.id === id && (
 										<select
 											name=""
@@ -555,7 +580,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										/>
 									)}
 								</div>
-								<div className="mt-2 md:mt-4 lg:mt-4 md:w-1/2">
+								<div className="md:w-1/2">
 									{postType === "upvoted" ? (
 										<SearchComponent
 											placeholder={
@@ -663,19 +688,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									)}
 								</>
 							)}
-						</>
-					) : (
-						<div className="mt-6 lg:pl-2 h-full mb-10">
-							<About
-								about={about || ""}
-								htmlAbout={htmlAbout || ""}
-								previewing={previewing}
-								setAbout={setAbout}
-								editing={editingAbout}
-								owner={user?.id === id}
-							/>
 						</div>
-					)}
+					</div>
 				</div>
 			</div>
 		</Layout>
@@ -734,7 +748,7 @@ export const getStaticProps: GetStaticProps<
 	if (!context.params) return { props: {}, redirect: "/" };
 	const { id } = context.params;
 
-	let userData: Blogger | undefined;
+	let userData: ProfileUser | undefined;
 	let latest: Partial<Post>[] | undefined;
 	let greatest: Partial<Post>[] | undefined;
 
@@ -781,6 +795,12 @@ export const getStaticProps: GetStaticProps<
 	}
 
 	if (!userData) return { props: {}, redirect: "/" };
+
+	if (userData.about) {
+		const aboutMd2Html = await mdToHtml(userData.about);
+		userData = { ...userData, htmlAbout: aboutMd2Html };
+	}
+
 	return {
 		props: {
 			latest,

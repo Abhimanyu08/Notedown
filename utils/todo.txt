@@ -1,6 +1,7 @@
 1. Add twitter cards
 2. Solve the problem of statically generating profile page
 3. Improve terminal experience
+4. maybe canvas should be excalidraw
 
 -----------------Done------------------------------
 2. Modify carousel UX.

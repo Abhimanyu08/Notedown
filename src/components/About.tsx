@@ -1,41 +1,56 @@
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { ABOUT_LENGTH } from "../../utils/constants";
 import htmlToJsx from "../../utils/htmlToJsx";
+import mdToHtml from "../../utils/mdToHtml";
 
 export function About({
-	about,
+	editedAbout,
 	setAbout,
-	htmlAbout,
+	editedHtmlAbout,
+	originalHtmlAbout,
 	editing,
 	owner,
 	previewing,
 }: {
-	about: string;
+	editedAbout: string;
 	setAbout: Dispatch<SetStateAction<string | undefined>>;
-	htmlAbout: string;
+	originalHtmlAbout: string;
+	editedHtmlAbout: string;
 	owner: boolean;
 	editing: boolean;
 	previewing: boolean;
 }) {
+	// console.log("About ----------------->", about);
+
 	const aboutJSX = useMemo(() => {
 		return (
 			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full">
 				{htmlToJsx({
-					html: htmlAbout,
+					html: originalHtmlAbout,
 				})}
 			</div>
 		);
-	}, [htmlAbout]);
+	}, [originalHtmlAbout]);
+
+	const editedAboutJsx = useMemo(() => {
+		return (
+			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full">
+				{htmlToJsx({
+					html: editedHtmlAbout,
+				})}
+			</div>
+		);
+	}, [editedHtmlAbout]);
 
 	if (editing) {
 		return (
 			<>
 				{previewing ? (
-					aboutJSX
+					editedAboutJsx
 				) : (
 					<div className="w-full h-full lg:h-1/2 relative">
 						<p className="absolute top-3 lg:right-8 right-6 text-sm text-amber-400">
-							{about.length}/{ABOUT_LENGTH}
+							{editedAbout.length}/{ABOUT_LENGTH}
 						</p>
 						<textarea
 							className="textarea w-full h-full"
@@ -44,14 +59,14 @@ export function About({
 								if (e.target.value.length <= ABOUT_LENGTH)
 									setAbout(e.target.value);
 							}}
-							value={about}
+							value={editedAbout}
 						/>
 					</div>
 				)}
 			</>
 		);
 	}
-	if (about === "") {
+	if (editedAbout === "") {
 		return (
 			<div className="flex h-full w-full justify-center">
 				{owner ? (

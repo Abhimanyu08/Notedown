@@ -58,15 +58,15 @@ function PostDisplay({
 	};
 
 	return (
-		<div className="flex flex-col h-full overflow-x-hidden  md:overflow-y-auto">
+		<div className="flex flex-col overflow-x-hidden h-full">
 			{(posts?.length || 0) > 0 ? (
 				<div
 					className="flex flex-col gap-8 lg:basis-11/12 basis-10/12"
 					onScroll={(e) => e.currentTarget}
 				>
-					{posts?.map((post) => (
+					{posts?.map((post, idx) => (
 						<PostComponent
-							key={post.id!}
+							key={idx}
 							{...{
 								post,
 								author: post.author || post.bloggers?.name,
