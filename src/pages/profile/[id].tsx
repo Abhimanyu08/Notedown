@@ -440,7 +440,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
 				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-clip">
-					<div className="flex justify-between grow-0 items-center sticky top-0 z-20 bg-slate-900 pb-2 md:pb-4 lg:pb-0">
+					<div className="flex justify-between grow-0 items-center  md:pb-4 lg:pb-0">
 						<div className="tabs">
 							<p
 								className={`tab tab-md  tab-lifted ${
@@ -541,7 +541,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 						</div>
 						<div className="w-1/2 flex flex-col overflow-visible h-full">
 							<div
-								className={`sticky grow-0 flex flex-col gap-2 md:gap-4 py-2 md:py-4 top-10 z-10 bg-slate-900`}
+								className={`grow-0 flex flex-col gap-2 md:gap-4 py-2 md:py-4`}
 							>
 								<div className="flex justify-between ">
 									{user?.id === id && (

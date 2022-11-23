@@ -31,7 +31,7 @@ export default function Document() {
 					crossOrigin="anonymous"
 				></script>
 			</Head>
-			<body className="bg-slate-900">
+			<body className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700">
 				<Main />
 				<NextScript />
 			</body>

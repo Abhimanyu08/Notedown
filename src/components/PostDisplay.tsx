@@ -58,7 +58,7 @@ function PostDisplay({
 	};
 
 	return (
-		<div className="flex flex-col overflow-x-hidden h-full">
+		<div className="flex flex-col overflow-x-hidden h-fit">
 			{(posts?.length || 0) > 0 ? (
 				<div
 					className="flex flex-col gap-8 lg:basis-11/12 basis-10/12"
@@ -80,9 +80,9 @@ function PostDisplay({
 				<p className="self-center mt-10 text-white/70">No Posts yet</p>
 			)}
 			{(posts?.length || 0) > 0 && (
-				<div className="flex justify-center pt-12 pb-28 lg:pb-10 lg:basis-1/12 basis-2/12">
+				<div className="flex justify-center pt-32 pb-28 lg:pb-10 lg:basis-1/12 basis-2/12">
 					<div
-						className="lm h-fit normal-case rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer text-white"
+						className="h-fit normal-case rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer text-amber-400 bg-slate-900"
 						onClick={onLoadMore}
 					>
 						{hasMore ? "Load More" : "No More"}

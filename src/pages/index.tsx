@@ -12,7 +12,6 @@ import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
 import PostDisplay from "../components/PostDisplay";
 import SearchComponent from "../components/SearchComponent";
-import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 import SearchResults from "../interfaces/SearchResult";
 import { UserContext } from "./_app";
@@ -82,14 +81,17 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				/>
 				<meta
 					name="keywords"
-					content="Rce Blog, remote code execution, blog, tech blog"
+					content="RCE-Blog, remote code execution, blog, tech blog"
 				/>
 				<meta
 					property="og:title"
-					content="Home Page of the Rce Blog website"
+					content="Home Page of the RCE-Blog website"
 				/>
 				<meta property="og:url" content="https://rce-blog.xyz" />
-				<meta property="og:site_name" content="Rce Blog" />
+				<meta
+					property="og:site_name"
+					content="RCE-Blog - A place to write posts with prose, code & free hand diagrams"
+				/>
 				<meta property="og:type" content="website" />
 			</Head>
 			<div className="w-full px-5 lg:px-0 md:w-3/5 lg:w-1/3 mx-auto">
@@ -99,7 +101,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					setSearchQuery={setSearchQuery}
 				/>
 			</div>
-			<div className="px-4 lg:px-32 xl:px-64 grow mt-5 overflow-hidden">
+			<div className="px-4 lg:px-32 xl:px-64 grow mt-12 overflow-hidden">
 				{(searchResults?.length || 0) > 0 ? (
 					<PostDisplay
 						posts={searchResults || []}
