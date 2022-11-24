@@ -77,7 +77,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				<title>Rce Blog</title>
 				<meta
 					name="description"
-					content="Home page of the rce-blog.xyz website"
+					content="Write notes containing prose, executable code snippets, free hand drawings and images."
 				/>
 				<meta
 					name="keywords"
@@ -88,10 +88,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					content="Home Page of the RCE-Blog website"
 				/>
 				<meta property="og:url" content="https://rce-blog.xyz" />
-				<meta
-					property="og:site_name"
-					content="RCE-Blog - A place to write posts with prose, code & free hand diagrams"
-				/>
+				<meta property="og:site_name" content="RCE-Blog" />
 				<meta property="og:type" content="website" />
 			</Head>
 			<div className="w-full px-5 lg:px-0 md:w-3/5 lg:w-1/3 mx-auto">

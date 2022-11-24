@@ -90,6 +90,7 @@ function Edit() {
 	const { editorView } = useEditor({
 		language: "markdown",
 		code: data?.markdown || "",
+		editorParentId: "markdown-textarea",
 	});
 
 	useEffect(() => {
@@ -473,6 +474,7 @@ function Edit() {
 								imageToUrl={imageToUrl}
 								image_folder={data?.image_folder}
 								containerId={containerId}
+								paddingClasses="px-2 lg:px-20"
 							/>
 						</div>
 						<div

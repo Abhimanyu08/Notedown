@@ -180,7 +180,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						setShowContents={setShowContents}
 					/>
 
-					<Blog {...props} containerId={containerId} />
+					<Blog
+						{...props}
+						containerId={containerId}
+						paddingClasses="px-2 lg:px-20"
+					/>
 
 					<>
 						{props.language && (

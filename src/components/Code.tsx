@@ -41,6 +41,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		blockNumber,
 		code,
 		mounted,
+		editorParentId: `codearea-${blockNumber}`,
 	});
 
 	useEffect(() => {

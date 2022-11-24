@@ -11,18 +11,18 @@ import { BlogContext } from '../pages/_app';
 interface useEditorProps {
     language: BlogProps["language"] | "markdown"
     code: string
+    editorParentId: string
     blockNumber?: number
     mounted?: boolean
 }
-function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { editorView: EditorView | null; } {
+function useEditor({ language, blockNumber, code, mounted, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     const { collectCodeTillBlock } = useContext(BlogContext)
-    const elemId = useRef(language === "markdown" ? "markdown-textarea" : `codearea-${blockNumber}`)
 
 
     useEffect(() => {
         if (mounted === false) return
-        document.getElementById(elemId.current)?.replaceChildren("")
+        document.getElementById(editorParentId)?.replaceChildren("")
 
         let startState = EditorState.create({
             doc: code,
@@ -31,7 +31,7 @@ function useEditor({ language, blockNumber, code, mounted }: useEditorProps): { 
 
         let view = new EditorView({
             state: startState,
-            parent: document.getElementById(elemId.current)!,
+            parent: document.getElementById(editorParentId)!,
         });
 
         setEditorView(view);

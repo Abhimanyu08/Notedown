@@ -19,6 +19,7 @@ export function Blog({
 	image_folder,
 	bloggers,
 	imageToUrl,
+	paddingClasses,
 }: Partial<BlogProps>) {
 	const [collectCodeTillBlock, setCollectCodeTillBlock] =
 		useState<(blockNumber: number) => void>();
@@ -96,7 +97,18 @@ export function Blog({
 	}, []);
 
 	useEffect(() => {
-		fetchAuthor();
+		const fetchAuthor = async (created_by: string) => {
+			//fetching author here because author may have changed his displayname
+			// and I will blow my head off before attempting to revalidate each one of his single posts
+			//just because that maniac changed his username from josh to joshua
+
+			const { data } = await supabase
+				.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+				.select("name")
+				.eq("id", created_by || "");
+			if (data) setAuthor(data.at(0)?.name || undefined);
+		};
+		if (created_by) fetchAuthor(created_by);
 	}, [created_by]);
 
 	const runCodeRequest = async (
@@ -148,18 +160,6 @@ export function Blog({
 		});
 	}, [runningCode]);
 
-	const fetchAuthor = async () => {
-		//fetching author here because author may have changed his displayname
-		// and I will blow my head off before attempting to revalidate each one of his single posts
-		//just because that maniac changed his username from josh to joshua
-
-		const { data } = await supabase
-			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.select("name")
-			.eq("id", created_by || "");
-		if (data) setAuthor(data.at(0)?.name || undefined);
-	};
-
 	return (
 		<BlogContext.Provider
 			value={{
@@ -173,7 +173,7 @@ export function Blog({
 			}}
 		>
 			<div
-				className={`scroll-smooth prose prose-sm md:prose-base max-w-none px-2 lg:px-20 prose-headings:text-amber-500 prose-p:text-left text-white 
+				className={`scroll-smooth prose prose-sm md:prose-sm max-w-none ${paddingClasses} prose-headings:text-amber-500 prose-p:text-left text-white 
 				 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full prose-a:text-white
 				overflow-x-hidden		
 				overflow-y-visible
@@ -186,7 +186,7 @@ export function Blog({
 				prose-code:select-all
 				prose-p:leading-relaxed
 				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif prose-strong:text-white prose-blockquote:border-l-white/60 prose-blockquote:border-l-2
-
+				
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				`}
 			>
@@ -196,16 +196,18 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				<div className="text-center italic text-lg md:text-xl w-full font-semibold">
 					{description}
 				</div>
-				{created_by && (
-					<div className="flex gap-1 not-prose text-xs md:text-sm justify-center mb-10 md:mb-12 mt-8 font-mono">
-						<span>by</span>
-						<span className="link underline-offset-2 decoration-amber-400">
+				<div className="flex gap-1 not-prose text-xs md:text-sm justify-center mb-10 md:mb-12 mt-8 font-mono">
+					<span>by</span>
+					<span className="link underline-offset-2 decoration-amber-400">
+						{created_by ? (
 							<Link href={`/profile/${created_by}`}>
 								{author || bloggers?.name || ""}
 							</Link>
-						</span>
-					</div>
-				)}
+						) : (
+							<span>{bloggers?.name}</span>
+						)}
+					</span>
+				</div>
 				<div className="" id="jsx">
 					{blogJsx}
 				</div>

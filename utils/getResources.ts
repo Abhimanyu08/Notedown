@@ -39,7 +39,7 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
         throw Error("Give your post a title");
     }
     if (data.language !== undefined && !ALLOWED_LANGUAGES.some(val => val === data.language)) {
-        throw Error("Mind Your Language");
+        throw Error("Mind Your Language! Supported languages are 'rust','python' and 'javascript'");
     }
     if (data.title.length > TITLE_LENGTH || (data.description?.length || 0) > DESCRIPTION_LENGTH) {
         throw Error(`Either title or description is too large. Max title length - ${TITLE_LENGTH}, Max description length - ${DESCRIPTION_LENGTH}`)

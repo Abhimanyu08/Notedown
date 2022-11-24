@@ -103,7 +103,11 @@ export default function PrivateBlog() {
 			<BlogLayout showContent={showContent}>
 				<Toc html={data?.content} setShowContents={setShowContents} />
 
-				<Blog {...data} containerId={containerId} />
+				<Blog
+					{...data}
+					containerId={containerId}
+					paddingClasses="px-2 lg:px-20"
+				/>
 				<>
 					{data?.language && (
 						<div
