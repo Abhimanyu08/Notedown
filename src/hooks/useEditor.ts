@@ -21,8 +21,14 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
 
 
     useEffect(() => {
+        if (language === "markdown") {
+            console.log("this ran", mounted, language, blockNumber)
+            console.log("markdown ->", code)
+        }
         if (mounted === false) return
-        document.getElementById(editorParentId)?.replaceChildren("")
+        const editorParent = document.getElementById(editorParentId)
+        if (!editorParent) return
+        editorParent?.replaceChildren("")
 
         let startState = EditorState.create({
             doc: code,
@@ -31,7 +37,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
 
         let view = new EditorView({
             state: startState,
-            parent: document.getElementById(editorParentId)!,
+            parent: editorParent,
         });
 
         setEditorView(view);

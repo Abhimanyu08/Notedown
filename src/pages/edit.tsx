@@ -597,19 +597,8 @@ function Edit() {
 								>
 									Canvas
 								</div>
-							</div>
-							<div className="grow relative">
 								<div
-									className={`pb-20 lg:pb-0 overflow-y-auto  w-full `}
-									id="markdown-textarea"
-									onPaste={() => {
-										setCumulativeImageName("");
-										setCopiedImageName("");
-									}}
-								></div>
-								<div
-									className="absolute top-2 right-2 tooltip tooltip-left"
-									data-tip="Enable Vim"
+									className="btn btn-xs tool gap-2"
 									onClick={() =>
 										setEnabledVimForMarkdown(
 											(prev) => !prev
@@ -620,11 +609,25 @@ function Edit() {
 										className={` ${
 											enabledVimForMarkdown
 												? "text-lime-400"
-												: "text-cyan-400"
+												: "text-white"
 										}`}
 									/>
+									<span className="normal-case">
+										{enabledVimForMarkdown
+											? "Disable"
+											: "Enable"}{" "}
+										Vim
+									</span>
 								</div>
 							</div>
+							<div
+								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
+								id="markdown-textarea"
+								onPaste={() => {
+									setCumulativeImageName("");
+									setCopiedImageName("");
+								}}
+							></div>
 						</div>
 					</>
 

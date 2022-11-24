@@ -60,20 +60,6 @@
 	background-color: rgb(51 65 85);
 }
 
-.mockup {
-	/* perspective-origin: left; */
-	/* perspective: 5000px; */
-	position: relative;
-}
-.edit-mock {
-	transform: skewY(3deg) scaleY(1.2);
-	/* transform-style: preserve-3d; */
-}
-.preview-mock {
-	transform: skewY(-3deg) scaleY(1.2);
-	/* transform-style: preserve-3d; */
-}
-
 .tool {
 	background-color: black;
 	color: white;

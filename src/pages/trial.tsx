@@ -26,7 +26,6 @@ interface TrialProps {
 function Trial({ markdown }: TrialProps) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
-	const [mockupMarkdown, setMockupMarkdown] = useState(markdown);
 	const markdownRef = useRef<HTMLDivElement>(null);
 	const blogRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -34,12 +33,18 @@ function Trial({ markdown }: TrialProps) {
 	const [editorMockupWidth, setEditorMockupWidth] = useState(700);
 	const [rotate, setRotate] = useState(false);
 	const [markdownChanged, setMarkdownChanged] = useState(false);
-	const [convertToHtml, setConvertToHtml] = useState(true);
+	const [convertToHtml, setConvertToHtml] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		if (!mounted) setMounted(true);
+	}, []);
 
 	const { editorView } = useEditor({
 		language: "markdown",
 		editorParentId: "editor-mockup",
 		code: markdown,
+		mounted,
 	});
 
 	const [blogData, setBlogData] = useState<{
@@ -49,8 +54,8 @@ function Trial({ markdown }: TrialProps) {
 		content?: string;
 	}>({});
 
-	const updateBlogData = (markdown: string) => {
-		getHtmlFromMarkdown(markdown)
+	const updateBlogData = (newMarkdown: string) => {
+		getHtmlFromMarkdown(newMarkdown)
 			.then(({ data, content }) => {
 				setBlogData({
 					title: data.title,
@@ -66,23 +71,30 @@ function Trial({ markdown }: TrialProps) {
 
 	useEffect(() => {
 		if (!editorView) return;
-		const markdown = editorView?.state.doc.toJSON().join("\n");
-		if (!markdown) return;
-		updateBlogData(markdown);
+		const newMarkdown = editorView?.state.doc.toJSON().join("\n");
+		if (!newMarkdown) return;
+
+		const docLength = editorView?.state.doc.length;
+
+		editorView?.dispatch({
+			changes: { from: 0, to: docLength, insert: newMarkdown },
+		});
+
+		updateBlogData(newMarkdown);
 	}, [editorView]);
 
 	useEffect(() => {
 		if (!editorView || !convertToHtml) return;
-		const markdown = editorView?.state.doc.toJSON().join("\n");
-		if (!markdown) return;
-		updateBlogData(markdown);
+		const newMarkdown = editorView?.state.doc.toJSON().join("\n");
+		if (!newMarkdown) return;
+		updateBlogData(newMarkdown);
 		setMarkdownChanged(false);
 		setConvertToHtml(false);
 	}, [editorView, convertToHtml]);
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
-			<div className="flex flex-col pb-20 ">
+			<div className="flex flex-col pb-20 grow overflow-y-auto">
 				<div className="self-center text-center leading-relaxed w-4/5 text-4xl py-10 text-white font-bold">
 					Write posts containing{" "}
 					<span className="text-amber-400">Prose</span>,{" "}
@@ -95,7 +107,7 @@ function Trial({ markdown }: TrialProps) {
 					simple markdown.
 				</div>
 				<div
-					className="flex justify-center items-start mockup min-h-0 overflow-clip h-[428px] px-4"
+					className="flex justify-center items-start overflow-clip h-[428px] px-4"
 					ref={containerRef}
 					onMouseMove={(e) => {
 						if (!resizing) return;
@@ -114,7 +126,9 @@ function Trial({ markdown }: TrialProps) {
 								editorMockupWidth +
 								(containerRef.current?.offsetLeft || 0),
 						}}
-						onKeyDown={() => setMarkdownChanged(true)}
+						onKeyDown={() => {
+							if (!markdownChanged) setMarkdownChanged(true);
+						}}
 					></div>
 					<div
 						className="w-1 relative cursor-ew-resize h-full"
@@ -294,7 +308,6 @@ export const getStaticProps: GetStaticProps<TrialProps> = async ({}) => {
 	if (fileError || !fileData)
 		return { props: { markdown: "" }, redirect: "/" };
 	const content = await fileData.text();
-	console.log(content);
 	return {
 		props: {
 			markdown: content,

@@ -80,6 +80,7 @@ export function Blog({
 	}, [content, language]);
 
 	useEffect(() => {
+		if (!containerId) return;
 		const func = (blockNumber: number) => {
 			setBlockToCode({});
 			const event = new Event("focus");
@@ -94,7 +95,7 @@ export function Blog({
 			setRunningCode(true);
 		};
 		setCollectCodeTillBlock(() => func);
-	}, []);
+	}, [containerId]);
 
 	useEffect(() => {
 		const fetchAuthor = async (created_by: string) => {
