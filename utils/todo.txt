@@ -3,6 +3,7 @@
 3. Improve terminal experience
 4. maybe canvas should be excalidraw
 5. Figure out activate rce ux for phone
+6. Comma should not be the caption separator in carousels.
 
 -----------------Done------------------------------
 2. Modify carousel UX.

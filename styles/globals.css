@@ -139,11 +139,17 @@
 	width: 675px;
 	height: 900px;
 }
-.tablet-rotated {
-	width: 900px;
-	height: 675px;
-}
+
 .phone {
 	width: 390px;
 	height: 844px;
+}
+
+.transparent {
+	opacity: 0;
+	transition: opacity 1s;
+}
+
+.opaque {
+	opacity: 1;
 }
