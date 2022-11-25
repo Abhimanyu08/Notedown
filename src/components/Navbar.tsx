@@ -22,7 +22,7 @@ function Navbar({
 	const [showLoginOptions, setShowLoginOptions] = useState(false);
 
 	return (
-		<div className="flex items-center p-3 md:p-4 justify-between grow-0 mb-10 lg:mb-14 xl:px-64  px-5 lg:px-32 z-10 opacity-100  border-white/25 font-semibold md:font-bold relative md:text-base text-sm">
+		<div className="flex items-center p-3 md:p-4 justify-between grow-0 mb-5 lg:mb-5 xl:px-64  px-5 lg:px-32 z-10 opacity-100  border-white/25 font-semibold md:font-bold relative md:text-base text-sm">
 			<div className="flex gap-6 lg:gap-20">
 				<Link href="/">
 					<p className="link-hover cursor-pointer  text-white">

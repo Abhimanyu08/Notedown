@@ -5,7 +5,11 @@ module.exports = {
 		"./src/components/**/*.{js,ts,jsx,tsx}",
 	],
 	theme: {
-		extend: {},
+		extend: {
+			animation: {
+				fade: "pulse 3s linear 1",
+			},
+		},
 	},
 	plugins: [
 		require("daisyui"),

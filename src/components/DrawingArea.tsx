@@ -207,7 +207,7 @@ function DrawingArea({
 				height={1080}
 			></canvas>
 			{router.asPath.startsWith("/edit") && (
-				<div className="flex items-center gap-2 justify-center flex-wrap">
+				<div className="flex items-center gap-2 justify-center flex-wrap mt-1">
 					<div
 						className={` btn btn-xs md:btn-sm normal-case ${
 							saved ? "text-lime-400" : "text-white"

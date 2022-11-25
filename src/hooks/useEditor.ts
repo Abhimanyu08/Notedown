@@ -21,14 +21,12 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
 
 
     useEffect(() => {
-        if (language === "markdown") {
-            console.log("this ran", mounted, language, blockNumber)
-            console.log("markdown ->", code)
-        }
         if (mounted === false) return
         const editorParent = document.getElementById(editorParentId)
         if (!editorParent) return
         editorParent?.replaceChildren("")
+
+        console.log(code)
 
         let startState = EditorState.create({
             doc: code,

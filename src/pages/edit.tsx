@@ -632,26 +632,24 @@ function Edit() {
 					</>
 
 					<>
-						{blogData.language && (
-							<div
-								className={` btn btn-circle  btn-ghost tooltip`}
-								data-tip={` ${
-									user
-										? "Enable remote code execution"
-										: "Enable remote code execution"
-								} `}
-								onClick={prepareContainer}
-							>
-								<BiCodeAlt
-									size={30}
-									className={` ${
-										containerId
-											? "text-lime-400"
-											: "text-white"
-									} mt-2 ml-2 `}
-								/>
-							</div>
-						)}
+						<div
+							className={` btn btn-circle  btn-ghost tooltip ${
+								blogData.language ? "" : "invisible"
+							}`}
+							data-tip={` ${
+								user
+									? "Enable remote code execution"
+									: "Enable remote code execution"
+							} `}
+							onClick={prepareContainer}
+						>
+							<BiCodeAlt
+								size={30}
+								className={` ${
+									containerId ? "text-lime-400" : "text-white"
+								} mt-2 ml-2 `}
+							/>
+						</div>
 						<div
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={

@@ -13,11 +13,15 @@ import Layout from "../components/Layout";
 import useEditor from "../hooks/useEditor";
 import { UserContext } from "./_app";
 import { BiRotateRight } from "react-icons/bi";
-import { BsFillArrowRightCircleFill } from "react-icons/bs";
+import {
+	BsArrowRightCircleFill,
+	BsFillArrowRightCircleFill,
+} from "react-icons/bs";
 import { FcSearch } from "react-icons/fc";
 import searchGif from "../../public/search.gif";
 import writeGif from "../../public/write.gif";
 import canvasGif from "../../public/canvas.gif";
+// import markdownArray from "../../utils/trialArray";
 
 interface TrialProps {
 	markdown: string;
@@ -26,25 +30,19 @@ interface TrialProps {
 function Trial({ markdown }: TrialProps) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
-	const markdownRef = useRef<HTMLDivElement>(null);
-	const blogRef = useRef<HTMLDivElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [resizing, setResizing] = useState(false);
-	const [editorMockupWidth, setEditorMockupWidth] = useState(700);
-	const [rotate, setRotate] = useState(false);
+	const [editorMockupWidth, setEditorMockupWidth] = useState(750);
 	const [markdownChanged, setMarkdownChanged] = useState(false);
 	const [convertToHtml, setConvertToHtml] = useState(false);
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		if (!mounted) setMounted(true);
-	}, []);
+	const [screen, setScreen] = useState<
+		"desktop" | "tablet" | "phone" | "tablet-rotated"
+	>("desktop");
 
 	const { editorView } = useEditor({
 		language: "markdown",
 		editorParentId: "editor-mockup",
 		code: markdown,
-		mounted,
 	});
 
 	const [blogData, setBlogData] = useState<{
@@ -74,12 +72,6 @@ function Trial({ markdown }: TrialProps) {
 		const newMarkdown = editorView?.state.doc.toJSON().join("\n");
 		if (!newMarkdown) return;
 
-		const docLength = editorView?.state.doc.length;
-
-		editorView?.dispatch({
-			changes: { from: 0, to: docLength, insert: newMarkdown },
-		});
-
 		updateBlogData(newMarkdown);
 	}, [editorView]);
 
@@ -94,20 +86,25 @@ function Trial({ markdown }: TrialProps) {
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
-			<div className="flex flex-col pb-20 grow overflow-y-auto">
-				<div className="self-center text-center leading-relaxed w-4/5 text-4xl py-10 text-white font-bold">
+			<div className="flex flex-col pb-20 grow overflow-y-auto mt-20">
+				<div className="self-center text-center leading-relaxed w-4/5 text-4xl pb-10 text-white font-bold">
 					Write posts containing{" "}
-					<span className="text-amber-400">Prose</span>,{" "}
-					<span className="text-cyan-400">
-						<span className="italic">Executable</span> code
-						snippets,
+					<span className="text-amber-400 trial-1">Prose</span>,{" "}
+					<span className="text-cyan-400 trial-2">
+						<span className="italic">Executable</span> code snippets
+					</span>
+					{", "}
+					<span className="text-red-400 trial-3">
+						Free hand drawings
+					</span>
+					{", "}
+					and <span className="text-lime-400 trial-4">
+						Images
 					</span>{" "}
-					<span className="text-red-400">Free hand drawings,</span>{" "}
-					and <span className="text-lime-400">Images</span> using
-					simple markdown.
+					using simple markdown.
 				</div>
 				<div
-					className="flex justify-center items-start overflow-clip h-[428px] px-4"
+					className="flex justify-center items-start overflow-clip h-[500px] px-4 trial-5"
 					ref={containerRef}
 					onMouseMove={(e) => {
 						if (!resizing) return;
@@ -118,18 +115,24 @@ function Trial({ markdown }: TrialProps) {
 					}}
 				>
 					<div
-						className="border-2 border-black overflow-y-auto max-h-full overflow-x-scroll rounded-md"
-						id="editor-mockup"
-						ref={markdownRef}
+						className="flex flex-col max-h-full gap-2"
 						style={{
 							width:
 								editorMockupWidth +
 								(containerRef.current?.offsetLeft || 0),
 						}}
-						onKeyDown={() => {
-							if (!markdownChanged) setMarkdownChanged(true);
-						}}
-					></div>
+					>
+						<div
+							className="border-2 border-black overflow-y-auto  overflow-x-scroll rounded-md"
+							id="editor-mockup"
+							onKeyDown={() => {
+								if (!markdownChanged) setMarkdownChanged(true);
+							}}
+						></div>
+						<span className="self-center text-white text-sm">
+							Try editing in markdown
+						</span>
+					</div>
 					<div
 						className="w-1 relative cursor-ew-resize h-full"
 						onMouseDown={() => setResizing(true)}
@@ -148,8 +151,7 @@ function Trial({ markdown }: TrialProps) {
 						</div>
 					</div>
 					<div
-						className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none"
-						ref={blogRef}
+						className="flex flex-col max-h-full gap-2"
 						style={{
 							width: containerRef.current?.clientWidth
 								? containerRef.current.clientWidth -
@@ -159,18 +161,25 @@ function Trial({ markdown }: TrialProps) {
 								  (containerRef.current?.offsetLeft || 0),
 						}}
 					>
-						<Blog
-							key={0}
-							content={blogData?.content}
-							title={blogData?.title}
-							language={blogData?.language}
-							description={blogData?.description}
-							bloggers={{ name: "You" }}
-							image_folder={
-								"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/597"
-							}
-							paddingClasses="px-4"
-						/>
+						<div className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none">
+							<Blog
+								key={0}
+								content={blogData?.content}
+								title={blogData?.title}
+								language={blogData?.language}
+								description={blogData?.description}
+								bloggers={{ name: "You" }}
+								image_folder={
+									"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
+								}
+								paddingClasses="px-12"
+							/>
+						</div>
+						<span className="self-center w-fit text-white text-sm">
+							Press the{" "}
+							<BsArrowRightCircleFill className="inline mx-1 text-amber-400" />{" "}
+							button to see the changes
+						</span>
 					</div>
 				</div>
 
@@ -184,7 +193,7 @@ function Trial({ markdown }: TrialProps) {
 							<span className="text-cyan-400">Execute code!</span>
 						</span>
 					</div>
-					<div className="w-fit border-black border-2 rounded-md mr-4">
+					<div className="flex w-fit border-black border-2 rounded-md mr-4">
 						<Image
 							src={writeGif.src}
 							width={596}
@@ -194,7 +203,7 @@ function Trial({ markdown }: TrialProps) {
 					</div>
 				</div>
 				<div className="flex mt-20 items-center">
-					<div className="w-fit border-black border-2 rounded-md ml-4">
+					<div className="flex w-fit border-black border-2 rounded-md ml-4">
 						<Image
 							src={canvasGif.src}
 							width={604}
@@ -211,35 +220,68 @@ function Trial({ markdown }: TrialProps) {
 						</span>
 					</div>
 				</div>
-				<div className="flex mt-20">
-					<div className="flex flex-col items-center gap-2 justify-center w-1/2 font-bold text-3xl text-white">
-						<span>
-							<span className="text-violet-500">
-								Responsive!{" "}
-							</span>
-							Your posts look good on any device.
-						</span>
-						<span className="text-sm">
-							{" "}
-							(Ok, maybe not on an apple watch)
-						</span>
-						<div
-							className="rounded-full bg-black text-white animate-pulse"
-							onClick={() => setRotate((prev) => !prev)}
+				<div className="mt-20 flex mb-10 flex-col items-center gap-2 grow-0 justify-center font-bold text-3xl text-white">
+					<span>
+						<span className="text-violet-500">Responsive! </span>
+						Your posts look good on any device.
+					</span>
+					<span className="text-sm">
+						{" "}
+						(Ok, maybe not on an apple watch)
+					</span>
+					<div className="flex gap-4 text-base mt-5">
+						<span
+							className={`${
+								screen === "desktop"
+									? "underline decoration-amber-400"
+									: ""
+							}`}
+							onClick={() => setScreen("desktop")}
 						>
-							<BiRotateRight size={32} />
-						</div>
+							Desktop
+						</span>
+						<span
+							className={`${
+								screen === "tablet"
+									? "underline decoration-amber-400"
+									: ""
+							}`}
+							onClick={() => setScreen("tablet")}
+						>
+							tablet
+						</span>
+						<span
+							className={`${
+								screen === "tablet-rotated"
+									? "underline decoration-amber-400"
+									: ""
+							} rotate-90`}
+							onClick={() => setScreen("tablet-rotated")}
+						>
+							tablet
+						</span>
+						<span
+							className={`${
+								screen === "phone"
+									? "underline decoration-amber-400"
+									: ""
+							}`}
+							onClick={() => setScreen("phone")}
+						>
+							phone
+						</span>
 					</div>
-					<div className="w-1/2 relative">
-						<div
-							className={` mockup-phone  absolute top-0 left-40 ${
-								rotate ? "opacity-100 rotate-90" : "opacity-0"
-							} transition-all duration-1000`}
-						>
-							<div className="camera"></div>
-							<div className="display">
-								<div className="artboard artboard-demo  phone-3  bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700">
-									<Blog
+				</div>
+				<div className="w-full flex justify-center">
+					<div
+						className={`${screen}  
+							 transition-all duration-1000 bg-gradient-to-b border-black shadow-black shadow-lg border-4 rounded-lg from-slate-900 via-slate-800 to-slate-700`}
+					>
+						<iframe
+							src="https://rce-blog.xyz/posts/597"
+							className="h-full w-full"
+						></iframe>
+						{/* <Blog
 										key={1}
 										content={blogData?.content}
 										title={blogData?.title}
@@ -250,33 +292,7 @@ function Trial({ markdown }: TrialProps) {
 											"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/597"
 										}
 										paddingClasses="-rotate-90"
-									/>
-								</div>
-							</div>
-						</div>
-						<div
-							className={` mockup-phone ${
-								rotate ? "opacity-0 " : "opacity-100"
-							} transition-opacity duration-1000 ml-40`}
-						>
-							<div className="camera"></div>
-							<div className="display">
-								<div className="artboard artboard-demo phone-3 pt-10 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700">
-									<Blog
-										key={2}
-										content={blogData?.content}
-										title={blogData?.title}
-										language={blogData?.language}
-										description={blogData?.description}
-										bloggers={{ name: "You" }}
-										image_folder={
-											"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/597"
-										}
-										paddingClasses="px-4"
-									/>
-								</div>
-							</div>
-						</div>
+									/> */}
 					</div>
 				</div>
 				<div className="flex mt-20 items-center">
@@ -303,7 +319,7 @@ function Trial({ markdown }: TrialProps) {
 export const getStaticProps: GetStaticProps<TrialProps> = async ({}) => {
 	const { data: fileData, error: fileError } = await supabase.storage
 		.from(SUPABASE_FILES_BUCKET)
-		.download("f2c61fc8-bcdb-46e9-aad2-99c0608cf485/597/file.md");
+		.download("f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608/file.md");
 
 	if (fileError || !fileData)
 		return { props: { markdown: "" }, redirect: "/" };

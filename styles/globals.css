@@ -64,3 +64,86 @@
 	background-color: black;
 	color: white;
 }
+
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+		visibility: visible;
+	}
+	25% {
+		opacity: 25;
+		visibility: visible;
+	}
+	75% {
+		opacity: 50;
+		visibility: visible;
+	}
+	100% {
+		opacity: 100;
+		visibility: visible;
+	}
+}
+
+.trial-1 {
+	animation-name: fade-in;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-delay: 0.5s;
+	visibility: hidden;
+	animation-fill-mode: forwards;
+}
+.trial-2 {
+	animation-name: fade-in;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-delay: 1s;
+	visibility: hidden;
+	animation-fill-mode: forwards;
+}
+.trial-3 {
+	animation-name: fade-in;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-delay: 1.5s;
+	visibility: hidden;
+	animation-fill-mode: forwards;
+}
+.trial-4 {
+	animation-name: fade-in;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-delay: 2s;
+	visibility: hidden;
+	animation-fill-mode: forwards;
+}
+.trial-5 {
+	animation-name: fade-in;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-delay: 2.5s;
+	visibility: hidden;
+	animation-fill-mode: forwards;
+}
+
+.desktop {
+	width: 1200px;
+	height: 675px;
+}
+
+.tablet {
+	width: 675px;
+	height: 900px;
+}
+.tablet-rotated {
+	width: 900px;
+	height: 675px;
+}
+.phone {
+	width: 390px;
+	height: 844px;
+}
