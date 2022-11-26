@@ -20,7 +20,7 @@ interface TrialProps {
 	markdown: string;
 }
 
-function Trial({ markdown }: TrialProps) {
+function Index({ markdown }: TrialProps) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
 
@@ -43,7 +43,12 @@ function Trial({ markdown }: TrialProps) {
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
-			<div className="flex gap-10 lg:gap-20 md:gap-14 flex-col pb-20 grow overflow-y-auto">
+			<div
+				className="flex gap-10 lg:gap-20 md:gap-14 flex-col pb-20 grow overflow-y-auto
+			
+lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+			"
+			>
 				<div className="self-center flex gap-10 font-semibold lg:text-xl text-black">
 					<Link href="/read">
 						<div className="cursor-pointer bg-amber-400 flex items-center gap-2 px-3 lg:px-4 py-1 lg:py-2 rounded-md  ">
@@ -82,4 +87,4 @@ export const getStaticProps: GetStaticProps<TrialProps> = async ({}) => {
 	};
 };
 
-export default Trial;
+export default Index;

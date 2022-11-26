@@ -153,3 +153,7 @@
 .opaque {
 	opacity: 1;
 }
+
+.mdToBlogContainer {
+	height: 500px;
+}

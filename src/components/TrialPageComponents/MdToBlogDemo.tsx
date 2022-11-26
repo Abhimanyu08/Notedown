@@ -50,16 +50,21 @@ function MdToBlog({ markdown }: { markdown: string }) {
 			});
 	};
 	useEffect(() => {
-		if (!editorView) return;
-		const newMarkdown = editorView?.state.doc.toJSON().join("\n");
+		const eview =
+			window.screen.width < 1024 ? editorViewMobile : editorView;
+		if (!eview) return;
+		const newMarkdown = eview?.state.doc.toJSON().join("\n");
 		if (!newMarkdown) return;
 
 		updateBlogData(newMarkdown);
 	}, [editorView]);
 
 	useEffect(() => {
-		if (!editorView || !convertToHtml) return;
-		const newMarkdown = editorView?.state.doc.toJSON().join("\n");
+		if (!convertToHtml) return;
+		const eview =
+			window.screen.width < 1024 ? editorViewMobile : editorView;
+		if (!eview) return;
+		const newMarkdown = eview?.state.doc.toJSON().join("\n");
 		if (!newMarkdown) return;
 		updateBlogData(newMarkdown);
 		setMarkdownChanged(false);
@@ -67,7 +72,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 	}, [editorView, convertToHtml]);
 	return (
 		<div
-			className="flex flex-col gap-4 lg:gap-0 lg:flex-row justify-center items-start overflow-clip lg:h-[500px] px-1 lg:px-4 lg:trial-5 "
+			className="flex flex-col gap-4 xl:gap-0 xl:flex-row justify-center items-start xl:h-[500px] px-1 lg:px-4 trial-5"
 			ref={containerRef}
 			onMouseMove={(e) => {
 				if (!resizing) return;
@@ -78,7 +83,8 @@ function MdToBlog({ markdown }: { markdown: string }) {
 			}}
 		>
 			<div
-				className="flex-col max-h-full gap-2 hidden lg:flex"
+				className="flex-col max-h-full gap-2 hidden xl:flex 
+				"
 				style={{
 					width:
 						editorMockupWidth +
@@ -86,7 +92,11 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				}}
 			>
 				<div
-					className="border-2 border-black overflow-y-auto  overflow-x-scroll rounded-md drop-shadow-lg"
+					className="border-2 border-black overflow-auto  rounded-md drop-shadow-lg
+					
+
+					lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+					"
 					id="editor-mockup"
 					onKeyDown={() => {
 						if (!markdownChanged) setMarkdownChanged(true);
@@ -98,7 +108,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 			</div>
 
 			<div
-				className="w-1 relative cursor-ew-resize h-full hidden lg:block"
+				className="w-1 relative cursor-ew-resize h-full hidden xl:block"
 				onMouseDown={() => setResizing(true)}
 			>
 				<div
@@ -116,7 +126,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 			</div>
 
 			<div
-				className="flex-col max-h-full gap-2 hidden lg:flex"
+				className="flex-col max-h-full gap-2 hidden xl:flex"
 				style={{
 					width: containerRef.current?.clientWidth
 						? containerRef.current.clientWidth -
@@ -126,7 +136,12 @@ function MdToBlog({ markdown }: { markdown: string }) {
 						  (containerRef.current?.offsetLeft || 0),
 				}}
 			>
-				<div className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none bg-slate-900 drop-shadow-xl">
+				<div
+					className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none bg-slate-900 drop-shadow-xl
+				
+lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+				"
+				>
 					<Blog
 						key={0}
 						content={blogData?.content}
@@ -140,7 +155,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 						paddingClasses="px-12"
 					/>
 				</div>
-				<span className="self-center w-fit text-white text-sm hidden lg:inline">
+				<span className="self-center w-fit text-white text-sm ">
 					Press the{" "}
 					<BsArrowRightCircleFill className="inline mx-1 text-amber-400" />{" "}
 					button to see the changes
@@ -150,17 +165,20 @@ function MdToBlog({ markdown }: { markdown: string }) {
 			{/* --------------------Mobile Design------------------------- */}
 
 			<div
-				className="self-center text-white"
-				onClick={() =>
+				className="self-center text-white xl:hidden"
+				onClick={() => {
+					if (mode === "editor") {
+						setConvertToHtml(true);
+					}
 					setMode((prev) =>
 						prev === "editor" ? "preview" : "editor"
-					)
-				}
+					);
+				}}
 			>
 				<SiConvertio size={30} />
 			</div>
 			<div
-				className={` w-full lg:hidden relative h-[500px] md:h-[700px]`}
+				className={` w-full xl:hidden relative h-[500px] md:h-[700px]`}
 			>
 				<div
 					className={`border-2 border-black overflow-y-auto ${
@@ -172,7 +190,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 					}}
 				></div>
 				<div
-					className={` w-full lg:hidden h-full absolute top-0 left-0 ${
+					className={` w-full xl:hidden h-full absolute top-0 left-0 ${
 						mode === "preview" ? "" : "invisible"
 					}`}
 				>

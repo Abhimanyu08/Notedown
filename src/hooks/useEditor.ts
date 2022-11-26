@@ -26,7 +26,6 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
         if (!editorParent) return
         editorParent?.replaceChildren("")
 
-        console.log(code)
 
         let startState = EditorState.create({
             doc: code,
