@@ -6,8 +6,10 @@ module.exports = {
 	],
 	theme: {
 		extend: {
-			animation: {
-				fade: "pulse 3s linear 1",
+			dropShadow: {
+				cyan: "5px 5px 5px #06b6d4",
+				red: "-5px 5px 5px #f43f5e",
+				blue: "5px 5px 5px #2563eb",
 			},
 		},
 	},

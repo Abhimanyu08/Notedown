@@ -8,9 +8,9 @@ import React, {
 	useState,
 } from "react";
 import { FaEraser, FaPencilAlt } from "react-icons/fa";
-import { CANVAS_LIMIT, SUPABASE_IMAGE_BUCKET } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
-import { CanvasImageContext } from "../pages/_app";
+import { CANVAS_LIMIT, SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
+import { supabase } from "../../../utils/supabaseClient";
+import { CanvasImageContext } from "../../pages/_app";
 
 const cursor_style = {
 	pen: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:20px;'><text y='50%'>✍️</text></svg>\") 0 20, pointer",

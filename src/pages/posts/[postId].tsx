@@ -23,7 +23,7 @@ import { supabase } from "../../../utils/supabaseClient";
 import { Blog } from "../../components/Blog";
 import BlogLayout from "../../components/BlogLayout";
 import Layout from "../../components/Layout";
-import { Toc } from "../../components/TableOfContents";
+import { Toc } from "../../components/BlogPostComponents/TableOfContents";
 import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import Post from "../../interfaces/Post";

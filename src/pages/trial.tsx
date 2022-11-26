@@ -45,8 +45,8 @@ function Trial({ markdown }: TrialProps) {
 				<MdToBlog {...{ markdown }} />
 				<WriteEditDemo />
 				<CanvasDemo />
-				<AllScreenDemo />
 				<SearchDemo />
+				<AllScreenDemo />
 			</div>
 		</Layout>
 	);

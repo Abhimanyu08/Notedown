@@ -78,7 +78,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				}}
 			>
 				<div
-					className="border-2 border-black overflow-y-auto  overflow-x-scroll rounded-md"
+					className="border-2 border-black overflow-y-auto  overflow-x-scroll rounded-md drop-shadow-lg"
 					id="editor-mockup"
 					onKeyDown={() => {
 						if (!markdownChanged) setMarkdownChanged(true);
@@ -93,7 +93,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				onMouseDown={() => setResizing(true)}
 			>
 				<div
-					className={`absolute top-1/2 -left-3   rounded-full ${
+					className={`absolute top-1/2 -left-3 z-10  rounded-full ${
 						markdownChanged
 							? "animate-pulse text-amber-400"
 							: "animate-none text-amber-100"
@@ -116,7 +116,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 						  (containerRef.current?.offsetLeft || 0),
 				}}
 			>
-				<div className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none">
+				<div className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none bg-slate-900 drop-shadow-xl">
 					<Blog
 						key={0}
 						content={blogData?.content}

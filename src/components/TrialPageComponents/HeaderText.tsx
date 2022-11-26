@@ -9,7 +9,7 @@ function HeaderText() {
 				<span className="italic">Executable</span> code snippets
 			</span>
 			{", "}
-			<span className="text-red-400 trial-3 font-bold">
+			<span className="text-rose-400 trial-3 font-bold">
 				Free hand drawings
 			</span>
 			{", "}

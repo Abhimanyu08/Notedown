@@ -5,8 +5,8 @@ import {
 	PHOTO_LIMIT,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
-} from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
+} from "../../../utils/constants";
+import { supabase } from "../../../utils/supabaseClient";
 
 interface DeleteImagesModalProps {
 	imageNames: string[];
