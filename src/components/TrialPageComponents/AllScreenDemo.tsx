@@ -5,7 +5,7 @@ function AllScreenDemo() {
 		"desktop"
 	);
 	return (
-		<>
+		<div className="hidden lg:block">
 			<div className="mt-20 flex mb-10 flex-col items-center gap-2 grow-0 justify-center font-bold text-3xl text-white transparent">
 				<span>
 					<span className="text-violet-500">Responsive! </span>
@@ -60,7 +60,7 @@ function AllScreenDemo() {
 					></iframe>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 

@@ -3,6 +3,7 @@ import {
 	BsFillArrowRightCircleFill,
 	BsArrowRightCircleFill,
 } from "react-icons/bs";
+import { SiConvertio } from "react-icons/si";
 import { ALLOWED_LANGUAGES } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import useEditor from "../../hooks/useEditor";
@@ -14,9 +15,16 @@ function MdToBlog({ markdown }: { markdown: string }) {
 	const [editorMockupWidth, setEditorMockupWidth] = useState(750);
 	const [markdownChanged, setMarkdownChanged] = useState(false);
 	const [convertToHtml, setConvertToHtml] = useState(false);
+	const [mode, setMode] = useState<"editor" | "preview">("editor");
+
 	const { editorView } = useEditor({
 		language: "markdown",
 		editorParentId: "editor-mockup",
+		code: markdown,
+	});
+	const { editorView: editorViewMobile } = useEditor({
+		language: "markdown",
+		editorParentId: "editor-mockup-mobile",
 		code: markdown,
 	});
 
@@ -59,7 +67,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 	}, [editorView, convertToHtml]);
 	return (
 		<div
-			className="flex justify-center items-start overflow-clip h-[500px] px-4 trial-5"
+			className="flex flex-col gap-4 lg:gap-0 lg:flex-row justify-center items-start overflow-clip lg:h-[500px] px-1 lg:px-4 lg:trial-5 "
 			ref={containerRef}
 			onMouseMove={(e) => {
 				if (!resizing) return;
@@ -70,7 +78,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 			}}
 		>
 			<div
-				className="flex flex-col max-h-full gap-2"
+				className="flex-col max-h-full gap-2 hidden lg:flex"
 				style={{
 					width:
 						editorMockupWidth +
@@ -88,8 +96,9 @@ function MdToBlog({ markdown }: { markdown: string }) {
 					Try editing in markdown
 				</span>
 			</div>
+
 			<div
-				className="w-1 relative cursor-ew-resize h-full"
+				className="w-1 relative cursor-ew-resize h-full hidden lg:block"
 				onMouseDown={() => setResizing(true)}
 			>
 				<div
@@ -105,8 +114,9 @@ function MdToBlog({ markdown }: { markdown: string }) {
 					<BsFillArrowRightCircleFill size={30} />
 				</div>
 			</div>
+
 			<div
-				className="flex flex-col max-h-full gap-2"
+				className="flex-col max-h-full gap-2 hidden lg:flex"
 				style={{
 					width: containerRef.current?.clientWidth
 						? containerRef.current.clientWidth -
@@ -130,11 +140,57 @@ function MdToBlog({ markdown }: { markdown: string }) {
 						paddingClasses="px-12"
 					/>
 				</div>
-				<span className="self-center w-fit text-white text-sm">
+				<span className="self-center w-fit text-white text-sm hidden lg:inline">
 					Press the{" "}
 					<BsArrowRightCircleFill className="inline mx-1 text-amber-400" />{" "}
 					button to see the changes
 				</span>
+			</div>
+
+			{/* --------------------Mobile Design------------------------- */}
+
+			<div
+				className="self-center text-white"
+				onClick={() =>
+					setMode((prev) =>
+						prev === "editor" ? "preview" : "editor"
+					)
+				}
+			>
+				<SiConvertio size={30} />
+			</div>
+			<div
+				className={` w-full lg:hidden relative h-[500px] md:h-[700px]`}
+			>
+				<div
+					className={`border-2 border-black overflow-y-auto ${
+						mode === "editor" ? "" : "hidden"
+					} h-full overflow-x-scroll rounded-md drop-shadow-lg`}
+					id="editor-mockup-mobile"
+					onKeyDown={() => {
+						if (!markdownChanged) setMarkdownChanged(true);
+					}}
+				></div>
+				<div
+					className={` w-full lg:hidden h-full absolute top-0 left-0 ${
+						mode === "preview" ? "" : "invisible"
+					}`}
+				>
+					<div className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none bg-slate-900 drop-shadow-xl">
+						<Blog
+							key={0}
+							content={blogData?.content}
+							title={blogData?.title}
+							language={blogData?.language}
+							description={blogData?.description}
+							bloggers={{ name: "You" }}
+							image_folder={
+								"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
+							}
+							paddingClasses="px-12"
+						/>
+					</div>
+				</div>
 			</div>
 		</div>
 	);

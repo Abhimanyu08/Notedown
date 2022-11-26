@@ -2,7 +2,7 @@ import React from "react";
 
 function HeaderText() {
 	return (
-		<div className="self-center mt-20 tracking-wide text-center leading-relaxed w-4/5 text-4xl pb-10 text-white font-semibold">
+		<div className="self-center  tracking-wide text-center leading-relaxed px-1 lg:w-4/5 text-2xl lg:text-4xl pb-10 text-white font-semibold">
 			Write posts containing{" "}
 			<span className="text-amber-400 trial-1 font-bold">Prose</span>,{" "}
 			<span className="text-cyan-400 trial-2 font-bold">
