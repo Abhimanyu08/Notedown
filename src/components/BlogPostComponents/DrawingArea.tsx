@@ -8,9 +8,9 @@ import React, {
 	useState,
 } from "react";
 import { FaEraser, FaPencilAlt } from "react-icons/fa";
-import { CANVAS_LIMIT, SUPABASE_IMAGE_BUCKET } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
-import { CanvasImageContext } from "../pages/_app";
+import { CANVAS_LIMIT, SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
+import { supabase } from "../../../utils/supabaseClient";
+import { CanvasImageContext } from "../../pages/_app";
 
 const cursor_style = {
 	pen: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:20px;'><text y='50%'>✍️</text></svg>\") 0 20, pointer",
@@ -207,7 +207,7 @@ function DrawingArea({
 				height={1080}
 			></canvas>
 			{router.asPath.startsWith("/edit") && (
-				<div className="flex items-center gap-2 justify-center flex-wrap">
+				<div className="flex items-center gap-2 justify-center flex-wrap mt-1">
 					<div
 						className={` btn btn-xs md:btn-sm normal-case ${
 							saved ? "text-lime-400" : "text-white"

@@ -3,16 +3,16 @@ import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage } from "react-icons/md";
 import { SiPowershell, SiVim } from "react-icons/si";
-import { BlogContext } from "../pages/_app";
+import { BlogContext } from "../../pages/_app";
 
-import { sendRequestToRceServer } from "../../utils/sendRequest";
-import useEditor from "../hooks/useEditor";
-import { BlogProps } from "../interfaces/BlogProps";
+import { sendRequestToRceServer } from "../../../utils/sendRequest";
+import useEditor from "../../hooks/useEditor";
+import { BlogProps } from "../../interfaces/BlogProps";
 import { EditorView } from "codemirror";
 
 import { vim } from "@replit/codemirror-vim";
 import { StateEffect } from "@codemirror/state";
-import getExtensions from "../../utils/getExtensions";
+import getExtensions from "../../../utils/getExtensions";
 interface CodeProps {
 	code: string;
 	language: BlogProps["language"] | "markdown";
@@ -41,6 +41,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		blockNumber,
 		code,
 		mounted,
+		editorParentId: `codearea-${blockNumber}`,
 	});
 
 	useEffect(() => {

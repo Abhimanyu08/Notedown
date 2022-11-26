@@ -6,12 +6,12 @@ import {
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
-} from "../../utils/constants";
-import { getHtmlFromMarkdown } from "../../utils/getResources";
-import makeFolderName from "../../utils/makeFolderName";
-import { supabase } from "../../utils/supabaseClient";
-import FileMetadata from "../interfaces/FileMetdata";
-import Post from "../interfaces/Post";
+} from "../../../utils/constants";
+import { getHtmlFromMarkdown } from "../../../utils/getResources";
+import makeFolderName from "../../../utils/makeFolderName";
+import { supabase } from "../../../utils/supabaseClient";
+import FileMetadata from "../../interfaces/FileMetdata";
+import Post from "../../interfaces/Post";
 
 export function UploadModal({
 	userId,

@@ -39,11 +39,11 @@ import makeFolderName from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
 import { Blog } from "../components/Blog";
 import BlogLayout from "../components/BlogLayout";
-import DeleteImagesModal from "../components/DeleteImagesModal";
-import ImageCopy from "../components/ImageCopy";
+import DeleteImagesModal from "../components/Modals/DeleteImagesModal";
+import ImageCopy from "../components/BlogPostComponents/ImageCopy";
 import Layout from "../components/Layout";
 import SmallScreenFooter from "../components/SmallScreenFooter";
-import { Toc } from "../components/TableOfContents";
+import { Toc } from "../components/BlogPostComponents/TableOfContents";
 import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
 import Post from "../interfaces/Post";
@@ -90,6 +90,7 @@ function Edit() {
 	const { editorView } = useEditor({
 		language: "markdown",
 		code: data?.markdown || "",
+		editorParentId: "markdown-textarea",
 	});
 
 	useEffect(() => {
@@ -473,6 +474,7 @@ function Edit() {
 								imageToUrl={imageToUrl}
 								image_folder={data?.image_folder}
 								containerId={containerId}
+								paddingClasses="px-2 lg:px-20"
 							/>
 						</div>
 						<div
@@ -595,19 +597,8 @@ function Edit() {
 								>
 									Canvas
 								</div>
-							</div>
-							<div className="grow relative">
 								<div
-									className={`pb-20 lg:pb-0 overflow-y-auto  w-full `}
-									id="markdown-textarea"
-									onPaste={() => {
-										setCumulativeImageName("");
-										setCopiedImageName("");
-									}}
-								></div>
-								<div
-									className="absolute top-2 right-2 tooltip tooltip-left"
-									data-tip="Enable Vim"
+									className="btn btn-xs tool gap-2"
 									onClick={() =>
 										setEnabledVimForMarkdown(
 											(prev) => !prev
@@ -618,35 +609,47 @@ function Edit() {
 										className={` ${
 											enabledVimForMarkdown
 												? "text-lime-400"
-												: "text-cyan-400"
+												: "text-white"
 										}`}
 									/>
+									<span className="normal-case">
+										{enabledVimForMarkdown
+											? "Disable"
+											: "Enable"}{" "}
+										Vim
+									</span>
 								</div>
 							</div>
+							<div
+								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
+								id="markdown-textarea"
+								onPaste={() => {
+									setCumulativeImageName("");
+									setCopiedImageName("");
+								}}
+							></div>
 						</div>
 					</>
 
 					<>
-						{blogData.language && (
-							<div
-								className={` btn btn-circle  btn-ghost tooltip`}
-								data-tip={` ${
-									user
-										? "Enable remote code execution"
-										: "Enable remote code execution"
-								} `}
-								onClick={prepareContainer}
-							>
-								<BiCodeAlt
-									size={30}
-									className={` ${
-										containerId
-											? "text-lime-400"
-											: "text-white"
-									} mt-2 ml-2 `}
-								/>
-							</div>
-						)}
+						<div
+							className={` btn btn-circle  btn-ghost tooltip ${
+								blogData.language ? "" : "invisible"
+							}`}
+							data-tip={` ${
+								user
+									? "Enable remote code execution"
+									: "Enable remote code execution"
+							} `}
+							onClick={prepareContainer}
+						>
+							<BiCodeAlt
+								size={30}
+								className={` ${
+									containerId ? "text-lime-400" : "text-white"
+								} mt-2 ml-2 `}
+							/>
+						</div>
 						<div
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={

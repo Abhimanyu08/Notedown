@@ -8,9 +8,9 @@ import { sendRequestToRceServer } from "../../../../utils/sendRequest";
 import { Blog } from "../../../components/Blog";
 import BlogLayout from "../../../components/BlogLayout";
 import Layout from "../../../components/Layout";
-import { PublishModal } from "../../../components/PublishModal";
+import { PublishModal } from "../../../components/Modals/PublishModal";
 import SmallScreenFooter from "../../../components/SmallScreenFooter";
-import { Toc } from "../../../components/TableOfContents";
+import { Toc } from "../../../components/BlogPostComponents/TableOfContents";
 import usePrivatePostQuery from "../../../hooks/usePrivatePost";
 import { UserContext } from "../../_app";
 
@@ -103,7 +103,11 @@ export default function PrivateBlog() {
 			<BlogLayout showContent={showContent}>
 				<Toc html={data?.content} setShowContents={setShowContents} />
 
-				<Blog {...data} containerId={containerId} />
+				<Blog
+					{...data}
+					containerId={containerId}
+					paddingClasses="px-2 lg:px-20"
+				/>
 				<>
 					{data?.language && (
 						<div

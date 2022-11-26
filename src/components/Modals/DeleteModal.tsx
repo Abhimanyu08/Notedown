@@ -3,11 +3,11 @@ import {
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
 	SUPABASE_POST_TABLE,
-} from "../../utils/constants";
-import { sendRevalidationRequest } from "../../utils/sendRequest";
-import { supabase } from "../../utils/supabaseClient";
-import ModalProps from "../interfaces/ModalProps";
-import Post from "../interfaces/Post";
+} from "../../../utils/constants";
+import { sendRevalidationRequest } from "../../../utils/sendRequest";
+import { supabase } from "../../../utils/supabaseClient";
+import ModalProps from "../../interfaces/ModalProps";
+import Post from "../../interfaces/Post";
 
 export function DeleteModal({ post, modifyPosts }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {

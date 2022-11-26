@@ -1,9 +1,9 @@
 import Image from "next/image";
 import React from "react";
 import { BsArrowRepeat } from "react-icons/bs";
-import Carousel from "../src/components/Carousel";
-import Code from "../src/components/Code";
-import DrawingArea from "../src/components/DrawingArea";
+import Carousel from "../src/components/BlogPostComponents/Carousel";
+import Code from "../src/components/BlogPostComponents/Code";
+import DrawingArea from "../src/components/BlogPostComponents/DrawingArea";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
