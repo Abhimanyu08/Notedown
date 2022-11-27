@@ -35,7 +35,7 @@ import {
 	onUnordererdList,
 } from "../../utils/editorToolFunctions";
 import { getHtmlFromMarkdown } from "../../utils/getResources";
-import makeFolderName from "../../utils/makeFolderName";
+import { makeFolderName, processImageName } from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
 import { Blog } from "../components/Blog";
 import BlogLayout from "../components/BlogLayout";
@@ -52,6 +52,7 @@ import { SiVim } from "react-icons/si";
 import getExtensions from "../../utils/getExtensions";
 import { vim } from "@replit/codemirror-vim";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
+import GalleryModal from "../components/Modals/GalleryModal";
 
 function Edit() {
 	const { user } = useContext(UserContext);
@@ -103,7 +104,7 @@ function Edit() {
 	}, [editorView]);
 
 	useEffect(() => {
-		if (user && currPostId === undefined && typeof postId === "string") {
+		if (user && typeof postId === "string") {
 			setCurrPostId(parseInt(postId));
 			let imageFolder =
 				data?.image_folder || makeFolderName(user.id, postId);
@@ -113,6 +114,18 @@ function Edit() {
 				.then((val) => {
 					if (val.data) {
 						setPrevImages(val.data.map((i) => i.name));
+						const prevImageToUrl: Record<string, string> = {};
+						val.data.forEach((i) => {
+							const { publicURL } = supabase.storage
+								.from(SUPABASE_IMAGE_BUCKET)
+								.getPublicUrl(`${imageFolder}/${i.name}`);
+							if (publicURL) prevImageToUrl[i.name] = publicURL;
+						});
+
+						setImageToUrl((prev) => ({
+							...prev,
+							...prevImageToUrl,
+						}));
 					}
 				});
 		}
@@ -130,14 +143,14 @@ function Edit() {
 	useEffect(() => {
 		let obj: Record<string, string> = {};
 		images.forEach((image) => {
-			const imageName = image.name;
-			if (Object.hasOwn(obj, imageName)) return;
+			const imageName = processImageName(image.name);
+			if (Object.hasOwn(imageToUrl, imageName)) return;
 			obj[imageName] = (window.URL || window.webkitURL).createObjectURL(
 				image
 			);
 		});
 
-		setImageToUrl(obj);
+		setImageToUrl((prev) => ({ ...prev, ...obj }));
 	}, [images]);
 
 	useEffect(() => {
@@ -237,7 +250,10 @@ function Edit() {
 		setUploadingChanges(true);
 
 		const newFile = new File([markdown], "");
-		let validImages = images.slice(0, PHOTO_LIMIT - prevImages.length);
+		let validImages = images.slice(
+			0,
+			PHOTO_LIMIT - (prevImages.length - toBeDeletedFromStorage.length)
+		);
 		if (currPostId && data) {
 			const imageFolder = makeFolderName(user.id, currPostId);
 
@@ -264,12 +280,17 @@ function Edit() {
 							(name) => `${imageFolder}/${name}`
 						)
 					);
+				setPrevImages((prev) =>
+					prev.filter((i) => !toBeDeletedFromStorage.includes(i))
+				);
+				setToBeDeletedFromStorage([]);
 			}
 
 			if (validImages.length > 0) {
 				const imageResults = await Promise.all(
 					validImages.map((image) => {
-						const imagePath = imageFolder + `/${image.name}`;
+						const imagePath =
+							imageFolder + `/${processImageName(image.name)}`;
 						return supabase.storage
 							.from(SUPABASE_IMAGE_BUCKET)
 							.upload(imagePath, image);
@@ -304,7 +325,7 @@ function Edit() {
 						if (images) {
 							setPrevImages((prev) => [
 								...prev,
-								...images.map((i) => i.name),
+								...images.map((i) => processImageName(i.name)),
 							]);
 						}
 
@@ -355,7 +376,10 @@ function Edit() {
 				validImages.map((image) => {
 					return supabase.storage
 						.from(SUPABASE_IMAGE_BUCKET)
-						.upload(`${blogFolder}/${image.name}`, image);
+						.upload(
+							`${blogFolder}/${processImageName(image.name)}`,
+							image
+						);
 				})
 			);
 			if (imageResults.some((res) => res.error !== null)) {
@@ -382,7 +406,7 @@ function Edit() {
 					if (images) {
 						setPrevImages((prev) => [
 							...prev,
-							...images.map((i) => i.name),
+							...images.map((i) => processImageName(i.name)),
 						]);
 					}
 
@@ -448,6 +472,16 @@ function Edit() {
 					setImages,
 					prevImages,
 					setPrevImages,
+					setToBeDeletedFromStorage,
+				}}
+			/>
+			<GalleryModal
+				currImages={images.map((i) => processImageName(i.name))}
+				prevImages={prevImages.filter((i) => !i.startsWith("canvas"))}
+				imageToUrl={imageToUrl}
+				{...{
+					toBeDeletedFromStorage,
+					setImages,
 					setToBeDeletedFromStorage,
 				}}
 			/>
@@ -704,50 +738,47 @@ function Edit() {
 							</div>
 						</div>
 
-						<div className="">
-							<label
-								className="btn btn-circle btn-ghost tooltip"
-								data-tip={`Add Image`}
-								htmlFor={
-									images.length + prevImages.length <
-									PHOTO_LIMIT
-										? "extra-images"
-										: "delete-images"
-								}
-							>
-								<BiImageAdd size={32} className="mt-2 ml-2" />
-							</label>
-
-							<input
-								type={"file"}
-								name=""
-								id="extra-images"
-								className="hidden"
-								accept="image/*"
-								multiple
-								max={
-									PHOTO_LIMIT -
-									images.length -
-									prevImages.length
-								}
-								onChange={(e) => {
-									setImages((prev) => [
-										...prev,
-										...Array.from(
-											e.target.files || []
-										).slice(
+						<input
+							type={"file"}
+							name=""
+							id="extra-images"
+							className="hidden"
+							accept="image/*"
+							multiple
+							max={
+								PHOTO_LIMIT - images.length - prevImages.length
+							}
+							onChange={(e) => {
+								setImages((prev) => [
+									...prev,
+									...Array.from(e.target.files || [])
+										.slice(
 											0,
 											PHOTO_LIMIT -
 												prev.length -
-												prevImages.length
+												prevImages.length +
+												toBeDeletedFromStorage.length
+										)
+										.filter(
+											(i) =>
+												!Object.hasOwn(
+													imageToUrl,
+													processImageName(i.name)
+												)
 										),
-									]);
-								}}
-							/>
-						</div>
-						<div
+								]);
+							}}
+						/>
+						<label
+							className="btn btn-circle btn-ghost tooltip"
+							data-tip={`Gallery`}
+							htmlFor={`gallery`}
+						>
+							<FcGallery size={28} className="mt-2 ml-2" />
+						</label>
+						{/* <div
 							className={`flex flex-col text-white normal-case cursor-pointer 
-							${images.length > 0 ? "" : "hidden"} h-20 overflow-y-auto`}
+							${images.length > 0 ? "" : "hidden"} h-32 px-1 overflow-y-auto`}
 						>
 							{images.map((i) => (
 								<ImageCopy
@@ -762,7 +793,7 @@ function Edit() {
 									}}
 								/>
 							))}
-						</div>
+						</div> */}
 					</>
 				</BlogLayout>
 			</CanvasImageContext.Provider>

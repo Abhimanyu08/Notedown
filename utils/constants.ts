@@ -9,6 +9,7 @@ export const DESCRIPTION_LENGTH = 100;
 export const ABOUT_LENGTH = 1000;
 export const PHOTO_LIMIT = 15;
 export const CANVAS_LIMIT = 5;
+export const CAROUSEL_LIMIT = 6;
 export const SEARCH_UPVOTED_POSTS_FUNCTION = "search_upvotes_of_user"
 export const SEARCH_PUBLC = "ranked_search_public"
 export const SEARCH_PRIVATE = "ranked_search_private"

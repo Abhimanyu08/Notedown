@@ -803,9 +803,9 @@ export const getStaticProps: GetStaticProps<
 
 	return {
 		props: {
-			latest,
-			greatest,
-			profileUser: userData,
+			latest: latest || [],
+			greatest: greatest || [],
+			profileUser: userData || [],
 		},
 	};
 };
