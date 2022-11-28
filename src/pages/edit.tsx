@@ -751,25 +751,26 @@ function Edit() {
 							accept="image/*"
 							multiple
 							max={
-								PHOTO_LIMIT - images.length - prevImages.length
+								PHOTO_LIMIT -
+								images.length -
+								prevImages.length +
+								toBeDeletedFromStorage.length
 							}
 							onChange={(e) => {
+								const maxPhotos =
+									PHOTO_LIMIT -
+									images.length -
+									prevImages.length +
+									toBeDeletedFromStorage.length;
+								const allImages = images
+									.map((i) => i.name)
+									.concat(prevImages);
 								setImages((prev) => [
 									...prev,
 									...Array.from(e.target.files || [])
-										.slice(
-											0,
-											PHOTO_LIMIT -
-												prev.length -
-												prevImages.length +
-												toBeDeletedFromStorage.length
-										)
+										.slice(0, maxPhotos)
 										.filter(
-											(i) =>
-												!Object.hasOwn(
-													imageToUrl,
-													processImageName(i.name)
-												)
+											(i) => !allImages.includes(i.name)
 										),
 								]);
 							}}
