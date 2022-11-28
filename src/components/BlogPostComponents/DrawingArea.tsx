@@ -189,6 +189,8 @@ function DrawingArea({
 			});
 
 			setSaved(true);
+		} else {
+			alert(`Maximum of ${CANVAS_LIMIT} canvas drawings are allowed`);
 		}
 	};
 

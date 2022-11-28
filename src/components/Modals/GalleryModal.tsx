@@ -27,9 +27,7 @@ function GalleryModal({
 	const [show, setShow] = useState(false);
 	const [selectedObj, setSelectedObj] = useState<Record<string, boolean>>({});
 	const [toBeCopied, setToBeCopied] = useState<string[]>([]);
-	const [imageAge, setImageAge] = useState<"new" | "old">(
-		(currImages?.length || 0) > 0 ? "new" : "old"
-	);
+	const [imageAge, setImageAge] = useState<"new" | "old">("new");
 
 	useEffect(() => {
 		if (!currImages) return;
@@ -65,7 +63,7 @@ function GalleryModal({
 					show ? "" : "hidden"
 				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50 bg-slate-800/80`}
 			>
-				<div className="p-1 w-3/5 h-[94%] bg-slate-900 flex flex-col rounded-sm gap-4 relative overflow-x-hidden">
+				<div className="p-1 lg:w-3/5 lg:h-[94%] bg-slate-900 flex flex-col rounded-sm gap-4 relative overflow-x-hidden h-full">
 					<label
 						className="absolute top-2 right-2 "
 						htmlFor="gallery"
@@ -74,36 +72,41 @@ function GalleryModal({
 						}}
 					>
 						<AiFillCloseCircle
-							size={30}
+							size={24}
 							className="text-cyan-400"
 						/>
 					</label>
 					<ul
-						className="marker:text-cyan-400  list-disc list-inside text-gray-100/90 py-2 px-4 w-2/3"
+						className="marker:text-cyan-400 text-sm lg:text-base  list-disc list-inside text-gray-100/90 py-2 px-5 lg:px-4 lg:w-5/6"
 						role="list"
 					>
 						<li>
 							Selecting an image or multiple images will generate
 							a string containing their name/names which you can
-							copy and paste in your markdown
+							copy and paste in your markdown.
 						</li>
-						<li>Hover/Touch on the image to select</li>
-						<li>Select multiple images for a carousel</li>
+						<li>Hover/Touch on the image to select.</li>
+						<li>Select multiple images for a carousel.</li>
 						<li>
-							Copy the string below after selecting and paste it
-							in your markdown appropriately to display the images
-							on preview
+							Copy the string below after selecting the images and
+							paste it in your markdown appropriately to display
+							the images on preview.
+						</li>
+						<li>
+							A post is allowed to have a maximum of {PHOTO_LIMIT}{" "}
+							images to prevent someone from uploading their
+							entire gallery.
 						</li>
 					</ul>
-					<div className="flex  text-white justify-center h-max w-full text-sm">
-						<span className="bg-cyan-400 text-black flex items-center font-semibold rounded-l-md p-1">
-							Image Name/Names:{" "}
-						</span>
-						<span className="px-2 w-1/2  border-cyan-400 border-2">
+					<div className="flex  text-white w-full h-max lg:w-2/3 self-center text-sm">
+						{/* <span className="bg-cyan-400 text-black flex items-center font-semibold rounded-l-md p-1">
+							Image(s) :{" "}
+						</span> */}
+						<span className="px-2 lg:w-1/2 grow border-cyan-400 border-2 overflow-auto">
 							{toBeCopied.join(",")}
 						</span>
 						<label
-							className="text-black bg-cyan-400 p-1 rounded-r-md flex items-center"
+							className="text-black bg-cyan-400 hover:bg-cyan-700 p-1 rounded-r-md flex items-center"
 							onClick={() => {
 								navigator.clipboard.writeText(
 									toBeCopied.join(",")
@@ -206,7 +209,7 @@ function ImageGrid({
 	extra?: number;
 }) {
 	return (
-		<div className="grid grid-cols-3 gap-x-1 h-max  w-full auto-rows-max">
+		<div className="grid grid-cols-2 lg:grid-cols-3 gap-x-1 h-max  w-full auto-rows-max">
 			{images &&
 				imageToUrl &&
 				images.map((imageName) => {

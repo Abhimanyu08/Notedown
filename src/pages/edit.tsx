@@ -113,9 +113,14 @@ function Edit() {
 				.list(imageFolder)
 				.then((val) => {
 					if (val.data) {
-						setPrevImages(val.data.map((i) => i.name));
+						setPrevImages(
+							val.data
+								.map((i) => i.name)
+								.filter((i) => !i.startsWith("canvas"))
+						);
 						const prevImageToUrl: Record<string, string> = {};
 						val.data.forEach((i) => {
+							if (i.name.startsWith("canvas")) return;
 							const { publicURL } = supabase.storage
 								.from(SUPABASE_IMAGE_BUCKET)
 								.getPublicUrl(`${imageFolder}/${i.name}`);
@@ -477,7 +482,7 @@ function Edit() {
 			/>
 			<GalleryModal
 				currImages={images.map((i) => processImageName(i.name))}
-				prevImages={prevImages.filter((i) => !i.startsWith("canvas"))}
+				prevImages={prevImages}
 				imageToUrl={imageToUrl}
 				{...{
 					toBeDeletedFromStorage,
@@ -814,16 +819,17 @@ function Edit() {
 
 				<label
 					className="flex flex-col items-center gap-1 text-white"
-					htmlFor={
-						images.length + prevImages.length < PHOTO_LIMIT
-							? "extra-images"
-							: "delete-images"
-					}
+					// htmlFor={
+					// 	images.length + prevImages.length < PHOTO_LIMIT
+					// 		? "extra-images"
+					// 		: "delete-images"
+					// }
+					htmlFor="gallery"
 				>
-					<BiImageAdd size={22} className="mt-2 ml-2" />
-					<span className="">Add Image</span>
+					<FcGallery size={22} className="" />
+					<span className="">Gallery</span>
 				</label>
-				<input
+				{/* <input
 					type="file"
 					name=""
 					id="extra-images"
@@ -840,9 +846,9 @@ function Edit() {
 							),
 						]);
 					}}
-				/>
+				/> */}
 
-				{images.length > 0 ? (
+				{/* {images.length > 0 ? (
 					<div
 						className={`flex flex-col items-center gap-1 text-white 
 						 relative`}
@@ -876,7 +882,7 @@ function Edit() {
 					</div>
 				) : (
 					<></>
-				)}
+				)} */}
 
 				<div
 					className="flex flex-col items-center w-fit gap-1"
