@@ -439,7 +439,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				>
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-hidden">
+				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-hidden md:pr-2">
 					<div className="flex justify-between grow-0 items-center  md:pb-4 lg:pb-0">
 						<div className="tabs">
 							<p
@@ -526,7 +526,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					<div
 						className={` flex flex-row w-[200%] ${
 							section === "about" ? "" : "-translate-x-1/2"
-						} transition-all duration-500 min-h-0 grow`}
+						} transition-all duration-500 min-h-0 grow gap-4`}
 					>
 						<div className="mt-6 lg:pl-2 h-full mb-10 w-1/2">
 							<About

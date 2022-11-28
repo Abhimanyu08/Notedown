@@ -24,7 +24,7 @@ export function About({
 
 	const aboutJSX = useMemo(() => {
 		return (
-			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full">
+			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full pb-10">
 				{htmlToJsx({
 					html: originalHtmlAbout,
 				})}
@@ -34,7 +34,7 @@ export function About({
 
 	const editedAboutJsx = useMemo(() => {
 		return (
-			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full">
+			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full pb-10">
 				{htmlToJsx({
 					html: editedHtmlAbout,
 				})}
