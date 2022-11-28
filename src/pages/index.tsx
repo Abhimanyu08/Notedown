@@ -1,4 +1,5 @@
 import { GetStaticProps } from "next";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
@@ -43,10 +44,27 @@ function Index({ markdown }: TrialProps) {
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
+			<Head>
+				<title>RCE Blog</title>
+				<meta
+					name="description"
+					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
+				/>
+				<meta
+					name="keywords"
+					content="RCE-Blog, remote code execution, blog, tech blog, note taking"
+				/>
+				<meta
+					property="og:title"
+					content="Home Page of the RCE-Blog website"
+				/>
+				<meta property="og:url" content="https://rce-blog.xyz" />
+				<meta property="og:site_name" content="RCE-Blog" />
+				<meta property="og:type" content="website" />
+			</Head>
 			<div
 				className="flex gap-10 lg:gap-20 md:gap-14 flex-col pb-20 grow overflow-y-auto
-			
-lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+				lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 			"
 			>
 				<div className="self-center flex gap-10 font-semibold lg:text-xl text-black">

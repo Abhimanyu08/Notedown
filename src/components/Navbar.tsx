@@ -37,6 +37,11 @@ function Navbar({
 			</div>
 			{user ? (
 				<div className="flex gap-8 items-end">
+					<Link href={`/read`}>
+						<p className="link-hover cursor-pointer  text-white">
+							Read
+						</p>
+					</Link>
 					<Link href={`/edit`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Write
@@ -79,6 +84,11 @@ function Navbar({
 				</div>
 			) : (
 				<div className="flex items-center text-white gap-6 md:gap-20">
+					<Link href={`/read`}>
+						<p className="link-hover cursor-pointer  text-white">
+							Read
+						</p>
+					</Link>
 					<Link href={`/edit`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Write

@@ -8,7 +8,10 @@ import {
 	SUPABASE_POST_TABLE,
 } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
-import makeFolderName from "../../../utils/makeFolderName";
+import {
+	makeFolderName,
+	processImageName,
+} from "../../../utils/makeFolderName";
 import { supabase } from "../../../utils/supabaseClient";
 import FileMetadata from "../../interfaces/FileMetdata";
 import Post from "../../interfaces/Post";
@@ -118,7 +121,6 @@ export function UploadModal({
 		if (images) {
 			const imageResults = await Promise.all(
 				images.map(async (image) => {
-					console.log(image.type);
 					const imagePath = blogFolder + `/${image.name}`;
 					const result = await supabase.storage
 						.from(SUPABASE_IMAGE_BUCKET)
