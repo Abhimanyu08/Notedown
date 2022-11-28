@@ -1,7 +1,6 @@
 1. Add twitter cards
 3. Improve terminal experience
 4. maybe canvas should be excalidraw
-5. Figure out activate rce ux for phone
 6. Comma should not be the caption separator in carousels.
 7. Design landing page for small screens
 

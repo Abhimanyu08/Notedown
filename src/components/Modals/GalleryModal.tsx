@@ -153,7 +153,7 @@ function GalleryModal({
 								imageAge === "new" ? "tab-active" : ""
 							} tab tab-bordered`}
 						>
-							New Uploaded
+							New Uploads
 						</span>
 						{prevImages && (
 							<span

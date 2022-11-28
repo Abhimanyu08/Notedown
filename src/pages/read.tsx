@@ -74,7 +74,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<Head>
-				<title>Rce Blog</title>
+				<title>Read - RCE-Blog</title>
 				<meta
 					name="description"
 					content="Write notes containing prose, executable code snippets, free hand drawings and images."
@@ -85,9 +85,9 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 				/>
 				<meta
 					property="og:title"
-					content="Home Page of the RCE-Blog website"
+					content="Read Page of the RCE-Blog website"
 				/>
-				<meta property="og:url" content="https://rce-blog.xyz" />
+				<meta property="og:url" content="https://rce-blog.xyz/read" />
 				<meta property="og:site_name" content="RCE-Blog" />
 				<meta property="og:type" content="website" />
 			</Head>

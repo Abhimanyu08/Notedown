@@ -70,7 +70,7 @@ export function DeleteModal({ post, modifyPosts }: ModalProps) {
 		if (published) {
 			sendRevalidationRequest(`/posts/${id}`);
 			sendRevalidationRequest(`/profile/${created_by}`);
-			sendRevalidationRequest(`/`);
+			sendRevalidationRequest(`/read`);
 		}
 
 		if (!modifyPosts) return;

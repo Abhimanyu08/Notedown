@@ -25,7 +25,7 @@ export function PublishModal({
 
 		sendRevalidationRequest(`/profile/${created_by}`);
 		sendRevalidationRequest(`/posts/${id}`);
-		sendRevalidationRequest("/");
+		sendRevalidationRequest("/read");
 
 		if (!modifyPosts) return;
 		modifyPosts("unpublished", (prev) =>

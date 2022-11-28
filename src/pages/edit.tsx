@@ -39,8 +39,6 @@ import { makeFolderName, processImageName } from "../../utils/makeFolderName";
 import { supabase } from "../../utils/supabaseClient";
 import { Blog } from "../components/Blog";
 import BlogLayout from "../components/BlogLayout";
-import DeleteImagesModal from "../components/Modals/DeleteImagesModal";
-import ImageCopy from "../components/BlogPostComponents/ImageCopy";
 import Layout from "../components/Layout";
 import SmallScreenFooter from "../components/SmallScreenFooter";
 import { Toc } from "../components/BlogPostComponents/TableOfContents";
@@ -470,16 +468,6 @@ function Edit() {
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
-			<DeleteImagesModal
-				imageNames={[...prevImages, ...images.map((i) => i.name)]}
-				{...{
-					images,
-					setImages,
-					prevImages,
-					setPrevImages,
-					setToBeDeletedFromStorage,
-				}}
-			/>
 			<GalleryModal
 				currImages={images.map((i) => processImageName(i.name))}
 				prevImages={prevImages}

@@ -385,7 +385,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				<meta name="author" content={profileUser?.name || ""} />
 				<meta
 					name="description"
-					content={`Rce-Blog profile page of ${profileUser?.name}`}
+					content={`RCE-Blog profile page of ${profileUser?.name}`}
 				/>
 				<meta
 					property="og:title"
@@ -439,7 +439,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				>
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-clip">
+				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-hidden">
 					<div className="flex justify-between grow-0 items-center  md:pb-4 lg:pb-0">
 						<div className="tabs">
 							<p
