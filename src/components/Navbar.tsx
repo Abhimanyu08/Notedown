@@ -36,7 +36,7 @@ function Navbar({
 				</Link>
 			</div>
 			{user ? (
-				<div className="flex gap-8 items-end">
+				<div className="flex gap-8 items-center">
 					<Link href={`/read`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Read
@@ -48,19 +48,14 @@ function Navbar({
 						</p>
 					</Link>
 					<div
-						className="flex items-end"
+						className=""
 						onClick={() => setShowProfileOptions((prev) => !prev)}
 					>
-						<HiMenu
-							className={`${
-								showProfileOptions ? "opacity-0" : "opacity-100"
-							} transition-opacity translate-x-full text-base md:text-xl duration-500`}
-						/>
-						<AiFillCloseCircle
-							className={`${
-								showProfileOptions ? "opacity-100" : "opacity-0"
-							}  transition-opacity text-base md:text-xl duration-500`}
-						/>
+						{showProfileOptions ? (
+							<AiFillCloseCircle />
+						) : (
+							<HiMenu className={``} />
+						)}
 					</div>
 					{showProfileOptions && (
 						<div className="flex flex-col absolute top-8 md:top-12 lg:right-40 right-10 xl:right-72 p-4 rounded-md bg-slate-700  gap-4">
