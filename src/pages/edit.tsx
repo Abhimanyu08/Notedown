@@ -743,38 +743,6 @@ function Edit() {
 							</div>
 						</div>
 
-						<input
-							type={"file"}
-							name=""
-							id="extra-images"
-							className="hidden"
-							accept="image/*"
-							multiple
-							max={
-								PHOTO_LIMIT -
-								images.length -
-								prevImages.length +
-								toBeDeletedFromStorage.length
-							}
-							onChange={(e) => {
-								const maxPhotos =
-									PHOTO_LIMIT -
-									images.length -
-									prevImages.length +
-									toBeDeletedFromStorage.length;
-								const allImages = images
-									.map((i) => i.name)
-									.concat(prevImages);
-								setImages((prev) => [
-									...prev,
-									...Array.from(e.target.files || [])
-										.slice(0, maxPhotos)
-										.filter(
-											(i) => !allImages.includes(i.name)
-										),
-								]);
-							}}
-						/>
 						<label
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={`Gallery`}
@@ -782,28 +750,28 @@ function Edit() {
 						>
 							<FcGallery size={28} className="mt-2 ml-2" />
 						</label>
-						{/* <div
-							className={`flex flex-col text-white normal-case cursor-pointer 
-							${images.length > 0 ? "" : "hidden"} h-32 px-1 overflow-y-auto`}
-						>
-							{images.map((i) => (
-								<ImageCopy
-									key={i.name}
-									name={i.name}
-									{...{
-										setImages,
-										copiedImageName,
-										setCopiedImageName,
-										cumulativeImageName,
-										setCumulativeImageName,
-									}}
-								/>
-							))}
-						</div> */}
 					</>
 				</BlogLayout>
 			</CanvasImageContext.Provider>
 			<SmallScreenFooter>
+				<div
+					className="flex flex-col items-center gap-1"
+					onClick={prepareContainer}
+				>
+					<BiCodeAlt
+						size={21}
+						className={` ${
+							containerId ? "text-lime-400" : "text-white"
+						}`}
+					/>
+					<span
+						className={` ${
+							containerId ? "text-lime-400" : "text-white"
+						} `}
+					>
+						Activate RCE
+					</span>
+				</div>
 				<div
 					className="flex flex-col items-center text-white gap-1"
 					onClick={() => setEditingMarkdown((prev) => !prev)}
@@ -830,60 +798,6 @@ function Edit() {
 					<FcGallery size={22} className="" />
 					<span className="">Gallery</span>
 				</label>
-				{/* <input
-					type="file"
-					name=""
-					id="extra-images"
-					className="hidden"
-					accept="image/*"
-					multiple
-					max={PHOTO_LIMIT - images.length - prevImages.length}
-					onChange={(e) => {
-						setImages((prev) => [
-							...prev,
-							...Array.from(e.target.files || []).slice(
-								0,
-								PHOTO_LIMIT - prev.length - prevImages.length
-							),
-						]);
-					}}
-				/> */}
-
-				{/* {images.length > 0 ? (
-					<div
-						className={`flex flex-col items-center gap-1 text-white 
-						 relative`}
-						onClick={(e) => {
-							e.preventDefault();
-							setShowGallery((prev) => !prev);
-						}}
-					>
-						{showGallery && (
-							<div
-								className="flex h-32 flex-col gap-2 absolute -top-40 border-0 rounded-md -left-24 w-64 z-50 p-2 overflow-y-auto bg-slate-800"
-								onClick={(e) => e.stopPropagation()}
-							>
-								{images.map((i) => (
-									<ImageCopy
-										key={i.name}
-										name={i.name}
-										{...{
-											copiedImageName,
-											setImages,
-											setCopiedImageName,
-											cumulativeImageName,
-											setCumulativeImageName,
-										}}
-									/>
-								))}
-							</div>
-						)}
-						<FcGallery size={20} className="text-white" />
-						<span className=" w-full truncate">Gallery</span>
-					</div>
-				) : (
-					<></>
-				)} */}
 
 				<div
 					className="flex flex-col items-center w-fit gap-1"

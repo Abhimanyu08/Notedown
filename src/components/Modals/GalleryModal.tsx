@@ -58,6 +58,34 @@ function GalleryModal({
 				onChange={(e) => setShow(e.target.checked)}
 				className="hidden"
 			/>
+			<input
+				type={"file"}
+				name=""
+				id="extra-images"
+				className="hidden"
+				accept="image/*"
+				multiple
+				max={
+					PHOTO_LIMIT -
+					currImages.length -
+					prevImages.length +
+					toBeDeletedFromStorage.length
+				}
+				onChange={(e) => {
+					const maxPhotos =
+						PHOTO_LIMIT -
+						currImages.length -
+						prevImages.length +
+						toBeDeletedFromStorage.length;
+					const allImages = currImages.concat(prevImages);
+					setImages((prev) => [
+						...prev,
+						...Array.from(e.target.files || [])
+							.slice(0, maxPhotos)
+							.filter((i) => !allImages.includes(i.name)),
+					]);
+				}}
+			/>
 			<div
 				className={` text-black ${
 					show ? "" : "hidden"
@@ -102,7 +130,7 @@ function GalleryModal({
 						{/* <span className="bg-cyan-400 text-black flex items-center font-semibold rounded-l-md p-1">
 							Image(s) :{" "}
 						</span> */}
-						<span className="px-2 lg:w-1/2 grow border-cyan-400 border-2 overflow-auto">
+						<span className="px-2 lg:w-1/2 grow border-cyan-400 border-2 overflow-auto flex items-center">
 							{toBeCopied.join(",")}
 						</span>
 						<label
