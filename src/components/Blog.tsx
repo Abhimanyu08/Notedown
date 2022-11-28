@@ -189,6 +189,7 @@ export function Blog({
 				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif prose-strong:text-white prose-blockquote:border-l-white/60 prose-blockquote:border-l-2
 				
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+prose-p:tracking-wide
 				`}
 			>
 				<h1 className="text-center" id="title">
