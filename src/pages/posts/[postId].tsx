@@ -153,21 +153,32 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 	return (
 		<>
 			<Head>
-				<title>{props.title || ""}</title>
-				<meta name="author" content={props.bloggers.name} />
+				{/* <!-- HTML Meta Tags --> */}
+				<title>{props.title}</title>
 				<meta name="description" content={props.description} />
-				<meta
-					name="keywords"
-					content={`tech blog,Rce Blog,remote code execution,${props.language}, ${props.title}, ${props.description}`}
-				/>
-				<meta property="og:title" content={props.title} />
-				<meta property="og:description" content={props.description} />
+
+				{/* <!-- Facebook Meta Tags --> */}
 				<meta
 					property="og:url"
 					content={`https://rce-blog.xyz/posts/${props.id}`}
 				/>
-				<meta property="og:site_name" content="Rce Blog" />
-				<meta property="og:type" content="article" />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={props.title} />
+				<meta property="og:description" content={props.description} />
+				<meta property="og:image" content="" />
+
+				{/* <!-- Twitter Meta Tags --> */}
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta property="twitter:domain" content="rce-blog.xyz" />
+				<meta
+					property="twitter:url"
+					content={`https://rce-blog.xyz/posts/${props.id}`}
+				/>
+				<meta name="twitter:title" content={props.title} />
+				<meta name="twitter:description" content={props.description} />
+				<meta name="twitter:image" content="" />
+
+				{/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
 			</Head>
 			<Layout
 				user={user || null}

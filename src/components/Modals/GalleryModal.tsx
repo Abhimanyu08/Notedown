@@ -126,7 +126,7 @@ function GalleryModal({
 							entire gallery.
 						</li>
 					</ul>
-					<div className="flex  text-white w-full h-max lg:w-2/3 self-center text-sm">
+					<div className="flex  text-white w-full h-max lg:w-2/3 self-center text-sm gap-1">
 						{/* <span className="bg-cyan-400 text-black flex items-center font-semibold rounded-l-md p-1">
 							Image(s) :{" "}
 						</span> */}
@@ -134,7 +134,7 @@ function GalleryModal({
 							{toBeCopied.join(",")}
 						</span>
 						<label
-							className="text-black bg-cyan-400 hover:bg-cyan-700 p-1 rounded-r-md flex items-center"
+							className="text-black bg-cyan-400 hover:bg-cyan-700 p-1 flex items-center rounded-md"
 							onClick={() => {
 								navigator.clipboard.writeText(
 									toBeCopied.join(",")
@@ -145,6 +145,14 @@ function GalleryModal({
 						>
 							<MdOutlineContentCopy size={20} />
 						</label>
+						<div
+							className="text-black bg-cyan-400 p-1 font-semibold rounded-md cursor-pointer"
+							onClick={() => {
+								setToBeCopied([]);
+							}}
+						>
+							Clear
+						</div>
 					</div>
 					<div className="justify-center tabs">
 						<span
@@ -275,6 +283,7 @@ function ImageGrid({
 										type="checkbox"
 										name=""
 										id=""
+										checked={selectedObj[imageName]}
 										onChange={() => {
 											if (selectedObj[imageName]) {
 												setToBeCopied((prev) =>

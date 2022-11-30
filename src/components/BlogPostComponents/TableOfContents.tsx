@@ -10,11 +10,11 @@ const headingToMargin: Record<string, string> = {
 };
 
 const headingToFontSize: Record<string, string> = {
-	h2: "text-xl",
-	h3: "text-lg",
-	h4: "text-base",
-	h5: "text-sm",
-	h6: "text-sm",
+	h2: "font-bold text-xl",
+	h3: "font-semibold text-lg",
+	h4: "font-medium text-base",
+	h5: "font-normal text-sm",
+	h6: "font-light text-xs",
 };
 
 export function Toc({
@@ -25,7 +25,7 @@ export function Toc({
 	setShowContents: Dispatch<SetStateAction<boolean>>;
 }) {
 	const [matches, setMatches] = useState<RegExpMatchArray[]>();
-	const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(true);
 
 	useEffect(() => {
 		if (!html) {
@@ -38,7 +38,7 @@ export function Toc({
 
 	return (
 		<div
-			className="flex flex-col gap-5  text-white max-w-full pr-1"
+			className="flex flex-col gap-5  text-gray-100/75 max-w-full pr-1"
 			onClick={() => setShowContents(false)}
 		>
 			<h3
@@ -56,14 +56,14 @@ export function Toc({
 						className="hidden lg:block"
 					/>
 				)}
-				<span className="underline underline-offset-2 cursor-pointer">
+				<span className="underline-offset-2 cursor-pointer">
 					Table of Contents
 				</span>
 			</h3>
 			<div
-				className={`ml-10 flex flex-col gap-3 ${
+				className={`ml-10 flex flex-col ${
 					open ? "" : "lg:invisible"
-				} prose prose-sm prose-li:text-amber-400 prose-a:text-white prose-a:no-underline pb-10`}
+				}  pb-14 text-gray-100/75 gap-5`}
 			>
 				<li>
 					<a href="#title" className="text-xl font-bold">

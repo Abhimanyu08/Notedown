@@ -3,6 +3,17 @@ import { ABOUT_LENGTH } from "../../utils/constants";
 import htmlToJsx from "../../utils/htmlToJsx";
 import mdToHtml from "../../utils/mdToHtml";
 
+const AboutWrapper = ({ children }: { children: JSX.Element }) => {
+	return (
+		<div
+			className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-gray-100 prose-headings:text-amber-400 prose-sm md:prose-base max-w-full pb-10 tracking-wide prose-a:decoration-amber-400 prose-a:underline
+		 prose-a:text-amber-400 prose-a:underline-offset-2 prose-a:after:content-['_↗']"
+		>
+			{children}
+		</div>
+	);
+};
+
 export function About({
 	editedAbout,
 	setAbout,
@@ -24,21 +35,21 @@ export function About({
 
 	const aboutJSX = useMemo(() => {
 		return (
-			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full pb-10">
+			<AboutWrapper>
 				{htmlToJsx({
 					html: originalHtmlAbout,
 				})}
-			</div>
+			</AboutWrapper>
 		);
 	}, [originalHtmlAbout]);
 
 	const editedAboutJsx = useMemo(() => {
 		return (
-			<div className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-white prose-headings:text-amber-400 prose-sm md:prose-base max-w-full pb-10">
+			<AboutWrapper>
 				{htmlToJsx({
 					html: editedHtmlAbout,
 				})}
-			</div>
+			</AboutWrapper>
 		);
 	}, [editedHtmlAbout]);
 

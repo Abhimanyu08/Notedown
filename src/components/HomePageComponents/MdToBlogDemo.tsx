@@ -114,7 +114,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				<div
 					className={`absolute top-1/2 -left-3 z-10  rounded-full ${
 						markdownChanged
-							? "animate-pulse text-amber-400"
+							? "animate-bounce text-amber-400"
 							: "animate-none text-amber-100"
 					} cursor-pointer`}
 					onClick={() => {

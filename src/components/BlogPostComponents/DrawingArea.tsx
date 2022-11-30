@@ -281,8 +281,6 @@ function ToolSelect({
 			>
 				<FaEraser />
 			</button>
-
-			{/* <div className="btn btn-sm custom">Clear</div> */}
 		</div>
 	);
 }
