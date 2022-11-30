@@ -8,13 +8,14 @@ import { FaPencilAlt } from "react-icons/fa";
 import { SUPABASE_FILES_BUCKET } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
-import AllScreenDemo from "../components/TrialPageComponents/AllScreenDemo";
-import CanvasDemo from "../components/TrialPageComponents/CanvasDemo";
-import HeaderText from "../components/TrialPageComponents/HeaderText";
-import MdToBlog from "../components/TrialPageComponents/MdToBlogDemo";
-import SearchDemo from "../components/TrialPageComponents/SearchDemo";
-import WriteEditDemo from "../components/TrialPageComponents/WriteEditDemo";
+import AllScreenDemo from "../components/HomePageComponents/AllScreenDemo";
+import CanvasDemo from "../components/HomePageComponents/CanvasDemo";
+import HeaderText from "../components/HomePageComponents/HeaderText";
+import MdToBlog from "../components/HomePageComponents/MdToBlogDemo";
+import SearchDemo from "../components/HomePageComponents/SearchDemo";
+import WriteEditDemo from "../components/HomePageComponents/WriteEditDemo";
 import { UserContext } from "./_app";
+import DonationsComponent from "../components/HomePageComponents/DonationsComponent";
 // import markdownArray from "../../utils/trialArray";
 
 interface TrialProps {
@@ -54,9 +55,10 @@ function Index({ markdown }: TrialProps) {
 					name="keywords"
 					content="RCE-Blog, remote code execution, blog, tech blog, note taking"
 				/>
+				<meta property="og:title" content="RCE-Blog" />
 				<meta
-					property="og:title"
-					content="Home Page of the RCE-Blog website"
+					property="og:description"
+					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
 				/>
 				<meta property="og:url" content="https://rce-blog.xyz" />
 				<meta property="og:site_name" content="RCE-Blog" />
@@ -85,6 +87,7 @@ function Index({ markdown }: TrialProps) {
 				<CanvasDemo />
 				<SearchDemo />
 				<AllScreenDemo />
+				<DonationsComponent />
 			</div>
 		</Layout>
 	);

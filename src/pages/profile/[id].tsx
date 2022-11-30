@@ -381,7 +381,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<Head>
-				<title>{`${profileUser?.name} - RCE-Blog Profile`}</title>
+				<title>{`Profile - ${profileUser?.name}`}</title>
 				<meta name="author" content={profileUser?.name || ""} />
 				<meta
 					name="description"
@@ -389,19 +389,21 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				/>
 				<meta
 					property="og:title"
-					content={`Rce Blog Profile of ${profileUser?.name}`}
+					content={`${profileUser?.name} - RCE Blog`}
 				/>
 				<meta
 					property="og:description"
-					content={`About - ${
-						profileUser?.about?.slice(0, 15) || ""
-					}...`}
+					content={`${profileUser?.about?.slice(0, 20) || ""}...`}
+				/>
+				<meta
+					property="og:image"
+					content={`${profile?.avatar_url || ""}`}
 				/>
 				<meta
 					property="og:url"
 					content={`https://rce-blog.xyz/profile/${profileUser?.id}`}
 				/>
-				<meta property="og:site_name" content="Rce Blog" />
+				<meta property="og:site_name" content="RCE-Blog" />
 				<meta property="og:type" content="website" />
 			</Head>
 			<>
