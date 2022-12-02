@@ -29,8 +29,8 @@ export const BlogContext = createContext<{
 }>({});
 
 export const CanvasImageContext = createContext<{
-	canvasImages: File[];
-	setCanvasImages: Dispatch<SetStateAction<File[]>>;
+	canvasImages: Record<string, any>;
+	setCanvasImages: Dispatch<SetStateAction<Record<string, any>>>;
 }>({ canvasImages: [], setCanvasImages: () => [] });
 
 function MyApp({ Component, pageProps }: AppProps) {

@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import {
 	LIMIT,
 	SEARCH_PUBLC,
+	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
 import { fetchUpvotes } from "../../utils/fetchUpvotes";
@@ -12,6 +13,7 @@ import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
 import PostDisplay from "../components/PostDisplay";
 import SearchComponent from "../components/SearchComponent";
+import Post from "../interfaces/Post";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 import SearchResults from "../interfaces/SearchResult";
 import { UserContext } from "./_app";
@@ -30,6 +32,14 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 
 	useEffect(() => {
 		fetchUpvotes(homePosts, setHomePosts);
+	}, []);
+	useEffect(() => {
+		supabase
+			.from("posts_duplicate")
+			.select("*")
+			.then((val) => {
+				console.log(val.data);
+			});
 	}, []);
 
 	const fetchHomePosts = async ({ cursor }: { cursor: string | number }) => {
@@ -121,9 +131,9 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 
 export const getStaticProps: GetStaticProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
-		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+		.from<PostWithBlogger>("posts_duplicate")
 		.select(
-			`id,created_by,title,description,language,published,published_on,bloggers(name)`
+			`id,created_by,title,description,language,published,published_on`
 		)
 		.match({ published: true })
 		.order("published_on", { ascending: false })

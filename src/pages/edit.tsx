@@ -67,15 +67,12 @@ function Edit() {
 	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
 	const [images, setImages] = useState<File[]>([]);
-	const [canvasImages, setCanvasImages] = useState<File[]>([]);
+	const [canvasImages, setCanvasImages] = useState<Record<string, any>>({});
 	const [prevImages, setPrevImages] = useState<string[]>([]);
 	const [imageToUrl, setImageToUrl] = useState<Record<string, string>>({});
 	const [toBeDeletedFromStorage, setToBeDeletedFromStorage] = useState<
 		string[]
 	>([]);
-	const [copiedImageName, setCopiedImageName] = useState("");
-	const [showGallery, setShowGallery] = useState(false);
-	const [cumulativeImageName, setCumulativeImageName] = useState("");
 	const [enabledVimForMarkdown, setEnabledVimForMarkdown] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
 
@@ -257,23 +254,34 @@ function Edit() {
 			0,
 			PHOTO_LIMIT - (prevImages.length - toBeDeletedFromStorage.length)
 		);
+
+		// for (let [cin, tldrawApp] of Object.entries(canvasImages)) {
+
+		// 	tldrawApp.getImage("png").then((val) => {
+		// 	if (!val) return;
+		// 	canvasImageFiles.push(val)
+		// }
+
 		if (currPostId && data) {
 			const imageFolder = makeFolderName(user.id, currPostId);
 
-			if (canvasImages) {
-				Promise.all(
-					canvasImages.map((ci) => {
+			Promise.all(
+				Object.keys(canvasImages).map((ci) => {
+					canvasImages[ci]?.getImage("png")?.then((val: Blob) => {
 						supabase.storage
 							.from(SUPABASE_IMAGE_BUCKET)
-							.remove([`${imageFolder}/${ci.name}`])
+							.remove([`${imageFolder}/${ci}`])
 							.then(() => {
 								supabase.storage
 									.from(SUPABASE_IMAGE_BUCKET)
-									.upload(`${imageFolder}/${ci.name}`, ci);
+									.upload(
+										`${imageFolder}/${ci}.png`,
+										val as Blob
+									);
 							});
-					})
-				);
-			}
+					});
+				})
+			);
 
 			if (toBeDeletedFromStorage.length > 0) {
 				await supabase.storage
@@ -364,15 +372,15 @@ function Edit() {
 			return;
 		}
 
-		if (canvasImages) {
-			Promise.all(
-				canvasImages.map((ci) => {
+		Promise.all(
+			Object.keys(canvasImages).map((ci) => {
+				canvasImages[ci]?.getImage("png")?.then((val: Blob) => {
 					supabase.storage
 						.from(SUPABASE_IMAGE_BUCKET)
-						.upload(`${blogFolder}/${ci.name}`, ci);
-				})
-			).catch((e) => console.log(e));
-		}
+						.upload(`${blogFolder}/${ci}.png`, val);
+				});
+			})
+		).catch((e) => console.log(e));
 
 		if (validImages.length > 0) {
 			const imageResults = await Promise.all(
@@ -650,10 +658,6 @@ function Edit() {
 							<div
 								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
 								id="markdown-textarea"
-								onPaste={() => {
-									setCumulativeImageName("");
-									setCopiedImageName("");
-								}}
 							></div>
 						</div>
 					</>

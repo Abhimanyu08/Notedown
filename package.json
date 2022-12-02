@@ -16,6 +16,7 @@
     "@codemirror/view": "^6.3.0",
     "@replit/codemirror-vim": "^6.0.3",
     "@supabase/supabase-js": "^1.35.6",
+    "@tldraw/tldraw": "^1.26.2",
     "codemirror": "^6.0.1",
     "daisyui": "^2.22.0",
     "gray-matter": "^4.0.3",
