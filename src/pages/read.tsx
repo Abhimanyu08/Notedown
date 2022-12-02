@@ -33,14 +33,6 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 	useEffect(() => {
 		fetchUpvotes(homePosts, setHomePosts);
 	}, []);
-	useEffect(() => {
-		supabase
-			.from("posts_duplicate")
-			.select("*")
-			.then((val) => {
-				console.log(val.data);
-			});
-	}, []);
 
 	const fetchHomePosts = async ({ cursor }: { cursor: string | number }) => {
 		const { data, error } = await supabase
@@ -131,9 +123,9 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 
 export const getStaticProps: GetStaticProps<HomeProps> = async ({}) => {
 	const { data } = await supabase
-		.from<PostWithBlogger>("posts_duplicate")
+		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
 		.select(
-			`id,created_by,title,description,language,published,published_on`
+			`id,created_by,title,description,language,published,published_on,bloggers(name)`
 		)
 		.match({ published: true })
 		.order("published_on", { ascending: false })
