@@ -5,11 +5,10 @@ import { supabase } from "../../../utils/supabaseClient";
 import ModalProps from "../../interfaces/ModalProps";
 import Post from "../../interfaces/Post";
 
-export function UnPublishModal({
-	post: { id, title },
-	modifyPosts,
-}: ModalProps) {
+export function UnPublishModal({ post, afterActionCallback }: ModalProps) {
+	const { id, title } = post;
 	const onPublish: MouseEventHandler = async (e) => {
+		if (!id) return;
 		const { data, error } = await supabase
 			.from<Post>(SUPABASE_POST_TABLE)
 			.update({
@@ -21,16 +20,7 @@ export function UnPublishModal({
 			return;
 		}
 
-		sendRevalidationRequest(`/posts/${id}`);
-		sendRevalidationRequest(`/profile/${data.at(0)?.created_by}`);
-		sendRevalidationRequest(`/read`);
-
-		if (!modifyPosts) return;
-		modifyPosts("published", (prev) =>
-			prev?.filter((post) => post.id !== id)
-		);
-
-		modifyPosts("unpublished", (prev) => [...data, ...(prev || [])]);
+		afterActionCallback(data.at(0)!);
 	};
 	return (
 		<>

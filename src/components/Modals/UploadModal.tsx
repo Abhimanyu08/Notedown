@@ -21,9 +21,7 @@ export function UploadModal({
 	setClientPosts,
 }: {
 	userId: string;
-	setClientPosts: Dispatch<
-		SetStateAction<Partial<Post>[] | null | undefined>
-	>;
+	setClientPosts: Dispatch<SetStateAction<Partial<Post>[]>>;
 }) {
 	const [mdfile, setMdFile] = useState<File | null>();
 	const [images, setImages] = useState<File[] | null>();

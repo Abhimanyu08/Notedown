@@ -11,6 +11,7 @@ import {
 import "../../styles/globals.css";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
+import PostContextComponent from "../Contexts/PostContext";
 import Blogger from "../interfaces/Blogger";
 
 export const UserContext = createContext<{
@@ -66,7 +67,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	return (
 		<UserContext.Provider value={{ user, setUser }}>
-			<Component {...pageProps} key={router.asPath} />
+			<PostContextComponent>
+				<Component {...pageProps} key={router.asPath} />
+			</PostContextComponent>
 		</UserContext.Provider>
 	);
 }

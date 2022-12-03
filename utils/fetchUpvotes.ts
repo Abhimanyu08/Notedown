@@ -6,7 +6,7 @@ import { supabase } from "./supabaseClient";
 
 export async function fetchUpvotes(postArray: Partial<PostWithBlogger>[] | null | undefined,
     setPostFunc: Dispatch<
-        SetStateAction<Partial<PostWithBlogger>[] | null | undefined>
+        SetStateAction<Partial<PostWithBlogger>[]>
     >) {
     const idArray = postArray?.map((post) => post.id!);
     if (idArray) {

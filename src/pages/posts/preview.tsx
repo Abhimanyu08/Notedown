@@ -4,22 +4,22 @@ import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { TbNews } from "react-icons/tb";
-import { sendRequestToRceServer } from "../../../../utils/sendRequest";
-import { Blog } from "../../../components/Blog";
-import BlogLayout from "../../../components/BlogLayout";
-import Layout from "../../../components/Layout";
-import { PublishModal } from "../../../components/Modals/PublishModal";
-import SmallScreenFooter from "../../../components/SmallScreenFooter";
-import { Toc } from "../../../components/BlogPostComponents/TableOfContents";
-import usePrivatePostQuery from "../../../hooks/usePrivatePost";
-import { UserContext } from "../../_app";
+import { sendRequestToRceServer } from "../../../utils/sendRequest";
+import { Blog } from "../../components/Blog";
+import BlogLayout from "../../components/BlogLayout";
+import { Toc } from "../../components/BlogPostComponents/TableOfContents";
+import Layout from "../../components/Layout";
+import { PublishModal } from "../../components/Modals/PublishModal";
+import SmallScreenFooter from "../../components/SmallScreenFooter";
+import usePrivatePostQuery from "../../hooks/usePrivatePost";
+import { UserContext } from "../_app";
 
 export default function PrivateBlog() {
 	const router = useRouter();
-	const { privatePostId } = router.query;
+	const { postId } = router.query;
 	const { user } = useContext(UserContext);
 	const { data, error, loading } = usePrivatePostQuery({
-		postId: parseInt(privatePostId as string),
+		postId: parseInt(postId as string),
 		loggedInUser: user || null,
 	});
 	const [showContent, setShowContents] = useState(false);
@@ -99,7 +99,7 @@ export default function PrivateBlog() {
 			route={router.asPath}
 			logoutCallback={() => null}
 		>
-			{data ? <PublishModal post={data} /> : <></>}
+			{/* {data ? <PublishModal post={data} /> : <></>} */}
 			<BlogLayout showContent={showContent}>
 				<Toc html={data?.content} setShowContents={setShowContents} />
 
@@ -126,9 +126,7 @@ export default function PrivateBlog() {
 					<div
 						className="btn btn-circle btn-ghost tooltip"
 						data-tip={"Edit Markdown"}
-						onClick={() =>
-							router.push(`/edit?postId=${privatePostId}`)
-						}
+						onClick={() => router.push(`/edit?postId=${postId}`)}
 					>
 						<AiFillEdit
 							size={28}
@@ -164,7 +162,7 @@ export default function PrivateBlog() {
 
 				<div
 					className="flex flex-col items-center text-white gap-1"
-					onClick={() => router.push(`/edit?postId=${privatePostId}`)}
+					onClick={() => router.push(`/edit?postId=${postId}`)}
 				>
 					<AiFillEdit size={20} className="text-white" />
 					<span className="text-xs">Edit</span>

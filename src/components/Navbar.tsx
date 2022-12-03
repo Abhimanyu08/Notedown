@@ -52,9 +52,9 @@ function Navbar({
 						onClick={() => setShowProfileOptions((prev) => !prev)}
 					>
 						{showProfileOptions ? (
-							<AiFillCloseCircle />
+							<AiFillCloseCircle className="lg:text-xl" />
 						) : (
-							<HiMenu className={``} />
+							<HiMenu className={`lg:text-xl`} />
 						)}
 					</div>
 					{showProfileOptions && (
@@ -78,7 +78,7 @@ function Navbar({
 					)}
 				</div>
 			) : (
-				<div className="flex items-center text-white gap-6 md:gap-20">
+				<div className="flex items-center  text-white gap-6 md:gap-20">
 					<Link href={`/read`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Read
