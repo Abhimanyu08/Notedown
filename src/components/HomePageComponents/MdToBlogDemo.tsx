@@ -165,7 +165,9 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 			{/* --------------------Mobile Design------------------------- */}
 
 			<div
-				className="self-center text-white xl:hidden"
+				className={`self-center bg-black xl:hidden rounded-full ${
+					markdownChanged ? "text-amber-400" : "text-amber-200"
+				}`}
 				onClick={() => {
 					if (mode === "editor") {
 						setConvertToHtml(true);

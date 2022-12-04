@@ -479,10 +479,18 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 							<div
 								className={`grow-0 flex flex-col gap-2 md:gap-4 py-2 md:py-4`}
 							>
-								<PostTypeSelecter
-									owner={user?.id === id}
-									{...{ postType, setPostType }}
-								/>
+								<div className="flex w-full justify-between">
+									<PostTypeSelecter
+										owner={user?.id === id}
+										{...{ postType, setPostType }}
+									/>
+									<label
+										className="btn btn-sm text-white capitalize"
+										htmlFor="upload"
+									>
+										New Post
+									</label>
+								</div>
 								<div className="md:w-1/2">
 									{postType === "upvoted" ? (
 										<SearchComponent

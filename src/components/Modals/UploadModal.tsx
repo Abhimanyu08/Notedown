@@ -78,6 +78,7 @@ export function UploadModal({
 					);
 				cleanUp();
 				afterUploadCallback(val);
+				setUploadedPostId(val.id);
 			})
 			.catch((e) => setAlertTimer(e.message));
 	};

@@ -150,7 +150,11 @@ function Edit() {
 	}, [images]);
 
 	useEffect(() => {
-		if (toBeDeletedFromStorage.length > 0) setHasMarkdownChanged(true);
+		if (
+			toBeDeletedFromStorage.length > 0 ||
+			Object.keys(canvasImages).length > 0
+		)
+			setHasMarkdownChanged(true);
 	}, [toBeDeletedFromStorage, canvasImages]);
 
 	useEffect(() => {
@@ -158,9 +162,8 @@ function Edit() {
 
 		if (!editingMarkdown) {
 			const changed =
-				toBeDeletedFromStorage.length > 0 ||
 				data?.markdown !== editorView.state.doc.toJSON().join("\n");
-			setHasMarkdownChanged(changed);
+			setHasMarkdownChanged((prev) => prev || changed);
 		}
 	}, [editingMarkdown]);
 
