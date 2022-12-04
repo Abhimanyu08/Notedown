@@ -484,12 +484,14 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										owner={user?.id === id}
 										{...{ postType, setPostType }}
 									/>
-									<label
-										className="btn btn-sm text-white capitalize"
-										htmlFor="upload"
-									>
-										New Post
-									</label>
+									{user?.id === id && (
+										<label
+											className="btn btn-sm text-white capitalize"
+											htmlFor="upload"
+										>
+											New Post
+										</label>
+									)}
 								</div>
 								<div className="md:w-1/2">
 									{postType === "upvoted" ? (
