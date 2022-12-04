@@ -20,8 +20,8 @@ import {
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
-import { Blog } from "../../components/Blog";
-import BlogLayout from "../../components/BlogLayout";
+import { Blog } from "../../components/BlogPostComponents/Blog";
+import BlogLayout from "../../components/BlogPostComponents/BlogLayout";
 import Layout from "../../components/Layout";
 import { Toc } from "../../components/BlogPostComponents/TableOfContents";
 import Blogger from "../../interfaces/Blogger";

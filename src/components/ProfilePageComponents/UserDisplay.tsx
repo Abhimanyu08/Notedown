@@ -13,11 +13,11 @@ import { IoPersonCircle, IoPersonCircleOutline } from "react-icons/io5";
 import {
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_IMAGE_BUCKET,
-} from "../../utils/constants";
-import { makeFolderName } from "../../utils/makeFolderName";
-import { sendRevalidationRequest } from "../../utils/sendRequest";
-import { supabase } from "../../utils/supabaseClient";
-import Blogger from "../interfaces/Blogger";
+} from "../../../utils/constants";
+import { makeFolderName } from "../../../utils/makeFolderName";
+import { sendRevalidationRequest } from "../../../utils/sendRequest";
+import { supabase } from "../../../utils/supabaseClient";
+import Blogger from "../../interfaces/Blogger";
 interface UserDisplayProps {
 	profile: Partial<Blogger>;
 	user: User | null;

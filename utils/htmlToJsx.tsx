@@ -11,7 +11,7 @@ import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
 import { supabase } from "./supabaseClient";
 
 const DynamicDrawingComponenet = dynamic(
-	() => import(`../src/components/TLDrawing`),
+	() => import(`../src/components/BlogPostComponents/TLDrawing`),
 	{ ssr: false }
 );
 

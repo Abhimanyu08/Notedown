@@ -6,7 +6,7 @@ import ModalProps from "../../interfaces/ModalProps";
 import Post from "../../interfaces/Post";
 
 export function PublishModal({ post, afterActionCallback }: ModalProps) {
-	const { id, created_by, title, published_on } = post;
+	const { id, title, published_on } = post;
 	const onPublish: MouseEventHandler = async (e) => {
 		if (!id) return;
 		const { data, error } = await supabase

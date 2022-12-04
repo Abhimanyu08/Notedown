@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import { UserContext } from "./_app";
 
 const DynamicDrawingComponenet = dynamic(
-	() => import(`../components/TLDrawing`),
+	() => import(`../components/BlogPostComponents/TLDrawing`),
 	{ ssr: false }
 );
 

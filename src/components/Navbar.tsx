@@ -78,7 +78,7 @@ function Navbar({
 					)}
 				</div>
 			) : (
-				<div className="flex items-center  text-white gap-6 md:gap-20">
+				<div className="flex items-center  text-white gap-8">
 					<Link href={`/read`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Read

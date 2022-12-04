@@ -5,12 +5,13 @@ import { BiCodeAlt } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { TbNews } from "react-icons/tb";
 import { sendRequestToRceServer } from "../../../utils/sendRequest";
-import { Blog } from "../../components/Blog";
-import BlogLayout from "../../components/BlogLayout";
+import { Blog } from "../../components/BlogPostComponents/Blog";
+import BlogLayout from "../../components/BlogPostComponents/BlogLayout";
 import { Toc } from "../../components/BlogPostComponents/TableOfContents";
 import Layout from "../../components/Layout";
 import { PublishModal } from "../../components/Modals/PublishModal";
 import SmallScreenFooter from "../../components/SmallScreenFooter";
+import { PostContext } from "../../Contexts/PostContext";
 import usePrivatePostQuery from "../../hooks/usePrivatePost";
 import { UserContext } from "../_app";
 
@@ -25,6 +26,8 @@ export default function PrivateBlog() {
 	const [showContent, setShowContents] = useState(false);
 	const [mounted, setMounted] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
+
+	const { setPrivatePosts } = useContext(PostContext);
 
 	useEffect(() => {
 		if (!user) router.replace("/");
@@ -99,7 +102,17 @@ export default function PrivateBlog() {
 			route={router.asPath}
 			logoutCallback={() => null}
 		>
-			{/* {data ? <PublishModal post={data} /> : <></>} */}
+			{data ? (
+				<PublishModal
+					post={data}
+					afterActionCallback={(newPost) => {
+						setPrivatePosts((prev) => [newPost, ...prev]);
+					}}
+				/>
+			) : (
+				<></>
+			)}
+
 			<BlogLayout showContent={showContent}>
 				<Toc html={data?.content} setShowContents={setShowContents} />
 

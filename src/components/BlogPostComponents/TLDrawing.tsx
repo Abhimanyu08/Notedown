@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { supabase } from "../../utils/supabaseClient";
+import { supabase } from "../../../utils/supabaseClient";
 
 import { Tldraw } from "@tldraw/tldraw";
-import { SUPABASE_IMAGE_BUCKET } from "../../utils/constants";
-import { CanvasImageContext } from "../pages/_app";
+import { SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
+import { CanvasImageContext } from "../../pages/_app";
 
 function TLDrawing({
 	canvasImageName,
@@ -15,10 +15,16 @@ function TLDrawing({
 	const [app, setApp] = useState<any>();
 	const [currentCanvasImageName, setCurrentCanvasImageName] =
 		useState(canvasImageName);
-	const { setCanvasImages } = useContext(CanvasImageContext);
+	const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
+	const [changeNumber, setChangeNumber] = useState(0);
 
 	useEffect(() => {
-		if (!app || !canvasImageName) return;
+		if (
+			!app ||
+			!canvasImageName ||
+			!Object.hasOwn(canvasImages, currentCanvasImageName)
+		)
+			return;
 
 		setCanvasImages((prev) => {
 			if (canvasImageName === currentCanvasImageName) {
@@ -34,7 +40,15 @@ function TLDrawing({
 			};
 		});
 		setCurrentCanvasImageName(canvasImageName);
-	}, [canvasImageName, app]);
+	}, [canvasImageName]);
+
+	const runOnCommad = (canvasImageName: string) => {
+		if (changeNumber === 0) {
+			setChangeNumber((prev) => prev + 1);
+			return;
+		}
+		setCanvasImages((prev) => ({ ...prev, [canvasImageName]: app }));
+	};
 
 	return (
 		<>
@@ -44,6 +58,7 @@ function TLDrawing({
 					showMultiplayerMenu={false}
 					showPages={false}
 					autofocus={false}
+					disableAssets={true}
 					onMount={(app) => {
 						if (imageFolder && canvasImageName) {
 							supabase.storage
@@ -62,6 +77,7 @@ function TLDrawing({
 						}
 						setApp(app);
 					}}
+					onCommand={() => runOnCommad(canvasImageName)}
 				/>
 			</div>
 		</>

@@ -15,7 +15,7 @@ import mdToHtml from "../../../utils/mdToHtml";
 import checkGreatestStillGreatest from "../../../utils/checkGreatestStillGreatest";
 
 import { supabase } from "../../../utils/supabaseClient";
-import { About } from "../../components/About";
+import { About } from "../../components/ProfilePageComponents/About";
 import { DeleteModal } from "../../components/Modals/DeleteModal";
 import Layout from "../../components/Layout";
 import PostDisplay from "../../components/PostDisplay";
@@ -23,7 +23,7 @@ import { PublishModal } from "../../components/Modals/PublishModal";
 import SearchComponent from "../../components/SearchComponent";
 import { UnPublishModal } from "../../components/Modals/UnPublishModal";
 import { UploadModal } from "../../components/Modals/UploadModal";
-import UserDisplay from "../../components/UserDisplay";
+import UserDisplay from "../../components/ProfilePageComponents/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
@@ -367,7 +367,9 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				{user?.id === id && (
 					<UploadModal
 						userId={user!.id}
-						setClientPosts={setPrivatePosts}
+						afterUploadCallback={(newPost: Post) => {
+							setPrivatePosts((prev) => [newPost, ...prev]);
+						}}
 					/>
 				)}
 

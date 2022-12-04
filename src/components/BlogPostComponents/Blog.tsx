@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import { getImages } from "../../utils/sendRequest";
-import htmlToJsx from "../../utils/htmlToJsx";
-import { sendRequestToRceServer } from "../../utils/sendRequest";
-import { supabase } from "../../utils/supabaseClient";
-import Blogger from "../interfaces/Blogger";
-import { BlogProps } from "../interfaces/BlogProps";
-import { BlogContext } from "../pages/_app";
+import { SUPABASE_BLOGGER_TABLE } from "../../../utils/constants";
+import { getImages } from "../../../utils/sendRequest";
+import htmlToJsx from "../../../utils/htmlToJsx";
+import { sendRequestToRceServer } from "../../../utils/sendRequest";
+import { supabase } from "../../../utils/supabaseClient";
+import Blogger from "../../interfaces/Blogger";
+import { BlogProps } from "../../interfaces/BlogProps";
+import { BlogContext } from "../../pages/_app";
 
 export function Blog({
 	title,

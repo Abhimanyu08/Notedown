@@ -30,9 +30,9 @@ export const BlogContext = createContext<{
 }>({});
 
 export const CanvasImageContext = createContext<{
-	canvasImages: Record<string, any>;
-	setCanvasImages: Dispatch<SetStateAction<Record<string, any>>>;
-}>({ canvasImages: [], setCanvasImages: () => [] });
+	canvasImages: Record<string, any | null>;
+	setCanvasImages: Dispatch<SetStateAction<Record<string, any | null>>>;
+}>({ canvasImages: {}, setCanvasImages: () => {} });
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());

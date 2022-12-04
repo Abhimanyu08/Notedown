@@ -24,6 +24,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
         if (mounted === false) return
         const editorParent = document.getElementById(editorParentId)
         if (!editorParent) return
+
         editorParent?.replaceChildren("")
 
 

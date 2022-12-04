@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { ABOUT_LENGTH, SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import htmlToJsx from "../../utils/htmlToJsx";
-import mdToHtml from "../../utils/mdToHtml";
-import { sendRevalidationRequest } from "../../utils/sendRequest";
-import { supabase } from "../../utils/supabaseClient";
-import Blogger from "../interfaces/Blogger";
-import { ProfileUser } from "../interfaces/ProfileUser";
+import { ABOUT_LENGTH, SUPABASE_BLOGGER_TABLE } from "../../../utils/constants";
+import htmlToJsx from "../../../utils/htmlToJsx";
+import mdToHtml from "../../../utils/mdToHtml";
+import { sendRevalidationRequest } from "../../../utils/sendRequest";
+import { supabase } from "../../../utils/supabaseClient";
+import Blogger from "../../interfaces/Blogger";
+import { ProfileUser } from "../../interfaces/ProfileUser";
 
 const AboutJsxWrapper = ({ children }: { children: JSX.Element }) => {
 	return (
