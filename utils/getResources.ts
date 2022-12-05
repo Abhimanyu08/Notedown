@@ -19,7 +19,7 @@ function resetCodeblocks(markdown: string, html: string) {
     return html;
 }
 
-export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{ data: { title?: string, language?: BlogProps["language"], description?: string }, content: string }> {
+export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{ data: { title: string, description: string, language?: typeof ALLOWED_LANGUAGES[number] }, content: string }> {
 
     let data: { [x: string]: any; language?: any; }, content;
     if (typeof file === "string") {
@@ -38,6 +38,9 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
     if (!data.title) {
         throw Error("Give your post a title");
     }
+    if (!data.description) {
+        throw Error("Give your post a description")
+    }
     if (data.language !== undefined && !ALLOWED_LANGUAGES.some(val => val === data.language)) {
         throw Error("Mind Your Language! Supported languages are 'rust','python' and 'javascript'");
     }
@@ -46,7 +49,7 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
     }
     let html = await mdToHtml(content);
     html = resetCodeblocks(content, html)
-    return { data, content: html }
+    return { data: data as { title: string, description: string, language?: typeof ALLOWED_LANGUAGES[number] }, content: html }
 
 }
 

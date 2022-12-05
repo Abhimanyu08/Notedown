@@ -1,8 +1,14 @@
-1. Add twitter cards
-3. Improve terminal experience
-4. maybe canvas should be excalidraw
-6. Comma should not be the caption separator in carousels.
-7. Design landing page for small screens
+
+1. Improve all the abhorrent pieces of shit code I've written
+
+1.1 Upload functions should either upload everything -images, canvasImages, files or nothing
+1.2 Each page is steaming pile of garbage, need to break it into components
+
+
+2. Modify Upload Modal
+
+
+
 
 
 -----------------Done------------------------------

@@ -1,32 +1,21 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
-import {
-	PHOTO_LIMIT,
-	SUPABASE_FILES_BUCKET,
-	SUPABASE_IMAGE_BUCKET,
-	SUPABASE_POST_TABLE,
-} from "../../../utils/constants";
+import { PHOTO_LIMIT } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
-import {
-	makeFolderName,
-	processImageName,
-} from "../../../utils/makeFolderName";
-import { supabase } from "../../../utils/supabaseClient";
+import { handlePostUpload } from "../../../utils/handleUploadsAndUpdates";
 import FileMetadata from "../../interfaces/FileMetdata";
 import Post from "../../interfaces/Post";
 
 export function UploadModal({
 	userId,
-	setClientPosts,
+	afterUploadCallback,
 }: {
 	userId: string;
-	setClientPosts: Dispatch<
-		SetStateAction<Partial<Post>[] | null | undefined>
-	>;
+	afterUploadCallback: (newPost: Post) => void;
 }) {
 	const [mdfile, setMdFile] = useState<File | null>();
-	const [images, setImages] = useState<File[] | null>();
+	const [images, setImages] = useState<File[]>([]);
 	const [uploading, setUploading] = useState(false);
 	const [alertText, setAlert] = useState("");
 	const [postDets, setPostDets] = useState<FileMetadata>();
@@ -36,7 +25,7 @@ export function UploadModal({
 
 	const cleanUp = () => {
 		setUploading(false);
-		setImages(null);
+		setImages([]);
 		setMdFile(null);
 		setUploaded(true);
 	};
@@ -76,79 +65,27 @@ export function UploadModal({
 		}
 		setUploading(true);
 
-		//insert row in table
-		const { data: postTableData, error: postTableError } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.insert({
-				created_by: userId,
-				title: postDets?.title,
-				language: postDets?.language,
-				description: postDets?.description,
-			});
-
-		if (postTableError || !postTableData || postTableData.length === 0) {
-			setAlertTimer(
-				postTableError?.message ||
-					"null data returned by supabase" + " Please retry"
-			);
-			setUploading(false);
-			return;
-		}
-
-		setClientPosts((prev) => [
-			postTableData.at(0) as Post,
-			...(prev || []),
-		]);
-		setUploadedPostId(postTableData.at(0)?.id || null);
-
-		//upload markdown file
-		const postId = postTableData.at(0)?.id;
-		if (!postId) return;
-		const blogFolder = makeFolderName(userId, postId);
-		const blogFilePath = blogFolder + `/${mdfile.name}`;
-
-		const { data, error } = await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.upload(blogFilePath, mdfile);
-
-		if (error || !data) {
-			console.log(error || "Supabase didn't return any data");
-			setAlertTimer(error?.message || "" + " Please retry");
-			setUploading(false);
-			return;
-		}
-		//upload images
-		if (images) {
-			const imageResults = await Promise.all(
-				images.map(async (image) => {
-					const imagePath = blogFolder + `/${image.name}`;
-					const result = await supabase.storage
-						.from(SUPABASE_IMAGE_BUCKET)
-						.upload(imagePath, image);
-					return result;
-				})
-			);
-			if (imageResults.some((res) => res.error !== null)) {
-				setAlertTimer("Error in uploading images, please retry");
-				setUploading(false);
-				return;
-			}
-		}
-
-		const { error: updateTableError } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.update({ filename: blogFilePath, image_folder: blogFolder })
-			.eq("id", postId);
-		if (updateTableError) {
-			setAlertTimer(`${updateTableError.message}`);
-			return;
-		}
-		setAlertTimer("");
-		cleanUp();
+		handlePostUpload({
+			userId,
+			postMetadata: postDets,
+			imagesToUpload: images,
+			markdownFile: mdfile,
+		})
+			.then((val) => {
+				if (!val)
+					throw Error(
+						"post uploaded but supabase didn't return any data"
+					);
+				cleanUp();
+				afterUploadCallback(val);
+				setUploadedPostId(val.id);
+			})
+			.catch((e) => setAlertTimer(e.message));
 	};
 
 	const onPreview = () => {
-		if (uploadedPostId) router.push(`/posts/preview/${uploadedPostId}`);
+		if (uploadedPostId)
+			router.push(`/posts/preview?postId=${uploadedPostId}`);
 	};
 
 	return (
@@ -217,7 +154,7 @@ export function UploadModal({
 								className="btn btn-sm normal-case text-white"
 								onClick={() => {
 									setMdFile(null);
-									setImages(null);
+									setImages([]);
 									setUploaded(false);
 								}}
 							>

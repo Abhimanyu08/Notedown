@@ -1,14 +1,10 @@
-import { useRouter } from "next/router";
 import { StateEffect } from "@codemirror/state";
+import { vim } from "@replit/codemirror-vim";
+import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import {
-	AiFillEdit,
-	AiOutlineOrderedList,
-	AiOutlineUnorderedList,
-} from "react-icons/ai";
-import { BiCodeAlt, BiImageAdd } from "react-icons/bi";
-import { GoListOrdered, GoListUnordered } from "react-icons/go";
-import { FaBold, FaFileUpload, FaItalic } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
+import { BiCodeAlt } from "react-icons/bi";
+import { FaFileUpload } from "react-icons/fa";
 import { FcGallery } from "react-icons/fc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
@@ -16,41 +12,30 @@ import {
 	ALLOWED_LANGUAGES,
 	LOCAL_MARKDOWN_KEY,
 	PHOTO_LIMIT,
-	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
-	SUPABASE_POST_TABLE,
 } from "../../utils/constants";
-import {
-	onBlockQuote,
-	onBold,
-	onCanvas,
-	onCodeBlock,
-	onCodeWord,
-	onImage,
-	onItalic,
-	onLatex,
-	onLink,
-	onOrdererdList,
-	onSelect,
-	onUnordererdList,
-} from "../../utils/editorToolFunctions";
+import getExtensions from "../../utils/getExtensions";
 import { getHtmlFromMarkdown } from "../../utils/getResources";
+import {
+	handlePostUpdate,
+	handlePostUpload,
+} from "../../utils/handleUploadsAndUpdates";
 import { makeFolderName, processImageName } from "../../utils/makeFolderName";
+import { sendRequestToRceServer } from "../../utils/sendRequest";
 import { supabase } from "../../utils/supabaseClient";
-import { Blog } from "../components/Blog";
-import BlogLayout from "../components/BlogLayout";
-import Layout from "../components/Layout";
-import SmallScreenFooter from "../components/SmallScreenFooter";
+import { Blog } from "../components/BlogPostComponents/Blog";
+import BlogLayout from "../components/BlogPostComponents/BlogLayout";
 import { Toc } from "../components/BlogPostComponents/TableOfContents";
+import EditorHelperComponent from "../components/EditorHelperComponent";
+import Layout from "../components/Layout";
+import GalleryModal from "../components/Modals/GalleryModal";
+import SmallScreenFooter from "../components/SmallScreenFooter";
 import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
-import Post from "../interfaces/Post";
 import { CanvasImageContext, UserContext } from "./_app";
-import { SiVim } from "react-icons/si";
-import getExtensions from "../../utils/getExtensions";
-import { vim } from "@replit/codemirror-vim";
-import { sendRequestToRceServer } from "../../utils/sendRequest";
-import GalleryModal from "../components/Modals/GalleryModal";
+
+const initialMarkdown =
+	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
 
 function Edit() {
 	const { user } = useContext(UserContext);
@@ -67,32 +52,38 @@ function Edit() {
 	const [hasMarkdownChanged, setHasMarkdownChanged] = useState(false);
 	const [uploadingChanges, setUploadingChanges] = useState(false);
 	const [images, setImages] = useState<File[]>([]);
-	const [canvasImages, setCanvasImages] = useState<File[]>([]);
+	const [canvasImages, setCanvasImages] = useState<
+		Record<string, any | null>
+	>({});
 	const [prevImages, setPrevImages] = useState<string[]>([]);
 	const [imageToUrl, setImageToUrl] = useState<Record<string, string>>({});
 	const [toBeDeletedFromStorage, setToBeDeletedFromStorage] = useState<
 		string[]
 	>([]);
-	const [copiedImageName, setCopiedImageName] = useState("");
-	const [showGallery, setShowGallery] = useState(false);
-	const [cumulativeImageName, setCumulativeImageName] = useState("");
 	const [enabledVimForMarkdown, setEnabledVimForMarkdown] = useState(false);
 	const [containerId, setContainerId] = useState<string>();
+	const [mounted, setMounted] = useState(false);
 
 	const [blogData, setBlogData] = useState<{
-		title?: string;
-		description?: string;
+		title: string;
+		description: string;
 		language?: typeof ALLOWED_LANGUAGES[number];
 		content?: string;
-	}>({});
+	}>({ title: "", description: "" });
 
 	const { editorView } = useEditor({
 		language: "markdown",
-		code: data?.markdown || "",
+		code: data?.markdown || initialMarkdown,
 		editorParentId: "markdown-textarea",
+		mounted,
 	});
 
 	useEffect(() => {
+		if (!mounted) setMounted(true);
+	}, []);
+
+	useEffect(() => {
+		//change the editor cursor to the end of markdown.
 		if (!editorView) return;
 
 		const docLength = editorView?.state.doc.length;
@@ -102,6 +93,8 @@ function Edit() {
 	}, [editorView]);
 
 	useEffect(() => {
+		//if user is modifying previous post, get the names of his previous images.
+
 		if (user && typeof postId === "string") {
 			setCurrPostId(parseInt(postId));
 			let imageFolder =
@@ -136,8 +129,8 @@ function Edit() {
 
 	useEffect(() => {
 		setBlogData({
-			title: data?.title,
-			description: data?.description,
+			title: data?.title || "Your title",
+			description: data?.description || "Your description",
 			language: data?.language,
 			content: data?.content,
 		});
@@ -157,7 +150,10 @@ function Edit() {
 	}, [images]);
 
 	useEffect(() => {
-		if (toBeDeletedFromStorage.length > 0 || canvasImages.length > 0)
+		if (
+			toBeDeletedFromStorage.length > 0 ||
+			Object.keys(canvasImages).length > 0
+		)
 			setHasMarkdownChanged(true);
 	}, [toBeDeletedFromStorage, canvasImages]);
 
@@ -166,10 +162,8 @@ function Edit() {
 
 		if (!editingMarkdown) {
 			const changed =
-				toBeDeletedFromStorage.length > 0 ||
-				canvasImages.length > 0 ||
 				data?.markdown !== editorView.state.doc.toJSON().join("\n");
-			setHasMarkdownChanged(changed);
+			setHasMarkdownChanged((prev) => prev || changed);
 		}
 	}, [editingMarkdown]);
 
@@ -242,181 +236,81 @@ function Edit() {
 
 	const onNewPostUpload = async () => {
 		if (!editorView || !hasMarkdownChanged) return;
+
 		const markdown = editorView.state.doc.toJSON().join("\n");
+
+		//if user is not logged in save his changes to localstorage
 		if (!postId && !user) {
 			localStorage.setItem(LOCAL_MARKDOWN_KEY, markdown);
 			setHasMarkdownChanged(false);
 			return;
 		}
+
 		if (!user) return;
 
 		setUploadingChanges(true);
 
-		const newFile = new File([markdown], "");
-		let validImages = images.slice(
+		const newFile = new File([markdown], "file.md");
+
+		let imagesToUpload: File[] = images.slice(
 			0,
 			PHOTO_LIMIT - (prevImages.length - toBeDeletedFromStorage.length)
 		);
-		if (currPostId && data) {
-			const imageFolder = makeFolderName(user.id, currPostId);
 
-			if (canvasImages) {
-				Promise.all(
-					canvasImages.map((ci) => {
-						supabase.storage
-							.from(SUPABASE_IMAGE_BUCKET)
-							.remove([`${imageFolder}/${ci.name}`])
-							.then(() => {
-								supabase.storage
-									.from(SUPABASE_IMAGE_BUCKET)
-									.upload(`${imageFolder}/${ci.name}`, ci);
-							});
-					})
+		Object.keys(canvasImages).forEach(async (canvasImageName) => {
+			const app = canvasImages[canvasImageName];
+			toBeDeletedFromStorage.push(`${canvasImageName}.png`);
+			if (app === null) return;
+			const newCanvasImage = await app.getImage("png");
+			if (newCanvasImage)
+				imagesToUpload.push(
+					new File([newCanvasImage], `${canvasImageName}.png`)
 				);
-			}
+		});
 
-			if (toBeDeletedFromStorage.length > 0) {
-				await supabase.storage
-					.from(SUPABASE_IMAGE_BUCKET)
-					.remove(
-						toBeDeletedFromStorage.map(
-							(name) => `${imageFolder}/${name}`
-						)
-					);
-				setPrevImages((prev) =>
-					prev.filter((i) => !toBeDeletedFromStorage.includes(i))
-				);
-				setToBeDeletedFromStorage([]);
-			}
+		const params: Parameters<typeof handlePostUpload>[0] = {
+			userId: user.id,
+			postMetadata: {
+				title: blogData.title,
+				description: blogData.description,
+				language: blogData.language,
+			},
+			markdownFile: newFile,
+			imagesToUpload,
+		};
 
-			if (validImages.length > 0) {
-				const imageResults = await Promise.all(
-					validImages.map((image) => {
-						const imagePath =
-							imageFolder + `/${processImageName(image.name)}`;
-						return supabase.storage
-							.from(SUPABASE_IMAGE_BUCKET)
-							.upload(imagePath, image);
-					})
-				);
-				if (imageResults.some((res) => res.error !== null)) {
-					alert("Error in uploading images, please retry");
-					setUploadingChanges(false);
-					return;
-				}
-			}
-			await supabase.storage
-				.from(SUPABASE_FILES_BUCKET)
-				.update(data!.filename!, newFile)
-				.then((val) => {
-					if (val.error) return;
-					return supabase
-						.from<Post>(SUPABASE_POST_TABLE)
-						.update({
-							title: blogData.title,
-							description: blogData.description,
-							language: blogData.language,
-						})
-						.eq("id", currPostId);
-				})
-				.then((val) => {
-					setUploadingChanges(false);
-					if (val?.error) alert(val.error.message);
-					if (val && val.data) {
-						setHasMarkdownChanged(false);
-						setEditingMarkdown(false);
-						if (images) {
-							setPrevImages((prev) => [
-								...prev,
-								...images.map((i) => processImageName(i.name)),
-							]);
-						}
-
-						setImages([]);
-						alert("Changes Uploaded Successfully");
-					}
-				});
-			return;
-		}
-
-		const { data: insertPostData, error: insertPostError } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.insert({
-				title: blogData?.title,
-				description: blogData?.description,
-				created_by: user.id,
-				language: blogData?.language,
+		const postFunctionCleanup = () => {
+			setUploadingChanges(false);
+			setPrevImages((prev) => {
+				return prev
+					.filter((i) => !toBeDeletedFromStorage.includes(i))
+					.concat(images.map((i) => processImageName(i.name)));
 			});
 
-		if (!insertPostData || insertPostError || insertPostData.length === 0) {
-			alert(insertPostError?.message || "Could not create post");
-			setUploadingChanges(false);
+			setToBeDeletedFromStorage([]);
+			setImages([]);
+			setHasMarkdownChanged(false);
+			setEditingMarkdown(false);
+			alert("Private Post Uploaded successfully.");
+		};
+
+		if (currPostId) {
+			handlePostUpdate({
+				...params,
+				postId: currPostId,
+				imagesToDelete: toBeDeletedFromStorage,
+			})
+				.then(() => postFunctionCleanup())
+				.catch((e) => alert(e.message));
 			return;
 		}
-		const blogFolder = makeFolderName(user.id, insertPostData.at(0)!.id!);
-		const filePath = blogFolder + "/file.md";
-		const { error: fileUploadError } = await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.upload(filePath, newFile);
-		if (fileUploadError) {
-			alert(fileUploadError.message);
-			setUploadingChanges(false);
-			return;
-		}
 
-		if (canvasImages) {
-			Promise.all(
-				canvasImages.map((ci) => {
-					supabase.storage
-						.from(SUPABASE_IMAGE_BUCKET)
-						.upload(`${blogFolder}/${ci.name}`, ci);
-				})
-			).catch((e) => console.log(e));
-		}
-
-		if (validImages.length > 0) {
-			const imageResults = await Promise.all(
-				validImages.map((image) => {
-					return supabase.storage
-						.from(SUPABASE_IMAGE_BUCKET)
-						.upload(
-							`${blogFolder}/${processImageName(image.name)}`,
-							image
-						);
-				})
-			);
-			if (imageResults.some((res) => res.error !== null)) {
-				alert("Error in uploading images, please retry");
-				setUploadingChanges(false);
-				return;
-			}
-		}
-
-		await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.update({ image_folder: blogFolder, filename: filePath })
-			.match({ id: insertPostData.at(0)?.id })
-			.then((val) => {
-				if (val.error) {
-					setUploadingChanges(false);
-					alert(val.error.message);
-				}
-
-				if (val.data) {
-					setCurrPostId(val.data.at(0)?.id);
-					setUploadingChanges(false);
-					setHasMarkdownChanged(false);
-					if (images) {
-						setPrevImages((prev) => [
-							...prev,
-							...images.map((i) => processImageName(i.name)),
-						]);
-					}
-
-					setImages([]);
-					alert("Post Uploaded sucessfully");
-				}
-			});
+		handlePostUpload(params)
+			.then((post) => {
+				setCurrPostId(post?.id);
+				postFunctionCleanup();
+			})
+			.catch((e) => alert(e.message));
 	};
 
 	const prepareContainer = async () => {
@@ -509,151 +403,16 @@ function Edit() {
 								editingMarkdown ? "" : "invisible"
 							}`}
 						>
-							<div className="flex w-full justify-start md:justify-center gap-1 pb-1 flex-wrap ">
-								<div
-									className="btn btn-xs tool"
-									onClick={() => {
-										if (editorView) onBold(editorView);
-									}}
-								>
-									<FaBold />
-								</div>
-								<div
-									className="btn btn-xs tool"
-									onClick={() => {
-										if (editorView) onItalic(editorView);
-									}}
-								>
-									<FaItalic />
-								</div>
-								<select
-									className="select select-xs tool focus:outline-none"
-									onChange={(e) => {
-										if (editorView)
-											onSelect(
-												editorView,
-												e.target.value
-											);
-									}}
-								>
-									<option disabled selected>
-										Heading
-									</option>
-									<option value="heading2">heading 2</option>
-									<option value="heading3">heading 3</option>
-									<option value="heading4">heading 4</option>
-									<option value="heading5">heading 5</option>
-									<option value="heading6">heading 6</option>
-								</select>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView) onCodeWord(editorView);
-									}}
-								>
-									Code word
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView) onCodeBlock(editorView);
-									}}
-								>
-									Code block
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView) onImage(editorView);
-									}}
-								>
-									Image
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView)
-											onOrdererdList(editorView);
-									}}
-								>
-									{/* <AiOutlineOrderedList size={20} /> */}
-									<GoListOrdered size={20} />
-									{/* O.L */}
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView)
-											onUnordererdList(editorView);
-									}}
-								>
-									{/* <AiOutlineUnorderedList size={20} /> */}
-									<GoListUnordered size={20} />
-									{/* U.L */}
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView)
-											onBlockQuote(editorView);
-									}}
-								>
-									BlockQuote
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView) onLink(editorView);
-									}}
-								>
-									Link
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView) onLatex(editorView);
-									}}
-								>
-									LaTeX
-								</div>
-								<div
-									className="btn btn-xs normal-case tool"
-									onClick={() => {
-										if (editorView) onCanvas(editorView);
-									}}
-								>
-									Canvas
-								</div>
-								<div
-									className="btn btn-xs tool gap-2"
-									onClick={() =>
-										setEnabledVimForMarkdown(
-											(prev) => !prev
-										)
-									}
-								>
-									<SiVim
-										className={` ${
-											enabledVimForMarkdown
-												? "text-lime-400"
-												: "text-white"
-										}`}
-									/>
-									<span className="normal-case">
-										{enabledVimForMarkdown
-											? "Disable"
-											: "Enable"}{" "}
-										Vim
-									</span>
-								</div>
-							</div>
+							<EditorHelperComponent
+								{...{
+									editorView,
+									enabledVimForMarkdown,
+									setEnabledVimForMarkdown,
+								}}
+							/>
 							<div
 								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
 								id="markdown-textarea"
-								onPaste={() => {
-									setCumulativeImageName("");
-									setCopiedImageName("");
-								}}
 							></div>
 						</div>
 					</>
@@ -712,10 +471,10 @@ function Edit() {
 									hasMarkdownChanged
 										? `${
 												currPostId
-													? "Upload Changes"
+													? "Save Changes"
 													: `${
 															user
-																? "Upload Post"
+																? "Upload Private Post"
 																: "Save changes Locally"
 													  }`
 										  }`
@@ -776,11 +535,6 @@ function Edit() {
 
 				<label
 					className="flex flex-col items-center gap-1 text-white"
-					// htmlFor={
-					// 	images.length + prevImages.length < PHOTO_LIMIT
-					// 		? "extra-images"
-					// 		: "delete-images"
-					// }
 					htmlFor="gallery"
 				>
 					<FcGallery size={22} className="" />

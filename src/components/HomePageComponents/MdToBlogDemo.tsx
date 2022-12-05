@@ -7,7 +7,7 @@ import { SiConvertio } from "react-icons/si";
 import { ALLOWED_LANGUAGES } from "../../../utils/constants";
 import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import useEditor from "../../hooks/useEditor";
-import { Blog } from "../Blog";
+import { Blog } from "../BlogPostComponents/Blog";
 
 function MdToBlog({ markdown }: { markdown: string }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -165,7 +165,9 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 			{/* --------------------Mobile Design------------------------- */}
 
 			<div
-				className="self-center text-white xl:hidden"
+				className={`self-center bg-black xl:hidden rounded-full ${
+					markdownChanged ? "text-amber-400" : "text-amber-200"
+				}`}
 				onClick={() => {
 					if (mode === "editor") {
 						setConvertToHtml(true);

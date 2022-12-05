@@ -3,14 +3,14 @@ import { SUPABASE_POST_TABLE } from "../../../utils/constants";
 import { sendRevalidationRequest } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import ModalProps from "../../interfaces/ModalProps";
+import Post from "../../interfaces/Post";
 
-export function PublishModal({
-	post: { id, created_by, title, published_on },
-	modifyPosts,
-}: ModalProps) {
+export function PublishModal({ post, afterActionCallback }: ModalProps) {
+	const { id, title, published_on } = post;
 	const onPublish: MouseEventHandler = async (e) => {
+		if (!id) return;
 		const { data, error } = await supabase
-			.from(SUPABASE_POST_TABLE)
+			.from<Post>(SUPABASE_POST_TABLE)
 			.update({
 				published: true,
 				published_on: published_on
@@ -23,16 +23,7 @@ export function PublishModal({
 			return;
 		}
 
-		sendRevalidationRequest(`/profile/${created_by}`);
-		sendRevalidationRequest(`/posts/${id}`);
-		sendRevalidationRequest("/read");
-
-		if (!modifyPosts) return;
-		modifyPosts("unpublished", (prev) =>
-			prev?.filter((post) => post.id !== id)
-		);
-
-		modifyPosts("published", (prev) => [data.at(0), ...(prev || [])]);
+		afterActionCallback(data.at(0)!);
 	};
 	return (
 		<>

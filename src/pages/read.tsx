@@ -12,6 +12,7 @@ import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
 import PostDisplay from "../components/PostDisplay";
 import SearchComponent from "../components/SearchComponent";
+import { PostContext } from "../Contexts/PostContext";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 import SearchResults from "../interfaces/SearchResult";
 import { UserContext } from "./_app";
@@ -22,15 +23,27 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = ({ posts }) => {
 	const router = useRouter();
 	const { user } = useContext(UserContext);
-	const [homePosts, setHomePosts] = useState<
-		Partial<PostWithBlogger>[] | null | undefined
-	>(posts);
+
 	const [searchResults, setSearchResults] = useState<SearchResults[]>();
 	const [searchQuery, setSearchQuery] = useState("");
+	const [fetchedUpvote, setFetchedUpvote] = useState(false);
+
+	const { homePosts, setHomePosts } = useContext(PostContext);
 
 	useEffect(() => {
-		fetchUpvotes(homePosts, setHomePosts);
+		if (homePosts.length === 0) setHomePosts(posts || []);
 	}, []);
+
+	useEffect(() => {
+		if (
+			!fetchedUpvote &&
+			0 < homePosts.length &&
+			homePosts.length <= LIMIT
+		) {
+			fetchUpvotes(homePosts, setHomePosts);
+			setFetchedUpvote(true);
+		}
+	}, [homePosts]);
 
 	const fetchHomePosts = async ({ cursor }: { cursor: string | number }) => {
 		const { data, error } = await supabase
@@ -101,6 +114,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 			<div className="px-4 lg:px-32 xl:px-64 grow mt-12 overflow-hidden">
 				{(searchResults?.length || 0) > 0 ? (
 					<PostDisplay
+						key={"search_results"}
 						posts={searchResults || []}
 						cursorKey="search_rank"
 						searchTerm={searchQuery}
@@ -108,6 +122,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					/>
 				) : (
 					<PostDisplay
+						key={"latest_posts"}
 						posts={homePosts || []}
 						cursorKey="published_on"
 						searchTerm={searchQuery}

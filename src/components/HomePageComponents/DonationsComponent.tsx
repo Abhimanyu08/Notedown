@@ -2,7 +2,7 @@ import React from "react";
 
 function DonationsComponent() {
 	return (
-		<div className="flex justify-center gap-1 text-white">
+		<div className="flex justify-center gap-1 text-white flex-wrap">
 			<span>
 				Made by{" "}
 				<a

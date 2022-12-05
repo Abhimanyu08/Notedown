@@ -34,3 +34,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+.snaplet
+.snaplet/snapshots
+.snaplet/structure.d.ts

@@ -44,7 +44,11 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	};
 	return (
 		<div className="relative container">
-			<Link href={published ? `/posts/${id}` : `/posts/preview/${id}`}>
+			<Link
+				href={
+					published ? `/posts/${id}` : `/posts/preview?postId=${id}`
+				}
+			>
 				<div className="text-lg text-amber-500 md:text-xl font-semibold link link-hover truncate w-3/4">
 					{title}{" "}
 				</div>

@@ -23,7 +23,7 @@ function Navbar({
 
 	return (
 		<div className="flex items-center p-3 md:p-4 justify-between grow-0 mb-5 lg:mb-5 xl:px-64  px-5 lg:px-32 z-10 opacity-100  border-white/25 font-semibold md:font-bold relative md:text-base text-sm">
-			<div className="flex gap-6 lg:gap-20">
+			<div className="flex gap-6 md:gap-20">
 				<Link href="/">
 					<p className="link-hover cursor-pointer  text-white">
 						Home
@@ -36,7 +36,7 @@ function Navbar({
 				</Link>
 			</div>
 			{user ? (
-				<div className="flex gap-8 items-center">
+				<div className="flex gap-6 items-center md:gap-20">
 					<Link href={`/read`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Read
@@ -52,9 +52,9 @@ function Navbar({
 						onClick={() => setShowProfileOptions((prev) => !prev)}
 					>
 						{showProfileOptions ? (
-							<AiFillCloseCircle />
+							<AiFillCloseCircle className="lg:text-xl" />
 						) : (
-							<HiMenu className={``} />
+							<HiMenu className={`lg:text-xl`} />
 						)}
 					</div>
 					{showProfileOptions && (
@@ -78,7 +78,7 @@ function Navbar({
 					)}
 				</div>
 			) : (
-				<div className="flex items-center text-white gap-6 md:gap-20">
+				<div className="flex items-center  text-white gap-6 md:gap-20">
 					<Link href={`/read`}>
 						<p className="link-hover cursor-pointer  text-white">
 							Read

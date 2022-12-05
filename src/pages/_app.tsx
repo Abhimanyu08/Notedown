@@ -11,6 +11,7 @@ import {
 import "../../styles/globals.css";
 import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
+import PostContextComponent from "../Contexts/PostContext";
 import Blogger from "../interfaces/Blogger";
 
 export const UserContext = createContext<{
@@ -29,9 +30,9 @@ export const BlogContext = createContext<{
 }>({});
 
 export const CanvasImageContext = createContext<{
-	canvasImages: File[];
-	setCanvasImages: Dispatch<SetStateAction<File[]>>;
-}>({ canvasImages: [], setCanvasImages: () => [] });
+	canvasImages: Record<string, any | null>;
+	setCanvasImages: Dispatch<SetStateAction<Record<string, any | null>>>;
+}>({ canvasImages: {}, setCanvasImages: () => {} });
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
@@ -66,7 +67,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	return (
 		<UserContext.Provider value={{ user, setUser }}>
-			<Component {...pageProps} key={router.asPath} />
+			<PostContextComponent>
+				<Component {...pageProps} key={router.asPath} />
+			</PostContextComponent>
 		</UserContext.Provider>
 	);
 }

@@ -9,10 +9,10 @@ import { supabase } from "../../../utils/supabaseClient";
 import ModalProps from "../../interfaces/ModalProps";
 import Post from "../../interfaces/Post";
 
-export function DeleteModal({ post, modifyPosts }: ModalProps) {
+export function DeleteModal({ post, afterActionCallback }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {
 		let { id, filename, published, image_folder, created_by } = post;
-
+		if (!id) return;
 		let postData: Post | undefined, imageData, error;
 		if (!filename || !image_folder || !created_by) {
 			const { data, error } = await supabase
@@ -67,16 +67,7 @@ export function DeleteModal({ post, modifyPosts }: ModalProps) {
 				);
 		}
 
-		if (published) {
-			sendRevalidationRequest(`/posts/${id}`);
-			sendRevalidationRequest(`/profile/${created_by}`);
-			sendRevalidationRequest(`/read`);
-		}
-
-		if (!modifyPosts) return;
-		modifyPosts(published ? "published" : "unpublished", (prev) =>
-			prev?.filter((post) => post.id !== id)
-		);
+		afterActionCallback(post);
 	};
 	return (
 		<>

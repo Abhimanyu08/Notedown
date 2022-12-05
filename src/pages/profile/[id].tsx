@@ -1,13 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import {
-	Dispatch,
-	SetStateAction,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { SetStateAction, useContext, useEffect, useState } from "react";
 import {
 	LIMIT,
 	SEARCH_PRIVATE,
@@ -18,9 +12,10 @@ import {
 } from "../../../utils/constants";
 import { fetchUpvotes } from "../../../utils/fetchUpvotes";
 import mdToHtml from "../../../utils/mdToHtml";
-import { sendRevalidationRequest } from "../../../utils/sendRequest";
+import checkGreatestStillGreatest from "../../../utils/checkGreatestStillGreatest";
+
 import { supabase } from "../../../utils/supabaseClient";
-import { About } from "../../components/About";
+import { About } from "../../components/ProfilePageComponents/About";
 import { DeleteModal } from "../../components/Modals/DeleteModal";
 import Layout from "../../components/Layout";
 import PostDisplay from "../../components/PostDisplay";
@@ -28,17 +23,18 @@ import { PublishModal } from "../../components/Modals/PublishModal";
 import SearchComponent from "../../components/SearchComponent";
 import { UnPublishModal } from "../../components/Modals/UnPublishModal";
 import { UploadModal } from "../../components/Modals/UploadModal";
-import UserDisplay from "../../components/UserDisplay";
+import UserDisplay from "../../components/ProfilePageComponents/UserDisplay";
 import Blogger from "../../interfaces/Blogger";
 import Post from "../../interfaces/Post";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import SearchResult from "../../interfaces/SearchResult";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
-
-interface ProfileUser extends Blogger {
-	htmlAbout?: string;
-}
+import { ProfileUser } from "../../interfaces/ProfileUser";
+import { PostTypeSelecter } from "../../components/ProfilePageComponents/PostTypeSelecter";
+import { SectionSelector } from "../../components/ProfilePageComponents/SectionSelector";
+import { PostContext } from "../../Contexts/PostContext";
+import { sendRevalidationRequest } from "../../../utils/sendRequest";
 
 interface ProfileProps {
 	latest?: Partial<PostWithBlogger>[];
@@ -50,141 +46,102 @@ interface UpvotedPost extends Post {
 	upvoted_on: string;
 }
 
-type PostType = "published" | "unpublished" | "upvoted";
-type SortType = "greatest" | "latest";
+export type PostType = "latest" | "greatest" | "private" | "upvoted";
+export type SectionType = "posts" | "about";
 
 function Profile({ profileUser, latest, greatest }: ProfileProps) {
+	const { user } = useContext(UserContext);
+	const router = useRouter();
+
+	let id =
+		(router?.query?.id as string | undefined) || profileUser?.id || null;
 	const [profile, setProfile] = useState(profileUser);
-	const [section, setSection] = useState<"posts" | "about">("about");
-	const [postType, setPostType] = useState<PostType>("published");
-	const [publicPosts, setPublicPosts] = useState<
-		Partial<Post>[] | null | undefined
-	>(latest);
-	const [privatePosts, setPrivatePosts] = useState<
-		Partial<PostWithBlogger>[] | null
-	>();
+	const [section, setSection] = useState<SectionType>("about");
+	const [postType, setPostType] = useState<PostType>("latest");
+
 	const [searchResults, setSearchResults] = useState<SearchResult[]>();
-	const [greatestPosts, setGreatestPosts] = useState<
-		Partial<PostWithBlogger>[] | null | undefined
-	>(greatest);
-	const [upvotedPosts, setUpvotedPosts] = useState<Partial<UpvotedPost>[]>();
+
+	const [upvotedPosts, setUpvotedPosts] = useState<Partial<UpvotedPost>[]>(
+		[]
+	);
 	const [upvotedSearchPosts, setUpvotedSearchPosts] =
 		useState<Partial<Post>[]>();
-	const router = useRouter();
-	const { user } = useContext(UserContext);
 
-	const [editingAbout, setEditingAbout] = useState(false);
-	const [editedAbout, setEditedAbout] = useState<string | undefined>(
-		profileUser?.about
-	);
-	const [editedHtmlAbout, setEditedHtmlAbout] = useState(
-		profileUser?.htmlAbout
-	);
-	const [previewing, setPreviewing] = useState(false);
-	const [sortType, setSortType] = useState<SortType>("latest");
 	const [searchQuery, setSearchQuery] = useState("");
-
 	const [postInAction, setPostInAction] = useState<Partial<Post> | null>(
 		null
 	);
+	const {
+		homePosts,
+		setHomePosts,
+		latestPosts: ownersLatestPosts,
+		setLatestPosts: setOwnerLatestPosts,
+		greatestPosts: ownerGreatestPosts,
+		setGreatestPosts: setOwnerGreatestPosts,
+		privatePosts: ownerPrivatePosts,
+		setPrivatePosts: setOwnerPrivatePosts,
+	} = useContext(PostContext);
 
-	const id = profileUser?.id || null;
+	const [latestPosts, setLatestPosts] = useState<Partial<Post>[]>(() => {
+		if (id === user?.id && ownersLatestPosts.length > 0)
+			return ownersLatestPosts;
+		return latest || [];
+	});
+	const [privatePosts, setPrivatePosts] = useState<
+		Partial<PostWithBlogger>[]
+	>(() => {
+		if (id === user?.id && ownerPrivatePosts.length > 0)
+			return ownerPrivatePosts;
+		return [];
+	});
+	const [greatestPosts, setGreatestPosts] = useState<
+		Partial<PostWithBlogger>[]
+	>(() => {
+		if (id === user?.id && ownerGreatestPosts.length > 0)
+			return ownerGreatestPosts;
+		return greatest || [];
+	});
 
 	useEffect(() => {
-		const aboutMd2Html = async () => {
-			const html = await mdToHtml(editedAbout || "");
-			setEditedHtmlAbout(html);
-		};
-
-		aboutMd2Html();
-	}, [editedAbout]);
-
-	useEffect(() => {
-		setEditedAbout(profile?.about);
-	}, [profile]);
+		if (user?.id === id) {
+			setOwnerLatestPosts(latestPosts);
+			setOwnerGreatestPosts(greatestPosts);
+			setOwnerPrivatePosts(privatePosts);
+		}
+	}, [latestPosts, greatestPosts, privatePosts]);
 
 	useEffect(() => {
-		checkGreatestStillGreatest(greatest);
-		fetchUpvotes(publicPosts, setPublicPosts);
+		if (!id) return;
+		checkGreatestStillGreatest(id as string, greatest);
+		fetchUpvotes(latestPosts, setLatestPosts);
 		fetchUpvotes(greatestPosts, setGreatestPosts);
 	}, []);
 
-	const onAboutSave = async () => {
-		const { data, error } = await supabase
-			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.update({ about: editedAbout })
-			.eq("id", profile!.id);
-		if (error || !data || data.length == 0) {
-			alert("Error in updating about");
-			return;
-		}
-		const newUserData = data.at(0);
-		if (newUserData)
-			setProfile({
-				...newUserData,
-				htmlAbout: await mdToHtml(newUserData?.about),
-			});
-		setEditingAbout(false);
-		setPreviewing(false);
-		sendRevalidationRequest(`profile/${profile?.id}`);
-	};
-
 	useEffect(() => {
-		if (postType === "unpublished") {
-			if (!privatePosts || privatePosts.length === 0) {
-				supabase
-					.from<Post>(SUPABASE_POST_TABLE)
-					.select()
-					.match({ created_by: profile?.id, published: false })
-					.order("created_at", { ascending: false })
-					.limit(LIMIT)
-					.then((val) => {
-						if (!val.data || val.data.length === 0) {
-							return;
-						}
-						let modifiedPosts = val.data.map((p) => ({
-							...p,
-							bloggers: { name: profileUser!.name },
-						}));
-						setPrivatePosts(modifiedPosts);
-					});
-			}
+		if (privatePosts.length === 0) {
+			supabase
+				.from<Post>(SUPABASE_POST_TABLE)
+				.select()
+				.match({ created_by: profile?.id, published: false })
+				.order("created_at", { ascending: false })
+				.limit(LIMIT)
+				.then((val) => {
+					if (!val.data || val.data.length === 0) {
+						return;
+					}
+					let modifiedPosts = val.data.map((p) => ({
+						...p,
+						bloggers: { name: profileUser!.name },
+					}));
+					setPrivatePosts(modifiedPosts);
+				});
 		}
 
 		if (postType === "upvoted") {
-			if (upvotedPosts !== undefined) return;
+			if (upvotedPosts.length > 0) return;
 			fetchUpvotedPosts({});
 		}
 	}, [postType]);
-
-	const checkGreatestStillGreatest = async (
-		greatest?: Partial<Post>[] | null
-	) => {
-		if (!greatest) return;
-		const { data, error } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
-			.select("*")
-			.match({ created_by: id, published: true })
-			.order("upvote_count", { ascending: false })
-			.limit(LIMIT);
-
-		if (error || !data || data.length === 0) return;
-
-		if (data.some((post, idx) => post.id !== greatest[idx].id)) {
-			sendRevalidationRequest(`profile/${id}`);
-		}
-	};
-
-	const modifyPosts = (
-		type: typeof postType,
-		newPosts: SetStateAction<Partial<Post>[] | null | undefined>
-	) => {
-		if (type === "published") {
-			if (setPublicPosts) setPublicPosts(newPosts);
-			return;
-		}
-		setPrivatePosts(newPosts);
-	};
 
 	const fetchUpvotedPosts = async ({
 		cursor,
@@ -328,8 +285,8 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 			console.log(error.message || "data returned is null");
 			return false;
 		}
-		if (setPublicPosts)
-			setPublicPosts((prev) => [...(prev || []), ...data]);
+		if (setLatestPosts)
+			setLatestPosts((prev) => [...(prev || []), ...data]);
 		return data.length > 0;
 	};
 
@@ -410,7 +367,9 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				{user?.id === id && (
 					<UploadModal
 						userId={user!.id}
-						setClientPosts={setPrivatePosts}
+						afterUploadCallback={(newPost: Post) => {
+							setPrivatePosts((prev) => [newPost, ...prev]);
+						}}
 					/>
 				)}
 
@@ -418,15 +377,66 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 					<>
 						<DeleteModal
 							post={postInAction}
-							modifyPosts={modifyPosts}
+							afterActionCallback={(post) => {
+								const stateChangeFunc = (
+									prev: Partial<PostWithBlogger>[]
+								) => prev.filter((p) => p.id !== post.id);
+								if (
+									postType === "latest" ||
+									postType === "greatest"
+								) {
+									setLatestPosts(stateChangeFunc);
+									setGreatestPosts(stateChangeFunc);
+									sendRevalidationRequest(
+										`/posts/${post.id}`
+									);
+									sendRevalidationRequest(`/profile/${id}`);
+
+									if (
+										homePosts.some((p) => p.id === post.id)
+									) {
+										setHomePosts(stateChangeFunc);
+										sendRevalidationRequest(`/read`);
+									}
+								}
+								if (postType === "private") {
+									setPrivatePosts(stateChangeFunc);
+								}
+							}}
 						/>
 						<PublishModal
 							post={postInAction}
-							modifyPosts={modifyPosts}
+							afterActionCallback={(post) => {
+								setPrivatePosts((prev) =>
+									prev.filter((p) => p.id !== post.id)
+								);
+
+								setLatestPosts((prev) => [post, ...prev]);
+								setHomePosts((prev) => [post, ...prev]);
+
+								sendRevalidationRequest(`/posts/${post.id}`);
+								sendRevalidationRequest(`/profile/${id}`);
+								sendRevalidationRequest(`/read`);
+							}}
 						/>
 						<UnPublishModal
 							post={postInAction}
-							modifyPosts={modifyPosts}
+							afterActionCallback={(post) => {
+								setLatestPosts((prev) =>
+									prev.filter((p) => p.id !== post.id)
+								);
+								setGreatestPosts((prev) =>
+									prev.filter((p) => p.id !== post.id)
+								);
+
+								setPrivatePosts((prev) => [post, ...prev]);
+								if (homePosts.some((p) => p.id === post.id)) {
+									setHomePosts((prev) =>
+										prev.filter((p) => p.id !== post.id)
+									);
+									sendRevalidationRequest(`/read`);
+								}
+							}}
 						/>
 					</>
 				)}
@@ -435,151 +445,52 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				className="lg:grid flex flex-col grow lg:min-h-0 h-max overflow-y-auto lg:overflow-y-clip lg:grid-cols-7 text-white gap-y-10  xl:px-64 px-3
 			md:px-5 lg:px-32"
 			>
-				<div
-					className={` lg:col-span-2 h-fit lg:h-full
-					`}
-				>
+				<div className={` lg:col-span-2 h-fit lg:h-full`}>
 					<UserDisplay profile={profile!} user={user || null} />
 				</div>
-				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-hidden md:pr-2">
-					<div className="flex justify-between grow-0 items-center  md:pb-4 lg:pb-0">
-						<div className="tabs">
-							<p
-								className={`tab tab-md  tab-lifted ${
-									section === "about" ? "tab-active" : ""
-								}  font-medium text-white text-xs md:text-base`}
-								onClick={() => setSection("about")}
-							>
-								About
-							</p>
-							<p
-								className={`tab tab-md  tab-lifted ${
-									section === "posts" ? "tab-active" : ""
-								} font-medium text-white text-xs  md:text-base`}
-								onClick={() => setSection("posts")}
-							>
-								Posts
-							</p>
-						</div>
-						{user?.id !== id && section === "posts" && (
-							<PostTypeSelecter
-								{...{
-									postType,
-									sortType,
-									setSortType,
-									setPostType,
-									owner: user?.id === profile?.id,
-								}}
-							/>
-						)}
-						{user?.id === id && section === "posts" ? (
-							<label
-								htmlFor="upload"
-								className="btn btn-sm text-xs font-medium   normal-case md:text-sm text-white"
-							>
-								New post
-							</label>
-						) : (
-							user?.id === id &&
-							(editingAbout ? (
-								<div className="flex gap-2">
-									<button
-										className="normal-case btn btn-xs md:btn-sm text-white"
-										onClick={() =>
-											setPreviewing((prev) => !prev)
-										}
-										data-tip={`${
-											previewing
-												? "back to edit"
-												: "preview"
-										}`}
-									>
-										{previewing ? "Edit" : "Preview"}
-									</button>
-									<button
-										className="normal-case btn btn-xs md:btn-sm text-white"
-										onClick={onAboutSave}
-									>
-										Save
-									</button>
-
-									<button
-										className="normal-case btn btn-xs md:btn-sm text-white"
-										onClick={() => {
-											setEditedAbout(profile?.about);
-											setEditingAbout(false);
-											setPreviewing(false);
-										}}
-									>
-										Cancel
-									</button>
-								</div>
-							) : (
-								<div
-									className="btn font-normal btn-xs md:btn-sm normal-case  text-white"
-									onClick={() => setEditingAbout(true)}
-								>
-									Edit
-								</div>
-							))
-						)}
+				<div className="lg:col-span-5 flex flex-col  lg:min-h-0 grow overflow-x-hidden md:pr-2 md:overflow-y-clip">
+					<div className="flex justify-start grow-0 items-center  md:pb-4 lg:pb-0 border-black">
+						<SectionSelector {...{ section, setSection }} />
 					</div>
 
 					<div
 						className={` flex flex-row w-[200%] ${
 							section === "about" ? "" : "-translate-x-1/2"
-						} transition-all duration-500 min-h-0 grow gap-4`}
+						} transition-all duration-500 min-h-0 grow`}
 					>
-						<div className="mt-6 lg:pl-2 h-full mb-10 w-1/2">
+						<div
+							className={`h-full mb-10 w-1/2 ${
+								section === "about" ? "" : "invisible"
+							}`}
+						>
 							<About
-								editedAbout={editedAbout || ""}
-								originalHtmlAbout={profile?.htmlAbout || ""}
-								editedHtmlAbout={editedHtmlAbout || ""}
-								previewing={previewing}
-								setAbout={setEditedAbout}
-								editing={editingAbout}
+								userId={id || ""}
 								owner={user?.id === id}
+								originalAboutInMd={profile?.about || ""}
+								originalAboutInHtml={profile?.htmlAbout || ""}
+								setProfile={setProfile}
 							/>
 						</div>
-						<div className="w-1/2 flex flex-col overflow-visible h-full">
+						<div
+							className={`w-1/2 flex flex-col overflow-visible h-full ${
+								section === "posts" ? "" : "invisible"
+							}`}
+						>
 							<div
 								className={`grow-0 flex flex-col gap-2 md:gap-4 py-2 md:py-4`}
 							>
-								<div className="flex justify-between ">
+								<div className="flex w-full justify-between">
+									<PostTypeSelecter
+										owner={user?.id === id}
+										{...{ postType, setPostType }}
+									/>
 									{user?.id === id && (
-										<select
-											name=""
-											id=""
-											className="select select-sm text-xs md:text-sm font-medium"
-											onChange={(e) =>
-												setPostType(
-													e.target.value as PostType
-												)
-											}
-											value={postType}
+										<label
+											className="btn btn-sm text-white capitalize"
+											htmlFor="upload"
 										>
-											<option value="published">
-												Published
-											</option>
-											<option value="unpublished">
-												Unpublished
-											</option>
-											<option value="upvoted">
-												Upvoted
-											</option>
-										</select>
-									)}
-
-									{user?.id === id && (
-										<PostTypeSelecter
-											{...{
-												postType,
-												sortType,
-												setSortType,
-												setPostType,
-												owner: user.id === profile?.id,
-											}}
-										/>
+											New Post
+										</label>
 									)}
 								</div>
 								<div className="md:w-1/2">
@@ -608,10 +519,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									)}
 								</div>
 							</div>
-
-							{(searchResults?.length ||
-								upvotedSearchPosts?.length ||
-								0) > 0 ? (
+							{searchQuery !== "" ? (
 								<>
 									{postType === "upvoted" ? (
 										<PostDisplay
@@ -632,48 +540,23 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 								</>
 							) : (
 								<>
-									{postType === "published" && (
-										<>
-											<>
-												{sortType === "latest" && (
-													<PostDisplay
-														posts={
-															publicPosts || []
-														}
-														setPostInAction={
-															setPostInAction
-														}
-														cursorKey={
-															"published_on"
-														}
-														fetchPosts={
-															fetchLatestPosts
-														}
-													/>
-												)}
-											</>
-											<>
-												{sortType === "greatest" && (
-													<PostDisplay
-														posts={
-															greatestPosts || []
-														}
-														setPostInAction={
-															setPostInAction
-														}
-														cursorKey={
-															"upvote_count"
-														}
-														fetchPosts={
-															fetchGreatestPosts
-														}
-													/>
-												)}
-											</>
-										</>
+									{postType === "latest" && (
+										<PostDisplay
+											posts={latestPosts || []}
+											setPostInAction={setPostInAction}
+											cursorKey={"published_on"}
+											fetchPosts={fetchLatestPosts}
+										/>
 									)}
-
-									{postType === "unpublished" && (
+									{postType === "greatest" && (
+										<PostDisplay
+											posts={greatestPosts || []}
+											setPostInAction={setPostInAction}
+											cursorKey={"upvote_count"}
+											fetchPosts={fetchGreatestPosts}
+										/>
+									)}
+									{postType === "private" && (
 										<PostDisplay
 											posts={privatePosts || []}
 											setPostInAction={setPostInAction}
@@ -695,48 +578,6 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				</div>
 			</div>
 		</Layout>
-	);
-}
-
-function PostTypeSelecter({
-	postType,
-	setSortType,
-	sortType,
-	setPostType,
-	owner,
-}: {
-	owner: boolean;
-	postType: PostType;
-	sortType: SortType;
-	setSortType: Dispatch<SetStateAction<SortType>>;
-	setPostType: Dispatch<SetStateAction<PostType>>;
-}) {
-	return (
-		<select
-			name=""
-			id=""
-			className={` select select-sm text-xs md:text-sm font-medium ${
-				postType === "unpublished" || (postType === "upvoted" && owner)
-					? "invisible"
-					: ""
-			}`}
-			value={postType === "upvoted" ? "upvoted" : sortType}
-			onChange={(e) => {
-				if (
-					e.target.value === "latest" ||
-					e.target.value === "greatest"
-				) {
-					setSortType(e.target.value);
-					setPostType("published");
-					return;
-				}
-				setPostType(e.target.value as "upvoted");
-			}}
-		>
-			<option value="latest">Latest</option>
-			<option value="greatest">Greatest</option>
-			{!owner && <option value="upvoted">Upvoted</option>}
-		</select>
 	);
 }
 

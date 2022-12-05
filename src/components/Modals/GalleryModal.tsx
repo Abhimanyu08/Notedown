@@ -82,7 +82,12 @@ function GalleryModal({
 						...prev,
 						...Array.from(e.target.files || [])
 							.slice(0, maxPhotos)
-							.filter((i) => !allImages.includes(i.name)),
+							.filter(
+								(i) =>
+									!allImages.includes(
+										processImageName(i.name)
+									)
+							),
 					]);
 				}}
 			/>
@@ -159,7 +164,7 @@ function GalleryModal({
 							onClick={() => setImageAge("new")}
 							className={`${
 								imageAge === "new" ? "tab-active" : ""
-							} tab tab-bordered`}
+							} tab tab-bordered text-white`}
 						>
 							New Uploads
 						</span>
@@ -168,12 +173,19 @@ function GalleryModal({
 								onClick={() => setImageAge("old")}
 								className={`${
 									imageAge === "old" ? "tab-active" : ""
-								} tab tab-bordered`}
+								} tab tab-bordered text-white`}
 							>
 								Previously Uploaded
 							</span>
 						)}
 					</div>
+					<span className="self-center text-white text-xs">
+						Number of Images Uploaded:{" "}
+						{currImages.length +
+							prevImages.length -
+							toBeDeletedFromStorage.length}
+						, Max - {PHOTO_LIMIT}
+					</span>
 					<div
 						className={`flex flex-row w-[200%] overflow-y-auto scrollbar-thin gap-2 ${
 							imageAge === "new" ? "" : "-translate-x-1/2"
@@ -263,8 +275,8 @@ function ImageGrid({
 								className={` ${
 									selectedObj[imageName] ||
 									toBeDeletedFromStorage?.includes(imageName)
-										? "opacity-30"
-										: "group-hover:opacity-50"
+										? "opacity-10"
+										: "group-hover:opacity-10"
 								}`}
 							/>
 							<div
@@ -283,6 +295,7 @@ function ImageGrid({
 										type="checkbox"
 										name=""
 										id=""
+										className="w-4 h-6"
 										checked={selectedObj[imageName]}
 										onChange={() => {
 											if (selectedObj[imageName]) {
@@ -357,7 +370,10 @@ function ImageGrid({
 												);
 										}}
 									>
-										<AiFillDelete className="text-red-600" />
+										<AiFillDelete
+											className="text-red-600"
+											size={22}
+										/>
 									</span>
 								)}
 							</div>
