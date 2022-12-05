@@ -12,7 +12,7 @@ function CanvasDemo() {
 				<Image
 					src={canvasGif.src}
 					width={604}
-					height={396}
+					height={340}
 					layout="fixed"
 				/>
 			</div>
