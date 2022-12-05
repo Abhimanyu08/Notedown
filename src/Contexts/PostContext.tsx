@@ -18,7 +18,7 @@ export const PostContext = createContext<{
 	setPrivatePosts: React.Dispatch<React.SetStateAction<Partial<Post>[]>>;
 }>({} as any);
 
-function PostContextComponent({ children }: { children: JSX.Element }) {
+function PostContextComponent({ children }: { children: JSX.Element[] }) {
 	const [homePosts, setHomePosts] = useState<Partial<PostWithBlogger>[]>([]);
 	const [latestPosts, setLatestPosts] = useState<Partial<Partial<Post>>[]>(
 		[]

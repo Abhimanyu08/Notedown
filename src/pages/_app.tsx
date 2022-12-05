@@ -13,6 +13,7 @@ import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
 import PostContextComponent from "../Contexts/PostContext";
 import Blogger from "../interfaces/Blogger";
+import { Analytics } from "@vercel/analytics/react";
 
 export const UserContext = createContext<{
 	user?: User | null;
@@ -69,6 +70,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 		<UserContext.Provider value={{ user, setUser }}>
 			<PostContextComponent>
 				<Component {...pageProps} key={router.asPath} />
+				<Analytics />
 			</PostContextComponent>
 		</UserContext.Provider>
 	);
