@@ -43,7 +43,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		if (setPostInAction) setPostInAction(post);
 	};
 	return (
-		<div className="relative container">
+		<div className="relative container bg-slate-900 p-4 rounded-md shadow-slate-600 shadow-md">
 			<Link
 				href={
 					published ? `/posts/${id}` : `/posts/preview?postId=${id}`
