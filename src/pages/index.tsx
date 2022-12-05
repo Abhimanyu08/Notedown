@@ -61,7 +61,10 @@ function Index({ markdown }: TrialProps) {
 					property="og:description"
 					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
 				/>
-				<meta property="og:image" content="" />
+				<meta
+					property="og:image"
+					content="https://rce-blog.xyz/api/og"
+				/>
 
 				{/* <!-- Twitter Meta Tags --> */}
 				<meta name="twitter:card" content="summary_large_image" />
@@ -72,7 +75,10 @@ function Index({ markdown }: TrialProps) {
 					name="twitter:description"
 					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
 				/>
-				<meta name="twitter:image" content="" />
+				<meta
+					name="twitter:image"
+					content="https://rce-blog.xyz/api/og"
+				/>
 
 				{/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
 			</Head>

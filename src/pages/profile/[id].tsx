@@ -338,7 +338,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<Head>
-				<title>{`Profile - ${profileUser?.name}`}</title>
+				<title>{`${profileUser?.name}`}</title>
 				<meta name="author" content={profileUser?.name || ""} />
 				<meta
 					name="description"
@@ -362,6 +362,22 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 				/>
 				<meta property="og:site_name" content="RCE-Blog" />
 				<meta property="og:type" content="website" />
+
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta property="twitter:domain" content="rce-blog.xyz" />
+				<meta
+					property="twitter:url"
+					content={`https://rce-blog.xyz/profile/${profileUser?.id}`}
+				/>
+				<meta name="twitter:title" content={profileUser?.name} />
+				<meta
+					name="twitter:description"
+					content={`RCE-Blog Profile page of ${profileUser?.name}`}
+				/>
+				<meta
+					name="twitter:image"
+					content={`${profileUser?.avatar_url}`}
+				/>
 			</Head>
 			<>
 				{user?.id === id && (

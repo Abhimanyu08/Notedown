@@ -165,7 +165,10 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={props.title} />
 				<meta property="og:description" content={props.description} />
-				<meta property="og:image" content="" />
+				<meta
+					property="og:image"
+					content={`https://rce-blog.xyz/api/og?postId=${props.id}`}
+				/>
 
 				{/* <!-- Twitter Meta Tags --> */}
 				<meta name="twitter:card" content="summary_large_image" />
@@ -176,7 +179,10 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 				/>
 				<meta name="twitter:title" content={props.title} />
 				<meta name="twitter:description" content={props.description} />
-				<meta name="twitter:image" content="" />
+				<meta
+					name="twitter:image"
+					content={`https://rce-blog.xyz/api/og?postId=${props.id}`}
+				/>
 
 				{/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
 			</Head>
