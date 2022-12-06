@@ -34,7 +34,7 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col rounded-md">
 			<div
 				className={`relative h-full flex w-[600%]`}
 				// style={{ transform: `translateX(-${100 * show}%)` }}
@@ -65,7 +65,7 @@ function Carousel({
 			</div>
 			<div className="flex justify-between items-center">
 				<div
-					className="btn btn-circle btn-xs text-black"
+					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5  text-center"
 					id="pre"
 					onClick={onSlide}
 				>
@@ -73,12 +73,12 @@ function Carousel({
 				</div>
 				<figcaption
 					className={`text-center 
-					text-white italic`}
+					text-black dark:text-gray-200 italic`}
 				>
 					{captions.at(show) || ""}
 				</figcaption>
 				<div
-					className="btn btn-circle btn-xs text-black"
+					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5 text-center"
 					id="post"
 					onClick={onSlide}
 				>

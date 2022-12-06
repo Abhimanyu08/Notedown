@@ -53,11 +53,14 @@
 	}
 }
 
-.btn:not(.btn-ghost, .tool),
-.select,
-.tab-active,
-.tab-lifted.tab-active {
-	background-color: rgb(51 65 85);
+.profile-tool {
+	/* background-color: white; */
+	background-color: white;
+	color: black;
+}
+.dark .dark\:profile-tool-dark {
+	background-color: black;
+	color: white;
 }
 
 .tool {

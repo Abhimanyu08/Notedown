@@ -92,7 +92,8 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				}}
 			>
 				<div
-					className="border-2 border-black overflow-auto  rounded-md drop-shadow-lg
+					className="border-2 border-black overflow-auto  rounded-md 
+					shadow-black dark:shadow-white shadow-md
 					
 
 					lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
@@ -102,7 +103,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 						if (!markdownChanged) setMarkdownChanged(true);
 					}}
 				></div>
-				<span className="self-center text-white text-sm">
+				<span className="self-center dark:text-white text-black font-semibold text-sm">
 					Try editing in markdown
 				</span>
 			</div>
@@ -137,7 +138,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				}}
 			>
 				<div
-					className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none bg-slate-900 drop-shadow-xl
+					className="border-2 border-black overflow-y-auto max-h-full rounded-md select-none  shadow-md shadow-black bg-gray-300 dark:bg-black/50 dark:shadow-white
 				
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				"
@@ -155,7 +156,7 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 						paddingClasses="px-12"
 					/>
 				</div>
-				<span className="self-center w-fit text-white text-sm ">
+				<span className="self-center dark:text-white text-black font-semibold text-sm">
 					Press the{" "}
 					<BsArrowRightCircleFill className="inline mx-1 text-amber-400" />{" "}
 					button to see the changes

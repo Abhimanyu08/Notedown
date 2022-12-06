@@ -10,23 +10,27 @@ export function SectionSelector({
 	setSection: Dispatch<SetStateAction<SectionType>>;
 }) {
 	return (
-		<div className="tabs">
-			<p
+		<div className="tabs pl-1">
+			<div
 				className={`tab tab-md  rounded-t-md tab-bordered ${
-					section === "about" ? "tab-active" : ""
-				}  font-medium text-white text-xs md:text-base`}
+					section === "about"
+						? "tab-active font-semibold profile-tool dark:profile-tool-dark "
+						: "font-normal dark:text-white/80 text-black"
+				}   text-xs md:text-base `}
 				onClick={() => setSection("about")}
 			>
 				About
-			</p>
-			<p
+			</div>
+			<div
 				className={`tab tab-md rounded-t-md  tab-bordered ${
-					section === "posts" ? "tab-active" : ""
-				} font-medium text-white text-xs  md:text-base`}
+					section === "posts"
+						? "tab-active font-semibold profile-tool dark:profile-tool-dark"
+						: "font-normal dark:text-white/80 text-black"
+				}  text-xs  md:text-base `}
 				onClick={() => setSection("posts")}
 			>
 				Posts
-			</p>
+			</div>
 		</div>
 	);
 }

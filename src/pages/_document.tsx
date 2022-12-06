@@ -3,7 +3,7 @@ import Script from "next/script";
 
 export default function Document() {
 	return (
-		<Html>
+		<Html className="dark">
 			<Head>
 				<link
 					rel="stylesheet"
@@ -31,7 +31,7 @@ export default function Document() {
 					crossOrigin="anonymous"
 				></script>
 			</Head>
-			<body className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700">
+			<body className="bg-gray-200 dark:bg-black/50 transition-colors duration-300">
 				<Main />
 				<NextScript />
 			</body>

@@ -125,7 +125,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 				user.id &&
 				profile.id === user.id && (
 					<div
-						className="absolute top-0 right-0 lg:hidden"
+						className="absolute top-0 right-0 lg:hidden text-black dark:text-white"
 						onClick={() => setEditing(true)}
 					>
 						<AiFillEdit />
@@ -272,7 +272,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 					/>
 				</div>
 			) : (
-				<div className="flex flex-col gap-4 items-center w-full">
+				<div className="flex flex-col gap-4 items-center w-full text-black dark:text-white">
 					<h1 className={` text-xs font-bold md:text-lg`}>
 						{currProfile.name}
 					</h1>
@@ -306,7 +306,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 				(editing ? (
 					<div className="flex gap-1 justify-center w-full">
 						<div
-							className={` btn btn-xs font-normal  bg-base-100 normal-case md:mt-10 text-white ${
+							className={` profile-tool dark:profile-tool-dark text-xs px-2 py-1 rounded-md normal-case md:mt-10  ${
 								uploadingChanges ? "loading" : ""
 							}`}
 							onClick={onSave}
@@ -314,7 +314,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 							Save
 						</div>
 						<div
-							className="btn btn-xs bg-base-100 font-normal normal-case md:mt-10 text-white"
+							className=" profile-tool dark:profile-tool-dark text-xs px-2 py-1 rounded-md normal-case md:mt-10 "
 							onClick={() => {
 								setEditing(false);
 								setCurrProfile(profile);
@@ -326,7 +326,7 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 				) : (
 					<div className="lg:flex w-full justify-center hidden">
 						<div
-							className="btn btn-xs font-normal bg-base-100 normal-case w-fit md:mt-10 text-white"
+							className="profile-tool shadow-sm dark:shadow-white/40 shadow-black dark:profile-tool-dark  text-xs font-semibold rounded-md px-2 py-1  normal-case w-fit md:mt-10 "
 							onClick={() => setEditing((prev) => !prev)}
 						>
 							Edit Profile
