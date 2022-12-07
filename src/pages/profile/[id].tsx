@@ -502,11 +502,11 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 									/>
 									{user?.id === id && (
 										<label
-											className="profile-tool shadow-sm dark:profile-tool-dark dark:shadow-white/40 shadow-black px-2 pt-2 
+											className="profile-tool shadow-sm  items-center flex dark:profile-tool-dark dark:shadow-white/40 shadow-black px-2 
 											 rounded-md text-xs lg:text-sm font-semibold text-white capitalize"
 											htmlFor="upload"
 										>
-											New Post
+											<span>New Post</span>
 										</label>
 									)}
 								</div>

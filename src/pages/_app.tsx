@@ -1,4 +1,5 @@
 import { User } from "@supabase/supabase-js";
+import "../../styles/xterm.css";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import {

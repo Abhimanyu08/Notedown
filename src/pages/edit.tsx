@@ -419,12 +419,12 @@ function Edit() {
 
 					<>
 						<div
-							className={` btn btn-circle  btn-ghost tooltip ${
-								blogData.language ? "" : "invisible"
-							}`}
+							className={`btn btn-circle ${
+								containerId ? "" : "btn-ghost"
+							} tooltip ${blogData.language ? "" : "invisible"}`}
 							data-tip={` ${
 								containerId
-									? "Remote code execution enabled"
+									? "RCE enabled"
 									: "Enable remote code execution"
 							} `}
 							onClick={prepareContainer}
@@ -433,7 +433,7 @@ function Edit() {
 								size={30}
 								className={` ${
 									containerId
-										? "dark:text-lime-400 text-green-600"
+										? "text-lime-400"
 										: "text-black dark:text-white"
 								} mt-2 ml-2 `}
 							/>

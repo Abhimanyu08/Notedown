@@ -82,7 +82,7 @@ function PostDisplay({
 			{(posts?.length || 0) > 0 && (
 				<div className="flex justify-center pt-32 pb-28 lg:pb-10 lg:basis-1/12 basis-2/12">
 					<div
-						className="h-fit normal-case dark:profile-tool-dark rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer profile-tool shadow-sm shadow-black dark:shadow-white/40
+						className="h-fit normal-case w-fit dark:profile-tool-dark rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer profile-tool shadow-sm shadow-black dark:shadow-white/40
 						active:scale-90	transition-[scale] duration-150
 						"
 						onClick={onLoadMore}

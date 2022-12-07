@@ -111,7 +111,7 @@ const Home: NextPage<HomeProps> = ({ posts }) => {
 					setSearchQuery={setSearchQuery}
 				/>
 			</div>
-			<div className="lg:w-3/5 w-full  self-center grow mt-12 overflow-hidden">
+			<div className="lg:w-3/5 w-full  self-center grow mt-6 md:mt-12 overflow-hidden">
 				{(searchResults?.length || 0) > 0 ? (
 					<PostDisplay
 						key={"search_results"}

@@ -103,9 +103,9 @@ export function Blog({
 			return;
 		}
 		const { output } = (await resp.json()) as { output: string };
-		try {
-			sessionStorage.setItem(code, output);
-		} catch {}
+		// try {
+		// 	sessionStorage.setItem(code, output);
+		// } catch {}
 
 		setBlockToOutput({ [blockNumber]: output });
 		setBlockToCode({});

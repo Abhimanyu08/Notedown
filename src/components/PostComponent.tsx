@@ -43,13 +43,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		if (setPostInAction) setPostInAction(post);
 	};
 	return (
-		<div className="relative container bg-cyan-200 dark:bg-black lg:p-4 p-2 rounded-md shadow-md shadow-black dark:shadow-white">
+		<div className="relative container bg-cyan-200 dark:bg-black lg:p-4 p-2 rounded-md shadow-sm md:shadow-md shadow-black dark:shadow-white">
 			<Link
 				href={
 					published ? `/posts/${id}` : `/posts/preview?postId=${id}`
 				}
 			>
-				<div className="text-lg text-purple-700 md:text-xl dark:text-amber-400 font-extrabold font-mono link link-hover truncate w-3/4">
+				<div className="text-lg text-purple-700 md:text-xl dark:text-amber-400 font-bold  link link-hover truncate w-3/4">
 					{title}{" "}
 				</div>
 			</Link>
@@ -129,7 +129,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				<div
 					className={`${
 						language && langToBadgeColor[language]
-					} px-1 font-bold  flex justify-center w-20`}
+					} px-1 font-bold font-mono flex justify-center w-20`}
 				>
 					<span>{language}</span>
 				</div>

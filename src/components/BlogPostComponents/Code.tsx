@@ -1,41 +1,36 @@
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
-import { MdHideImage } from "react-icons/md";
+import { MdHideImage, MdImage } from "react-icons/md";
 import { SiPowershell, SiVim } from "react-icons/si";
 import { BlogContext } from "../../pages/_app";
 
 import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import useEditor from "../../hooks/useEditor";
 import { BlogProps } from "../../interfaces/BlogProps";
-import { EditorView } from "codemirror";
 
 import { vim } from "@replit/codemirror-vim";
 import { StateEffect } from "@codemirror/state";
 import getExtensions from "../../../utils/getExtensions";
+import useTerminal from "../../hooks/useTerminal";
 interface CodeProps {
 	code: string;
-	language: BlogProps["language"] | "markdown";
+	language: BlogProps["language"];
 	blockNumber: number;
 }
 
 function Code({ code, language, blockNumber }: CodeProps) {
-	const [hideOutput, setHideOutput] = useState(false);
 	const {
 		containerId,
-		blockToOutput,
 		setBlockToCode,
 		collectCodeTillBlock,
-		setBlockToOutput,
 		vimEnabled,
 		setVimEnabled,
 	} = useContext(BlogContext);
 
 	const [mounted, setMounted] = useState(false);
-	const [openShell, setOpenShell] = useState(false);
-	const [shellCommand, setShellCommand] = useState("");
+	const [openShell, setOpenShell] = useState(true);
 	const [awaitingResult, setAwaitingResult] = useState(false);
-	const [awaitingShellResult, setAwaitingShellResult] = useState(false);
 	const { editorView } = useEditor({
 		language,
 		blockNumber,
@@ -44,16 +39,24 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		editorParentId: `codearea-${blockNumber}`,
 	});
 
-	useEffect(() => {
-		setMounted(true);
-	}, []);
+	const { terminal } = useTerminal({
+		containerId,
+		language,
+		blockNumber,
+		mounted,
+	});
 
 	useEffect(() => {
-		if (blockToOutput && Object.hasOwn(blockToOutput, blockNumber)) {
-			setAwaitingResult(false);
-			setAwaitingShellResult(false);
-		}
-	}, [blockToOutput]);
+		setMounted(true);
+	}, [mounted]);
+
+	// useEffect(() => {
+	// 	if (blockToOutput && Object.hasOwn(blockToOutput, blockNumber)) {
+	// 		setAwaitingResult(false);
+	// 		setAwaitingShellResult(false)
+	// 		setBlockToOutput({});
+	// 	}
+	// }, [blockToOutput]);
 
 	useEffect(() => {
 		const playButton = document.getElementById(
@@ -115,36 +118,9 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		}
 	}, [vimEnabled]);
 
-	const onShellCommandRun = async ({
-		language,
-		containerId,
-		command,
-	}: {
-		language?: string;
-		containerId?: string;
-		command: string;
-	}) => {
-		if (!setBlockToOutput) return;
-		setAwaitingShellResult(true);
-		const code = `sh- ${command}`;
-
-		const resp = await sendRequestToRceServer("POST", {
-			language,
-			containerId,
-			code,
-		});
-
-		if (resp.status !== 201) {
-			setBlockToOutput({ [blockNumber]: resp.statusText });
-			return;
-		}
-		const { output } = (await resp.json()) as { output: string };
-		setBlockToOutput({ [blockNumber]: output });
-	};
-
 	return (
 		<div className="flex relative flex-col w-full ">
-			<div className="flex flex-row  gap-3 w-fit self-end bg-black py-1 px-3 rounded-t-md">
+			<div className="flex flex-row  gap-5 w-fit self-end bg-black py-1 px-3 rounded-t-md">
 				{mounted && (
 					<button
 						onClick={() => {
@@ -165,13 +141,6 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					</button>
 				)}
 				<button
-					className="md:tooltip  md:tooltip-left mr-1"
-					data-tip="Shell"
-					onClick={() => setOpenShell((prev) => !prev)}
-				>
-					<SiPowershell className="text-cyan-400" size={14} />
-				</button>
-				<button
 					onClick={onUndo}
 					className="md:tooltip  md:tooltip-left"
 					data-tip="back to original code"
@@ -179,11 +148,17 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					<FcUndo className="text-cyan-400" />
 				</button>
 				<button
-					onClick={() => setHideOutput((prev) => !prev)}
+					onClick={() => setOpenShell((prev) => !prev)}
 					className="md:tooltip  md:tooltip-left"
-					data-tip="Hide Output"
+					data-tip={`${
+						openShell ? "Hide Terminal" : "Show Terminal"
+					}`}
 				>
-					<MdHideImage className="text-cyan-400" />
+					{openShell ? (
+						<MdImage className="text-cyan-400" />
+					) : (
+						<MdHideImage className="text-cyan-400" />
+					)}
 				</button>
 				<button
 					className="md:tooltip hidden lg:block mr-1"
@@ -212,7 +187,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				></div>
 			)}
 
-			{openShell && (
+			{/* {openShell && (
 				<div className="flex items-center font-mono bg-black rounded-md text-white mt-2 pl-2 p-1 gap-4">
 					<span
 						className={`${
@@ -256,10 +231,15 @@ function Code({ code, language, blockNumber }: CodeProps) {
 						<BsPlayFill className="text-cyan-400" />
 					</div>
 				</div>
-			)}
-			{blockToOutput && blockToOutput[blockNumber] && (
-				<div className="not-prose">
-					<pre
+			)} */}
+			{mounted && (
+				<div
+					className={`not-prose h-52 mt-2 bg-black p-2 w-full overflow-x-auto ${
+						openShell ? "" : "hidden"
+					}`}
+					id={`terminal-${blockNumber}`}
+				>
+					{/* <pre
 						className={`text-white overflow-x-auto mt-2 p-4 rounded-md bg-black ${
 							hideOutput ? "hidden" : ""
 						}`}
@@ -267,7 +247,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 						<code className="max-w-full">
 							{blockToOutput[blockNumber].trim()}
 						</code>
-					</pre>
+					</pre> */}
 				</div>
 			)}
 		</div>

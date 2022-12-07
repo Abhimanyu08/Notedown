@@ -5,6 +5,7 @@ export default function Document() {
 	return (
 		<Html className="dark">
 			<Head>
+				<link rel="icon" href="./icon.png" />
 				<link
 					rel="stylesheet"
 					href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"
