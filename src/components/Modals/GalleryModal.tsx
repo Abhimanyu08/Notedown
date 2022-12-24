@@ -94,9 +94,9 @@ function GalleryModal({
 			<div
 				className={` text-black ${
 					show ? "" : "hidden"
-				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50 bg-slate-800/80`}
+				} absolute top-0 left-0 flex w-full h-full items-center justify-center z-50 bg-black/50`}
 			>
-				<div className="p-1 lg:w-3/5 lg:h-[94%] bg-slate-900 flex flex-col rounded-sm gap-4 relative overflow-x-hidden h-full">
+				<div className="p-1 lg:w-3/5 lg:h-[94%] bg-black border-white border-[1px] flex flex-col rounded-sm gap-4 relative overflow-x-hidden h-full">
 					<label
 						className="absolute top-2 right-2 "
 						htmlFor="gallery"
@@ -106,11 +106,11 @@ function GalleryModal({
 					>
 						<AiFillCloseCircle
 							size={24}
-							className="text-cyan-400"
+							className="text-amber-400"
 						/>
 					</label>
 					<ul
-						className="marker:text-cyan-400 text-sm lg:text-base  list-disc list-inside text-gray-100/90 py-2 px-5 lg:px-4 lg:w-5/6"
+						className="marker:text-amber-400 text-sm lg:text-base  list-disc list-inside text-gray-100/90 py-2 px-5 lg:px-4 lg:w-5/6"
 						role="list"
 					>
 						<li>
@@ -135,11 +135,11 @@ function GalleryModal({
 						{/* <span className="bg-cyan-400 text-black flex items-center font-semibold rounded-l-md p-1">
 							Image(s) :{" "}
 						</span> */}
-						<span className="px-2 lg:w-1/2 grow border-cyan-400 border-2 overflow-auto flex items-center">
+						<span className="px-2 lg:w-1/2 grow border-amber-400 border-2 overflow-auto flex items-center">
 							{toBeCopied.join(",")}
 						</span>
 						<label
-							className="text-black bg-cyan-400 hover:bg-cyan-700 p-1 flex items-center rounded-md"
+							className="text-black bg-amber-400 hover:bg-amber-700 p-1 flex items-center rounded-md"
 							onClick={() => {
 								navigator.clipboard.writeText(
 									toBeCopied.join(",")
@@ -151,7 +151,7 @@ function GalleryModal({
 							<MdOutlineContentCopy size={20} />
 						</label>
 						<div
-							className="text-black bg-cyan-400 p-1 font-semibold rounded-md cursor-pointer"
+							className="text-black bg-amber-400 p-1 font-semibold rounded-md cursor-pointer"
 							onClick={() => {
 								setToBeCopied([]);
 							}}
@@ -383,7 +383,7 @@ function ImageGrid({
 			{extra && (
 				<label
 					htmlFor="extra-images"
-					className="text-white hover:bg-slate-700 col-span-1 row-span-1 aspect-square flex items-center justify-center"
+					className="text-white hover:bg-amber-700/50 col-span-1 row-span-1 aspect-square flex items-center justify-center"
 				>
 					<BiImageAdd size={40} />
 				</label>

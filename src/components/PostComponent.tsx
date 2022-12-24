@@ -54,7 +54,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				</div>
 			</Link>
 			{owner && mounted && router.asPath.startsWith("/profile") && (
-				<div className="flex absolute top-0 right-2 gap-3 text-black">
+				<div className="flex absolute top-0 right-2 gap-3 text-black dark:text-white">
 					{!published && (
 						<label
 							className="md:tooltip md:tooltip-left capitalize"
