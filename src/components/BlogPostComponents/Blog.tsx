@@ -190,12 +190,13 @@ dark:prose-headings:text-amber-400
 				prose-figcaption:text-black
 				dark:prose-figcaption:text-gray-200
 
-
+prose-blockquote:border-l-black prose-blockquote:border-l-4
+dark:prose-blockquote:border-l-amber-300
 				 prose-a:font-serif  
 				  prose-h1:mb-6  md:prose-p:text-lg md:prose-ul:text-lg 
 				md:prose-ol:text-lg 
 				
-				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif  prose-blockquote:border-l-black prose-blockquote:border-l-4
+				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif  
 			prose-a:after:content-['_↗']	
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				`}

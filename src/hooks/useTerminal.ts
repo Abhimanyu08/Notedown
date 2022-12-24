@@ -20,9 +20,9 @@ export default function useTerminal({ containerId, blockNumber, language, mounte
             const term = new Terminal({
                 disableStdin: false,
                 rows: 10,
-                cols: 120,
+                cols: 100,
                 cursorBlink: true,
-                fontWeight: "800"
+                fontWeight: "700"
             });
             const termElement = document.getElementById(
                 `terminal-${blockNumber}`
@@ -30,7 +30,6 @@ export default function useTerminal({ containerId, blockNumber, language, mounte
             termElement?.replaceChildren("");
             if (termElement === null) return;
             term.open(termElement);
-
             term.onKey((key) => {
                 // term.clear();
                 if (key.key === "\u007f") {
@@ -94,7 +93,7 @@ export default function useTerminal({ containerId, blockNumber, language, mounte
 
     useEffect(() => {
         if (!blockToOutput || blockToOutput[blockNumber] === undefined) return
-        terminal?.write("\r\n" + blockToOutput[blockNumber] + "\r\n" || "");
+        terminal?.writeln("\r\n" + blockToOutput[blockNumber] || "");
         if (setBlockToOutput) setBlockToOutput({})
     }, [blockToOutput]);
 

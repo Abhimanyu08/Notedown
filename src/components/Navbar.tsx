@@ -76,7 +76,7 @@ function Navbar({
 							)}
 						</div>
 						{showProfileOptions && (
-							<div className="flex flex-col absolute top-8 md:top-12 lg:right-40 right-10 xl:right-72 p-4 rounded-md bg-slate-700  gap-4">
+							<OptionsComponent>
 								<Link href={`/profile/${user.id}`}>
 									<p className="link-hover cursor-pointer text-xs md:text-base text-white">
 										Profile
@@ -92,7 +92,7 @@ function Navbar({
 								>
 									Logout
 								</div>
-							</div>
+							</OptionsComponent>
 						)}
 					</>
 				) : (
@@ -104,14 +104,14 @@ function Navbar({
 							Login
 						</div>
 						{showLoginOptions && (
-							<div className="flex flex-col absolute top-8 md:top-12 lg:right-40 right-10 xl:right-72 rounded-md bg-slate-700  gap-4">
+							<OptionsComponent>
 								<div
 									onClick={(e) => {
 										e.preventDefault();
 										handleSignIn("github", route);
 									}}
 									// className="btn btn-xs md:btn-sm normal-case w-fit text-white"
-									className="flex gap-2 items-center hover:bg-black px-4 pt-2  rounded-t-md cursor-pointer"
+									className="flex gap-2 items-center hover:bg-gray-500 px-4 p-2  rounded-md cursor-pointer"
 								>
 									<AiFillGithub
 										size={20}
@@ -119,14 +119,13 @@ function Navbar({
 									/>{" "}
 									GitHub
 								</div>
-								{/* <div className="divider divider-horizontal divide-white/30"></div> */}
 								<div
 									onClick={(e) => {
 										e.preventDefault();
 										handleSignIn("google", route);
 									}}
 									// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"
-									className="flex gap-2 items-end px-4 pb-2 hover:bg-black rounded-b-md cursor-pointer"
+									className="flex gap-2 items-center hover:bg-gray-500 px-4 p-2  rounded-md cursor-pointer"
 								>
 									<AiFillGoogleCircle
 										size={20}
@@ -134,7 +133,7 @@ function Navbar({
 									/>
 									Google
 								</div>
-							</div>
+							</OptionsComponent>
 						)}
 					</>
 				)}
@@ -142,5 +141,13 @@ function Navbar({
 		</div>
 	);
 }
+
+const OptionsComponent = ({ children }: { children: JSX.Element[] }) => {
+	return (
+		<div className="flex flex-col absolute top-8 md:top-12 lg:right-36 right-10 xl:right-[280px] p-4 rounded-md bg-black shadow-sm shadow-white gap-4">
+			{children}
+		</div>
+	);
+};
 
 export default Navbar;

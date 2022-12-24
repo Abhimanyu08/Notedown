@@ -234,7 +234,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 			)} */}
 			{mounted && (
 				<div
-					className={`not-prose h-52 mt-2 bg-black p-2 w-full overflow-x-auto ${
+					className={`not-prose  mt-2 bg-black pl-2 pb-1 ${
 						openShell ? "" : "hidden"
 					}`}
 					id={`terminal-${blockNumber}`}

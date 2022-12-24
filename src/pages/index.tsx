@@ -16,6 +16,8 @@ import SearchDemo from "../components/HomePageComponents/SearchDemo";
 import WriteEditDemo from "../components/HomePageComponents/WriteEditDemo";
 import { UserContext } from "./_app";
 import DonationsComponent from "../components/HomePageComponents/DonationsComponent";
+import YoutubeDemoComponent from "../components/HomePageComponents/YoutubeDemoComponent";
+import YoutubeDemoModal from "../components/Modals/YoutubeDemoModal";
 // import markdownArray from "../../utils/trialArray";
 
 interface TrialProps {
@@ -82,6 +84,7 @@ function Index({ markdown }: TrialProps) {
 
 				{/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
 			</Head>
+			<YoutubeDemoModal />
 			<div
 				className="flex gap-10 lg:gap-20 md:gap-14 flex-col pb-20 grow overflow-y-auto
 				lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
@@ -100,10 +103,11 @@ function Index({ markdown }: TrialProps) {
 					</Link>
 				</div>
 				<HeaderText />
+				<YoutubeDemoComponent />
 				<MdToBlog {...{ markdown }} />
-				<WriteEditDemo />
+				{/* <WriteEditDemo />
 				<CanvasDemo />
-				<SearchDemo />
+				<SearchDemo /> */}
 				<AllScreenDemo />
 				<DonationsComponent />
 			</div>
