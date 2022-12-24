@@ -8,6 +8,7 @@ import { supabase } from "../../../utils/supabaseClient";
 import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import { BlogContext } from "../../pages/_app";
+import useLexica from "../../hooks/useLexica";
 
 export function Blog({
 	title,
@@ -30,44 +31,10 @@ export function Blog({
 	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
 	const [runningCode, setRunningCode] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
-	const [lexicaLinks, setLexicaLinks] = useState<string[]>([]);
-	const [lexicaLinkNumber, setLexicaLinkNumber] = useState(0);
+
 	const [author, setAuthor] = useState<string>();
 
-	useEffect(() => {
-		const regenButton = document
-			.getElementsByClassName("lexica-regen")
-			.item(0) as HTMLDivElement | null;
-
-		if (!regenButton) return;
-		regenButton.onclick = (e) => {
-			setLexicaLinkNumber((prev) => {
-				return (prev + 1) % lexicaLinks.length;
-			});
-		};
-	}, [content, lexicaLinks]);
-
-	useEffect(() => {
-		const captions: string[] = [];
-		const lexicaImageElem = Array.from(
-			document.getElementsByClassName("lexica")
-		).at(0);
-		if (!lexicaImageElem) return;
-		captions.push((lexicaImageElem as HTMLImageElement).alt);
-		getImages({ caption: captions[0] }).then((imageLinks) => {
-			setLexicaLinks(imageLinks);
-			setLexicaLinkNumber(0);
-		});
-	}, [content]);
-
-	useEffect(() => {
-		const lexicaImageElem = Array.from(
-			document.getElementsByClassName("lexica")
-		).at(0);
-		if (!lexicaImageElem) return;
-		(lexicaImageElem as HTMLImageElement).src =
-			lexicaLinks[lexicaLinkNumber];
-	}, [lexicaLinkNumber, lexicaLinks]);
+	useLexica({ content });
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
@@ -136,9 +103,9 @@ export function Blog({
 			return;
 		}
 		const { output } = (await resp.json()) as { output: string };
-		try {
-			sessionStorage.setItem(code, output);
-		} catch {}
+		// try {
+		// 	sessionStorage.setItem(code, output);
+		// } catch {}
 
 		setBlockToOutput({ [blockNumber]: output });
 		setBlockToCode({});
@@ -174,33 +141,74 @@ export function Blog({
 			}}
 		>
 			<div
-				className={`scroll-smooth prose prose-sm md:prose-base max-w-none ${paddingClasses} prose-headings:text-amber-500 prose-p:text-left text-gray-100/95
-				 prose-strong:font-black prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full prose-a:text-white
+				className={`scroll-smooth prose prose-sm md:prose-lg max-w-none ${paddingClasses}  
+				  prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full 
 				overflow-x-hidden		
 				overflow-y-auto
-				 prose-a:font-serif prose-a:decoration-amber-400 prose-a:decoration-2 
-				prose-p:text-sm  prose-h1:mb-6 prose-code:bg-black prose-code:text-amber-400/95 prose-code:px-2 prose-code:font-mono md:prose-p:text-lg md:prose-ul:text-lg 
-				md:prose-ol:text-lg 
-				marker:prose-ul:text-amber-400
+
+				//-------------prose-headings------------
+prose-headings:text-purple-700
+dark:prose-headings:text-amber-400
+				// ---------prose-p--------------
+				prose-p:text-left
+				prose-p:font-sans
+				prose-p:tracking-wide
+				prose-p:text-black
+				dark:prose-p:text-gray-100
+
+				// -------------prose-li--------
+				marker:prose-li:text-purple-700
+				dark:marker:prose-li:text-amber-400
+				prose-li:text-black
+				prose-li:font-sans
+				prose-li:tracking-wide
+				dark:prose-li:text-gray-100
+
+				// -----------prose-string-----------
+				prose-strong:font-extrabold
+				prose-strong:text-black
+				dark:prose-strong:text-white
+
+				//-----------------prose-a-------------
+			prose-a:text-blue-700 
+			prose-a:font-bold
+			dark:prose-a:text-cyan-500
+				
+
+			// ---------------prose-code---------------
+			dark:prose-code:bg-amber-300
+			dark:prose-code:text-black
+			prose-code:bg-black
+			prose-code:text-amber-300
+			prose-code:px-2 
+			prose-code:font-mono
+			md:prose-code:text-sm 
 				prose-code:rounded-md
-				marker:prose-li:text-amber-400
 				prose-code:select-all
-				prose-p:leading-relaxed
-				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif prose-strong:text-gray-100 prose-blockquote:border-l-white/60 prose-blockquote:border-l-2
+
+
+				prose-figcaption:text-black
+				dark:prose-figcaption:text-gray-200
+
+
+				 prose-a:font-serif  
+				  prose-h1:mb-6  md:prose-p:text-lg md:prose-ul:text-lg 
+				md:prose-ol:text-lg 
+				
+				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif  prose-blockquote:border-l-black prose-blockquote:border-l-4
 			prose-a:after:content-['_↗']	
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
-prose-p:tracking-wide md:prose-code:text-sm prose-li:tracking-wide
 				`}
 			>
 				<h1 className="text-center" id="title">
 					{title}
 				</h1>
-				<div className="text-center italic text-lg md:text-xl w-full font-semibold">
+				<div className="text-center italic text-lg md:text-xl w-full font-semibold text-black dark:text-gray-100">
 					{description}
 				</div>
-				<div className="flex gap-1 not-prose text-xs md:text-sm justify-center mb-10 md:mb-12 mt-8 font-mono">
+				<div className="dark:text-gray-100 flex gap-1 not-prose text-xs md:text-sm text-black justify-center mb-10 md:mb-12 mt-8 font-mono">
 					<span>by</span>
-					<span className="link underline-offset-2 decoration-amber-400">
+					<span className="link underline-offset-2 decoration-purple-400 dark:decoration-amber-200">
 						{created_by ? (
 							<Link href={`/profile/${created_by}`}>
 								{author || bloggers?.name || ""}

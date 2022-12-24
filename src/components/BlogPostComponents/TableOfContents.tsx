@@ -38,7 +38,7 @@ export function Toc({
 
 	return (
 		<div
-			className="flex flex-col gap-5  text-gray-100/75 max-w-full pr-1"
+			className="flex flex-col gap-5  text-gray-700 dark:text-amber-200/95 max-w-full pr-1"
 			onClick={() => setShowContents(false)}
 		>
 			<h3
@@ -63,7 +63,7 @@ export function Toc({
 			<div
 				className={`ml-10 flex flex-col ${
 					open ? "" : "lg:invisible"
-				}  pb-14 text-gray-100/75 gap-5`}
+				}  pb-14 text-gray-700 dark:text-gray-100/75 gap-5`}
 			>
 				<li>
 					<a href="#title" className="text-xl font-bold">

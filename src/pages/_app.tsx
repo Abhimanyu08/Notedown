@@ -1,4 +1,5 @@
 import { User } from "@supabase/supabase-js";
+import "../../styles/xterm.css";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import {
@@ -70,7 +71,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 		<UserContext.Provider value={{ user, setUser }}>
 			<PostContextComponent>
 				<Component {...pageProps} key={router.asPath} />
-				<Analytics />
+				{process.env.NODE_ENV === "production" ? <Analytics /> : <></>}
 			</PostContextComponent>
 		</UserContext.Provider>
 	);

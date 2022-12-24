@@ -58,10 +58,10 @@ function PostDisplay({
 	};
 
 	return (
-		<div className="flex flex-col overflow-x-hidden h-fit">
+		<div className="flex flex-col overflow-x-hidden h-fit px-1 pt-1">
 			{(posts?.length || 0) > 0 ? (
 				<div
-					className="flex flex-col gap-8 lg:basis-11/12 basis-10/12"
+					className="flex flex-col gap-6 lg:gap-8 lg:basis-11/12 basis-10/12"
 					onScroll={(e) => e.currentTarget}
 				>
 					{posts?.map((post, idx) => (
@@ -82,7 +82,9 @@ function PostDisplay({
 			{(posts?.length || 0) > 0 && (
 				<div className="flex justify-center pt-32 pb-28 lg:pb-10 lg:basis-1/12 basis-2/12">
 					<div
-						className="h-fit normal-case rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer text-amber-400 bg-slate-900"
+						className="h-fit normal-case w-fit dark:profile-tool-dark rounded-md px-2 py-1 text-xs font-normal md:font-semibold cursor-pointer profile-tool shadow-sm shadow-black dark:shadow-white/40
+						active:scale-90	transition-[scale] duration-150
+						"
 						onClick={onLoadMore}
 					>
 						{hasMore ? "Load More" : "No More"}

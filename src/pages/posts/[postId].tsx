@@ -11,6 +11,7 @@ import {
 } from "react";
 import { BiCodeAlt, BiUpvote } from "react-icons/bi";
 import { IoMdShareAlt } from "react-icons/io";
+import { GoArrowUp } from "react-icons/go";
 import {
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_FILES_BUCKET,
@@ -206,7 +207,9 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 					<>
 						{props.language && (
 							<div
-								className={` btn btn-circle  btn-ghost tooltip`}
+								className={`btn btn-circle ${
+									containerId ? "" : "btn-ghost"
+								} tooltip`}
 								data-tip={` ${
 									user
 										? "Enable remote code execution"
@@ -219,7 +222,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 									className={` ${
 										containerId
 											? "text-lime-400"
-											: "text-white"
+											: "text-black dark:text-white"
 									} mt-2 ml-2 `}
 								/>
 							</div>
@@ -244,7 +247,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						>
 							<IoMdShareAlt
 								size={30}
-								className="text-white mt-2 ml-2"
+								className="text-black dark:text-white mt-2 ml-2"
 							/>
 							<span
 								className={` normal-case absolute left-10 top-2 text-lime-400 ${
@@ -259,14 +262,22 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 							<div
 								className="btn btn-circle  btn-ghost tooltip"
 								data-tip={` ${
-									user ? "Upvote" : "Please login to upvote"
+									user
+										? `${
+												upvoted
+													? "Remove Upvote"
+													: "Upvote"
+										  }`
+										: "Please login to upvote"
 								} `}
 								onClick={onUpvote}
 							>
-								<BiUpvote
-									size={30}
+								<GoArrowUp
+									size={34}
 									className={`mt-2 ml-2 ${
-										upvoted ? "text-lime-400" : "text-white"
+										upvoted
+											? "text-green-500"
+											: "dark:text-white text-black"
 									}`}
 								/>
 							</div>
@@ -325,7 +336,7 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						className="flex flex-col items-center"
 						onClick={onUpvote}
 					>
-						<BiUpvote
+						<GoArrowUp
 							size={20}
 							className={`${
 								upvoted ? "text-lime-400" : "text-white"

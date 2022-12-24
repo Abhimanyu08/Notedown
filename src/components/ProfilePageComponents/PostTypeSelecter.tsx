@@ -13,7 +13,7 @@ export function PostTypeSelecter({
 }) {
 	return (
 		<select
-			className="select select-sm text-xs lg:text-sm w-fit rounded-md"
+			className="select select-sm text-xs lg:text-sm w-fit rounded-md  profile-tool shadow-black shadow-sm  dark:shadow-white/40 dark:profile-tool-dark"
 			onChange={(e) => setPostType(e.target.value as PostType)}
 			value={postType}
 		>

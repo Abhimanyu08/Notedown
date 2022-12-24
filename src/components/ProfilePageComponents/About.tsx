@@ -10,9 +10,11 @@ import { ProfileUser } from "../../interfaces/ProfileUser";
 const AboutJsxWrapper = ({ children }: { children: JSX.Element }) => {
 	return (
 		<div
-			className="prose prose-code:bg-black prose-pre:bg-black prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-gray-100 prose-headings:text-amber-400 prose-sm md:prose-base max-w-full pb-10 tracking-wide prose-a:decoration-amber-400 prose-a:underline
-		 prose-a:text-amber-400 prose-a:underline-offset-2 prose-a:after:content-['_↗']
-			prose-strong:font-extrabold prose-strong:text-white
+			className="prose prose-code:bg-black prose-pre:bg-black dark:text-gray-300 prose-code:text-amber-400 md:prose-headings:my-4 prose-headings:my-2  text-black prose-headings:text-purple-700 prose-headings:font-mono prose-sm md:prose-base max-w-full pb-10 tracking-wide prose-a:decoration-sky-400 prose-a:underline
+		 prose-a:text-sky-400 prose-a:underline-offset-2 prose-a:after:content-['_↗']
+			prose-strong:font-extrabold prose-strong:text-black dark:prose-strong:text-gray-100 
+			dark:prose-headings:text-amber-400 prose-p:font-serif
+
 		 "
 		>
 			{children}
@@ -90,16 +92,16 @@ export function About({
 
 	if (editing) {
 		return (
-			<div className="w-full h-3/4 gap-2 relative flex flex-col mt-5">
-				<div className="flex gap-2 self-start text-white capitalize">
+			<div className="w-full h-3/4 gap-2 relative flex flex-col mt-5 pl-1">
+				<div className="flex gap-2 self-start capitalize">
 					<div
-						className="rounded-md py-1 px-2 bg-slate-600 text-sm"
+						className="rounded-md py-1 px-2 profile-tool dark:profile-tool-dark text-xs lg:text-sm"
 						onClick={() => setPreviewing((prev) => !prev)}
 					>
 						{previewing ? "Edit" : "Preview"}
 					</div>
 					<div
-						className="rounded-md py-1 px-2 bg-slate-600 text-sm"
+						className="rounded-md py-1 px-2 profile-tool dark:profile-tool-dark text-xs lg:text-sm"
 						onClick={() =>
 							onChangeAbout(editedAboutInMd, editedAboutInHtml)
 						}
@@ -107,7 +109,7 @@ export function About({
 						Done
 					</div>
 					<div
-						className="rounded-md py-1 px-2 bg-slate-600 text-sm"
+						className="rounded-md py-1 px-2 profile-tool dark:profile-tool-dark text-xs lg:text-sm"
 						onClick={() => {
 							setEditing(false);
 							setPreviewing(false);
@@ -122,7 +124,7 @@ export function About({
 						editedAboutJsx
 					) : (
 						<>
-							<p className="absolute bottom-10 lg:right-8 right-6 text-sm text-amber-400">
+							<p className="absolute top-2 right-2 text-xs lg:text-sm text-amber-400">
 								{editedAboutInMd.length}/{ABOUT_LENGTH}
 							</p>
 							<textarea
@@ -155,10 +157,10 @@ export function About({
 		);
 	}
 	return (
-		<div className="w-full h-3/4 gap-2 relative flex flex-col mt-5">
+		<div className="w-full h-3/4 gap-2 relative flex flex-col mt-5 pl-1 text-xs lg:text-sm">
 			{owner && (
 				<div
-					className="rounded-md py-1 px-2 w-fit bg-slate-600 text-sm"
+					className="rounded-md py-1 px-2 w-fit profile-tool dark:profile-tool-dark lg:text-sm text-xs"
 					onClick={() => setEditing(true)}
 				>
 					Edit

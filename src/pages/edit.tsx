@@ -411,7 +411,7 @@ function Edit() {
 								}}
 							/>
 							<div
-								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full `}
+								className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full`}
 								id="markdown-textarea"
 							></div>
 						</div>
@@ -419,12 +419,12 @@ function Edit() {
 
 					<>
 						<div
-							className={` btn btn-circle  btn-ghost tooltip ${
-								blogData.language ? "" : "invisible"
-							}`}
+							className={`btn btn-circle ${
+								containerId ? "" : "btn-ghost"
+							} tooltip ${blogData.language ? "" : "invisible"}`}
 							data-tip={` ${
-								user
-									? "Enable remote code execution"
+								containerId
+									? "RCE enabled"
 									: "Enable remote code execution"
 							} `}
 							onClick={prepareContainer}
@@ -432,7 +432,9 @@ function Edit() {
 							<BiCodeAlt
 								size={30}
 								className={` ${
-									containerId ? "text-lime-400" : "text-white"
+									containerId
+										? "text-lime-400"
+										: "text-black dark:text-white"
 								} mt-2 ml-2 `}
 							/>
 						</div>
@@ -446,12 +448,12 @@ function Edit() {
 							{editingMarkdown ? (
 								<VscPreview
 									size={28}
-									className="text-white mt-2 ml-2"
+									className="text-black dark:text-white mt-2 ml-2"
 								/>
 							) : (
 								<AiFillEdit
 									size={28}
-									className="text-white mt-2 ml-2"
+									className="text-black dark:text-white mt-2 ml-2"
 								/>
 							)}
 						</div>
@@ -461,7 +463,7 @@ function Edit() {
 							onClick={onNewPostUpload}
 						>
 							<span
-								className={`absolute rounded-full bg-yellow-400 w-2 h-2 right-0 ${
+								className={`absolute rounded-full dark:bg-yellow-400 bg-amber-500 w-2 h-2 right-0 ${
 									hasMarkdownChanged ? "" : "hidden"
 								} ${uploadingChanges ? "animate-ping" : ""}`}
 							></span>
@@ -484,7 +486,9 @@ function Edit() {
 								<FaFileUpload
 									size={28}
 									className={` ${
-										hasMarkdownChanged ? "text-white" : ""
+										hasMarkdownChanged
+											? "text-black dark:text-white"
+											: "dark:text-white/50 text-gray-700"
 									} mt-2 ml-2`}
 								/>
 							</div>

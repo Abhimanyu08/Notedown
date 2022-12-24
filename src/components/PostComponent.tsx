@@ -9,7 +9,7 @@ import formatDate from "../../utils/dateFormatter";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 
 const langToBadgeColor: Record<typeof ALLOWED_LANGUAGES[number], string> = {
-	javascript: "text-yellow-500",
+	javascript: "dark:text-amber-500 text-stone-500",
 	python: "text-green-500",
 	rust: "text-red-500",
 };
@@ -43,28 +43,25 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		if (setPostInAction) setPostInAction(post);
 	};
 	return (
-		<div className="relative container bg-slate-900 p-4 rounded-md shadow-slate-600 shadow-md">
+		<div className="relative container bg-cyan-200 dark:bg-black lg:p-4 p-2 rounded-md shadow-sm md:shadow-md shadow-black dark:shadow-white">
 			<Link
 				href={
 					published ? `/posts/${id}` : `/posts/preview?postId=${id}`
 				}
 			>
-				<div className="text-lg text-amber-500 md:text-xl font-semibold link link-hover truncate w-3/4">
+				<div className="text-lg text-purple-700 md:text-xl dark:text-amber-400 font-bold  link link-hover truncate w-3/4">
 					{title}{" "}
 				</div>
 			</Link>
 			{owner && mounted && router.asPath.startsWith("/profile") && (
-				<div className="flex absolute top-0 right-1 gap-3">
+				<div className="flex absolute top-0 right-2 gap-3 text-black">
 					{!published && (
 						<label
 							className="md:tooltip md:tooltip-left capitalize"
 							data-tip="edit"
 							onClick={() => router.push(`/edit?postId=${id}`)}
 						>
-							<AiFillEdit
-								className="ml-1 mt-1 text-white"
-								size={15}
-							/>
+							<AiFillEdit className="ml-1 mt-1 " size={15} />
 						</label>
 					)}
 					{published ? (
@@ -74,10 +71,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 							data-tip="unpublish"
 							onClick={onAction}
 						>
-							<TbNewsOff
-								className="ml-1 mt-1 text-white"
-								size={15}
-							/>
+							<TbNewsOff className="ml-1 mt-1 " size={15} />
 						</label>
 					) : (
 						<label
@@ -86,10 +80,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 							data-tip="publish"
 							onClick={onAction}
 						>
-							<TbNews
-								className="ml-1 mt-1 text-white"
-								size={15}
-							/>
+							<TbNews className="ml-1 mt-1 " size={15} />
 						</label>
 					)}
 					<label
@@ -98,15 +89,15 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						data-tip="delete"
 						onClick={onAction}
 					>
-						<AiFillDelete
-							className="ml-1 mt-1 text-white"
-							size={15}
-						/>
+						<AiFillDelete className="ml-1 mt-1 " size={15} />
 					</label>
 				</div>
 			)}
 
-			<div className="flex text-xs text-white/50 mt-1 mb-1 max-w-full divide-x-2 divide-white/30">
+			<div
+				className="flex text-xs text-black/50 dark:text-white/60 mt-1 mb-1 max-w-full divide-x-2 divide-black/30
+			dark:divide-white/40"
+			>
 				<Link href={`/profile/${created_by}`}>
 					<p className="link underline-offset-2 w-1/3 md:w-1/5 truncate">
 						{author}
@@ -138,12 +129,12 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				<div
 					className={`${
 						language && langToBadgeColor[language]
-					} px-1 flex justify-center w-20`}
+					} px-1 font-bold font-mono flex justify-center w-20`}
 				>
 					<span>{language}</span>
 				</div>
 			</div>
-			<p className="italic text-sm md:text-base text-white">
+			<p className="text-sm md:text-base text-black dark:text-white font-sans mt-2">
 				{description}
 			</p>
 		</div>
