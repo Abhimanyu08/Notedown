@@ -20,15 +20,11 @@ function YoutubeDemoModal() {
 			>
 				<div className="lg:w-2/3 w-full demo">
 					<iframe
-						className="w-full h-full"
-						src={getYoutubeEmbedLink(
-							"https://www.youtube.com/watch?v=ZuLn42merAg"
-						)}
-						title="YouTube video player"
+						src="https://www.loom.com/embed/74f37debbc004a718c6fd18156ad2fea"
 						frameBorder="0"
-						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 						allowFullScreen
-					></iframe>
+						className="w-full demo"
+					/>
 				</div>
 			</label>
 		</>
