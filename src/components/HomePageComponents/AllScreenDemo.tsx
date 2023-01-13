@@ -6,7 +6,7 @@ function AllScreenDemo() {
 	);
 	return (
 		<div className="hidden lg:block">
-			<div className="mt-20 flex mb-10 flex-col items-center gap-2 grow-0 justify-center font-bold text-3xl text-white transparent">
+			<div className="mt-20 flex mb-10 flex-col items-center gap-2 grow-0 justify-center font-bold text-3xl text-black dark:text-white">
 				<span>
 					<span className="text-violet-500">Responsive! </span>
 					Your posts look good on any device.
@@ -49,7 +49,7 @@ function AllScreenDemo() {
 					</span>
 				</div>
 			</div>
-			<div className="w-full flex justify-center transparent">
+			<div className="w-full flex justify-center">
 				<div
 					className={`${screen}  
 							 transition-all duration-1000 bg-gradient-to-b border-black shadow-black shadow-lg border-4 rounded-lg from-slate-900 via-slate-800 to-slate-700`}

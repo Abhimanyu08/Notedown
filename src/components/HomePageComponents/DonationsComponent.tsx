@@ -2,7 +2,7 @@ import React from "react";
 
 function DonationsComponent() {
 	return (
-		<div className="flex justify-center gap-1 text-white flex-wrap">
+		<div className="flex justify-center gap-1 dark:text-white text-black flex-wrap">
 			<span>
 				Made by{" "}
 				<a
@@ -19,7 +19,7 @@ function DonationsComponent() {
 				href="https://www.buymeacoffee.com/iamabhimanm"
 				target={"_blank"}
 				rel={"noreferrer"}
-				className="after:content-['_↗'] text-amber-400 font-bold"
+				className="after:content-['_↗'] dark:text-amber-400 text-amber-500 font-bold"
 			>
 				Buying me a coffee
 			</a>

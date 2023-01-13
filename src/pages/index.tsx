@@ -7,17 +7,14 @@ import { AiFillRead } from "react-icons/ai";
 import { FaPencilAlt } from "react-icons/fa";
 import { SUPABASE_FILES_BUCKET } from "../../utils/constants";
 import { supabase } from "../../utils/supabaseClient";
-import Layout from "../components/Layout";
 import AllScreenDemo from "../components/HomePageComponents/AllScreenDemo";
-import CanvasDemo from "../components/HomePageComponents/CanvasDemo";
+import DonationsComponent from "../components/HomePageComponents/DonationsComponent";
 import HeaderText from "../components/HomePageComponents/HeaderText";
 import MdToBlog from "../components/HomePageComponents/MdToBlogDemo";
-import SearchDemo from "../components/HomePageComponents/SearchDemo";
-import WriteEditDemo from "../components/HomePageComponents/WriteEditDemo";
-import { UserContext } from "./_app";
-import DonationsComponent from "../components/HomePageComponents/DonationsComponent";
 import YoutubeDemoComponent from "../components/HomePageComponents/YoutubeDemoComponent";
+import Layout from "../components/Layout";
 import YoutubeDemoModal from "../components/Modals/YoutubeDemoModal";
+import { UserContext } from "./_app";
 // import markdownArray from "../../utils/trialArray";
 
 interface TrialProps {
@@ -28,22 +25,22 @@ function Index({ markdown }: TrialProps) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
 
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						entry.target.classList.add("opaque");
-						return;
-					}
-					// entry.target.classList.remove('opaque')
-				});
-			},
-			{ threshold: 0.5 }
-		);
-		const transparentElements = document.querySelectorAll(".transparent");
-		transparentElements.forEach((el) => observer.observe(el));
-	}, []);
+	// useEffect(() => {
+	// 	const observer = new IntersectionObserver(
+	// 		(entries) => {
+	// 			entries.forEach((entry) => {
+	// 				if (entry.isIntersecting) {
+	// 					entry.target.classList.add("opaque");
+	// 					return;
+	// 				}
+	// 				// entry.target.classList.remove('opaque')
+	// 			});
+	// 		},
+	// 		{ threshold: 0.5 }
+	// 	);
+	// 	const transparentElements = document.querySelectorAll(".transparent");
+	// 	transparentElements.forEach((el) => observer.observe(el));
+	// }, []);
 
 	return (
 		<Layout user={user || null} route={router.asPath}>
