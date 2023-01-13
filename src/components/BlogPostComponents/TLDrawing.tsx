@@ -72,7 +72,9 @@ function TLDrawing({
 										[val.data],
 										`${canvasImageName}.png`
 									);
-									app.addMediaFromFiles([file]);
+									app.addMediaFromFiles([file]).then((app) =>
+										app.zoomToFit()
+									);
 								});
 						}
 						setApp(app);

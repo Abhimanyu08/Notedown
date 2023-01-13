@@ -32,7 +32,7 @@ function htmlToJsx({
 		/([^<>]*?)?(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)?/g;
 	const matches = Array.from(html.matchAll(re));
 	if (matches.length === 0) return <>{html}</>;
-	const elem = (
+	const elemToReturn = (
 		<>
 			{matches.map((match) => {
 				const string1 = match.at(1);
@@ -245,7 +245,6 @@ function htmlToJsx({
 							className="w-full"
 							src={getYoutubeEmbedLink(src)}
 							title="YouTube video player"
-							frameBorder="0"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 							allowFullScreen
 						></iframe>
@@ -271,7 +270,7 @@ function htmlToJsx({
 			})}
 		</>
 	);
-	return elem;
+	return elemToReturn;
 }
 
 function makeAttrMap({

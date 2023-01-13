@@ -38,6 +38,7 @@ export function Blog({
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
+		console.log(content);
 		return htmlToJsx({
 			html: content,
 			language: language || "python",
@@ -168,12 +169,14 @@ dark:prose-headings:text-amber-400
 				prose-strong:font-extrabold
 				prose-strong:text-black
 				dark:prose-strong:text-white
+				prose-strong:tracking-wide
 
 				//-----------------prose-a-------------
 			prose-a:text-blue-700 
 			prose-a:font-bold
 			dark:prose-a:text-cyan-500
 				
+			prose-em:tracking-wide
 
 			// ---------------prose-code---------------
 			dark:prose-code:bg-amber-300
@@ -192,12 +195,12 @@ dark:prose-headings:text-amber-400
 
 prose-blockquote:border-l-black prose-blockquote:border-l-4
 dark:prose-blockquote:border-l-amber-300
-				 prose-a:font-serif  
 				  prose-h1:mb-6  md:prose-p:text-lg md:prose-ul:text-lg 
 				md:prose-ol:text-lg 
 				
-				pb-20 md:pb-10 prose-em:font-serif prose-strong:font-serif  
+				pb-20 md:pb-10 
 			prose-a:after:content-['_↗']	
+			prose-a:after:mr-1
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				`}
 			>

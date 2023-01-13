@@ -31,7 +31,7 @@ export const onBold = (editorView: EditorView) => insertAndChangeCursor({ editor
 export const onItalic = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "__", cursorOffest: 1 })
 export const onCodeWord = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "``", cursorOffest: 1 })
 export const onCodeBlock = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "```\n \n```", cursorOffest: 4 })
-export const onImage = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "![image caption](image name)", cursorOffest: 2 })
+export const onImage = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\n![image caption](image-name)\n", cursorOffest: 4 })
 export const onSelect = (editorView: EditorView, headingType: string) => insertAndChangeCursor({
     editorView, toInsert: headingToInsert[headingType],
     cursorOffest: headingToInsert[headingType].length

@@ -39,7 +39,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		editorParentId: `codearea-${blockNumber}`,
 	});
 
-	const { terminal } = useTerminal({
+	useTerminal({
 		containerId,
 		language,
 		blockNumber,
@@ -187,68 +187,13 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				></div>
 			)}
 
-			{/* {openShell && (
-				<div className="flex items-center font-mono bg-black rounded-md text-white mt-2 pl-2 p-1 gap-4">
-					<span
-						className={`${
-							awaitingShellResult ? "animate-pulse" : ""
-						}`}
-					>{`>`}</span>
-					<input
-						type="text"
-						name=""
-						id=""
-						className="focus:outline-none grow bg-black"
-						value={shellCommand}
-						onChange={(e) => setShellCommand(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === "Enter")
-								onShellCommandRun({
-									language,
-									containerId,
-									command: shellCommand,
-								});
-						}}
-						onDoubleClick={(e) => {
-							e.preventDefault();
-							onShellCommandRun({
-								language,
-								containerId,
-								command: shellCommand,
-							});
-						}}
-					/>
-					<div
-						className="p-1 rounded-md"
-						onClick={() => {
-							onShellCommandRun({
-								language,
-								containerId,
-								command: shellCommand,
-							});
-						}}
-					>
-						<BsPlayFill className="text-cyan-400" />
-					</div>
-				</div>
-			)} */}
 			{mounted && (
 				<div
 					className={`not-prose  mt-2 bg-black pl-2 pb-1 ${
 						openShell ? "" : "hidden"
 					}`}
 					id={`terminal-${blockNumber}`}
-				>
-					{/* <pre
-						className={`text-white overflow-x-auto mt-2 p-4 rounded-md bg-black ${
-							hideOutput ? "hidden" : ""
-						}`}
-					>
-						<code className="max-w-full">
-							{blockToOutput[blockNumber].trim()}
-						</code>
-					</pre> */}
-				</div>
+				></div>
 			)}
 		</div>
 	);
