@@ -15,6 +15,7 @@ import { supabase } from "../../utils/supabaseClient";
 import PostContextComponent from "../Contexts/PostContext";
 import Blogger from "../interfaces/Blogger";
 import { Analytics } from "@vercel/analytics/react";
+import { EditorView } from "codemirror";
 
 export const UserContext = createContext<{
 	user?: User | null;
@@ -26,9 +27,10 @@ export const BlogContext = createContext<{
 	vimEnabled?: boolean;
 	setVimEnabled?: Dispatch<SetStateAction<boolean>>;
 	blockToOutput?: Record<number, string>;
-	setBlockToCode?: Dispatch<SetStateAction<Record<number, string>>>;
 	setBlockToOutput?: Dispatch<SetStateAction<Record<number, string>>>;
-	collectCodeTillBlock?: (blockNumber: number) => void;
+	setRunningBlock?: Dispatch<SetStateAction<number | undefined>>;
+	setBlockToEditor?: Dispatch<SetStateAction<Record<number, EditorView>>>;
+	setWritingBlock?: Dispatch<SetStateAction<number | undefined>>;
 }>({});
 
 export const CanvasImageContext = createContext<{

@@ -1,3 +1,5 @@
+import { BiSleepy } from "react-icons/bi";
+
 export const SUPABASE_FILES_BUCKET = "blog-files";
 export const SUPABASE_BLOGGER_TABLE = "bloggers"
 export const SUPABASE_POST_TABLE = "posts"
@@ -16,3 +18,9 @@ export const SEARCH_PRIVATE = "ranked_search_private"
 export const FILE_CHANGE_LIMIT = 5
 export const ALLOWED_LANGUAGES = ["python", "javascript", "rust"] as const
 export const LOCAL_MARKDOWN_KEY = "rce-markdown"
+export const langToExtension = {
+    python: ".py",
+    javascript: ".js",
+    rust: ".rs"
+} as const
+export const sleep = async (s: number) => new Promise((res) => setTimeout(res, s * 1000))

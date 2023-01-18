@@ -47,9 +47,10 @@ export default function PrivateBlog() {
 	const prepareContainer = async () => {
 		if (!user) return;
 		if (containerId) return;
+		if (!data?.language) return;
 		try {
 			const resp = await sendRequestToRceServer("POST", {
-				language: data?.language || "",
+				language: data.language,
 			});
 
 			if (resp.status !== 201) {
@@ -116,11 +117,7 @@ export default function PrivateBlog() {
 			<BlogLayout showContent={showContent}>
 				<Toc html={data?.content} setShowContents={setShowContents} />
 
-				<Blog
-					{...data}
-					containerId={containerId}
-					paddingClasses="px-2 lg:px-20"
-				/>
+				<Blog {...data} containerId={containerId} />
 				<>
 					{data?.language && (
 						<div

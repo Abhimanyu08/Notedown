@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { ALLOWED_LANGUAGES } from "../../utils/constants";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
 import { BlogContext } from "../pages/_app";
 
-export default function useTerminal({ containerId, blockNumber, language, mounted }: {
-    containerId: string | undefined, blockNumber: number, language: typeof ALLOWED_LANGUAGES[number], mounted: boolean
+export default function useTerminal({ containerId, blockNumber, mounted }: {
+    containerId: string | undefined, blockNumber: number, mounted: boolean
 }) {
     const [terminal, setTerminal] = useState<any>();
     const [terminalCommand, setTerminalCommand] = useState("");
@@ -54,40 +53,19 @@ export default function useTerminal({ containerId, blockNumber, language, mounte
 
 
     useEffect(() => {
-        const onShellCommandRun = async ({
-            language,
-            containerId,
-            command,
-        }: {
-            language?: string;
-            containerId?: string;
-            command: string;
-        }) => {
-            if (!setBlockToOutput) return;
-            // setAwaitingShellResult(true);
-            if (!containerId) {
-                setBlockToOutput({ [blockNumber]: "Please enable remote code execution" })
-                return
-            }
-            const code = `sh- ${command}`;
+        if (!setBlockToOutput) return
+        if (!containerId) {
+            setBlockToOutput({ [blockNumber]: "Please enable remote code execution" })
+            return
+        }
 
-            const resp = await sendRequestToRceServer("POST", {
-                language,
-                containerId,
-                code,
-            });
-
-            if (resp.status !== 201) {
-                setBlockToOutput({ [blockNumber]: resp.statusText });
-                return;
-            }
-            const { output } = (await resp.json()) as { output: string };
-            setBlockToOutput({ [blockNumber]: output });
-        };
         if (sendTerminalCommand) {
-            onShellCommandRun({ language, containerId, command: terminalCommand })
-            setTerminalCommand("")
-            setSendTerminalCommand(false)
+            runShellCommand({ containerId, command: terminalCommand }).then((val) => {
+
+                setBlockToOutput({ [blockNumber]: val })
+                setTerminalCommand("")
+                setSendTerminalCommand(false)
+            })
         }
     }, [sendTerminalCommand])
 
@@ -103,3 +81,25 @@ export default function useTerminal({ containerId, blockNumber, language, mounte
         terminal
     }
 }
+
+async function runShellCommand({
+    containerId,
+    command,
+}: {
+    containerId?: string;
+    command: string;
+}) {
+
+
+    const resp = await sendRequestToRceServer("POST", {
+        language: "shell",
+        containerId,
+        code: command
+    });
+
+    if (resp.status !== 201) {
+        return resp.statusText;
+    }
+    const { output } = (await resp.json()) as { output: string };
+    return output
+};

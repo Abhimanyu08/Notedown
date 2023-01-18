@@ -21,11 +21,11 @@ import { ALLOWED_LANGUAGES } from "./constants";
 interface getExtensionInput {
     language: typeof ALLOWED_LANGUAGES[number] | "markdown"
     blockNumber?: number;
-    collectCodeTillBlock?: ((blockNumber: number) => void) | undefined
+    setRunningBlock?: ((blockNumber: number) => void) | undefined
 }
 
 
-function getExtensions({ language, blockNumber, collectCodeTillBlock }: getExtensionInput): Extension[] {
+function getExtensions({ language, blockNumber, setRunningBlock }: getExtensionInput): Extension[] {
 
     const mySetupExtensions =
         [
@@ -78,7 +78,9 @@ function getExtensions({ language, blockNumber, collectCodeTillBlock }: getExten
                     borderColor: "#fff",
                 },
                 ".cm-gutterElement": {
-                    color: "rgb(34 211 238)"
+                    color: "rgb(34 211 238)",
+                    fontSize: "16px",
+                    lineHeight: "22.4px"
                 }
             }, { dark: true })
         ]
@@ -106,8 +108,8 @@ function getExtensions({ language, blockNumber, collectCodeTillBlock }: getExten
         keymap.of([{
             key: "Shift-Enter",
             run() {
-                if (!collectCodeTillBlock || blockNumber === undefined) return false;
-                collectCodeTillBlock(blockNumber)
+                if (!setRunningBlock || blockNumber === undefined) return false;
+                setRunningBlock(blockNumber)
                 return true;
             }
         }])

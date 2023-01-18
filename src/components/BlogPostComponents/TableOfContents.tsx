@@ -61,9 +61,9 @@ export function Toc({
 				</span>
 			</h3>
 			<div
-				className={`ml-10 flex flex-col ${
+				className={`ml-7 flex flex-col ${
 					open ? "" : "lg:invisible"
-				}  pb-14 text-gray-700 dark:text-gray-100/75 gap-5`}
+				}  pb-14 text-gray-700 dark:text-gray-100/75 gap-4`}
 			>
 				<li>
 					<a href="#title" className="text-xl font-bold">

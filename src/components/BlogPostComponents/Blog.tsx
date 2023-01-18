@@ -1,14 +1,18 @@
+import { EditorView } from "codemirror";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { SUPABASE_BLOGGER_TABLE } from "../../../utils/constants";
-import { getImages } from "../../../utils/sendRequest";
+import {
+	ALLOWED_LANGUAGES,
+	langToExtension,
+	SUPABASE_BLOGGER_TABLE,
+} from "../../../utils/constants";
 import htmlToJsx from "../../../utils/htmlToJsx";
 import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
+import useLexica from "../../hooks/useLexica";
 import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import { BlogContext } from "../../pages/_app";
-import useLexica from "../../hooks/useLexica";
 
 export function Blog({
 	title,
@@ -20,17 +24,18 @@ export function Blog({
 	image_folder,
 	bloggers,
 	imageToUrl,
-	paddingClasses,
+	paddingClasses = "px-2 lg:px-10",
 }: Partial<BlogProps>) {
-	const [collectCodeTillBlock, setCollectCodeTillBlock] =
-		useState<(blockNumber: number) => void>();
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
 		{}
 	);
 	const [vimEnabled, setVimEnabled] = useState(false);
-	const [blockToCode, setBlockToCode] = useState<Record<number, string>>({});
-	const [runningCode, setRunningCode] = useState(false);
+	const [blockToEditor, setBlockToEditor] = useState<
+		Record<number, EditorView>
+	>({});
+	const [runningRceRequest, setRunningRceRequest] = useState(false);
 	const [runningBlock, setRunningBlock] = useState<number>();
+	const [writingBlock, setWritingBlock] = useState<number>();
 
 	const [author, setAuthor] = useState<string>();
 
@@ -38,7 +43,6 @@ export function Blog({
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
-		console.log(content);
 		return htmlToJsx({
 			html: content,
 			language: language || "python",
@@ -46,24 +50,6 @@ export function Blog({
 			imageToUrl,
 		});
 	}, [content, language]);
-
-	useEffect(() => {
-		if (!containerId) return;
-		const func = (blockNumber: number) => {
-			setBlockToCode({});
-			const event = new Event("focus");
-			for (let i = 0; i <= blockNumber; i++) {
-				const elem = document.getElementById(
-					`run-${i}`
-				) as HTMLButtonElement | null;
-				if (!elem) continue;
-				elem.dispatchEvent(event);
-			}
-			setRunningBlock(blockNumber);
-			setRunningCode(true);
-		};
-		setCollectCodeTillBlock(() => func);
-	}, [containerId]);
 
 	useEffect(() => {
 		const fetchAuthor = async (created_by: string) => {
@@ -80,69 +66,94 @@ export function Blog({
 		if (created_by) fetchAuthor(created_by);
 	}, [created_by]);
 
-	const runCodeRequest = async (
-		blockNumber: number,
-		blockToCode: Record<number, string>
-	) => {
-		let code = Object.values(blockToCode).join("\n");
-		code = code.trim();
-
-		let sessionCodeToOutput = sessionStorage.getItem(code);
-		if (sessionCodeToOutput) {
-			setBlockToOutput({ [blockNumber]: sessionCodeToOutput });
-			setBlockToCode({});
-			return;
-		}
-		const params: Parameters<typeof sendRequestToRceServer> = [
-			"POST",
-			{ language, containerId, code },
-		];
-		const resp = await sendRequestToRceServer(...params);
-
-		if (resp.status !== 201) {
-			setBlockToOutput({ [blockNumber]: resp.statusText });
-			return;
-		}
-		const { output } = (await resp.json()) as { output: string };
-		// try {
-		// 	sessionStorage.setItem(code, output);
-		// } catch {}
-
-		setBlockToOutput({ [blockNumber]: output });
-		setBlockToCode({});
-	};
-
 	useEffect(() => {
-		if (
-			!runningCode ||
-			runningBlock === undefined ||
-			!language ||
-			!containerId
-		) {
-			setRunningBlock(undefined);
-			setRunningCode(false);
+		if (runningBlock === undefined && writingBlock === undefined) return;
+		if (runningRceRequest) {
+			setBlockToOutput({
+				[(runningBlock || writingBlock) as number]:
+					"Previous request is pending, please wait",
+			});
 			return;
 		}
-		runCodeRequest(runningBlock, blockToCode).then(() => {
+		if (!language || !containerId) {
+			if (!containerId) {
+				setBlockToOutput({
+					[(runningBlock || writingBlock) as number]:
+						"Please enable remote code execution",
+				});
+			}
 			setRunningBlock(undefined);
-			setRunningCode(false);
-		});
-	}, [runningCode]);
+			setWritingBlock(undefined);
+			// setRunningCode(false);
+			return;
+		}
+
+		setRunningRceRequest(true);
+
+		const block = (runningBlock || writingBlock) as number;
+		// if the current block contains a file comment at the top then only collect code from blocks which contain the same
+		// comment on top of them
+		const firstLine = blockToEditor[block].state.doc
+			.toJSON()
+			.filter((l) => l !== "")
+			.at(0);
+		const fileName = checkFileName(firstLine || "");
+		let codeArray: string[] = [];
+
+		for (let i = 0; i <= block; i++) {
+			if (document.getElementById(`codearea-${i}`)) {
+				let blockCodeArray = blockToEditor[i].state.doc
+					.toJSON()
+					.filter((l) => l !== "");
+				const firstLineOfBlock = blockCodeArray[0];
+				if (!fileName) {
+					if (!checkFileName(firstLineOfBlock)) {
+						codeArray = codeArray.concat(blockCodeArray);
+					}
+				} else {
+					const blockFileName = checkFileName(firstLineOfBlock);
+					if (
+						blockFileName === fileName ||
+						blockFileName + langToExtension[language] ===
+							fileName ||
+						blockFileName === fileName + langToExtension[language]
+					) {
+						codeArray = codeArray.concat(blockCodeArray.slice(1));
+					}
+				}
+			}
+		}
+
+		const code = codeArray.join("\n");
+		const run = writingBlock === undefined;
+
+		runCodeRequest({ code, run, containerId, fileName, language }).then(
+			(val) => {
+				setBlockToOutput((prev) => ({ ...prev, [block]: val }));
+				setRunningBlock(undefined);
+				setWritingBlock(undefined);
+				setRunningRceRequest(false);
+			}
+		);
+	}, [runningBlock, writingBlock]);
 
 	return (
 		<BlogContext.Provider
 			value={{
 				containerId,
 				blockToOutput,
-				setBlockToCode,
-				collectCodeTillBlock,
 				setBlockToOutput,
 				vimEnabled,
 				setVimEnabled,
+				setRunningBlock,
+				setWritingBlock,
+				setBlockToEditor,
 			}}
 		>
 			<div
-				className={`scroll-smooth prose prose-sm md:prose-lg max-w-none ${paddingClasses}  
+				className={`
+				${paddingClasses}
+				scroll-smooth prose prose-sm md:prose-lg max-w-none 
 				  prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full 
 				overflow-x-hidden		
 				overflow-y-auto
@@ -228,4 +239,46 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 			</div>
 		</BlogContext.Provider>
 	);
+}
+
+function checkFileName(firstLine: string): string {
+	return /file-(.*)/.exec(firstLine)?.at(1)?.trim() || "";
+}
+type runCodeParams = {
+	code: string;
+	run: boolean;
+	language: typeof ALLOWED_LANGUAGES[number];
+	containerId: string;
+	fileName?: string;
+};
+
+async function runCodeRequest({
+	code,
+	run,
+	language,
+	containerId,
+	fileName,
+}: runCodeParams) {
+	let sessionCodeToOutput = sessionStorage.getItem(code);
+	if (sessionCodeToOutput) {
+		if (!run) return "";
+		return sessionCodeToOutput;
+	}
+
+	const params: Parameters<typeof sendRequestToRceServer> = [
+		"POST",
+		{ language, containerId, code, fileName, run },
+	];
+	const resp = await sendRequestToRceServer(...params);
+
+	if (resp.status !== 201) {
+		return resp.statusText;
+	}
+	const { output } = (await resp.json()) as { output: string };
+
+	try {
+		sessionStorage.setItem(code, output);
+	} catch {}
+
+	return output;
 }

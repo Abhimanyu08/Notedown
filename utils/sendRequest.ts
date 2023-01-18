@@ -1,4 +1,6 @@
-export async function sendRequestToRceServer(method: "POST" | "DELETE", body: { language?: string, containerId?: string, code?: string }) {
+import { ALLOWED_LANGUAGES } from "./constants";
+
+export async function sendRequestToRceServer(method: "POST" | "DELETE", body: { language?: typeof ALLOWED_LANGUAGES[number] | "shell", containerId?: string, code?: string, fileName?: string, run?: boolean }) {
     if (window.location.hostname === "localhost") {
 
         const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {

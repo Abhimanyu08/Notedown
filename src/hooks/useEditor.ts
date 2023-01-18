@@ -17,7 +17,7 @@ interface useEditorProps {
 }
 function useEditor({ language, blockNumber, code, mounted, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);
-    const { collectCodeTillBlock } = useContext(BlogContext)
+    const { setRunningBlock } = useContext(BlogContext)
 
 
     useEffect(() => {
@@ -30,7 +30,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
 
         let startState = EditorState.create({
             doc: code,
-            extensions: getExtensions({ language, blockNumber, collectCodeTillBlock })
+            extensions: getExtensions({ language, blockNumber, setRunningBlock })
         })
 
         let view = new EditorView({
@@ -39,7 +39,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
         });
 
         setEditorView(view);
-    }, [collectCodeTillBlock, code, blockNumber, mounted, language]);
+    }, [code, blockNumber, mounted, language]);
 
     return {
         editorView

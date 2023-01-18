@@ -395,7 +395,6 @@ function Edit() {
 								imageToUrl={imageToUrl}
 								image_folder={data?.image_folder}
 								containerId={containerId}
-								paddingClasses="px-2 lg:px-20"
 							/>
 						</div>
 						<div

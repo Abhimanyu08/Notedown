@@ -25,23 +25,6 @@ function Index({ markdown }: TrialProps) {
 	const { user } = useContext(UserContext);
 	const router = useRouter();
 
-	// useEffect(() => {
-	// 	const observer = new IntersectionObserver(
-	// 		(entries) => {
-	// 			entries.forEach((entry) => {
-	// 				if (entry.isIntersecting) {
-	// 					entry.target.classList.add("opaque");
-	// 					return;
-	// 				}
-	// 				// entry.target.classList.remove('opaque')
-	// 			});
-	// 		},
-	// 		{ threshold: 0.5 }
-	// 	);
-	// 	const transparentElements = document.querySelectorAll(".transparent");
-	// 	transparentElements.forEach((el) => observer.observe(el));
-	// }, []);
-
 	return (
 		<Layout user={user || null} route={router.asPath}>
 			<Head>

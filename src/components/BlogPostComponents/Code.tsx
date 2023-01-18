@@ -1,16 +1,15 @@
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
-import { BsPlayFill } from "react-icons/bs";
+import { BsPencilFill, BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage, MdImage } from "react-icons/md";
-import { SiPowershell, SiVim } from "react-icons/si";
+import { SiVim } from "react-icons/si";
 import { BlogContext } from "../../pages/_app";
 
-import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import useEditor from "../../hooks/useEditor";
 import { BlogProps } from "../../interfaces/BlogProps";
 
-import { vim } from "@replit/codemirror-vim";
 import { StateEffect } from "@codemirror/state";
+import { vim } from "@replit/codemirror-vim";
 import getExtensions from "../../../utils/getExtensions";
 import useTerminal from "../../hooks/useTerminal";
 interface CodeProps {
@@ -22,15 +21,15 @@ interface CodeProps {
 function Code({ code, language, blockNumber }: CodeProps) {
 	const {
 		containerId,
-		setBlockToCode,
-		collectCodeTillBlock,
 		vimEnabled,
 		setVimEnabled,
+		setRunningBlock,
+		setBlockToEditor,
+		setWritingBlock,
 	} = useContext(BlogContext);
 
 	const [mounted, setMounted] = useState(false);
 	const [openShell, setOpenShell] = useState(true);
-	const [awaitingResult, setAwaitingResult] = useState(false);
 	const { editorView } = useEditor({
 		language,
 		blockNumber,
@@ -41,7 +40,6 @@ function Code({ code, language, blockNumber }: CodeProps) {
 
 	useTerminal({
 		containerId,
-		language,
 		blockNumber,
 		mounted,
 	});
@@ -50,37 +48,13 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		setMounted(true);
 	}, [mounted]);
 
-	// useEffect(() => {
-	// 	if (blockToOutput && Object.hasOwn(blockToOutput, blockNumber)) {
-	// 		setAwaitingResult(false);
-	// 		setAwaitingShellResult(false)
-	// 		setBlockToOutput({});
-	// 	}
-	// }, [blockToOutput]);
-
 	useEffect(() => {
-		const playButton = document.getElementById(
-			`run-${blockNumber}`
-		) as HTMLButtonElement | null;
-		if (!playButton) return;
-
-		playButton.onfocus = (e) => {
-			e.preventDefault();
-
-			if (!setBlockToCode) return;
-			const codeArray = editorView?.state.doc.toJSON() || [""];
-			const code = codeArray.join("\n");
-			if (/file-((.)+)/.exec(codeArray[0])) {
-				setBlockToCode({
-					[blockNumber]: code,
-				});
-				return;
-			}
-			setBlockToCode((prev) => ({
+		console.log("blocknumber or editorview changed!!!");
+		if (setBlockToEditor && editorView)
+			setBlockToEditor((prev) => ({
 				...prev,
-				[blockNumber]: code,
+				[blockNumber]: editorView,
 			}));
-		};
 	}, [blockNumber, editorView]);
 
 	const onUndo: MouseEventHandler = () => {
@@ -100,7 +74,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					...getExtensions({
 						language,
 						blockNumber,
-						collectCodeTillBlock,
+						setRunningBlock,
 					}),
 				]),
 			});
@@ -111,7 +85,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					getExtensions({
 						language,
 						blockNumber,
-						collectCodeTillBlock,
+						setRunningBlock,
 					})
 				),
 			});
@@ -122,23 +96,34 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		<div className="flex relative flex-col w-full ">
 			<div className="flex flex-row  gap-5 w-fit self-end bg-black py-1 px-3 rounded-t-md">
 				{mounted && (
-					<button
-						onClick={() => {
-							setAwaitingResult(true);
-							if (!collectCodeTillBlock) return;
-							collectCodeTillBlock(blockNumber);
-						}}
-						className="md:tooltip  md:tooltip-left"
-						data-tip="Run Code (Shift+Enter)"
-						id={`run-${blockNumber}`}
-					>
-						<BsPlayFill
-							className={`text-cyan-400 ${
-								awaitingResult ? "animate-pulse" : ""
-							}`}
-							size={16}
-						/>
-					</button>
+					<>
+						<button
+							onClick={() => {
+								if (setRunningBlock)
+									setRunningBlock(blockNumber);
+							}}
+							className="md:tooltip  md:tooltip-left"
+							data-tip="Run Code (Shift+Enter)"
+							id={`run-${blockNumber}`}
+						>
+							<BsPlayFill
+								className={`text-cyan-400 ${
+									false ? "animate-pulse" : ""
+								}`}
+								size={16}
+							/>
+						</button>
+						<button
+							onClick={() => {
+								if (setWritingBlock)
+									setWritingBlock(blockNumber);
+							}}
+							className="md:tooltip  md:tooltip-left"
+							data-tip="Write code to file without running"
+						>
+							<BsPencilFill size={14} className="text-cyan-400" />
+						</button>
+					</>
 				)}
 				<button
 					onClick={onUndo}
@@ -180,16 +165,14 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					className="w-full"
 					id={`codearea-${blockNumber}`}
 					onDoubleClick={() => {
-						setAwaitingResult(true);
-						if (!collectCodeTillBlock) return;
-						collectCodeTillBlock(blockNumber);
+						if (setRunningBlock) setRunningBlock(blockNumber);
 					}}
 				></div>
 			)}
 
 			{mounted && (
 				<div
-					className={`not-prose  mt-2 bg-black pl-2 pb-1 ${
+					className={`not-prose  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
 						openShell ? "" : "hidden"
 					}`}
 					id={`terminal-${blockNumber}`}

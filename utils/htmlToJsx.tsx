@@ -197,14 +197,16 @@ function htmlToJsx({
 										/>
 									</div>
 								) : (
-									<Image
-										src={imageUrl!}
-										layout="responsive"
-										objectFit="contain"
-										width={1440}
-										alt={attrs["alt"]}
-										height={1080}
-									/>
+									<div className="w-9/12">
+										<Image
+											src={imageUrl!}
+											layout="responsive"
+											objectFit="contain"
+											width={1440}
+											alt={attrs["alt"]}
+											height={1080}
+										/>
+									</div>
 								)}
 								<div className="flex items-end justify-center gap-4 ">
 									<figcaption className="text-center text-white italic">
