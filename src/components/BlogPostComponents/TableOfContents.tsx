@@ -9,14 +9,6 @@ const headingToMargin: Record<string, string> = {
 	h6: "ml-16",
 };
 
-const headingToFontSize: Record<string, string> = {
-	h2: "font-bold text-xl",
-	h3: "font-semibold text-lg",
-	h4: "font-medium text-base",
-	h5: "font-normal text-sm",
-	h6: "font-light text-xs",
-};
-
 export function Toc({
 	html,
 	setShowContents,
@@ -38,58 +30,46 @@ export function Toc({
 
 	return (
 		<div
-			className="flex flex-col gap-5  text-gray-700 dark:text-amber-200/95 max-w-full pr-1"
+			className="flex ml-7 flex-col gap-2 text-xs font-jsx-prose tracking-wide  text-gray-700 dark:text-amber-200/95 max-w-full pr-1"
 			onClick={() => setShowContents(false)}
 		>
 			<h3
-				className="ml-8 lg:ml-0 text-xl font-semibold flex flex-row items-center"
+				className=" flex flex-row items-center underline underline-offset-2 cursor-pointer"
 				onClick={() => setOpen((prev) => !prev)}
 			>
-				{open ? (
-					<MdOutlineArrowDropDown
-						size={36}
-						className="hidden lg:block"
-					/>
-				) : (
-					<MdOutlineArrowRight
-						size={36}
-						className="hidden lg:block"
-					/>
-				)}
-				<span className="underline-offset-2 cursor-pointer">
-					Table of Contents
-				</span>
+				Table of Contents
 			</h3>
-			<div
-				className={`ml-7 flex flex-col ${
+			<ul
+				className={` flex flex-col gap-2     ${
 					open ? "" : "lg:invisible"
-				}  pb-14 text-gray-700 dark:text-gray-100/75 gap-4`}
+				}  pb-14 text-gray-700 dark:text-gray-100/75`}
 			>
 				<li>
-					<a href="#title" className="text-xl font-bold">
+					<a
+						href="#title"
+						className="hover:text-rose-500 link-hover hover:dark:text-amber-200"
+					>
 						Title
 					</a>
 				</li>
 				{matches?.map((match) => {
 					return (
 						<li
-							className={`${
-								headingToMargin[match.at(1)!]
-							} break-words`}
+							className={`
+							${headingToMargin[match.at(1)!]} 
+							break-words`}
 							key={match.at(4)}
 						>
 							<a
 								href={`#${match.at(4)}`}
-								className={`${headingToFontSize[match.at(1)!]}
-							font-semibold
-						 link-hover`}
+								className={`hover:text-rose-500 link-hover hover:dark:text-amber-200`}
 							>
 								{match.at(4)}
 							</a>
 						</li>
 					);
 				})}
-			</div>
+			</ul>
 		</div>
 	);
 }
