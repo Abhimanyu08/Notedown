@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { MdOutlineArrowDropDown, MdOutlineArrowRight } from "react-icons/md";
 
 const headingToMargin: Record<string, string> = {
 	h2: "ml-0",

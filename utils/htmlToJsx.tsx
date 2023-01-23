@@ -197,12 +197,13 @@ function htmlToJsx({
 										/>
 									</div>
 								) : (
-									<div className="w-9/12">
+									<div className="lg:w-[85%] w-full mx-auto">
 										<Image
 											src={imageUrl!}
 											layout="responsive"
 											objectFit="contain"
 											width={1440}
+											// layout="fill"
 											alt={attrs["alt"]}
 											height={1080}
 										/>

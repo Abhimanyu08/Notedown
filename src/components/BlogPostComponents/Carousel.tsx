@@ -34,7 +34,7 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div className="flex flex-col rounded-md">
+		<div className="flex flex-col rounded-md lg:w-[85%] w-full mx-auto">
 			<div
 				className={`relative h-full flex w-[600%]`}
 				// style={{ transform: `translateX(-${100 * show}%)` }}

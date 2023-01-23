@@ -17,7 +17,7 @@ module.exports = {
 			},
 			fontFamily: {
 				"jsx-prose": [
-					'"Wotfard"',
+					"Wotfard",
 					"Futura",
 					"-apple-system",
 					"sans-serif",
