@@ -24,7 +24,7 @@ export function Blog({
 	image_folder,
 	bloggers,
 	imageToUrl,
-	paddingClasses = "px-2 lg:px-10",
+	paddingClasses = "px-2 lg:px-20",
 }: Partial<BlogProps>) {
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
 		{}

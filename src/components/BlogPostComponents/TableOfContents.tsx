@@ -29,11 +29,11 @@ export function Toc({
 
 	return (
 		<div
-			className="flex ml-7 flex-col gap-2 text-xs font-jsx-prose tracking-wide  text-gray-700 dark:text-amber-200/95 max-w-full pr-1"
+			className="flex ml-7 flex-col gap-2 text-xs font-jsx-prose tracking-wide  text-gray-700 dark:text-white/70 max-w-full pr-1"
 			onClick={() => setShowContents(false)}
 		>
 			<h3
-				className=" flex flex-row items-center underline underline-offset-2 cursor-pointer"
+				className=" flex flex-row items-center underline underline-offset-2 cursor-pointer font-bold"
 				onClick={() => setOpen((prev) => !prev)}
 			>
 				Table of Contents
@@ -41,12 +41,12 @@ export function Toc({
 			<ul
 				className={` flex flex-col gap-2     ${
 					open ? "" : "lg:invisible"
-				}  pb-14 text-gray-700 dark:text-gray-100/75`}
+				}  pb-14 text-gray-700 dark:text-gray-100/75 tracking-wider font-medium`}
 			>
 				<li>
 					<a
 						href="#title"
-						className="hover:text-rose-500 link-hover hover:dark:text-amber-200"
+						className="hover:text-purple-700 link-hover hover:dark:text-amber-400"
 					>
 						Title
 					</a>
@@ -61,7 +61,7 @@ export function Toc({
 						>
 							<a
 								href={`#${match.at(4)}`}
-								className={`hover:text-rose-500 link-hover hover:dark:text-amber-200`}
+								className={`hover:text-purple-700 link-hover hover:dark:text-amber-400`}
 							>
 								{match.at(4)}
 							</a>

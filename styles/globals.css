@@ -21,6 +21,10 @@
 	aspect-ratio: 16/9;
 }
 
+.carousel {
+	aspect-ratio: 4/3;
+}
+
 .demo {
 	aspect-ratio: 16/9;
 }

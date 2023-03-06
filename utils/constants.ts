@@ -1,4 +1,3 @@
-import { BiSleepy } from "react-icons/bi";
 
 export const SUPABASE_FILES_BUCKET = "blog-files";
 export const SUPABASE_BLOGGER_TABLE = "bloggers"

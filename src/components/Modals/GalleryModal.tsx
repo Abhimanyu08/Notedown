@@ -109,28 +109,8 @@ function GalleryModal({
 							className="text-amber-400"
 						/>
 					</label>
-					<ul
-						className="marker:text-amber-400 text-sm lg:text-base  list-disc list-inside text-gray-100/90 py-2 px-5 lg:px-4 lg:w-5/6"
-						role="list"
-					>
-						<li>
-							Selecting an image or multiple images will generate
-							a string containing their name/names which you can
-							copy and paste in your markdown.
-						</li>
-						<li>Hover/Touch on the image to select.</li>
-						<li>Select multiple images for a carousel.</li>
-						<li>
-							Copy the string below after selecting the images and
-							paste it in your markdown appropriately to display
-							the images on preview.
-						</li>
-						<li>
-							A post is allowed to have a maximum of {PHOTO_LIMIT}{" "}
-							images to prevent someone from uploading their
-							entire gallery.
-						</li>
-					</ul>
+					<Instructions />
+
 					<div className="flex  text-white w-full h-max lg:w-2/3 self-center text-sm gap-1">
 						{/* <span className="bg-cyan-400 text-black flex items-center font-semibold rounded-l-md p-1">
 							Image(s) :{" "}
@@ -263,15 +243,16 @@ function ImageGrid({
 				images.map((imageName) => {
 					return (
 						<div
-							className="col-span-1 row-span-1 relative group rounded-sm"
+							className="col-span-1 row-span-1 relative group rounded-sm aspect-square"
 							key={imageName}
 						>
 							<Image
 								src={imageToUrl[imageName]}
-								layout="responsive"
-								width={1000}
-								height={1000}
-								objectFit="contain"
+								// width={1000}
+								// height={1000}
+								fill
+								alt=""
+								style={{ objectFit: "contain" }}
 								className={` ${
 									selectedObj[imageName] ||
 									toBeDeletedFromStorage?.includes(imageName)
@@ -389,6 +370,31 @@ function ImageGrid({
 				</label>
 			)}
 		</div>
+	);
+}
+
+function Instructions() {
+	return (
+		<ul
+			className="marker:text-amber-400 text-sm lg:text-base  list-disc list-inside text-gray-100/90 py-2 px-5 lg:px-4 lg:w-5/6"
+			role="list"
+		>
+			<li>
+				Selecting an image or multiple images will generate a string
+				containing their name/names which you can copy and paste in your
+				markdown.
+			</li>
+			<li>Hover/Touch on the image to select.</li>
+			<li>Select multiple images for a carousel.</li>
+			<li>
+				Copy the string below after selecting the images and paste it in
+				your markdown appropriately to display the images on preview.
+			</li>
+			<li>
+				A post is allowed to have a maximum of {PHOTO_LIMIT} images to
+				prevent someone from uploading their entire gallery.
+			</li>
+		</ul>
 	);
 }
 

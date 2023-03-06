@@ -34,19 +34,19 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div className="flex flex-col rounded-md lg:w-[85%] w-full mx-auto">
+		<>
 			<div
-				className={`relative h-full flex w-[600%]`}
+				className={`relative flex w-[600%] h-auto`}
 				// style={{ transform: `translateX(-${100 * show}%)` }}
 			>
 				{images.map((image, idx) => (
 					<div
 						key={idx}
-						className="w-1/6 h-full transition-transform duration-300"
+						className="w-1/6 transition-transform duration-300 carousel"
 						style={{ transform: `translateX(-${100 * show}%)` }}
 					>
 						<div
-							className={`w-full  ${
+							className={`w-full h-full relative  ${
 								show === idx ? "" : "hidden"
 							}`}
 							key={idx}
@@ -54,16 +54,16 @@ function Carousel({
 							<Image
 								src={image}
 								alt={captions[idx] || ""}
-								width={width}
-								height={height}
-								objectFit="contain"
-								layout={"responsive"}
+								// width={1440}
+								// height={1080}
+								style={{ objectFit: "contain" }}
+								fill
 							/>
 						</div>
 					</div>
 				))}
 			</div>
-			<div className="flex justify-between items-center">
+			<div className="flex justify-between not-prose items-center mt-1 h-5">
 				<div
 					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5  text-center"
 					id="pre"
@@ -72,8 +72,7 @@ function Carousel({
 					❮
 				</div>
 				<figcaption
-					className={`text-center 
-					text-black dark:text-gray-200 italic`}
+					className={`text-center text-sm  text-black dark:text-gray-200 italic`}
 				>
 					{captions.at(show) || ""}
 				</figcaption>
@@ -85,7 +84,7 @@ function Carousel({
 					❯
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
