@@ -202,9 +202,11 @@ function UserDisplay({ profile, user }: UserDisplayProps) {
 							<Image
 								src={currProfile.avatar_url}
 								width={160}
+								alt={`Profile picture of ${currProfile.name}`}
 								height={160}
-								layout="intrinsic"
-								objectFit="contain"
+								style={{
+									objectFit: "contain",
+								}}
 							/>
 						) : (
 							<IoPersonCircleOutline className="w-40 h-40 text-gray-400" />
