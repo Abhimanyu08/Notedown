@@ -1,11 +1,8 @@
 
-1. Improve all the abhorrent pieces of shit code I've written
-
-1.1 Upload functions should either upload everything -images, canvasImages, files or nothing
-1.2 Each page is steaming pile of garbage, need to break it into components
 
 
-2. Modify Upload Modal
+1. Don't restrict number of canvas images; they're small anyway.
+
 
 
 

@@ -90,7 +90,12 @@ export function Blog({
 
 		setRunningRceRequest(true);
 
-		const block = (runningBlock || writingBlock) as number;
+		let block: number;
+		if (typeof runningBlock === "number") {
+			block = runningBlock;
+		} else {
+			block = writingBlock as number;
+		}
 		// if the current block contains a file comment at the top then only collect code from blocks which contain the same
 		// comment on top of them
 		const firstLine = blockToEditor[block].state.doc

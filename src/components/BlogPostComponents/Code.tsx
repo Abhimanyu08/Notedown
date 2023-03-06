@@ -45,17 +45,16 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	});
 
 	useEffect(() => {
-		setMounted(true);
+		if (!mounted) setMounted(true);
 	}, [mounted]);
 
 	useEffect(() => {
-		console.log("blocknumber or editorview changed!!!");
 		if (setBlockToEditor && editorView)
 			setBlockToEditor((prev) => ({
 				...prev,
 				[blockNumber]: editorView,
 			}));
-	}, [blockNumber, editorView]);
+	}, [blockNumber, editorView, mounted]);
 
 	const onUndo: MouseEventHandler = () => {
 		const docLength = editorView?.state.doc.length;
