@@ -46,7 +46,7 @@ export function Toc({
 				<li>
 					<a
 						href="#title"
-						className="hover:text-purple-700 link-hover hover:dark:text-amber-400"
+						className="hover:text-black hover:dark:text-white hover:font-bold"
 					>
 						Title
 					</a>
@@ -61,7 +61,7 @@ export function Toc({
 						>
 							<a
 								href={`#${match.at(4)}`}
-								className={`hover:text-purple-700 link-hover hover:dark:text-amber-400`}
+								className={`hover:text-black hover:font-bold hover:dark:text-white`}
 							>
 								{match.at(4)}
 							</a>

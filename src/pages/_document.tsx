@@ -32,7 +32,7 @@ export default function Document() {
 					crossOrigin="anonymous"
 				></script>
 			</Head>
-			<body className="bg-gray-200 dark:bg-black/50 transition-colors duration-300">
+			<body className="bg-gray-200 dark:bg-black/60 transition-colors duration-300">
 				<Main />
 				<NextScript />
 			</body>

@@ -32,6 +32,9 @@ import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
 import SmallScreenFooter from "../../components/SmallScreenFooter";
+import { SlLike } from "react-icons/sl";
+import { AiFillHeart } from "react-icons/ai";
+import { FaHeart } from "react-icons/fa";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;
@@ -268,11 +271,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 								} `}
 								onClick={onUpvote}
 							>
-								<GoArrowUp
-									size={34}
-									className={`mt-2 ml-2 ${
+								<FaHeart
+									size={26}
+									className={`mt-3 ml-[10px] ${
 										upvoted
-											? "text-green-500"
+											? "text-rose-500"
 											: "dark:text-white text-black"
 									}`}
 								/>

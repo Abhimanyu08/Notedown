@@ -3537,10 +3537,10 @@
   dependencies:
     "hotkeys-js" "3.9.4"
 
-"react-icons@^4.4.0":
-  "integrity" "sha512-fSbvHeVYo/B5/L4VhB7sBA1i2tS8MkT0Hb9t2H1AVPkwGfVHLJCqyr2Py9dKMxsyM63Eng1GkdZfbWj+Fmv8Rg=="
-  "resolved" "https://registry.npmjs.org/react-icons/-/react-icons-4.4.0.tgz"
-  "version" "4.4.0"
+"react-icons@^4.8.0":
+  "integrity" "sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg=="
+  "resolved" "https://registry.npmjs.org/react-icons/-/react-icons-4.8.0.tgz"
+  "version" "4.8.0"
 
 "react-intl@^6.1.1":
   "integrity" "sha512-YLH/HWYSFuf5EVEVf1dcy0ak7d58xzONTpG/1MGlvtTjDnKyitRIm+uS4idlE/OCnTw7Zp6xRvbbM3n8RORUcg=="

@@ -15,14 +15,6 @@ module.exports = {
 			colors: {
 				"light-white": "rgb(239, 239, 239)",
 			},
-			fontFamily: {
-				"jsx-prose": [
-					"Wotfard",
-					"Futura",
-					"-apple-system",
-					"sans-serif",
-				],
-			},
 		},
 	},
 	plugins: [
