@@ -200,10 +200,10 @@ function htmlToJsx({
 									<div className="w-full">
 										<Image
 											src={imageUrl!}
-											width={1440}
 											// layout="fill"
-											alt={attrs["alt"]}
+											width={1440}
 											height={1080}
+											alt={attrs["alt"]}
 										/>
 									</div>
 								)}

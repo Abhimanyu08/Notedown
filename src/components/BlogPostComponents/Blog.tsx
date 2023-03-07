@@ -169,7 +169,7 @@ dark:prose-headings:text-amber-400
 prose-headings:font-serif
 				// ---------prose-p--------------
 				prose-p:text-left
-				prose-p:text-[17px]	
+				md:prose-p:text-[17px]	
 				prose-p:font-sans
 				prose-p:tracking-wide
 				prose-p:text-black/80
@@ -180,7 +180,7 @@ prose-headings:font-serif
 				dark:marker:prose-li:text-white
 				prose-li:text-black/80
 				prose-li:font-sans
-				prose-li:text-[17px]	
+				md:prose-li:text-[17px]	
 				prose-li:tracking-wide
 				dark:prose-li:text-gray-300
 

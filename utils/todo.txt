@@ -2,6 +2,8 @@
 
 
 1. Don't restrict number of canvas images; they're small anyway.
+2. CodeSandox embedding
+3. AI 
 
 
 
