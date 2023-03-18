@@ -27,7 +27,7 @@ overflow-y-hidden
 				{children[1]}
 			</div>
 
-			<div className="hidden lg:flex lg:flex-col basis-1/5 mt-44 pl-10 gap-6">
+			<div className="hidden lg:flex lg:flex-col basis-1/5 mt-44 pl-10 gap-6 text-black dark:text-white">
 				{children[2]}
 			</div>
 		</div>

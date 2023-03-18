@@ -158,47 +158,50 @@ export function Blog({
 			<div
 				className={`
 				${paddingClasses}
-				scroll-smooth prose prose-sm md:prose-lg max-w-none 
+				scroll-smooth prose prose-sm md:prose-base max-w-none 
 				  prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full 
 				overflow-x-hidden		
 				overflow-y-auto
 
 				//-------------prose-headings------------
-prose-headings:text-purple-700
+prose-headings:text-indigo-600
 dark:prose-headings:text-amber-400
+prose-headings:font-serif
 				// ---------prose-p--------------
 				prose-p:text-left
+				md:prose-p:text-[17px]	
 				prose-p:font-sans
 				prose-p:tracking-wide
-				prose-p:text-black
-				dark:prose-p:text-gray-100
+				prose-p:text-black/80
+				dark:prose-p:text-gray-300
 
 				// -------------prose-li--------
-				marker:prose-li:text-purple-700
-				dark:marker:prose-li:text-amber-400
-				prose-li:text-black
+				marker:prose-li:text-black
+				dark:marker:prose-li:text-white
+				prose-li:text-black/80
 				prose-li:font-sans
+				md:prose-li:text-[17px]	
 				prose-li:tracking-wide
-				dark:prose-li:text-gray-100
+				dark:prose-li:text-gray-300
 
 				// -----------prose-string-----------
-				prose-strong:font-extrabold
+				prose-strong:font-bold
 				prose-strong:text-black
-				dark:prose-strong:text-white
+				dark:prose-strong:text-gray-100
 				prose-strong:tracking-wide
 
 				//-----------------prose-a-------------
-			prose-a:text-blue-700 
-			prose-a:font-bold
-			dark:prose-a:text-cyan-500
+			prose-a:text-black
+			dark:prose-a:text-white
+			prose-a:font-semibold
 				
 			prose-em:tracking-wide
 
 			// ---------------prose-code---------------
-			dark:prose-code:bg-amber-300
+			dark:prose-code:bg-gray-200
 			dark:prose-code:text-black
 			prose-code:bg-black
-			prose-code:text-amber-300
+			prose-code:text-white
 			prose-code:px-2 
 			prose-code:font-mono
 			md:prose-code:text-sm 
@@ -210,9 +213,8 @@ dark:prose-headings:text-amber-400
 				dark:prose-figcaption:text-gray-200
 
 prose-blockquote:border-l-black prose-blockquote:border-l-4
-dark:prose-blockquote:border-l-amber-300
-				  prose-h1:mb-6  md:prose-p:text-lg md:prose-ul:text-lg 
-				md:prose-ol:text-lg 
+dark:prose-blockquote:border-l-gray-300
+				  prose-h1:mb-6   
 				
 				pb-20 md:pb-10 
 			prose-a:after:content-['_↗']	
@@ -223,12 +225,12 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				<h1 className="text-center" id="title">
 					{title}
 				</h1>
-				<div className="text-center italic text-lg md:text-xl w-full font-semibold text-black dark:text-gray-100">
+				<div className="text-center italic text-lg w-full font-medium text-black dark:text-gray-100">
 					{description}
 				</div>
 				<div className="dark:text-gray-100 flex gap-1 not-prose text-xs md:text-sm text-black justify-center mb-10 md:mb-12 mt-8 font-mono">
 					<span>by</span>
-					<span className="link underline-offset-2 decoration-purple-400 dark:decoration-amber-200">
+					<span className="link underline-offset-2 decoration-black dark:decoration-white">
 						{created_by ? (
 							<Link href={`/profile/${created_by}`}>
 								{author || bloggers?.name || ""}

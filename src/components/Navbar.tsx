@@ -27,7 +27,7 @@ function Navbar({
 	);
 
 	return (
-		<div className="flex items-center p-3 md:p-4 justify-between grow-0 mb-5 lg:mb-5 xl:px-64  px-5 lg:px-32 z-10 opacity-100  border-white/25 font-semibold md:font-bold relative md:text-base text-sm text-black dark:text-white">
+		<div className="flex items-center p-3 md:p-4 justify-between grow-0 mb-5 lg:mb-5 lg:mx-52 z-10 opacity-100  border-white/25 font-semibold md:font-bold relative md:text-base text-sm text-black dark:text-white">
 			<div className="flex gap-6 md:gap-14">
 				<Link href="/">
 					<p className="link-hover cursor-pointer">Home</p>
@@ -62,7 +62,7 @@ function Navbar({
 					<p className="link-hover cursor-pointer">Write</p>
 				</Link>
 				{user ? (
-					<>
+					<div className="relative">
 						<div
 							className=""
 							onClick={() =>
@@ -94,9 +94,9 @@ function Navbar({
 								</div>
 							</OptionsComponent>
 						)}
-					</>
+					</div>
 				) : (
-					<>
+					<div className="relative">
 						<div
 							className="cursor-pointer select-none"
 							onClick={() => setShowLoginOptions((prev) => !prev)}
@@ -135,7 +135,7 @@ function Navbar({
 								</div>
 							</OptionsComponent>
 						)}
-					</>
+					</div>
 				)}
 			</div>
 		</div>
@@ -144,7 +144,7 @@ function Navbar({
 
 const OptionsComponent = ({ children }: { children: JSX.Element[] }) => {
 	return (
-		<div className="flex flex-col absolute top-8 md:top-12 lg:right-36 right-10 xl:right-[280px] p-4 rounded-md bg-black shadow-sm shadow-white gap-4">
+		<div className="flex flex-col absolute top-8 right-10  p-4 rounded-md bg-black shadow-sm shadow-white gap-4">
 			{children}
 		</div>
 	);

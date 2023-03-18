@@ -37,3 +37,5 @@ yarn-error.log*
 .snaplet
 .snaplet/snapshots
 .snaplet/structure.d.ts
+
+/utils/todo.txt

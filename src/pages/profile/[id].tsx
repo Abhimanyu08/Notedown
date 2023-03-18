@@ -506,7 +506,7 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 											 rounded-md text-xs lg:text-sm font-semibold text-white capitalize"
 											htmlFor="upload"
 										>
-											<span>New Post</span>
+											New Post
 										</label>
 									)}
 								</div>

@@ -61,7 +61,7 @@ function PostDisplay({
 		<div className="flex flex-col overflow-x-hidden h-fit px-1 pt-1">
 			{(posts?.length || 0) > 0 ? (
 				<div
-					className="flex flex-col gap-6 lg:gap-8 lg:basis-11/12 basis-10/12"
+					className="flex flex-col gap-6 lg:basis-11/12 basis-10/12 divide-y divide-dashed divide-black dark:divide-white"
 					onScroll={(e) => e.currentTarget}
 				>
 					{posts?.map((post, idx) => (

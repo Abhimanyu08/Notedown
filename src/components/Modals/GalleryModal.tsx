@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import React, { useState } from "react";
 import { AiFillCloseCircle, AiFillDelete } from "react-icons/ai";
-import { MdOutlineContentCopy } from "react-icons/md";
-import { CAROUSEL_LIMIT, PHOTO_LIMIT } from "../../../utils/constants";
 import { BiImageAdd } from "react-icons/bi";
+import { MdOutlineContentCopy } from "react-icons/md";
 import { RiArrowGoBackFill } from "react-icons/ri";
+import { PHOTO_LIMIT } from "../../../utils/constants";
 import { processImageName } from "../../../utils/makeFolderName";
 
 interface GalleryModalProps {
@@ -25,30 +25,9 @@ function GalleryModal({
 	setToBeDeletedFromStorage,
 }: GalleryModalProps) {
 	const [show, setShow] = useState(false);
-	const [selectedObj, setSelectedObj] = useState<Record<string, boolean>>({});
+	// const [selectedObj, setSelectedObj] = useState<Record<string, boolean>>({});
 	const [toBeCopied, setToBeCopied] = useState<string[]>([]);
 	const [imageAge, setImageAge] = useState<"new" | "old">("new");
-
-	useEffect(() => {
-		if (!currImages) return;
-
-		const imageToSelected: typeof selectedObj = {};
-		Object.keys(currImages).forEach((imageName) => {
-			if (Object.hasOwn(selectedObj, imageName)) return;
-			imageToSelected[imageName] = false;
-		});
-		setSelectedObj((prev) => ({ ...prev, ...imageToSelected }));
-	}, [currImages]);
-
-	useEffect(() => {
-		if (toBeCopied.length === 0 && currImages) {
-			const imageToSelected: typeof selectedObj = {};
-			Object.keys(currImages).forEach((imageName) => {
-				imageToSelected[imageName] = false;
-			});
-			setSelectedObj(imageToSelected);
-		}
-	}, [toBeCopied]);
 
 	return (
 		<>
@@ -178,8 +157,7 @@ function GalleryModal({
 								images={currImages}
 								{...{
 									imageToUrl,
-									selectedObj,
-									setSelectedObj,
+									toBeCopied,
 									setToBeCopied,
 									setImages,
 									extra:
@@ -195,8 +173,7 @@ function GalleryModal({
 								images={prevImages}
 								{...{
 									imageToUrl,
-									selectedObj,
-									setSelectedObj,
+									toBeCopied,
 									setToBeCopied,
 									setImages,
 									toBeDeletedFromStorage,
@@ -215,8 +192,7 @@ function ImageGrid({
 	type,
 	images,
 	imageToUrl,
-	selectedObj,
-	setSelectedObj,
+	toBeCopied,
 	setToBeCopied,
 	setImages,
 	toBeDeletedFromStorage,
@@ -226,11 +202,8 @@ function ImageGrid({
 	type: "new" | "old";
 	images: string[];
 	imageToUrl: Record<string, string>;
-	selectedObj: Record<string, boolean>;
-	setSelectedObj: React.Dispatch<
-		React.SetStateAction<Record<string, boolean>>
-	>;
 	toBeDeletedFromStorage?: string[];
+	toBeCopied: string[];
 	setToBeCopied: React.Dispatch<React.SetStateAction<string[]>>;
 	setImages: React.Dispatch<React.SetStateAction<File[]>>;
 	setToBeDeletedFromStorage?: React.Dispatch<React.SetStateAction<string[]>>;
@@ -254,7 +227,7 @@ function ImageGrid({
 								alt=""
 								style={{ objectFit: "contain" }}
 								className={` ${
-									selectedObj[imageName] ||
+									toBeCopied.includes(imageName) ||
 									toBeDeletedFromStorage?.includes(imageName)
 										? "opacity-10"
 										: "group-hover:opacity-10"
@@ -262,7 +235,7 @@ function ImageGrid({
 							/>
 							<div
 								className={`absolute ${
-									selectedObj[imageName] ||
+									toBeCopied.includes(imageName) ||
 									toBeDeletedFromStorage?.includes(imageName)
 										? "flex"
 										: "group-hover:flex hidden"
@@ -277,29 +250,22 @@ function ImageGrid({
 										name=""
 										id=""
 										className="w-4 h-6"
-										checked={selectedObj[imageName]}
+										checked={toBeCopied.includes(imageName)}
 										onChange={() => {
-											if (selectedObj[imageName]) {
+											if (
+												toBeCopied.includes(imageName)
+											) {
 												setToBeCopied((prev) =>
 													prev.filter(
 														(name) =>
 															name !== imageName
 													)
 												);
-												setSelectedObj((prev) => ({
-													...prev,
-													[imageName]: false,
-												}));
 											} else {
 												setToBeCopied((prev) => [
 													...prev,
 													imageName,
 												]);
-
-												setSelectedObj((prev) => ({
-													...prev,
-													[imageName]: true,
-												}));
 											}
 										}}
 									/>
@@ -329,10 +295,6 @@ function ImageGrid({
 													(i) => i !== imageName
 												)
 											);
-											setSelectedObj((prev) => ({
-												...prev,
-												[imageName]: false,
-											}));
 
 											setImages((prev) =>
 												prev.filter(

@@ -54,7 +54,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				...prev,
 				[blockNumber]: editorView,
 			}));
-	}, [blockNumber, editorView, mounted]);
+	}, [blockNumber, editorView]);
 
 	const onUndo: MouseEventHandler = () => {
 		const docLength = editorView?.state.doc.length;

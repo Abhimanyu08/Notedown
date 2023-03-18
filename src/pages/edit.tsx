@@ -1,7 +1,7 @@
 import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
@@ -32,6 +32,7 @@ import GalleryModal from "../components/Modals/GalleryModal";
 import SmallScreenFooter from "../components/SmallScreenFooter";
 import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
+import useShortCut from "../hooks/useShortcut";
 import { CanvasImageContext, UserContext } from "./_app";
 
 const initialMarkdown =
@@ -76,6 +77,11 @@ function Edit() {
 		code: data?.markdown || initialMarkdown,
 		editorParentId: "markdown-textarea",
 		mounted,
+	});
+
+	useShortCut({
+		keys: ["Alt", "p"],
+		callback: () => setEditingMarkdown((prev) => !prev),
 	});
 
 	useEffect(() => {
@@ -259,6 +265,8 @@ function Edit() {
 
 		Object.keys(canvasImages).forEach(async (canvasImageName) => {
 			const app = canvasImages[canvasImageName];
+
+			// we need to delete the previous canvas images because user has redrawn them.
 			toBeDeletedFromStorage.push(`${canvasImageName}.png`);
 			if (app === null) return;
 			const newCanvasImage = await app.getImage("png");
@@ -440,7 +448,9 @@ function Edit() {
 						<div
 							className="btn btn-circle btn-ghost tooltip"
 							data-tip={
-								editingMarkdown ? "Preview" : "Edit Markdown"
+								editingMarkdown
+									? "Preview (Alt+P)"
+									: "Edit Markdown (Alt+P)"
 							}
 							onClick={() => setEditingMarkdown((prev) => !prev)}
 						>
