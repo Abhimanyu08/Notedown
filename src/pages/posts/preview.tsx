@@ -128,7 +128,9 @@ export default function PrivateBlog() {
 							<BiCodeAlt
 								size={30}
 								className={` ${
-									containerId ? "text-lime-400" : "text-white"
+									containerId
+										? "text-lime-400"
+										: "dark:text-white text-black"
 								} mt-2 ml-2 `}
 							/>
 						</div>
@@ -140,7 +142,7 @@ export default function PrivateBlog() {
 					>
 						<AiFillEdit
 							size={28}
-							className="text-white mt-2 ml-2"
+							className="dark:text-white mt-2 ml-2 text-black"
 						/>
 					</div>
 					<label
@@ -148,7 +150,10 @@ export default function PrivateBlog() {
 						className="md:tooltip-left md:tooltip capitalize btn btn-circle btn-ghost"
 						data-tip="publish"
 					>
-						<TbNews className="ml-2 mt-2 text-white" size={30} />
+						<TbNews
+							className="ml-2 mt-2 dark:text-white text-black"
+							size={30}
+						/>
 					</label>
 				</>
 			</BlogLayout>
