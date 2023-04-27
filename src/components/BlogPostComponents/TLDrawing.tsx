@@ -54,6 +54,7 @@ function TLDrawing({
 		<>
 			<div className="relative w-full aspect-[4/3] self-center not-prose">
 				<Tldraw
+					key={canvasImageName}
 					showMenu={false}
 					showMultiplayerMenu={false}
 					showPages={false}

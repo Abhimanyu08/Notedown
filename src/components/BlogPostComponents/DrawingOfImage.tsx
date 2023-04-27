@@ -1,12 +1,11 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import { SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
 import { supabase } from "../../../utils/supabaseClient";
 
-import Image from "next/image";
 import dynamic from "next/dynamic";
 
-export default function DrawingOfImage({
+export default function DrawingOrImage({
 	canvasImageName,
 	imageFolder,
 }: {
@@ -14,14 +13,29 @@ export default function DrawingOfImage({
 	imageFolder?: string;
 }) {
 	const router = useRouter();
+	const [DrawingComponent, setDrawingComponent] = useState<
+		React.ComponentType<{
+			canvasImageName: string;
+			imageFolder?: string | undefined;
+		}>
+	>();
 
 	if (router.asPath.startsWith("/edit")) {
-		const DynamicDrawingComponenet = dynamic(() => import(`./TLDrawing`), {
-			ssr: false,
-		});
-		return (
-			<DynamicDrawingComponenet {...{ canvasImageName, imageFolder }} />
-		);
+		if (DrawingComponent === undefined) {
+			const DynamicDrawingComponenet = dynamic(
+				() => import(`./TLDrawing`),
+				{
+					ssr: false,
+				}
+			);
+			setDrawingComponent(DynamicDrawingComponenet);
+			return (
+				<DynamicDrawingComponenet
+					{...{ canvasImageName, imageFolder }}
+				/>
+			);
+		}
+		return <DrawingComponent {...{ canvasImageName, imageFolder }} />;
 	}
 
 	const { publicURL } = supabase.storage

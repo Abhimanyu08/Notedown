@@ -5,7 +5,7 @@ import { BsArrowRepeat } from "react-icons/bs";
 import Latex from "react-latex";
 import Carousel from "../src/components/BlogPostComponents/Carousel";
 import Code from "../src/components/BlogPostComponents/Code";
-import DrawingOfImage from "../src/components/BlogPostComponents/DrawingOfImage";
+import DrawingOrImage from "../src/components/BlogPostComponents/DrawingOfImage";
 import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
@@ -77,7 +77,7 @@ function htmlToJsx({
 				if (type === "p" && hasCanvas) {
 					let canvasName = hasCanvas?.at(1);
 					return (
-						<DrawingOfImage
+						<DrawingOrImage
 							imageFolder={imageFolder}
 							canvasImageName={canvasName || ""}
 						/>
