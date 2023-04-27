@@ -41,7 +41,7 @@ export function Toc({
 			<ul
 				className={` flex flex-col gap-2     ${
 					open ? "" : "lg:invisible"
-				}  pb-14 text-gray-700 dark:text-gray-100/75 tracking-wider font-medium`}
+				}  pb-14 text-gray-700 dark:text-gray-100/75 tracking-wider font-base`}
 			>
 				<li>
 					<a

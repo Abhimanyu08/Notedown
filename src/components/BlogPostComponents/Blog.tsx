@@ -164,25 +164,26 @@ export function Blog({
 				overflow-y-auto
 
 				//-------------prose-headings------------
-prose-headings:text-indigo-600
-dark:prose-headings:text-amber-400
-prose-headings:font-serif
+prose-headings:text-black
+dark:prose-headings:text-white
+prose-headings:font-sans
 				// ---------prose-p--------------
 				prose-p:text-left
-				md:prose-p:text-[17px]	
+				md:prose-p:text-[16px]	
+				prose-p: leading-7
 				prose-p:font-sans
-				prose-p:tracking-wide
+				prose-p:tracking-normal
 				prose-p:text-black/80
-				dark:prose-p:text-gray-300
+				dark:prose-p:text-font-grey
 
 				// -------------prose-li--------
 				marker:prose-li:text-black
 				dark:marker:prose-li:text-white
 				prose-li:text-black/80
 				prose-li:font-sans
-				md:prose-li:text-[17px]	
-				prose-li:tracking-wide
-				dark:prose-li:text-gray-300
+				md:prose-li:text-[16px]	
+				prose-li:leading-7
+				dark:prose-li:text-font-grey
 
 				// -----------prose-string-----------
 				prose-strong:font-bold
@@ -192,18 +193,18 @@ prose-headings:font-serif
 
 				//-----------------prose-a-------------
 			prose-a:text-black
-			dark:prose-a:text-white
+			dark:prose-a:text-blue-400
 			prose-a:font-semibold
-				
-			prose-em:tracking-wide
+			prose-a:no-underline
+			hover:prose-a:underline
+			hover:prose-a:underline-offset-2
 
 			// ---------------prose-code---------------
-			dark:prose-code:bg-gray-200
-			dark:prose-code:text-black
-			prose-code:bg-black
-			prose-code:text-white
+			dark:prose-code:bg-black
+			dark:prose-code:text-gray-200
+			prose-code:bg-white
+			prose-code:text-black
 			prose-code:px-2 
-			prose-code:font-mono
 			md:prose-code:text-sm 
 				prose-code:rounded-md
 				prose-code:select-all
@@ -217,8 +218,6 @@ dark:prose-blockquote:border-l-gray-300
 				  prose-h1:mb-6   
 				
 				pb-20 md:pb-10 
-			prose-a:after:content-['_↗']	
-			prose-a:after:mr-1
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				`}
 			>
@@ -254,7 +253,7 @@ function checkFileName(firstLine: string): string {
 type runCodeParams = {
 	code: string;
 	run: boolean;
-	language: typeof ALLOWED_LANGUAGES[number];
+	language: (typeof ALLOWED_LANGUAGES)[number];
 	containerId: string;
 	fileName?: string;
 };

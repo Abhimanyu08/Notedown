@@ -14,6 +14,7 @@ module.exports = {
 			},
 			colors: {
 				"light-white": "rgb(239, 239, 239)",
+				"font-grey": "rgb(163, 163,163)",
 			},
 		},
 	},
