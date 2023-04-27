@@ -158,7 +158,7 @@ export function Blog({
 			<div
 				className={`
 				${paddingClasses}
-				scroll-smooth prose prose-sm md:prose-base max-w-none 
+				scroll-smooth prose prose-sm  max-w-none 
 				  prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full 
 				overflow-x-hidden		
 				overflow-y-auto
@@ -221,27 +221,29 @@ dark:prose-blockquote:border-l-gray-300
 lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 				`}
 			>
-				<h1 className="text-center" id="title">
-					{title}
-				</h1>
-				<div className="text-center italic text-lg w-full font-medium text-black dark:text-gray-100">
-					{description}
-				</div>
-				<div className="dark:text-gray-100 flex gap-1 not-prose text-xs md:text-sm text-black justify-center mb-10 md:mb-12 mt-8 font-mono">
-					<span>by</span>
-					<span className="link underline-offset-2 decoration-black dark:decoration-white">
-						{created_by ? (
-							<Link href={`/profile/${created_by}`}>
-								{author || bloggers?.name || ""}
-							</Link>
-						) : (
-							<span>{bloggers?.name}</span>
-						)}
-					</span>
-				</div>
-				<div className="" id="jsx">
+				<header>
+					<h1 className="text-left " id="title">
+						{title}
+					</h1>
+					<div className="text-left italic text-lg w-full font-medium text-black dark:text-font-grey">
+						{description}
+					</div>
+					<div className="dark:text-font-grey flex gap-1 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-8 font-mono">
+						<span>by</span>
+						<span className="link underline-offset-2 decoration-black dark:decoration-white">
+							{created_by ? (
+								<Link href={`/profile/${created_by}`}>
+									{author || bloggers?.name || ""}
+								</Link>
+							) : (
+								<span>{bloggers?.name}</span>
+							)}
+						</span>
+					</div>
+				</header>
+				<article className="" id="jsx">
 					{blogJsx}
-				</div>
+				</article>
 			</div>
 		</BlogContext.Provider>
 	);

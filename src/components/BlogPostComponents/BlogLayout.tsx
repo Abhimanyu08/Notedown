@@ -6,7 +6,7 @@ function BlogLayout({
 	showContent: boolean;
 }) {
 	return (
-		<div className="grow flex flex-row min-h-0 relative">
+		<div className="grow flex flex-row min-h-0 relative pt-10">
 			<div
 				className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start ${
 					showContent ? "flex" : "hidden lg:flex"
