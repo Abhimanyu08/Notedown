@@ -9,7 +9,7 @@ import { ALLOWED_LANGUAGES } from "../../utils/constants";
 import formatDate from "../../utils/dateFormatter";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 
-const langToBadgeColor: Record<typeof ALLOWED_LANGUAGES[number], string> = {
+const langToBadgeColor: Record<(typeof ALLOWED_LANGUAGES)[number], string> = {
 	javascript: "dark:text-amber-500 text-stone-500",
 	python: "text-green-500",
 	rust: "text-red-500",
@@ -138,8 +138,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					) : (
 						<span>
 							{published && published_on
-								? new Date(published_on).toDateString().slice(4)
-								: new Date(created_at!).toDateString().slice(4)}
+								? formatDate(published_on)
+								: formatDate(created_at!)}
 						</span>
 					)}
 				</div>

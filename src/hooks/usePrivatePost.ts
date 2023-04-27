@@ -40,7 +40,7 @@ export default function usePrivatePostQuery({ postId, loggedInUser }: { postId?:
                 return
             }
 
-            const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)').match({ id: postId, published: false });
+            const { data, error } = await supabase.from<PostWithBlogger>(SUPABASE_POST_TABLE).select('id,created_by,title,description,language,published_on,filename,image_folder,created_at,bloggers(name)').match({ id: postId, published: false });
             if (error) {
                 setError(error)
                 setLoading(false)

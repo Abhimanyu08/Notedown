@@ -201,7 +201,11 @@ export default function PublicBlog(props: Partial<PublicBlogProps>) {
 						setShowContents={setShowContents}
 					/>
 
-					<Blog {...props} containerId={containerId} />
+					<Blog
+						{...props}
+						published={true}
+						containerId={containerId}
+					/>
 
 					<>
 						{props.language && (

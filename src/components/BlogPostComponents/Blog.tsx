@@ -13,6 +13,7 @@ import useLexica from "../../hooks/useLexica";
 import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import { BlogContext } from "../../pages/_app";
+import formatDate from "../../../utils/dateFormatter";
 
 export function Blog({
 	title,
@@ -24,6 +25,9 @@ export function Blog({
 	image_folder,
 	bloggers,
 	imageToUrl,
+	published,
+	published_on,
+	created_at,
 	paddingClasses = "px-2 lg:px-20",
 }: Partial<BlogProps>) {
 	const [blockToOutput, setBlockToOutput] = useState<Record<number, string>>(
@@ -167,6 +171,11 @@ export function Blog({
 prose-headings:text-black
 dark:prose-headings:text-white
 prose-headings:font-sans
+prose-h2:text-[26px]
+prose-h3:text-[24px]
+prose-h4:text-[22px]
+prose-h5:text-[20px]
+prose-h6:text-[18px]
 				// ---------prose-p--------------
 				prose-p:text-left
 				md:prose-p:text-[16px]	
@@ -225,10 +234,10 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 					<h1 className="text-left " id="title">
 						{title}
 					</h1>
-					<div className="text-left italic text-lg w-full font-medium text-black dark:text-font-grey">
+					<blockquote className="text-left text-lg w-full font-medium text-black dark:text-font-grey">
 						{description}
-					</div>
-					<div className="dark:text-font-grey flex gap-1 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-8 font-mono">
+					</blockquote>
+					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 						<span>by</span>
 						<span className="link underline-offset-2 decoration-black dark:decoration-white">
 							{created_by ? (
@@ -238,6 +247,14 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 							) : (
 								<span>{bloggers?.name}</span>
 							)}
+						</span>
+						<span>on</span>
+						<span className="">
+							{published && published_on
+								? formatDate(published_on)
+								: created_at
+								? formatDate(created_at)
+								: formatDate(new Date().toDateString())}
 						</span>
 					</div>
 				</header>

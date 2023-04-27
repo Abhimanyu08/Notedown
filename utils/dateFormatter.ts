@@ -1,8 +1,10 @@
 function formatDate(date: string): string {
 
-    let dateString = new Date(date).toDateString()
+    let dateString = new Date(date).toDateString().slice(4)
 
-    return `${dateString.slice(4, 10)}/${dateString.slice(13, 15)}`
+    const dmy = dateString.split(" ")
+
+    return `${dmy[1]} ${dmy[0]}, ${dmy[2]}`
 }
 
 export default formatDate
