@@ -49,7 +49,7 @@ export function Blog({
 		if (!content) return <></>;
 		return htmlToJsx({
 			html: content,
-			language: language || "python",
+			language: language,
 			imageFolder: image_folder || undefined,
 			imageToUrl,
 		});
@@ -163,7 +163,7 @@ export function Blog({
 				className={`
 				${paddingClasses}
 				scroll-smooth prose prose-sm  max-w-none 
-				  prose-pre:m-0 prose-pre:p-0  prose-blockquote:text-white h-full 
+				    prose-blockquote:text-white h-full 
 				overflow-x-hidden		
 				overflow-y-auto
 

@@ -10,6 +10,7 @@ import { BlogProps } from "../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "./constants";
 import getYoutubeEmbedLink from "./getYoutubeEmbedLink";
 import { supabase } from "./supabaseClient";
+import CodeWithoutLanguage from "../src/components/BlogPostComponents/CodeWithoutLanguage";
 
 let BLOCK_NUMBER = -1;
 interface htmlToJsxProps {
@@ -35,20 +36,34 @@ function htmlToJsx({
 				const string2 = match.at(6);
 				const elem = match.at(2)!;
 				const type = match.at(3);
-				if (type === "pre" && language) {
+				const attrs = match.at(4);
+				if (type === "pre") {
 					let code = elem.match(/<code>((.|\r|\n)*)<\/code>/)?.at(1);
+					code = code?.trim();
 					BLOCK_NUMBER += 1;
+					if (language && !attrs) {
+						return (
+							<>
+								{string1}
+								<Code
+									key={BLOCK_NUMBER}
+									language={language}
+									code={code || ""}
+									blockNumber={BLOCK_NUMBER}
+								/>
+								{string2}
+							</>
+						);
+					}
+
 					return (
-						<>
-							{string1}
-							<Code
-								key={BLOCK_NUMBER}
-								language={language}
-								code={code || ""}
-								blockNumber={BLOCK_NUMBER}
-							/>
-							{string2}
-						</>
+						<CodeWithoutLanguage
+							code={code || ""}
+							language={
+								makeAttrMap({ type, content: "", match: attrs })
+									.language || ""
+							}
+						/>
 					);
 				}
 				if (type === "code") {
@@ -227,7 +242,7 @@ function htmlToJsx({
 				let attrMap = makeAttrMap({
 					type,
 					content,
-					match: match.at(4),
+					match: attrs,
 				});
 				let src = attrMap["href"];
 				if (
@@ -239,7 +254,7 @@ function htmlToJsx({
 				) {
 					return (
 						<iframe
-							className="w-full"
+							className="w-full youtube"
 							src={getYoutubeEmbedLink(src)}
 							title="YouTube video player"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

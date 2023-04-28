@@ -19,7 +19,6 @@ export default function useShortCut({
         document.addEventListener("keydown", (e) => {
             if (keys.includes(e.key)) keyArray.current.add(e.key);
             if (keys.length === keyArray.current.size) {
-                console.log("pressing Alt-p");
                 callback()
             }
         });

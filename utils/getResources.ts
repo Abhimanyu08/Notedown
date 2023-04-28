@@ -8,13 +8,31 @@ function resetCodeblocks(markdown: string, html: string) {
         markdown.matchAll(/(`{1,3})([^`]*?\r?\n)?((.|\n|\r)*?)(\r\n)?(\1)/g)
     )
     const mdMatched = mdMatchedArray.map((match) => match.at(3));
-    const contentMatch = Array.from(
-        html.matchAll(/<code>((.|\n|\r)*?)<\/code>/g)
-    ).map((match) => match.at(1));
+    const contentMatchedArray = Array.from(
+        html.matchAll(/(<pre>)?<code>((.|\n|\r)*?)<\/code>(<\/pre>)?/g)
+    );
+
+    const contentMatch = contentMatchedArray.map((m) => m?.at(2))
 
     for (let i = 0; i < mdMatched.length; i++) {
         html = html.replace(contentMatch[i]!, mdMatched[i]!);
     }
+
+    // if there's something like ```sql **some code** ``` then it should be converted to <pre language="sql"><code>**some code**</code></pre>
+    for (let i = 0; i < mdMatchedArray.length; i++) {
+
+        const lang = mdMatchedArray[i].at(2)?.trim()
+        if (lang) {
+
+            const correspondingHtml = contentMatchedArray[i].at(0)
+            if (correspondingHtml) {
+                html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${mdMatched.at(i)}</code></pre>`)
+            }
+
+        }
+    }
+
+
     return html;
 }
 

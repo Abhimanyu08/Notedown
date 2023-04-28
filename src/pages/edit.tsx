@@ -68,7 +68,7 @@ function Edit() {
 	const [blogData, setBlogData] = useState<{
 		title: string;
 		description: string;
-		language?: typeof ALLOWED_LANGUAGES[number];
+		language?: (typeof ALLOWED_LANGUAGES)[number];
 		content?: string;
 	}>({ title: "", description: "" });
 

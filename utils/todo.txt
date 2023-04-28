@@ -1,26 +1,12 @@
+3. Allow users to embed executable, non-executable code blocks 
+4. Migrate to Next13 (major)
+5. refactor htmlToJsx, getting really hard to maintain.
+6. Allow talking to the blog post or summarizing at least (using langchain?)
+7. Add support for codesandboxes.
+8. Write lots and lots of posts(major)
+9. Steal some ideas from https://ped.ro/writing/code-blocks-but-better
+10. Something really really cool would be if I allow users to write mdx on the /edit page. Very hard to get that working though. We'll see.
 
 
 
-1. Don't restrict number of canvas images; they're small anyway.
-2. CodeSandox embedding
-3. AI 
 
-
-
-
-
-
------------------Done------------------------------
-2. Modify carousel UX.
-14. Allow users to add their twitter, github and web profiles
-12. Allow bloggers to update their markdown on the site itself
-13. add language badges on post components.
-12. Only show load more when there are more posts
-11. Show someone's upvoted post on their profile page
-8. Set up codemirror for javascript and rust.
-7. Fetch upvotes on home page after load
-1. Limit the number of images a user can upload
-5. Enable share option
-6. Limit the length of title and description of the posts
-3. Fetch all the upvotes on visible posts at once.
-2. Only allow authorized users to create containers.
