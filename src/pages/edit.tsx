@@ -81,7 +81,9 @@ function Edit() {
 
 	useShortCut({
 		keys: ["Alt", "p"],
-		callback: () => setEditingMarkdown((prev) => !prev),
+		callback: () => {
+			setEditingMarkdown((prev) => !prev);
+		},
 	});
 
 	useEffect(() => {
@@ -193,7 +195,9 @@ function Edit() {
 	}, [containerId]);
 
 	useEffect(() => {
-		if (editingMarkdown) return;
+		if (editingMarkdown) {
+			editorView?.focus();
+		}
 
 		const markdown = editorView?.state.doc.toJSON().join("\n");
 		if (!markdown) return;

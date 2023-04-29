@@ -16,15 +16,16 @@ export default function useShortCut({
 
 
     useEffect(() => {
-        document.addEventListener("keydown", (e) => {
+
+        document.onkeydown = (e) => {
             if (keys.includes(e.key)) keyArray.current.add(e.key);
             if (keys.length === keyArray.current.size) {
                 callback()
             }
-        });
-        document.addEventListener("keyup", () => {
-            keyArray.current.clear();
-        });
-    }, []);
+        }
+        document.onkeyup = (e) => {
+            keyArray.current.delete(e.key)
+        }
+    }, [])
 
 }
