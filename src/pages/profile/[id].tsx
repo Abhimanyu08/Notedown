@@ -451,6 +451,12 @@ function Profile({ profileUser, latest, greatest }: ProfileProps) {
 										prev.filter((p) => p.id !== post.id)
 									);
 									sendRevalidationRequest(`/read`);
+									sendRevalidationRequest(
+										`/profile/${post.created_by}`
+									);
+									sendRevalidationRequest(
+										`/posts/${post.id}`
+									);
 								}
 							}}
 						/>
