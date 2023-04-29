@@ -20,13 +20,14 @@ function resetCodeblocks(markdown: string, html: string) {
         // if there's something like ```sql **some code** ``` then it should be converted to <pre language="sql"><code>**some code**</code></pre>
         const lang = mdMatchedArray[i].at(2)?.trim()
         const correspondingHtml = contentMatchedArray[i].at(0) as string
-        const originalCode = mdMatchedArray[i].at(3)
+        const originalCode = mdMatchedArray[i].at(3) as string
+        const wrongCode = contentMatchedArray[i].at(2) as string
         if (lang) {
 
             html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${originalCode}</code></pre>`)
 
         } else {
-            html = html.replace(correspondingHtml, `<pre><code>${originalCode}</code></pre>`)
+            html = html.replace(wrongCode, originalCode)
         }
     }
 
