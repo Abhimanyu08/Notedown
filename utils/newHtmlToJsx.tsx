@@ -18,7 +18,7 @@ interface htmlToJsxProps {
 	imageFolder?: string;
 	imageToUrl?: Record<string, string>;
 }
-function htmlToJsx({
+function newHtmlToJsx({
 	html,
 	language,
 	imageFolder,
@@ -26,6 +26,7 @@ function htmlToJsx({
 }: htmlToJsxProps): JSX.Element {
 	const re =
 		/([^<>]*?)?(<([a-z0-9]+)( [^<>]*?=\"[^<>]*\")*?>(.|\r|\n)*?<\/\3>)([^<>]*)?/g;
+
 	const matches = Array.from(html.matchAll(re));
 	if (matches.length === 0) return <>{html}</>;
 	const elemToReturn = (
@@ -144,7 +145,7 @@ function htmlToJsx({
 							return (
 								<>
 									<p>
-										{htmlToJsx({
+										{newHtmlToJsx({
 											html: string1 || "",
 											language,
 											imageFolder,
@@ -158,7 +159,7 @@ function htmlToJsx({
 										width={175}
 										height={120}
 									/>
-									{htmlToJsx({
+									{newHtmlToJsx({
 										html: `<p>${string2}</p>` || "",
 										language,
 										imageFolder,
@@ -190,7 +191,7 @@ function htmlToJsx({
 						return (
 							<>
 								<p>
-									{htmlToJsx({
+									{newHtmlToJsx({
 										html: string1 || "",
 										language,
 										imageFolder,
@@ -228,7 +229,7 @@ function htmlToJsx({
 									)}
 								</div>
 								{/* </div> */}
-								{htmlToJsx({
+								{newHtmlToJsx({
 									html: `<p>${string2}</p>` || "",
 									language,
 									imageFolder,
@@ -268,7 +269,7 @@ function htmlToJsx({
 						{React.createElement(
 							type!,
 							attrMap,
-							htmlToJsx({
+							newHtmlToJsx({
 								html: content!,
 								language,
 								imageFolder,
@@ -307,6 +308,6 @@ function makeAttrMap({
 	return obj;
 }
 
-export default htmlToJsx;
+export default newHtmlToJsx;
 
 //to do -> resolve the case when <p>jf;lakjfdal;skdjfas;lkdj<img src="" alt="">

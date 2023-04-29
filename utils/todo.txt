@@ -8,9 +8,9 @@
 10. Something really really cool would be if I allow users to write mdx on the /edit page. Very hard to get that working though. We'll see.
 11. need to take more control over markdown -> html conversion.
 12. Figure out rss thing.
+13. Allow users to configure the og/display images for theri blogs posts. Give them a option to generate one using lexica or openai.
 
 ## Minor annoyances:
-1. when someone pressed alt-p to go from preview -> edit he has to click on the editor to focus on it again. What's the point of using vim then lol.
 
 2. 2 code blocks one after other merge into one another.
 

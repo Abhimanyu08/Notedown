@@ -206,6 +206,8 @@ function Edit() {
 				if (data.language !== blogData.language) {
 					onLanguageChange(containerId);
 				}
+				console.log(content);
+				// return;
 				setBlogData({
 					title: data.title,
 					description: data.description,

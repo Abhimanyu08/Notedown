@@ -4,33 +4,35 @@ import mdToHtml from "./mdToHtml";
 import { supabase } from "./supabaseClient";
 
 function resetCodeblocks(markdown: string, html: string) {
+
     let mdMatchedArray = Array.from(
         markdown.matchAll(/(`{1,3})([^`]*?\r?\n)?((.|\n|\r)*?)(\r\n)?(\1)/g)
     )
-    const mdMatched = mdMatchedArray.map((match) => match.at(3));
+    // const mdMatched = mdMatchedArray.map((match) => match.at(3));
     const contentMatchedArray = Array.from(
         html.matchAll(/(<pre>)?<code>((.|\n|\r)*?)<\/code>(<\/pre>)?/g)
     );
 
-    const contentMatch = contentMatchedArray.map((m) => m?.at(2))
+    // const contentMatch = contentMatchedArray.map((m) => m?.at(2))
 
-    for (let i = 0; i < mdMatched.length; i++) {
-        html = html.replace(contentMatch[i]!, mdMatched[i]!);
-    }
-
-    // if there's something like ```sql **some code** ``` then it should be converted to <pre language="sql"><code>**some code**</code></pre>
     for (let i = 0; i < mdMatchedArray.length; i++) {
 
+        // if there's something like ```sql **some code** ``` then it should be converted to <pre language="sql"><code>**some code**</code></pre>
         const lang = mdMatchedArray[i].at(2)?.trim()
+        const correspondingHtml = contentMatchedArray[i].at(0) as string
+        const originalCode = mdMatchedArray[i].at(3)
         if (lang) {
 
-            const correspondingHtml = contentMatchedArray[i].at(0)
-            if (correspondingHtml) {
-                html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${mdMatched.at(i)}</code></pre>`)
-            }
+            html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${originalCode}</code></pre>`)
 
+        } else {
+            html = html.replace(correspondingHtml, `<pre><code>${originalCode}</code></pre>`)
         }
     }
+
+    // 
+
+
 
 
     return html;
