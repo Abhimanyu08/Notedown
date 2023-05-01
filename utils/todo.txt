@@ -9,10 +9,19 @@
 11. need to take more control over markdown -> html conversion.
 12. Figure out rss thing.
 13. Allow users to configure the og/display images for their blog posts. Give them a option to generate one using lexica or openai.
+14. Huge huge scope for code improvements
 
 ## Minor annoyances:
 
 2. 2 code blocks one after other merge into one another.
+3. There's no confirmation of some kind when one published or unpublished a post
+4. Modals are inconsistent with the website design
+5. Upvoted by you section is ugly.
+6. Design is all over the place.
+
+
+
+## Done:
 
 
 
