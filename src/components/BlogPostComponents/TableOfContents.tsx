@@ -60,7 +60,11 @@ export function Toc({
 							key={match.at(4)}
 						>
 							<a
-								href={`#${match.at(4)}`}
+								href={`#${match
+									.at(4)
+									?.split(" ")
+									.map((w) => w.toLowerCase())
+									.join("-")}`}
 								className={`hover:text-black hover:font-bold hover:dark:text-white`}
 							>
 								{match.at(4)}
