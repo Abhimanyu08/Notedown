@@ -14,6 +14,9 @@ import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
 import { BlogContext } from "../../pages/_app";
 import formatDate from "../../../utils/dateFormatter";
+import transformer from "../../../utils/html2Jsx/transformer";
+import tokenizer from "../../../utils/html2Jsx/tokenizer";
+import parser from "../../../utils/html2Jsx/parser";
 
 export function Blog({
 	title,
@@ -47,6 +50,8 @@ export function Blog({
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
+		const tokens = tokenizer(content);
+		console.log(tokens);
 		return htmlToJsx({
 			html: content,
 			language: language,
