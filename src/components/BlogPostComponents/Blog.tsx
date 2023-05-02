@@ -50,14 +50,15 @@ export function Blog({
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
-		const tokens = tokenizer(content);
-		console.log(tokens);
-		return htmlToJsx({
-			html: content,
-			language: language,
-			imageFolder: image_folder || undefined,
-			imageToUrl,
-		});
+
+		return transformer(parser(tokenizer(content)));
+
+		// return htmlToJsx({
+		// 	html: content,
+		// 	language: language,
+		// 	imageFolder: image_folder || undefined,
+		// 	imageToUrl,
+		// });
 	}, [content, language]);
 
 	useEffect(() => {

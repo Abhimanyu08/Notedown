@@ -1,7 +1,7 @@
 import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
@@ -206,7 +206,6 @@ function Edit() {
 				if (data.language !== blogData.language) {
 					onLanguageChange(containerId);
 				}
-				console.log(content);
 				// return;
 				setBlogData({
 					title: data.title,

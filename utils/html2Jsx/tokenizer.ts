@@ -17,9 +17,7 @@ export default function tokenizer(html: string): Array<NodeToken | TextToken> {
 
     let i = 0
     let tokens = []
-
     while (i < html.length) {
-
         let char = html[i]
 
         if (char === "<") {
@@ -71,6 +69,11 @@ export default function tokenizer(html: string): Array<NodeToken | TextToken> {
             i++
             continue
 
+        }
+
+        if (char === "\n") {
+            i++
+            continue
         }
         if (/([^<])/.test(char)) {
             let text = ""

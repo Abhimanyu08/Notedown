@@ -27,7 +27,7 @@ export default function parser(tokens: ReturnType<typeof tokenizer>) {
     let current = -1
 
     let node: HtmlNode = {
-        tagName: "body",
+        tagName: "main",
         attributes: {},
         children: []
     }
