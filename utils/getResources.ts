@@ -6,11 +6,11 @@ import { supabase } from "./supabaseClient";
 function resetCodeblocks(markdown: string, html: string) {
 
     let mdMatchedArray = Array.from(
-        markdown.matchAll(/(`{1,3})([^`]*?\r?\n)?((.|\n|\r)*?)(\r\n)?(\1)/g)
+        markdown.matchAll(/```([^`]*?\r?\n)?((.|\n|\r)*?)(\r\n)?```/g)
     )
     // const mdMatched = mdMatchedArray.map((match) => match.at(3));
     const contentMatchedArray = Array.from(
-        html.matchAll(/(<pre>)?<code>((.|\n|\r)*?)<\/code>(<\/pre>)?/g)
+        html.matchAll(/<pre><code>((.|\n|\r)*?)<\/code><\/pre>/g)
     );
 
     // const contentMatch = contentMatchedArray.map((m) => m?.at(2))
@@ -18,17 +18,17 @@ function resetCodeblocks(markdown: string, html: string) {
     for (let i = 0; i < mdMatchedArray.length; i++) {
 
         // if there's something like ```sql **some code** ``` then it should be converted to <pre language="sql"><code>**some code**</code></pre>
-        const lang = mdMatchedArray[i].at(2)?.trim()
+        const lang = mdMatchedArray[i].at(1)?.trim()
         const correspondingHtml = contentMatchedArray[i].at(0) as string
-        const originalCode = mdMatchedArray[i].at(3) as string
-        const wrongCode = contentMatchedArray[i].at(2) as string
+        const htmlCode = contentMatchedArray[i].at(1) as string
         if (lang) {
 
-            html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${originalCode}</code></pre>`)
+            html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${htmlCode}</code></pre>`)
 
-        } else {
-            html = html.replace(wrongCode, originalCode)
         }
+        //  else {
+        //     html = html.replace(wrongCode, originalCode)
+        // }
     }
 
     // 
@@ -68,7 +68,7 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
         throw Error(`Either title or description is too large. Max title length - ${TITLE_LENGTH}, Max description length - ${DESCRIPTION_LENGTH}`)
     }
     let html = await mdToHtml(content);
-    // html = resetCodeblocks(content, html)
+    html = resetCodeblocks(content, html)
     return { data: data as { title: string, description: string, language?: typeof ALLOWED_LANGUAGES[number] }, content: html }
 
 }

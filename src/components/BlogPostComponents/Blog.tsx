@@ -50,11 +50,15 @@ export function Blog({
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
-
+		console.log(content);
 		const tokens = tokenizer(content);
 		console.log(tokens);
 		const parsedOutput = parser(tokens);
-		const jsx = transformer(parsedOutput);
+		const jsx = transformer(parsedOutput, {
+			language,
+			imageFolder: image_folder,
+			imageToUrl,
+		});
 		return jsx;
 
 		// return htmlToJsx({
