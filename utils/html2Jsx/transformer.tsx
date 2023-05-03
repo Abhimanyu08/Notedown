@@ -5,6 +5,7 @@ import Code from "../../src/components/BlogPostComponents/Code";
 import { BlogProps } from "../../src/interfaces/BlogProps";
 import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
+import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOfImage";
 
 type BlogMeta = Partial<{
 	language: BlogProps["language"];
@@ -130,6 +131,23 @@ const tagToTransformer: TagToTransformer = {
 		let newAttributes = { ...node.attributes, target: "_blank" };
 		node.attributes = newAttributes;
 		return transformer(node, {});
+	},
+
+	p: (node, _, blogMeta) => {
+		console.log(node);
+		let firstWord = "";
+		if (node.children[0].tagName === "text") {
+			firstWord = node.children[0].text;
+		}
+		if (node.children.length === 1 && /^canvas-\d+$/.test(firstWord)) {
+			return (
+				<DrawingOrImage
+					imageFolder={blogMeta.imageFolder}
+					canvasImageName={firstWord}
+				/>
+			);
+		}
+		return transformer(node, blogMeta);
 	},
 };
 

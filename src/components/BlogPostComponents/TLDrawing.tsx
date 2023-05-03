@@ -59,7 +59,7 @@ function TLDrawing({
 					showMultiplayerMenu={false}
 					showPages={false}
 					autofocus={false}
-					disableAssets={true}
+					disableAssets={false}
 					darkMode={true}
 					onMount={(app) => {
 						if (imageFolder && canvasImageName) {
