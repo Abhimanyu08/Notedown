@@ -3,20 +3,18 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
 	ALLOWED_LANGUAGES,
-	langToExtension,
 	SUPABASE_BLOGGER_TABLE,
+	langToExtension,
 } from "../../../utils/constants";
-import htmlToJsx from "../../../utils/htmlToJsx";
+import formatDate from "../../../utils/dateFormatter";
+import parser from "../../../utils/html2Jsx/parser";
+import tokenizer from "../../../utils/html2Jsx/tokenizer";
+import transformer from "../../../utils/html2Jsx/transformer";
 import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
-import useLexica from "../../hooks/useLexica";
-import Blogger from "../../interfaces/Blogger";
 import { BlogProps } from "../../interfaces/BlogProps";
+import Blogger from "../../interfaces/Blogger";
 import { BlogContext } from "../../pages/_app";
-import formatDate from "../../../utils/dateFormatter";
-import transformer from "../../../utils/html2Jsx/transformer";
-import tokenizer from "../../../utils/html2Jsx/tokenizer";
-import parser from "../../../utils/html2Jsx/parser";
 
 export function Blog({
 	title,
@@ -46,13 +44,11 @@ export function Blog({
 
 	const [author, setAuthor] = useState<string>();
 
-	useLexica({ content });
+	// useLexica({ content });
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
-		console.log(content);
 		const tokens = tokenizer(content);
-		console.log(tokens);
 		const parsedOutput = parser(tokens);
 		const jsx = transformer(parsedOutput, {
 			language,
@@ -234,7 +230,7 @@ prose-h6:text-[18px]
 
 
 				prose-figcaption:text-black
-				dark:prose-figcaption:text-gray-200
+				dark:prose-figcaption:text-font-grey
 
 prose-blockquote:border-l-black prose-blockquote:border-l-4
 dark:prose-blockquote:border-l-gray-300

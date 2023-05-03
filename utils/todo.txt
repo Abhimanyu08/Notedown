@@ -10,6 +10,7 @@
 12. Figure out rss thing.
 13. Allow users to configure the og/display images for their blog posts. Give them a option to generate one using lexica or openai.
 14. Huge huge scope for code improvements
+15. Need to enable two way data flow. from markdown editor -> preview, but also from preview -> markdown editor
 
 ## Minor annoyances:
 

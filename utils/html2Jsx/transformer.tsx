@@ -6,6 +6,13 @@ import { BlogProps } from "../../src/interfaces/BlogProps";
 import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOfImage";
+import { supabase } from "../supabaseClient";
+import { SUPABASE_IMAGE_BUCKET } from "../constants";
+import Carousel from "../../src/components/BlogPostComponents/Carousel";
+
+import Image from "next/image";
+import ImageWithCaption from "../../src/components/BlogPostComponents/ImageWithCaption";
+import LexicaImage from "../../src/components/BlogPostComponents/LexicaImage";
 
 type BlogMeta = Partial<{
 	language: BlogProps["language"];
@@ -73,9 +80,11 @@ const tagToTransformer: TagToTransformer = {
 
 	code: (node) => {
 		let code = (node.children[0] as TextNode).text;
-		let tempElement = document.createElement("div");
-		tempElement.innerHTML = code;
-		code = tempElement.innerText || tempElement.textContent || "";
+		if (typeof window !== "undefined") {
+			let tempElement = document.createElement("div");
+			tempElement.innerHTML = code;
+			code = tempElement.innerText || tempElement.textContent || "";
+		}
 		if (code.startsWith("$") && code.endsWith("$")) {
 			return <Latex>{code}</Latex>;
 		}
@@ -85,11 +94,14 @@ const tagToTransformer: TagToTransformer = {
 	pre: (node, _, blogMeta) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
-		let code = ((node.children[0] as HtmlNode).children[0] as TextNode)
-			.text;
-		let tempElement = document.createElement("div");
-		tempElement.innerHTML = code;
-		code = tempElement.innerText || tempElement.textContent || "";
+		let code =
+			((node.children[0] as HtmlNode).children[0] as TextNode)?.text ||
+			"";
+		if (typeof window !== "undefined") {
+			let tempElement = document.createElement("div");
+			tempElement.innerHTML = code;
+			code = tempElement.innerText || tempElement.textContent || "";
+		}
 
 		const { language: blockLanguage } = node.attributes as {
 			language?: string;
@@ -134,7 +146,6 @@ const tagToTransformer: TagToTransformer = {
 	},
 
 	p: (node, _, blogMeta) => {
-		console.log(node);
 		let firstWord = "";
 		if (node.children[0].tagName === "text") {
 			firstWord = node.children[0].text;
@@ -149,6 +160,48 @@ const tagToTransformer: TagToTransformer = {
 		}
 		return transformer(node, blogMeta);
 	},
+
+	img: (node, _, blogMeta) => {
+		const { alt, src } = node.attributes as { alt: string; src: string };
+
+		if (src.split(",").length > 1) {
+			const imageUrls = src
+				.split(",")
+				.map(
+					(imageName) =>
+						getUrlFromImgname(
+							imageName,
+							blogMeta.imageFolder,
+							blogMeta.imageToUrl
+						) || ""
+				);
+
+			const captions = alt.split(";");
+
+			return (
+				<Carousel
+					images={imageUrls}
+					captions={captions}
+					width={175}
+					height={120}
+				/>
+			);
+		}
+
+		if (src) {
+			const url =
+				getUrlFromImgname(
+					src,
+					blogMeta.imageFolder,
+					blogMeta.imageToUrl
+				) || "";
+			return <ImageWithCaption src={url} alt={alt} />;
+		}
+		if (alt && !src) {
+			return <LexicaImage alt={alt} />;
+		}
+		return <p>Invalid Image Elem</p>;
+	},
 };
 
 function headingsRenderer(tag: HeadTags, headingText: string) {
@@ -162,4 +215,15 @@ function headingsRenderer(tag: HeadTags, headingText: string) {
 		},
 		headingText
 	);
+}
+
+function getUrlFromImgname(
+	imageName: string,
+	imageFolder?: string,
+	imageToUrl?: Record<string, string>
+) {
+	if (imageToUrl && imageToUrl[imageName]) return imageToUrl[imageName];
+	return supabase.storage
+		.from(SUPABASE_IMAGE_BUCKET)
+		.getPublicUrl(`${imageFolder}/${imageName}`).publicURL;
 }
