@@ -31,6 +31,7 @@ export default function parser(tokens: ReturnType<typeof tokenizer>) {
         attributes: {},
         children: []
     }
+    if (tokens.length === 0) return node
 
     function addChildren(parent: HtmlNode) {
         current++
