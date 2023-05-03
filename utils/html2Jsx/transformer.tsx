@@ -52,6 +52,9 @@ const tagToTransformer: TagToTransformer = {
 
 	code: (_, node) => {
 		let code = (node.children[0] as TextNode).text;
+		let tempElement = document.createElement("div");
+		tempElement.innerHTML = code;
+		code = tempElement.innerText || tempElement.textContent || "";
 		if (code.startsWith("$") && code.endsWith("$")) {
 			return <Latex>{code}</Latex>;
 		}

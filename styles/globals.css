@@ -168,3 +168,8 @@
 .mdToBlogContainer {
 	height: 500px;
 }
+
+#markdown-textarea .cm-editor {
+	border-color: rgba(255, 255, 255, 0.3);
+	border-width: 1px;
+}

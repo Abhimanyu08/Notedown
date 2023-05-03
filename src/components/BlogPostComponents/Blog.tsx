@@ -51,7 +51,11 @@ export function Blog({
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
 
-		return transformer(parser(tokenizer(content)));
+		const tokens = tokenizer(content);
+		console.log(tokens);
+		const parsedOutput = parser(tokens);
+		const jsx = transformer(parsedOutput);
+		return jsx;
 
 		// return htmlToJsx({
 		// 	html: content,
@@ -215,7 +219,7 @@ prose-h6:text-[18px]
 			hover:prose-a:underline-offset-2
 
 			// ---------------prose-code---------------
-			dark:prose-code:bg-black
+			dark:prose-code:bg-gray-800
 			dark:prose-code:text-gray-200
 			prose-code:bg-white
 			prose-code:text-black

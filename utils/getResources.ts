@@ -68,7 +68,7 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
         throw Error(`Either title or description is too large. Max title length - ${TITLE_LENGTH}, Max description length - ${DESCRIPTION_LENGTH}`)
     }
     let html = await mdToHtml(content);
-    html = resetCodeblocks(content, html)
+    // html = resetCodeblocks(content, html)
     return { data: data as { title: string, description: string, language?: typeof ALLOWED_LANGUAGES[number] }, content: html }
 
 }
