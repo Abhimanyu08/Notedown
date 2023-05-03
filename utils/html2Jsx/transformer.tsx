@@ -4,6 +4,7 @@ import Latex from "react-latex";
 import Code from "../../src/components/BlogPostComponents/Code";
 import { BlogProps } from "../../src/interfaces/BlogProps";
 import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
+import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 
 type BlogMeta = Partial<{
 	language: BlogProps["language"];
@@ -81,6 +82,8 @@ const tagToTransformer: TagToTransformer = {
 	},
 
 	pre: (node, _, blogMeta) => {
+		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
+
 		let code = ((node.children[0] as HtmlNode).children[0] as TextNode)
 			.text;
 		let tempElement = document.createElement("div");
@@ -103,6 +106,30 @@ const tagToTransformer: TagToTransformer = {
 			);
 		}
 		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
+	},
+
+	a: (node) => {
+		const { href } = node.attributes as { href: string };
+
+		if (
+			node.children.length === 0 &&
+			(href.startsWith("https://www.youtube.com") ||
+				href.startsWith("https://youtu.be"))
+		) {
+			return (
+				<iframe
+					className="w-full youtube"
+					src={getYoutubeEmbedLink(href)}
+					title="YouTube video player"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen
+				></iframe>
+			);
+		}
+
+		let newAttributes = { ...node.attributes, target: "_blank" };
+		node.attributes = newAttributes;
+		return transformer(node, {});
 	},
 };
 
