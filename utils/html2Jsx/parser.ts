@@ -53,6 +53,8 @@ export default function parser(tokens: ReturnType<typeof tokenizer>) {
                 if (!token.selfClosing) {
                     addChildren(newNode)
                 }
+
+
                 parent.children.push(newNode)
             }
             current++

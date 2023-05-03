@@ -20,42 +20,65 @@ type BlogMeta = Partial<{
 	imageToUrl: Record<string, string>;
 }>;
 
+// export default function transformer(
+// 	node: HtmlNode | TextNode,
+// 	blogMeta: BlogMeta
+// ): JSX.Element {
+// 	if (node.tagName === "text") {
+// 		return <>{(node as TextNode).text}</>;
+// 	}
+// 	// let childrenJsx = transformChildren(node, blogMeta);
+// 	let childrenJsx = <>
+// 			{node.children.map((child) => {
+// 				if (
+// 					child.tagName !== "text" &&
+// 					tagToTransformer[child.tagName]
+// 				) {
+// 					return tagToTransformer[child.tagName]!(
+// 						child,
+// 						node,
+// 						blogMeta
+// 					);
+// 				}
+// 				return transformer(child, blogMeta);
+// 			})}
+// 	</>
+
+// 	return React.createElement(node.tagName, node.attributes, childrenJsx);
+// }
+
+function defaultTagToJsx(
+	node: HtmlNode,
+	blogMeta: BlogMeta,
+	parent?: HtmlNode
+) {
+	return React.createElement(
+		node.tagName,
+		node.attributes,
+		node.children.map((child) => transformer(child, blogMeta, parent))
+	);
+}
+
 export default function transformer(
 	node: HtmlNode | TextNode,
-	blogMeta: BlogMeta
+	blogMeta: BlogMeta,
+	parent?: HtmlNode
 ): JSX.Element {
 	if (node.tagName === "text") {
 		return <>{(node as TextNode).text}</>;
 	}
-	let childrenJsx = transformChildren(node, blogMeta);
-	return React.createElement(node.tagName, node.attributes, childrenJsx);
-}
+	if (tagToTransformer[node.tagName]) {
+		return tagToTransformer[node.tagName]!(node, blogMeta, parent);
+	}
 
-function transformChildren(node: HtmlNode, blogMeta: BlogMeta): JSX.Element {
-	return (
-		<>
-			{node.children.map((child) => {
-				if (
-					child.tagName !== "text" &&
-					tagToTransformer[child.tagName]
-				) {
-					return tagToTransformer[child.tagName]!(
-						child,
-						node,
-						blogMeta
-					);
-				}
-				return transformer(child, blogMeta);
-			})}
-		</>
-	);
+	return defaultTagToJsx(node, blogMeta, parent);
 }
 
 type TagToTransformer = {
 	[k in keyof HTMLElementTagNameMap]?: (
 		node: HtmlNode,
-		parent: HtmlNode,
-		blogMeta: BlogMeta
+		blogMeta: BlogMeta,
+		parent?: HtmlNode
 	) => JSX.Element;
 };
 
@@ -91,7 +114,7 @@ const tagToTransformer: TagToTransformer = {
 		return <code>{code}</code>;
 	},
 
-	pre: (node, _, blogMeta) => {
+	pre: (node, blogMeta, parent) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
 		let code =
@@ -121,7 +144,7 @@ const tagToTransformer: TagToTransformer = {
 		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
 	},
 
-	a: (node) => {
+	a: (node, _, parent) => {
 		const { href } = node.attributes as { href: string };
 
 		if (
@@ -142,11 +165,12 @@ const tagToTransformer: TagToTransformer = {
 
 		let newAttributes = { ...node.attributes, target: "_blank" };
 		node.attributes = newAttributes;
-		return transformer(node, {});
+		return defaultTagToJsx(node, {}, parent);
 	},
 
-	p: (node, _, blogMeta) => {
+	p: (node, blogMeta, parent) => {
 		let firstWord = "";
+		if (node.children.length == 0) return <></>;
 		if (node.children[0].tagName === "text") {
 			firstWord = node.children[0].text;
 		}
@@ -158,10 +182,46 @@ const tagToTransformer: TagToTransformer = {
 				/>
 			);
 		}
-		return transformer(node, blogMeta);
+		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p>
+		let nodesBeforeImage = [];
+		let i = 0;
+		let child = node.children[i];
+		while (i !== node.children.length && child?.tagName !== "img") {
+			nodesBeforeImage.push(child);
+			i++;
+			child = node.children[i];
+		}
+		let imgNode = undefined;
+		if (child?.tagName === "img") {
+			imgNode = child;
+		}
+		let nodesAfterImage = node.children.slice(i + 1);
+
+		let beforeNode: HtmlNode = {
+			tagName: "p",
+			children: nodesBeforeImage,
+			attributes: {},
+		};
+		let afterNode: HtmlNode = {
+			tagName: "p",
+			children: nodesAfterImage,
+			attributes: {},
+		};
+		if (imgNode !== undefined) {
+			return (
+				<>
+					{transformer(beforeNode, blogMeta, parent)}
+					{transformer(imgNode, blogMeta, parent)}
+					{nodesAfterImage.length > 0 &&
+						transformer(afterNode, blogMeta, parent)}
+				</>
+			);
+		}
+
+		return defaultTagToJsx(beforeNode, blogMeta, parent);
 	},
 
-	img: (node, _, blogMeta) => {
+	img: (node, blogMeta, _) => {
 		const { alt, src } = node.attributes as { alt: string; src: string };
 
 		if (src.split(",").length > 1) {
