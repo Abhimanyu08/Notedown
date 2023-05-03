@@ -1,16 +1,15 @@
 import React from "react";
-import { HtmlNode, TextNode } from "./parser";
 import Latex from "react-latex";
-import Code from "../../src/components/BlogPostComponents/Code";
-import { BlogProps } from "../../src/interfaces/BlogProps";
-import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
-import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
-import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOfImage";
-import { supabase } from "../supabaseClient";
-import { SUPABASE_IMAGE_BUCKET } from "../constants";
 import Carousel from "../../src/components/BlogPostComponents/Carousel";
+import Code from "../../src/components/BlogPostComponents/Code";
+import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
+import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOfImage";
+import { BlogProps } from "../../src/interfaces/BlogProps";
+import { SUPABASE_IMAGE_BUCKET } from "../constants";
+import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
+import { supabase } from "../supabaseClient";
+import { HtmlNode, TextNode } from "./parser";
 
-import Image from "next/image";
 import ImageWithCaption from "../../src/components/BlogPostComponents/ImageWithCaption";
 import LexicaImage from "../../src/components/BlogPostComponents/LexicaImage";
 
@@ -19,33 +18,6 @@ type BlogMeta = Partial<{
 	imageFolder: string;
 	imageToUrl: Record<string, string>;
 }>;
-
-// export default function transformer(
-// 	node: HtmlNode | TextNode,
-// 	blogMeta: BlogMeta
-// ): JSX.Element {
-// 	if (node.tagName === "text") {
-// 		return <>{(node as TextNode).text}</>;
-// 	}
-// 	// let childrenJsx = transformChildren(node, blogMeta);
-// 	let childrenJsx = <>
-// 			{node.children.map((child) => {
-// 				if (
-// 					child.tagName !== "text" &&
-// 					tagToTransformer[child.tagName]
-// 				) {
-// 					return tagToTransformer[child.tagName]!(
-// 						child,
-// 						node,
-// 						blogMeta
-// 					);
-// 				}
-// 				return transformer(child, blogMeta);
-// 			})}
-// 	</>
-
-// 	return React.createElement(node.tagName, node.attributes, childrenJsx);
-// }
 
 function defaultTagToJsx(
 	node: HtmlNode,
