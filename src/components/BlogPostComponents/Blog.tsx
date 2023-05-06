@@ -173,7 +173,7 @@ export function Blog({
 				className={`
 				${paddingClasses}
 				scroll-smooth prose prose-sm  max-w-none 
-				    prose-blockquote:text-white h-full 
+				     h-full 
 				overflow-x-hidden		
 				overflow-y-auto
 
@@ -228,12 +228,18 @@ prose-h6:text-[18px]
 				prose-code:rounded-md
 				prose-code:select-all
 
+			prose-em:text-black
+			dark:prose-em:text-gray-100
+
+			//-----------------figcaption-------------
 
 				prose-figcaption:text-black
 				dark:prose-figcaption:text-font-grey
 
 prose-blockquote:border-l-black prose-blockquote:border-l-4
 dark:prose-blockquote:border-l-gray-300
+dark:prose-blockquote:text-font-grey
+prose-blockquote:text-black/80
 				  prose-h1:mb-6   
 				
 				pb-20 md:pb-10 
@@ -244,7 +250,7 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 					<h1 className="text-left " id="title">
 						{title}
 					</h1>
-					<blockquote className="text-left text-lg w-full font-medium text-black dark:text-font-grey">
+					<blockquote className="text-left text-lg">
 						{description}
 					</blockquote>
 					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
