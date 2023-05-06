@@ -1,16 +1,9 @@
-import React from "react";
-import LoomDemoModal from "@components/HomePageComponents/LoomDemoModal";
-import { markdown } from "@codemirror/lang-markdown";
-import AllScreenDemo from "@components/HomePageComponents/AllScreenDemo";
 import DemoLabel from "@components/HomePageComponents/DemoLabel";
-import DonationsComponent from "@components/HomePageComponents/DonationsComponent";
 import HeaderText from "@components/HomePageComponents/HeaderText";
-import MdToBlog from "@components/HomePageComponents/MdToBlogDemo";
+import LoomDemoModal from "@components/HomePageComponents/LoomDemoModal";
 import Link from "next/link";
 import { AiFillRead } from "react-icons/ai";
 import { FaPencilAlt } from "react-icons/fa";
-import { SUPABASE_FILES_BUCKET } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
 
 async function Home() {
 	return (
