@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";

@@ -1,4 +1,4 @@
-function YoutubeDemoComponent() {
+function DemoLabel() {
 	return (
 		<label
 			className="flex self-center items-center gap-2 rounded-xl bg-amber-400 text-black font-bold px-3 py-2 trial-4"
@@ -9,4 +9,4 @@ function YoutubeDemoComponent() {
 	);
 }
 
-export default YoutubeDemoComponent;
+export default DemoLabel;

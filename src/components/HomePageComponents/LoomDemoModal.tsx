@@ -1,7 +1,8 @@
+"use client";
 import React, { useState } from "react";
 import getYoutubeEmbedLink from "../../../utils/getYoutubeEmbedLink";
 
-function YoutubeDemoModal() {
+function LoomDemoModal() {
 	const [show, setShow] = useState(false);
 	return (
 		<>
@@ -31,4 +32,4 @@ function YoutubeDemoModal() {
 	);
 }
 
-export default YoutubeDemoModal;
+export default LoomDemoModal;

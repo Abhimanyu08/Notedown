@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AiFillRead } from "react-icons/ai";
 import { FaPencilAlt } from "react-icons/fa";
 import { SUPABASE_FILES_BUCKET } from "../../utils/constants";
@@ -11,9 +11,9 @@ import AllScreenDemo from "../components/HomePageComponents/AllScreenDemo";
 import DonationsComponent from "../components/HomePageComponents/DonationsComponent";
 import HeaderText from "../components/HomePageComponents/HeaderText";
 import MdToBlog from "../components/HomePageComponents/MdToBlogDemo";
-import YoutubeDemoComponent from "../components/HomePageComponents/YoutubeDemoComponent";
+import DemoLabel from "../components/HomePageComponents/DemoLabel";
 import Layout from "../components/Layout";
-import YoutubeDemoModal from "../components/Modals/YoutubeDemoModal";
+import LoomDemoModal from "@components/HomePageComponents/LoomDemoModal";
 import { UserContext } from "./_app";
 // import markdownArray from "../../utils/trialArray";
 
@@ -64,7 +64,7 @@ function Index({ markdown }: TrialProps) {
 
 				{/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
 			</Head>
-			<YoutubeDemoModal />
+			<LoomDemoModal />
 			<div
 				className="flex gap-10 lg:gap-20 md:gap-14 flex-col pb-20 grow overflow-y-auto
 				lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
@@ -83,7 +83,7 @@ function Index({ markdown }: TrialProps) {
 					</Link>
 				</div>
 				<HeaderText />
-				<YoutubeDemoComponent />
+				<DemoLabel />
 				<MdToBlog {...{ markdown }} />
 				{/* <WriteEditDemo />
 				<CanvasDemo />

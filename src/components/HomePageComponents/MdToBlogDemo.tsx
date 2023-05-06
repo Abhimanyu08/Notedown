@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	BsFillArrowRightCircleFill,
@@ -31,7 +32,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 	const [blogData, setBlogData] = useState<{
 		title?: string;
 		description?: string;
-		language?: typeof ALLOWED_LANGUAGES[number];
+		language?: (typeof ALLOWED_LANGUAGES)[number];
 		content?: string;
 	}>({});
 
