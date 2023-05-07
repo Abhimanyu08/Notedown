@@ -27,3 +27,8 @@
 
 
 
+## Migration Plans (Next 13):
+
+The problem with migration from next 12 to 13 is that we have to start top-down by default. i.e We need to move our routes from pages to app. But I think
+the best strategy is to start bottom-up. Start with the smallest components and work your way from there.
+

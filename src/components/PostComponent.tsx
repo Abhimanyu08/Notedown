@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
@@ -8,6 +8,7 @@ import { TbNews, TbNewsOff } from "react-icons/tb";
 import { ALLOWED_LANGUAGES } from "../../utils/constants";
 import formatDate from "../../utils/dateFormatter";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
+import { usePathname } from "next/navigation";
 
 const langToBadgeColor: Record<(typeof ALLOWED_LANGUAGES)[number], string> = {
 	javascript: "dark:text-amber-500 text-stone-500",
@@ -34,6 +35,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		upvoted_on,
 	} = post;
 	const router = useRouter();
+	const pathname = usePathname();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const [mounted, setMounted] = useState(false);
 	const [showOptions, setShowOptions] = useState(false);
@@ -57,7 +59,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				>
 					{title}{" "}
 				</Link>
-				{owner && mounted && router.asPath.startsWith("/profile") && (
+				{owner && mounted && pathname?.startsWith("/profile") && (
 					<>
 						<button onClick={() => setShowOptions((prev) => !prev)}>
 							<SlOptionsVertical />

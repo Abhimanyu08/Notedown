@@ -1,3 +1,4 @@
+"use client";
 import {
 	Dispatch,
 	MouseEventHandler,
@@ -16,7 +17,7 @@ interface PostDisplayProps {
 	posts: Partial<SearchResult>[] | null;
 	cursorKey: keyof SearchResult | "upvoted_on";
 	searchTerm?: string;
-	fetchPosts: ({
+	fetchPosts?: ({
 		cursor,
 		searchTerm,
 	}: {

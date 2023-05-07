@@ -1,6 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar/Navbar";
 
 const Layout: React.FC<{
 	children: JSX.Element[] | JSX.Element;
