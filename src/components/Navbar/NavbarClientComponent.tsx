@@ -20,9 +20,14 @@ export function NavbarClientComponent() {
 	const [showLoginOptions, setShowLoginOptions] = useState(false);
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 
-	const [mode, setMode] = useState<"light" | "dark">(
-		document.documentElement.classList.contains("dark") ? "dark" : "light"
-	);
+	const [mode, setMode] = useState<"light" | "dark">(() => {
+		if (typeof window === "undefined") {
+			return document?.documentElement.classList.contains("dark")
+				? "dark"
+				: "light";
+		}
+		return "dark";
+	});
 	useEffect(() => {
 		supabase.auth.onAuthStateChange((_, session) => {
 			setUser(session?.user || null);

@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
 import { supabase } from "../../../utils/supabaseClient";
@@ -13,7 +13,7 @@ export default function DrawingOrImage({
 	canvasImageName: string;
 	imageFolder?: string;
 }) {
-	const router = useRouter();
+	const pathname = usePathname();
 	const [DrawingComponent, setDrawingComponent] = useState<
 		React.ComponentType<{
 			canvasImageName: string;
@@ -21,7 +21,7 @@ export default function DrawingOrImage({
 		}>
 	>();
 
-	if (router.asPath.startsWith("/edit")) {
+	if (pathname?.startsWith("/edit")) {
 		if (DrawingComponent === undefined) {
 			const DynamicDrawingComponenet = dynamic(
 				() => import(`./TLDrawing`),

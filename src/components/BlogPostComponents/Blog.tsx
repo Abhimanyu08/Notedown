@@ -1,3 +1,4 @@
+"use client";
 import { EditorView } from "codemirror";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";

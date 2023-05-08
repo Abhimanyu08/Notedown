@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import { GiHamburgerMenu } from "react-icons/gi";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import {
@@ -9,11 +8,12 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { BiCodeAlt, BiUpvote } from "react-icons/bi";
-import { IoMdShareAlt } from "react-icons/io";
+import { BiCodeAlt } from "react-icons/bi";
+import { FaHeart } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { GoArrowUp } from "react-icons/go";
+import { IoMdShareAlt } from "react-icons/io";
 import {
-	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_POST_TABLE,
 	SUPABASE_UPVOTES_TABLE,
@@ -23,18 +23,14 @@ import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { supabase } from "../../../utils/supabaseClient";
 import { Blog } from "../../components/BlogPostComponents/Blog";
 import BlogLayout from "../../components/BlogPostComponents/BlogLayout";
-import Layout from "../../components/Layout";
 import { Toc } from "../../components/BlogPostComponents/TableOfContents";
-import Blogger from "../../interfaces/Blogger";
+import Layout from "../../components/Layout";
+import SmallScreenFooter from "../../components/SmallScreenFooter";
 import { BlogProps } from "../../interfaces/BlogProps";
 import Post from "../../interfaces/Post";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
-import SmallScreenFooter from "../../components/SmallScreenFooter";
-import { SlLike } from "react-icons/sl";
-import { AiFillHeart } from "react-icons/ai";
-import { FaHeart } from "react-icons/fa";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;

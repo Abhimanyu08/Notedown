@@ -13,34 +13,39 @@ export function Toc({
 	setShowContents,
 }: {
 	html?: string;
-	setShowContents: Dispatch<SetStateAction<boolean>>;
+	setShowContents?: Dispatch<SetStateAction<boolean>>;
 }) {
-	const [matches, setMatches] = useState<RegExpMatchArray[]>();
-	const [open, setOpen] = useState(true);
+	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
+	const matches = Array.from(html?.matchAll(re) || []);
 
-	useEffect(() => {
-		if (!html) {
-			setMatches([]);
-			return;
-		}
-		const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
-		setMatches(Array.from(html.matchAll(re)));
-	}, [html]);
+	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
+	// const [open, setOpen] = useState(true);
+
+	// useEffect(() => {
+	// 	if (!html) {
+	// 		setMatches([]);
+	// 		return;
+	// 	}
+	// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
+	// 	setMatches(Array.from(html.matchAll(re)));
+	// }, [html]);
 
 	return (
 		<div
 			className="flex ml-7 flex-col gap-2 text-xs font-jsx-prose tracking-wide  text-gray-700 dark:text-white/70 max-w-full pr-1"
-			onClick={() => setShowContents(false)}
+			// onClick={() => {
+			// 	if (setShowContents) setShowContents(false);
+			// }}
 		>
 			<h3
 				className=" flex flex-row items-center underline underline-offset-2 cursor-pointer font-bold"
-				onClick={() => setOpen((prev) => !prev)}
+				// onClick={() => setOpen((prev) => !prev)}
 			>
 				Table of Contents
 			</h3>
 			<ul
 				className={` flex flex-col gap-2     ${
-					open ? "" : "lg:invisible"
+					true ? "" : "lg:invisible"
 				}  pb-14 text-gray-700 dark:text-gray-100/75 tracking-wider font-base`}
 			>
 				<li>
