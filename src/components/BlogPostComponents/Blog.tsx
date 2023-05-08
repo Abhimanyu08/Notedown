@@ -46,6 +46,7 @@ export function Blog({
 	const [author, setAuthor] = useState<string>();
 
 	// useLexica({ content });
+	//THis shouldn't be a client component.
 
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;

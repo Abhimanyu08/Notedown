@@ -21,7 +21,7 @@ export function NavbarClientComponent() {
 	const [user, setUser] = useState<User | null>(supabase.auth.user());
 
 	const [mode, setMode] = useState<"light" | "dark">(() => {
-		if (typeof window === "undefined") {
+		if (typeof window !== "undefined") {
 			return document?.documentElement.classList.contains("dark")
 				? "dark"
 				: "light";
