@@ -10,12 +10,6 @@ import formatDate from "../../utils/dateFormatter";
 import { PostComponentProps } from "../interfaces/PostComponentProps";
 import { usePathname } from "next/navigation";
 
-const langToBadgeColor: Record<(typeof ALLOWED_LANGUAGES)[number], string> = {
-	javascript: "dark:text-amber-500 text-stone-500",
-	python: "text-green-500",
-	rust: "text-red-500",
-};
-
 const PostComponent: React.FC<PostComponentProps> = ({
 	post,
 	author,
@@ -55,7 +49,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 							? `/posts/${id}`
 							: `/posts/preview?postId=${id}`
 					}
-					className="text-lg text-purple-700 md:text-xl dark:text-amber-400 font-semibold font-serif  link link-hover truncate w-3/4"
+					className="text-lg text-black font-bold md:text-2xl dark:text-gray-100 font-sans link link-hover truncate w-3/4"
 				>
 					{title}{" "}
 				</Link>
@@ -156,9 +150,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					</div>
 				)}
 				<div
-					className={`${
-						language && langToBadgeColor[language]
-					} px-1 font-bold font-mono flex justify-center w-20`}
+					className={` px-1 font-bold font-mono flex justify-center w-20`}
 				>
 					<span>{language}</span>
 				</div>

@@ -15,22 +15,6 @@ async function Read() {
 		.match({ published: true })
 		.order("published_on", { ascending: false })
 		.limit(LIMIT);
-	// const fetchHomePosts = async ({ cursor }: { cursor: string | number }) => {
-	// 	const { data, error } = await supabase
-	// 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-	// 		.select("*,bloggers(name)")
-	// 		.match({ published: true })
-	// 		.lt("published_on", cursor)
-	// 		.order("published_on", { ascending: false })
-	// 		.limit(LIMIT);
-
-	// 	if (error || !data) {
-	// 		console.log(error.message || "data returned is null");
-	// 		return false;
-	// 	}
-	// 	setHomePosts((prev) => [...(prev || []), ...data]);
-	// 	return data.length > 0;
-	// };
 
 	return (
 		<div className="w-full mx-auto lg:w-[50%] grow mt-6 px-2 lg:px-0 md:mt-12 overflow-hidden">
