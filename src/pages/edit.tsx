@@ -197,6 +197,7 @@ function Edit() {
 	useEffect(() => {
 		if (editingMarkdown) {
 			editorView?.focus();
+			return;
 		}
 
 		const markdown = editorView?.state.doc.toJSON().join("\n");
@@ -217,6 +218,18 @@ function Edit() {
 			.catch((e) => {
 				alert(e.message);
 				setEditingMarkdown(true);
+
+				//This workaround is because keyup event is not fired in case of error
+
+				const altKeyUp = new KeyboardEvent("keyup", {
+					key: "Alt",
+					altKey: true,
+				});
+				const pKeyUp = new KeyboardEvent("keyup", {
+					key: "p",
+				});
+				document.dispatchEvent(altKeyUp);
+				document.dispatchEvent(pKeyUp);
 			});
 	}, [editingMarkdown]);
 
