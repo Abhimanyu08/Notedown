@@ -43,7 +43,7 @@ async function Post({ params }: { params: PostParams }) {
 			<TocLayout>
 				<Toc html={content} />
 			</TocLayout>
-			<BlogContextProvider>
+			<BlogContextProvider language={post.language}>
 				<BlogPreviewLayout>
 					<Blog {...{ ...post, content }} />
 				</BlogPreviewLayout>

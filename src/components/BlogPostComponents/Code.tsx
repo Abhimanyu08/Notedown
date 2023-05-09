@@ -4,7 +4,6 @@ import { BsPencilFill, BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage, MdImage } from "react-icons/md";
 import { SiVim } from "react-icons/si";
-import { BlogContext } from "../../pages/_app";
 
 import useEditor from "../../hooks/useEditor";
 import { BlogProps } from "../../interfaces/BlogProps";
@@ -13,6 +12,7 @@ import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
 import getExtensions from "../../../utils/getExtensions";
 import useTerminal from "../../hooks/useTerminal";
+import { BlogContext } from "app/apppost/BlogState";
 interface CodeProps {
 	code: string;
 	language: BlogProps["language"];
@@ -20,14 +20,15 @@ interface CodeProps {
 }
 
 function Code({ code, language, blockNumber }: CodeProps) {
-	const {
-		containerId,
-		vimEnabled,
-		setVimEnabled,
-		setRunningBlock,
-		setBlockToEditor,
-		setWritingBlock,
-	} = useContext(BlogContext);
+	// const {
+	// 	containerId,
+	// 	vimEnabled,
+	// 	setVimEnabled,
+	// 	setRunningBlock,
+	// 	setBlockToEditor,
+	// 	setWritingBlock,
+	// } = useContext(BlogContext);
+	const { blogState, dispatch } = useContext(BlogContext);
 
 	const [mounted, setMounted] = useState(false);
 	const [openShell, setOpenShell] = useState(true);
@@ -40,7 +41,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	});
 
 	useTerminal({
-		containerId,
+		containerId: blogState.containerId,
 		blockNumber,
 		mounted,
 	});
@@ -50,11 +51,19 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	}, [mounted]);
 
 	useEffect(() => {
-		if (setBlockToEditor && editorView)
-			setBlockToEditor((prev) => ({
-				...prev,
+		// if (setBlockToEditor && editorView)
+		// 	setBlockToEditor((prev) => ({
+		// 		...prev,
+		// 		[blockNumber]: editorView,
+		// 	}));
+		if (typeof window === "undefined") console.log("running on server");
+		if (!editorView) return;
+		dispatch({
+			type: "set editor",
+			payload: {
 				[blockNumber]: editorView,
-			}));
+			},
+		});
 	}, [blockNumber, editorView]);
 
 	const onUndo: MouseEventHandler = () => {
@@ -67,30 +76,38 @@ function Code({ code, language, blockNumber }: CodeProps) {
 
 	useEffect(() => {
 		if (!editorView) return;
-		if (vimEnabled) {
+		if (blogState.vimEnabled) {
 			editorView.dispatch({
 				effects: StateEffect.reconfigure.of([
 					vim(),
 					...getExtensions({
 						language,
 						blockNumber,
-						setRunningBlock,
+						setRunningBlock: (blockNumber) =>
+							dispatch({
+								type: "set running block",
+								payload: blockNumber,
+							}),
 					}),
 				]),
 			});
 		}
-		if (!vimEnabled) {
+		if (!blogState.vimEnabled) {
 			editorView.dispatch({
 				effects: StateEffect.reconfigure.of(
 					getExtensions({
 						language,
 						blockNumber,
-						setRunningBlock,
+						setRunningBlock: (blockNumber) =>
+							dispatch({
+								type: "set running block",
+								payload: blockNumber,
+							}),
 					})
 				),
 			});
 		}
-	}, [vimEnabled]);
+	}, [blogState.vimEnabled]);
 
 	return (
 		<div className="flex relative flex-col w-full ">
@@ -99,8 +116,11 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					<>
 						<button
 							onClick={() => {
-								if (setRunningBlock)
-									setRunningBlock(blockNumber);
+								// setRunningBlock(blockNumber);
+								dispatch({
+									type: "set running block",
+									payload: blockNumber,
+								});
 							}}
 							className="md:tooltip  md:tooltip-left"
 							data-tip="Run Code (Shift+Enter)"
@@ -115,8 +135,10 @@ function Code({ code, language, blockNumber }: CodeProps) {
 						</button>
 						<button
 							onClick={() => {
-								if (setWritingBlock)
-									setWritingBlock(blockNumber);
+								dispatch({
+									type: "set writing block",
+									payload: blockNumber,
+								});
 							}}
 							className="md:tooltip  md:tooltip-left"
 							data-tip="Write code to file without running"
@@ -149,12 +171,15 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					className="md:tooltip hidden lg:block mr-1"
 					data-tip="Enable Vim"
 					onClick={() => {
-						if (setVimEnabled) setVimEnabled((prev) => !prev);
+						// if (setVimEnabled) setVimEnabled((prev) => !prev);
+						dispatch({ type: "toggle vim", payload: {} });
 					}}
 				>
 					<SiVim
 						className={`${
-							vimEnabled ? "text-lime-400" : "text-cyan-400"
+							blogState.vimEnabled
+								? "text-lime-400"
+								: "text-cyan-400"
 						}`}
 						size={14}
 					/>
@@ -165,7 +190,11 @@ function Code({ code, language, blockNumber }: CodeProps) {
 					className="w-full"
 					id={`codearea-${blockNumber}`}
 					onDoubleClick={() => {
-						if (setRunningBlock) setRunningBlock(blockNumber);
+						// if (setRunningBlock) setRunningBlock(blockNumber);
+						dispatch({
+							type: "set running block",
+							payload: blockNumber,
+						});
 					}}
 				></div>
 			)}

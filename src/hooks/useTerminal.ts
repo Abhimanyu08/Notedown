@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { sendRequestToRceServer } from "../../utils/sendRequest";
-import { BlogContext } from "../pages/_app";
+import { BlogContext } from "app/apppost/BlogState";
 
 export default function useTerminal({ containerId, blockNumber, mounted }: {
     containerId: string | undefined, blockNumber: number, mounted: boolean
@@ -9,7 +9,8 @@ export default function useTerminal({ containerId, blockNumber, mounted }: {
     const [terminalCommand, setTerminalCommand] = useState("");
     const [sendTerminalCommand, setSendTerminalCommand] = useState(false);
 
-    const { blockToOutput, setBlockToOutput } = useContext(BlogContext)
+    // const { blockToOutput, setBlockToOutput } = useContext(BlogContext)
+    const { blogState, dispatch } = useContext(BlogContext)
 
     useEffect(() => {
         if (terminal !== undefined) return;
@@ -44,6 +45,7 @@ export default function useTerminal({ containerId, blockNumber, mounted }: {
                     setSendTerminalCommand(true);
                     return;
                 }
+                console.log(key.key)
                 setTerminalCommand((prev) => prev + key.key);
                 term.write(key.key);
             });
@@ -53,16 +55,19 @@ export default function useTerminal({ containerId, blockNumber, mounted }: {
 
 
     useEffect(() => {
-        if (!setBlockToOutput) return
         if (!containerId) {
-            setBlockToOutput({ [blockNumber]: "Please enable remote code execution" })
+            // setBlockToOutput({ [blockNumber]: "Please enable remote code execution" })
+            // dispatch({ type: "set output", payload: { [blockNumber]: "Please enable remote code execution" } })
+            terminal?.writeln("\r\n" + "Please enable remote code execution" || "");
             return
         }
 
         if (sendTerminalCommand) {
             runShellCommand({ containerId, command: terminalCommand }).then((val) => {
 
-                setBlockToOutput({ [blockNumber]: val })
+                // setBlockToOutput({ [blockNumber]: val })
+                console.log(terminalCommand)
+                dispatch({ type: "set output", payload: { [blockNumber]: val } })
                 setTerminalCommand("")
                 setSendTerminalCommand(false)
             })
@@ -70,10 +75,11 @@ export default function useTerminal({ containerId, blockNumber, mounted }: {
     }, [sendTerminalCommand])
 
     useEffect(() => {
-        if (!blockToOutput || blockToOutput[blockNumber] === undefined) return
-        terminal?.writeln("\r\n" + blockToOutput[blockNumber] || "");
-        if (setBlockToOutput) setBlockToOutput({})
-    }, [blockToOutput]);
+        if (!Object.hasOwn(blogState.blockToOutput, blockNumber) || blogState.blockToOutput[blockNumber] === "") return
+        terminal?.writeln("\r\n" + blogState.blockToOutput[blockNumber] || "");
+        // if (setBlockToOutput) setBlockToOutput({})
+        dispatch({ type: "set output", payload: { [blockNumber]: "" } })
+    }, [blogState.blockToOutput]);
 
 
 
