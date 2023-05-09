@@ -12,6 +12,9 @@ import TocLayout from "../TocLayout";
 import BlogLayout from "@components/BlogPostComponents/BlogLayout";
 import { Blog } from "@components/BlogPostComponents/Blog";
 import BlogPreviewLayout from "../BlogLayout";
+import BlogContextProvider from "../BlogState";
+import ToolbarLayout from "../ToolbarLayout";
+import Toolbar from "../Toolbar";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
@@ -40,9 +43,14 @@ async function Post({ params }: { params: PostParams }) {
 			<TocLayout>
 				<Toc html={content} />
 			</TocLayout>
-			<BlogPreviewLayout>
-				<Blog {...{ ...post, content }} />
-			</BlogPreviewLayout>
+			<BlogContextProvider>
+				<BlogPreviewLayout>
+					<Blog {...{ ...post, content }} />
+				</BlogPreviewLayout>
+				<ToolbarLayout>
+					<Toolbar language={post.language} id={post.id} />
+				</ToolbarLayout>
+			</BlogContextProvider>
 		</div>
 	);
 }

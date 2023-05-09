@@ -1,24 +1,23 @@
 "use client";
-import { User } from "@supabase/supabase-js";
+import { UserContext } from "app/appContext";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useContext, useState } from "react";
 import {
+	AiFillCloseCircle,
 	AiFillGithub,
 	AiFillGoogleCircle,
-	AiFillCloseCircle,
 } from "react-icons/ai";
 import { HiMenu } from "react-icons/hi";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { handleLogout, handleSignIn } from "../../../utils/handleAuth";
-import { supabase } from "../../../utils/supabaseClient";
-import { usePathname } from "next/navigation";
 import { OptionsComponent } from "./Navbar";
 
 export function NavbarClientComponent() {
 	const route = usePathname();
 	const [showProfileOptions, setShowProfileOptions] = useState(false);
 	const [showLoginOptions, setShowLoginOptions] = useState(false);
-	const [user, setUser] = useState<User | null>(supabase.auth.user());
+	const { user } = useContext(UserContext);
 
 	const [mode, setMode] = useState<"light" | "dark">(() => {
 		if (typeof window !== "undefined") {
@@ -28,11 +27,6 @@ export function NavbarClientComponent() {
 		}
 		return "dark";
 	});
-	useEffect(() => {
-		supabase.auth.onAuthStateChange((_, session) => {
-			setUser(session?.user || null);
-		});
-	}, []);
 	return (
 		<div className="flex gap-6 items-center md:gap-10">
 			<div

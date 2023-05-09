@@ -44,7 +44,7 @@ export default function DrawingOrImage({
 		.getPublicUrl(`${imageFolder}/${canvasImageName}.png`);
 
 	return (
-		<div className="w-full bg-black">
+		<div className="w-full bg-white">
 			<img
 				src={publicURL || ""}
 				// layout="fill"

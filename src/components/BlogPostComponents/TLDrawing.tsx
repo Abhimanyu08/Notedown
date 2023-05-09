@@ -60,7 +60,7 @@ function TLDrawing({
 					showPages={false}
 					autofocus={false}
 					disableAssets={false}
-					darkMode={true}
+					darkMode={false}
 					onMount={(app) => {
 						if (imageFolder && canvasImageName) {
 							supabase.storage

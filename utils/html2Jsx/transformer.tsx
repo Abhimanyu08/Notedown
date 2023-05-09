@@ -3,7 +3,7 @@ import Latex from "react-latex";
 import Carousel from "../../src/components/BlogPostComponents/Carousel";
 import Code from "../../src/components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
-import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOfImage";
+import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOrImage";
 import { BlogProps } from "../../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "../constants";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
@@ -12,6 +12,7 @@ import { HtmlNode, TextNode } from "./parser";
 
 import ImageWithCaption from "../../src/components/BlogPostComponents/ImageWithCaption";
 import LexicaImage from "../../src/components/BlogPostComponents/LexicaImage";
+import CodeWord from "@components/BlogPostComponents/LatexBlock";
 
 type BlogMeta = Partial<{
 	language: BlogProps["language"];
@@ -75,15 +76,7 @@ const tagToTransformer: TagToTransformer = {
 
 	code: (node) => {
 		let code = (node.children[0] as TextNode).text;
-		if (typeof window !== "undefined") {
-			let tempElement = document.createElement("div");
-			tempElement.innerHTML = code;
-			code = tempElement.innerText || tempElement.textContent || "";
-		}
-		if (code.startsWith("$") && code.endsWith("$")) {
-			return <Latex>{code}</Latex>;
-		}
-		return <code>{code}</code>;
+		return <CodeWord code={code} />;
 	},
 
 	pre: (node, blogMeta, parent) => {

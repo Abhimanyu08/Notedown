@@ -1,3 +1,4 @@
+"use client";
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BsPencilFill, BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
