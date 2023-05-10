@@ -10,6 +10,8 @@ import Post from "../interfaces/Post";
 import SearchResult from "../interfaces/SearchResult";
 import { UserContext } from "../pages/_app";
 import PostComponent from "./PostComponent";
+import { SUPABASE_POST_TABLE } from "../../utils/constants";
+import { supabase } from "../../utils/supabaseClient";
 
 interface PostDisplayProps {
 	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
@@ -25,7 +27,7 @@ interface PostDisplayProps {
 	}) => Promise<boolean | undefined>;
 }
 
-function PostDisplay({
+async function PostDisplay({
 	posts,
 	cursorKey,
 	setPostInAction,
@@ -57,12 +59,30 @@ function PostDisplay({
 	// 	}).then((val) => val !== undefined && setHasMore(val));
 	// };
 
+	const idArray = posts?.map((post) => post.id!);
+	let idToUpvotes: Record<number, number> = {};
+	if (idArray) {
+		const { data } = await supabase
+			.from<Post>(SUPABASE_POST_TABLE)
+			.select("id,upvote_count")
+			.in("id", idArray);
+		if (data) {
+			data.forEach((post) => {
+				idToUpvotes[post.id] = post.upvote_count;
+			});
+		}
+	}
+
 	return (
 		<div className="flex flex-col overflow-x-hidden h-fit px-1 pt-1">
 			{(posts?.length || 0) > 0 ? (
 				<div className="flex flex-col gap-6 lg:basis-11/12 basis-10/12 divide-y divide-dashed divide-black dark:divide-white">
 					{posts?.map((post, idx) => (
-						<PostComponent key={idx} post={post} />
+						<PostComponent
+							key={idx}
+							post={post}
+							upvotes={idToUpvotes[post.id!]}
+						/>
 					))}
 				</div>
 			) : (

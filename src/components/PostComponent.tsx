@@ -22,12 +22,13 @@ import { UserContext } from "app/appContext";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
+	upvotes?: number;
 	// author?: string;
 	// owner: boolean;
 	// setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 	const {
 		id,
 		title,
@@ -35,7 +36,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 		created_by,
 		published_on,
 		published,
-		upvote_count: upvotes,
 		language,
 		created_at,
 		upvoted_on,
@@ -160,7 +160,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 							{upvotes &&
 								upvotes > 0 &&
 								formatter.current.format(upvotes)}{" "}
-							{/* <BiUpvote /> */}
+							<BiUpvote />
 						</span>
 					</div>
 				)}

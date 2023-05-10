@@ -122,7 +122,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 									payload: blockNumber,
 								});
 							}}
-							className="md:tooltip  md:tooltip-left"
+							className="md:tooltip"
 							data-tip="Run Code (Shift+Enter)"
 							id={`run-${blockNumber}`}
 						>
@@ -140,7 +140,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 									payload: blockNumber,
 								});
 							}}
-							className="md:tooltip  md:tooltip-left"
+							className="md:tooltip"
 							data-tip="Write code to file without running"
 						>
 							<BsPencilFill size={14} className="text-cyan-400" />
@@ -149,14 +149,14 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				)}
 				<button
 					onClick={onUndo}
-					className="md:tooltip  md:tooltip-left"
+					className="md:tooltip "
 					data-tip="back to original code"
 				>
 					<FcUndo className="text-cyan-400" />
 				</button>
 				<button
 					onClick={() => setOpenShell((prev) => !prev)}
-					className="md:tooltip  md:tooltip-left"
+					className="md:tooltip  "
 					data-tip={`${
 						openShell ? "Hide Terminal" : "Show Terminal"
 					}`}

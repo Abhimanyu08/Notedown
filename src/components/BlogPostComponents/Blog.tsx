@@ -246,7 +246,7 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 					<span className="link underline-offset-2 decoration-black dark:decoration-white">
 						{created_by ? (
 							<Link href={`/profile/${created_by}`}>
-								{"lodu " || bloggers?.name || ""}
+								{bloggers?.name}
 							</Link>
 						) : (
 							<span>{bloggers?.name}</span>
@@ -268,46 +268,4 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 		</div>
 		// </BlogContext.Provider>
 	);
-}
-
-function checkFileName(firstLine: string): string {
-	return /file-(.*)/.exec(firstLine)?.at(1)?.trim() || "";
-}
-type runCodeParams = {
-	code: string;
-	run: boolean;
-	language: (typeof ALLOWED_LANGUAGES)[number];
-	containerId: string;
-	fileName?: string;
-};
-
-async function runCodeRequest({
-	code,
-	run,
-	language,
-	containerId,
-	fileName,
-}: runCodeParams) {
-	let sessionCodeToOutput = sessionStorage.getItem(code);
-	if (sessionCodeToOutput) {
-		if (!run) return "";
-		return sessionCodeToOutput;
-	}
-
-	const params: Parameters<typeof sendRequestToRceServer> = [
-		"POST",
-		{ language, containerId, code, fileName, run },
-	];
-	const resp = await sendRequestToRceServer(...params);
-
-	if (resp.status !== 201) {
-		return resp.statusText;
-	}
-	const { output } = (await resp.json()) as { output: string };
-
-	try {
-		sessionStorage.setItem(code, output);
-	} catch {}
-
-	return output;
 }
