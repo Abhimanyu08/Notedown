@@ -145,7 +145,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 							{upvotes &&
 								upvotes > 0 &&
 								formatter.current.format(upvotes)}{" "}
-							<BiUpvote />
+							{/* <BiUpvote /> */}
 						</span>
 					</div>
 				)}

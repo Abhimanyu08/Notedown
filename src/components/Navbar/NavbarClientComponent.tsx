@@ -2,7 +2,7 @@
 import { UserContext } from "app/appContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
 	AiFillCloseCircle,
 	AiFillGithub,
@@ -14,10 +14,11 @@ import { handleLogout, handleSignIn } from "../../../utils/handleAuth";
 import { OptionsComponent } from "./Navbar";
 
 export function NavbarClientComponent() {
-	const route = usePathname();
-	const [showProfileOptions, setShowProfileOptions] = useState(false);
-	const [showLoginOptions, setShowLoginOptions] = useState(false);
-	const { user } = useContext(UserContext);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	const [mode, setMode] = useState<"light" | "dark">(() => {
 		if (typeof window !== "undefined") {
@@ -53,6 +54,17 @@ export function NavbarClientComponent() {
 			<Link href={`/edit`}>
 				<p className="link-hover cursor-pointer">Write</p>
 			</Link>
+			{mounted && <ProfileMenu />}
+		</div>
+	);
+}
+
+function ProfileMenu() {
+	const { user } = useContext(UserContext);
+	const route = usePathname();
+	const [showProfileOptions, setShowProfileOptions] = useState(false);
+	return (
+		<>
 			{user ? (
 				<div className="relative">
 					<div
@@ -88,11 +100,11 @@ export function NavbarClientComponent() {
 				<div className="relative">
 					<div
 						className="cursor-pointer select-none"
-						onClick={() => setShowLoginOptions((prev) => !prev)}
+						onClick={() => setShowProfileOptions((prev) => !prev)}
 					>
 						Login
 					</div>
-					{showLoginOptions && (
+					{showProfileOptions && (
 						<OptionsComponent>
 							<div
 								onClick={(e) => {
@@ -126,6 +138,6 @@ export function NavbarClientComponent() {
 					)}
 				</div>
 			)}
-		</div>
+		</>
 	);
 }
