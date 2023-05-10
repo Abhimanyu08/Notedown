@@ -1,21 +1,33 @@
+"use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MouseEventHandler, useEffect, useRef, useState } from "react";
+import {
+	MouseEventHandler,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { SlOptionsVertical } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import { ALLOWED_LANGUAGES } from "../../utils/constants";
 import formatDate from "../../utils/dateFormatter";
-import { PostComponentProps } from "../interfaces/PostComponentProps";
 import { usePathname } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
+import Post from "interfaces/Post";
+import SearchResult from "interfaces/SearchResult";
+import { UserContext } from "app/appContext";
 
-const PostComponent: React.FC<PostComponentProps> = ({
-	post,
-	author,
-	owner = false,
-	setPostInAction,
-}) => {
+export interface PostComponentProps {
+	post: Partial<SearchResult>;
+	// author?: string;
+	// owner: boolean;
+	// setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
+}
+
+const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 	const {
 		id,
 		title,
@@ -28,7 +40,6 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		created_at,
 		upvoted_on,
 	} = post;
-	const router = useRouter();
 	const pathname = usePathname();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const [mounted, setMounted] = useState(false);
@@ -37,9 +48,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	useEffect(() => {
 		if (!mounted) setMounted(true);
 	}, []);
-	const onAction: MouseEventHandler = () => {
-		if (setPostInAction) setPostInAction(post);
-	};
+
+	const { user } = useContext(UserContext);
+	const owner =
+		user?.id !== "undefined" &&
+		post.bloggers?.id !== "undefined" &&
+		user?.id === post.bloggers?.id;
+
 	return (
 		<div className="relative pt-4 flex flex-col gap-2">
 			<div className="flex justify-between">
@@ -53,7 +68,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				>
 					{title}{" "}
 				</Link>
-				{owner && mounted && pathname?.startsWith("/profile") && (
+				{mounted && owner && pathname?.startsWith("/profile") && (
 					<>
 						<button onClick={() => setShowOptions((prev) => !prev)}>
 							<SlOptionsVertical />
@@ -75,7 +90,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 								{published ? (
 									<label
 										htmlFor={`unpublish`}
-										onClick={onAction}
+										// onClick={onAction}
 										className="hover:bg-slate-500 flex items-end gap-1"
 									>
 										<TbNewsOff
@@ -87,7 +102,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 								) : (
 									<label
 										htmlFor={`publish`}
-										onClick={onAction}
+										// onClick={onAction}
 										className="hover:bg-slate-500 flex items-end gap-1"
 									>
 										<TbNews className="inline" size={15} />
@@ -96,7 +111,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 								)}
 								<label
 									htmlFor={`delete`}
-									onClick={onAction}
+									// onClick={onAction}
 									className="hover:bg-slate-500 flex gap-1 items-end"
 								>
 									<AiFillDelete
@@ -124,7 +139,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					href={`/profile/${created_by}`}
 					className="link underline-offset-2 w-1/3 md:w-1/5 truncate"
 				>
-					{author}
+					{post.bloggers?.name}
 				</Link>
 				<div className="px-1 w-24  flex justify-center ">
 					{upvoted_on ? (

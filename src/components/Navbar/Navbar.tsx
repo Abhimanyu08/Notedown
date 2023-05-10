@@ -17,12 +17,4 @@ function Navbar() {
 	);
 }
 
-export const OptionsComponent = ({ children }: { children: JSX.Element[] }) => {
-	return (
-		<div className="flex flex-col absolute top-8 right-10  p-4 rounded-md bg-black shadow-sm shadow-white gap-4">
-			{children}
-		</div>
-	);
-};
-
 export default Navbar;

@@ -11,7 +11,6 @@ import {
 import { HiMenu } from "react-icons/hi";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { handleLogout, handleSignIn } from "../../../utils/handleAuth";
-import { OptionsComponent } from "./Navbar";
 
 export function NavbarClientComponent() {
 	const [mounted, setMounted] = useState(false);
@@ -141,3 +140,11 @@ function ProfileMenu() {
 		</>
 	);
 }
+
+export const OptionsComponent = ({ children }: { children: JSX.Element[] }) => {
+	return (
+		<div className="flex flex-col absolute top-8 right-10  p-4 rounded-md bg-black shadow-sm shadow-white gap-4">
+			{children}
+		</div>
+	);
+};
