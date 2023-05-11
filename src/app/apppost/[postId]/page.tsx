@@ -1,12 +1,6 @@
 import PostWithBlogger from "interfaces/PostWithBlogger";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import React from "react";
-import {
-	SUPABASE_POST_TABLE,
-	SUPABASE_FILES_BUCKET,
-} from "../../../../utils/constants";
-import { getHtmlFromMarkdown } from "../../../../utils/getResources";
-import { supabase } from "../../../../utils/supabaseClient";
 import { Toc } from "@components/BlogPostComponents/TableOfContents";
 import TocLayout from "../TocLayout";
 import BlogLayout from "@components/BlogPostComponents/BlogLayout";
@@ -15,6 +9,9 @@ import BlogPreviewLayout from "../BlogLayout";
 import BlogContextProvider from "../BlogState";
 import ToolbarLayout from "../ToolbarLayout";
 import Toolbar from "../Toolbar";
+import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
+import { getHtmlFromMarkdown } from "@utils/getResources";
+import { supabase } from "@utils/supabaseClient";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;

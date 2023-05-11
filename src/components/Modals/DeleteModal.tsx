@@ -1,13 +1,12 @@
 import { MouseEventHandler } from "react";
-import {
-	SUPABASE_FILES_BUCKET,
-	SUPABASE_IMAGE_BUCKET,
-	SUPABASE_POST_TABLE,
-} from "../../../utils/constants";
-import { sendRevalidationRequest } from "../../../utils/sendRequest";
-import { supabase } from "../../../utils/supabaseClient";
 import ModalProps from "../../interfaces/ModalProps";
 import Post from "../../interfaces/Post";
+import {
+	SUPABASE_POST_TABLE,
+	SUPABASE_FILES_BUCKET,
+	SUPABASE_IMAGE_BUCKET,
+} from "@utils/constants";
+import { supabase } from "@utils/supabaseClient";
 
 export function DeleteModal({ post, afterActionCallback }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {

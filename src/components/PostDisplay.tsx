@@ -10,8 +10,8 @@ import Post from "../interfaces/Post";
 import SearchResult from "../interfaces/SearchResult";
 import { UserContext } from "../pages/_app";
 import PostComponent from "./PostComponent";
-import { SUPABASE_POST_TABLE } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
+import { supabase } from "@utils/supabaseClient";
+import { SUPABASE_POST_TABLE } from "@utils/constants";
 
 interface PostDisplayProps {
 	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
@@ -74,9 +74,9 @@ async function PostDisplay({
 	}
 
 	return (
-		<div className="flex flex-col overflow-x-hidden h-fit px-1 pt-1">
+		<div className="flex flex-col overflow-x-hidden h-fit ">
 			{(posts?.length || 0) > 0 ? (
-				<div className="flex flex-col gap-6 lg:basis-11/12 basis-10/12 divide-y divide-dashed divide-black dark:divide-white">
+				<div className="flex flex-col gap-8 lg:basis-11/12 basis-10/12 ">
 					{posts?.map((post, idx) => (
 						<PostComponent
 							key={idx}

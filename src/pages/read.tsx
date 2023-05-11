@@ -2,13 +2,6 @@ import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import {
-	LIMIT,
-	SEARCH_PUBLC,
-	SUPABASE_POST_TABLE,
-} from "../../utils/constants";
-import { fetchUpvotes } from "../../utils/fetchUpvotes";
-import { supabase } from "../../utils/supabaseClient";
 import Layout from "../components/Layout";
 import PostDisplay from "../components/PostDisplay";
 import SearchComponent from "../components/SearchComponent";
@@ -16,6 +9,9 @@ import { PostContext } from "../Contexts/PostContext";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
 import SearchResults from "../interfaces/SearchResult";
 import { UserContext } from "./_app";
+import { LIMIT, SUPABASE_POST_TABLE, SEARCH_PUBLC } from "@utils/constants";
+import { fetchUpvotes } from "@utils/fetchUpvotes";
+import { supabase } from "@utils/supabaseClient";
 
 interface HomeProps {
 	posts: PostWithBlogger[] | null;

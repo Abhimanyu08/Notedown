@@ -10,9 +10,9 @@ import { BlogProps } from "../../interfaces/BlogProps";
 
 import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
-import getExtensions from "../../../utils/getExtensions";
 import useTerminal from "../../hooks/useTerminal";
 import { BlogContext } from "app/apppost/BlogState";
+import getExtensions from "@utils/getExtensions";
 interface CodeProps {
 	code: string;
 	language: BlogProps["language"];

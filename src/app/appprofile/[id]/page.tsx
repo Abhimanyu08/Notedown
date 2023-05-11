@@ -8,56 +8,111 @@ import {
 	SUPABASE_POST_TABLE,
 	LIMIT,
 } from "@utils/constants";
-import { supabase } from "../../../../utils/supabaseClient";
+// import { supabase } from "@/utils/constants";
+import Image from "next/image";
+import ProfileControl from "./ProfileControl";
+import { supabase } from "@utils/supabaseClient";
+import error from "next/error";
+import transformer from "@utils/html2Jsx/transformer";
+import parser from "@utils/html2Jsx/parser";
+import tokenizer from "@utils/html2Jsx/tokenizer";
+import mdToHtml from "@utils/mdToHtml";
 
-async function Profile({ params }: { params: { id: string } }) {
-	const id = params.id;
-	let userData: Blogger | null = null;
-	let latest: Partial<PostWithBlogger>[] | null = null;
-	let greatest: Partial<Post>[] | null = null;
+async function About({ params }: { params: { id: string } }) {
+	const { data: userData } = await supabase
+		.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+		.select("id,name,avatar_url,about,twitter,github,web")
+		.eq("id", params.id)
+		.single();
 
-	let error;
+	const aboutHtml = await mdToHtml(userData?.about || "");
 
-	await Promise.all([
-		supabase
-			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
-			.select("id,name,avatar_url,about,twitter,github,web")
-			.eq("id", id)
-			.single()
-			.then((val) => {
-				userData = val.data;
-				error = val.error;
-			}),
-
-		supabase
-			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-			.select(
-				"id,published,published_on,title,description,language,bloggers(name),created_by"
-			)
-			.eq("created_by", id)
-			.order("published_on", { ascending: false })
-			.limit(LIMIT)
-			.then((val) => {
-				latest = val.data;
-				error = val.error;
-			}),
-
-		supabase
-			.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-			.select(
-				"id,published,published_on,title,description,language,bloggers(name),created_by"
-			)
-			.eq("created_by", id)
-			.order("upvote_count", { ascending: false })
-			.limit(LIMIT)
-			.then((val) => {
-				greatest = val.data;
-				error = val.error;
-			}),
-	]);
-
-	console.log(userData, latest, greatest);
-	return <div>page</div>;
+	return (
+		<>
+			<h1 className="text-3xl tracking-normal">{userData?.name}</h1>
+			<AboutJsxWrapper>
+				{transformer(parser(tokenizer(aboutHtml)), {})}
+			</AboutJsxWrapper>
+		</>
+	);
 }
 
-export default Profile;
+const AboutJsxWrapper = ({ children }: { children: JSX.Element }) => {
+	return (
+		<div
+			className="
+
+				prose prose-sm
+				//-------------prose-headings------------
+				prose-headings:text-black
+				dark:prose-headings:text-gray-200
+				prose-headings:font-sans
+				prose-h2:text-[26px]
+				prose-h3:text-[24px]
+				prose-h4:text-[22px]
+				prose-h5:text-[20px]
+				prose-h6:text-[18px]
+				// ---------prose-p--------------
+				prose-p:text-left
+				md:prose-p:text-[16px]	
+				prose-p: leading-7
+				prose-p:font-sans
+				prose-p:tracking-normal
+				prose-p:text-black/80
+				dark:prose-p:text-font-grey
+
+				// -------------prose-li--------
+				marker:prose-li:text-black
+				dark:marker:prose-li:text-white
+				prose-li:text-black/80
+				prose-li:font-sans
+				md:prose-li:text-[16px]	
+				prose-li:leading-7
+				dark:prose-li:text-font-grey
+
+				// -----------prose-string-----------
+				prose-strong:font-bold
+				prose-strong:text-black
+				dark:prose-strong:text-gray-100
+				prose-strong:tracking-wide
+
+				//-----------------prose-a-------------
+			prose-a:text-black
+			dark:prose-a:text-blue-400
+			prose-a:font-semibold
+			prose-a:no-underline
+			hover:prose-a:underline
+			hover:prose-a:underline-offset-2
+
+			// ---------------prose-code---------------
+			dark:prose-code:bg-gray-800
+			dark:prose-code:text-gray-200
+			prose-code:bg-white
+			prose-code:text-black
+			prose-code:px-2 
+			md:prose-code:text-sm 
+				prose-code:rounded-md
+				prose-code:select-all
+
+			prose-em:text-black
+			dark:prose-em:text-gray-100
+
+			//-----------------figcaption-------------
+
+				prose-figcaption:text-black
+				dark:prose-figcaption:text-font-grey
+
+prose-blockquote:border-l-black prose-blockquote:border-l-4
+dark:prose-blockquote:border-l-gray-300
+dark:prose-blockquote:text-font-grey
+prose-blockquote:text-black/80
+				  prose-h1:mb-6   
+				
+		 "
+		>
+			{children}
+		</div>
+	);
+};
+
+export default About;

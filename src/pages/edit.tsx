@@ -8,21 +8,6 @@ import { FaFileUpload } from "react-icons/fa";
 import { FcGallery } from "react-icons/fc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { VscPreview } from "react-icons/vsc";
-import {
-	ALLOWED_LANGUAGES,
-	LOCAL_MARKDOWN_KEY,
-	PHOTO_LIMIT,
-	SUPABASE_IMAGE_BUCKET,
-} from "../../utils/constants";
-import getExtensions from "../../utils/getExtensions";
-import { getHtmlFromMarkdown } from "../../utils/getResources";
-import {
-	handlePostUpdate,
-	handlePostUpload,
-} from "../../utils/handleUploadsAndUpdates";
-import { makeFolderName, processImageName } from "../../utils/makeFolderName";
-import { sendRequestToRceServer } from "../../utils/sendRequest";
-import { supabase } from "../../utils/supabaseClient";
 import { Blog } from "../components/BlogPostComponents/Blog";
 import BlogLayout from "../components/BlogPostComponents/BlogLayout";
 import { Toc } from "../components/BlogPostComponents/TableOfContents";
@@ -34,6 +19,21 @@ import useEditor from "../hooks/useEditor";
 import usePrivatePostQuery from "../hooks/usePrivatePost";
 import useShortCut from "../hooks/useShortcut";
 import { CanvasImageContext, UserContext } from "./_app";
+import {
+	ALLOWED_LANGUAGES,
+	SUPABASE_IMAGE_BUCKET,
+	LOCAL_MARKDOWN_KEY,
+	PHOTO_LIMIT,
+} from "@utils/constants";
+import getExtensions from "@utils/getExtensions";
+import { getHtmlFromMarkdown } from "@utils/getResources";
+import {
+	handlePostUpload,
+	handlePostUpdate,
+} from "@utils/handleUploadsAndUpdates";
+import { makeFolderName, processImageName } from "@utils/makeFolderName";
+import { sendRequestToRceServer } from "@utils/sendRequest";
+import { supabase } from "@utils/supabaseClient";
 
 const initialMarkdown =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';

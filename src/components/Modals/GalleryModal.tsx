@@ -1,11 +1,11 @@
+import { PHOTO_LIMIT } from "@utils/constants";
+import { processImageName } from "@utils/makeFolderName";
 import Image from "next/image";
 import React, { useState } from "react";
 import { AiFillCloseCircle, AiFillDelete } from "react-icons/ai";
 import { BiImageAdd } from "react-icons/bi";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { RiArrowGoBackFill } from "react-icons/ri";
-import { PHOTO_LIMIT } from "../../../utils/constants";
-import { processImageName } from "../../../utils/makeFolderName";
 
 interface GalleryModalProps {
 	currImages: string[];

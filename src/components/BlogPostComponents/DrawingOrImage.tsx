@@ -1,10 +1,10 @@
 "use client";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
-import { supabase } from "../../../utils/supabaseClient";
 
 import dynamic from "next/dynamic";
+import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
+import { supabase } from "@utils/supabaseClient";
 
 export default function DrawingOrImage({
 	canvasImageName,

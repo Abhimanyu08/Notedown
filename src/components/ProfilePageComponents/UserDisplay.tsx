@@ -10,14 +10,14 @@ import {
 } from "react-icons/ai";
 import { IconType } from "react-icons/lib";
 import { IoPersonCircle, IoPersonCircleOutline } from "react-icons/io5";
-import {
-	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_IMAGE_BUCKET,
-} from "../../../utils/constants";
-import { makeFolderName } from "../../../utils/makeFolderName";
-import { sendRevalidationRequest } from "../../../utils/sendRequest";
-import { supabase } from "../../../utils/supabaseClient";
 import Blogger from "../../interfaces/Blogger";
+import {
+	SUPABASE_IMAGE_BUCKET,
+	SUPABASE_BLOGGER_TABLE,
+} from "@utils/constants";
+import { makeFolderName } from "@utils/makeFolderName";
+import { sendRevalidationRequest } from "@utils/sendRequest";
+import { supabase } from "@utils/supabaseClient";
 interface UserDisplayProps {
 	profile: Partial<Blogger>;
 	user: User | null;

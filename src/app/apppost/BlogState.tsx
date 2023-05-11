@@ -1,4 +1,6 @@
 "use client";
+import { ALLOWED_LANGUAGES, langToExtension } from "@utils/constants";
+import { sendRequestToRceServer } from "@utils/sendRequest";
 import { EditorView } from "codemirror";
 import React, {
 	Dispatch,
@@ -7,8 +9,6 @@ import React, {
 	createContext,
 	useEffect,
 } from "react";
-import { ALLOWED_LANGUAGES, langToExtension } from "../../../utils/constants";
-import { sendRequestToRceServer } from "../../../utils/sendRequest";
 
 interface BlogStateInterface {
 	blockToOutput: Record<string, string>;

@@ -2,19 +2,6 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { SetStateAction, useContext, useEffect, useState } from "react";
-import {
-	LIMIT,
-	SEARCH_PRIVATE,
-	SEARCH_UPVOTED_POSTS_FUNCTION,
-	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_POST_TABLE,
-	SUPABASE_UPVOTES_TABLE,
-} from "../../../utils/constants";
-import { fetchUpvotes } from "../../../utils/fetchUpvotes";
-import mdToHtml from "../../../utils/mdToHtml";
-import checkGreatestStillGreatest from "../../../utils/checkGreatestStillGreatest";
-
-import { supabase } from "../../../utils/supabaseClient";
 import { About } from "../../components/ProfilePageComponents/About";
 import { DeleteModal } from "../../components/Modals/DeleteModal";
 import Layout from "../../components/Layout";
@@ -34,7 +21,19 @@ import { ProfileUser } from "../../interfaces/ProfileUser";
 import { PostTypeSelecter } from "../../components/ProfilePageComponents/PostTypeSelecter";
 import { SectionSelector } from "../../components/ProfilePageComponents/SectionSelector";
 import { PostContext } from "../../Contexts/PostContext";
-import { sendRevalidationRequest } from "../../../utils/sendRequest";
+import checkGreatestStillGreatest from "@utils/checkGreatestStillGreatest";
+import {
+	SUPABASE_POST_TABLE,
+	LIMIT,
+	SUPABASE_UPVOTES_TABLE,
+	SEARCH_PRIVATE,
+	SEARCH_UPVOTED_POSTS_FUNCTION,
+	SUPABASE_BLOGGER_TABLE,
+} from "@utils/constants";
+import { fetchUpvotes } from "@utils/fetchUpvotes";
+import mdToHtml from "@utils/mdToHtml";
+import { sendRevalidationRequest } from "@utils/sendRequest";
+import { supabase } from "@utils/supabaseClient";
 
 interface ProfileProps {
 	latest?: Partial<PostWithBlogger>[];

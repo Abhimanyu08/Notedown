@@ -1,18 +1,17 @@
 import React from "react";
 import Latex from "react-latex";
-import Carousel from "../../src/components/BlogPostComponents/Carousel";
-import Code from "../../src/components/BlogPostComponents/Code";
-import CodeWithoutLanguage from "../../src/components/BlogPostComponents/CodeWithoutLanguage";
-import DrawingOrImage from "../../src/components/BlogPostComponents/DrawingOrImage";
-import { BlogProps } from "../../src/interfaces/BlogProps";
 import { SUPABASE_IMAGE_BUCKET } from "../constants";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { supabase } from "../supabaseClient";
 import { HtmlNode, TextNode } from "./parser";
-
-import ImageWithCaption from "../../src/components/BlogPostComponents/ImageWithCaption";
-import LexicaImage from "../../src/components/BlogPostComponents/LexicaImage";
+import { BlogProps } from "@/interfaces/BlogProps";
+import Carousel from "@components/BlogPostComponents/Carousel";
+import Code from "@components/BlogPostComponents/Code";
+import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
+import DrawingOrImage from "@components/BlogPostComponents/DrawingOrImage";
+import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import CodeWord from "@components/BlogPostComponents/LatexBlock";
+import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 
 type BlogMeta = Partial<{
 	language: BlogProps["language"];

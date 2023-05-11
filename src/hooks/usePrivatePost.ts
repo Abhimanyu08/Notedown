@@ -1,10 +1,10 @@
 import { PostgrestError, User } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "../../utils/constants";
-import { getHtmlFromMarkdown } from "../../utils/getResources";
-import { supabase } from "../../utils/supabaseClient";
 import PostWithBlogger from "../interfaces/PostWithBlogger";
+import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
+import { getHtmlFromMarkdown } from "@utils/getResources";
+import { supabase } from "@utils/supabaseClient";
 
 interface PrivatePostQueryData extends PostWithBlogger {
     markdown: string

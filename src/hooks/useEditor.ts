@@ -3,9 +3,9 @@ import { EditorView } from "codemirror";
 import { useContext, useEffect, useRef, useState } from 'react';
 
 
-import getExtensions from "../../utils/getExtensions";
 import { BlogProps } from "../interfaces/BlogProps";
 import { BlogContext } from '../pages/_app';
+import getExtensions from "@utils/getExtensions";
 
 
 interface useEditorProps {

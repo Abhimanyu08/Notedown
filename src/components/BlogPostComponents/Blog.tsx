@@ -1,12 +1,10 @@
 // "use client";
 import Link from "next/link";
-import { ALLOWED_LANGUAGES } from "../../../utils/constants";
-import formatDate from "../../../utils/dateFormatter";
-import parser from "../../../utils/html2Jsx/parser";
-import tokenizer from "../../../utils/html2Jsx/tokenizer";
-import transformer from "../../../utils/html2Jsx/transformer";
-import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { BlogProps } from "../../interfaces/BlogProps";
+import formatDate from "@utils/dateFormatter";
+import tokenizer from "@utils/html2Jsx/tokenizer";
+import transformer from "@utils/html2Jsx/transformer";
+import parser from "@utils/html2Jsx/parser";
 
 export function Blog({
 	title,
@@ -160,20 +158,22 @@ export function Blog({
 		<div
 			className={`
 				${paddingClasses}
-				scroll-smooth prose prose-sm  max-w-none 
-				     h-full 
+				scroll-smooth   
+				max-w-none 
+				h-full 
 				overflow-x-hidden		
 				overflow-y-auto
 
+				prose prose-sm
 				//-------------prose-headings------------
-prose-headings:text-black
-dark:prose-headings:text-white
-prose-headings:font-sans
-prose-h2:text-[26px]
-prose-h3:text-[24px]
-prose-h4:text-[22px]
-prose-h5:text-[20px]
-prose-h6:text-[18px]
+				prose-headings:text-black
+				dark:prose-headings:text-white
+				prose-headings:font-sans
+				prose-h2:text-[26px]
+				prose-h3:text-[24px]
+				prose-h4:text-[22px]
+				prose-h5:text-[20px]
+				prose-h6:text-[18px]
 				// ---------prose-p--------------
 				prose-p:text-left
 				md:prose-p:text-[16px]	
@@ -199,39 +199,44 @@ prose-h6:text-[18px]
 				prose-strong:tracking-wide
 
 				//-----------------prose-a-------------
-			prose-a:text-black
-			dark:prose-a:text-blue-400
-			prose-a:font-semibold
-			prose-a:no-underline
-			hover:prose-a:underline
-			hover:prose-a:underline-offset-2
+				prose-a:text-black
+				dark:prose-a:text-blue-400
+				prose-a:font-semibold
+				prose-a:no-underline
+				hover:prose-a:underline
+				hover:prose-a:underline-offset-2
 
-			// ---------------prose-code---------------
-			dark:prose-code:bg-gray-800
-			dark:prose-code:text-gray-200
-			prose-code:bg-white
-			prose-code:text-black
-			prose-code:px-2 
-			md:prose-code:text-sm 
+				// ---------------prose-code---------------
+				dark:prose-code:bg-gray-800
+				dark:prose-code:text-gray-200
+				prose-code:bg-white
+				prose-code:text-black
+				prose-code:px-2 
+				md:prose-code:text-sm 
 				prose-code:rounded-md
 				prose-code:select-all
 
-			prose-em:text-black
-			dark:prose-em:text-gray-100
+				// ---------------prose-em---------------
+				prose-em:text-black
+				dark:prose-em:text-gray-100
 
-			//-----------------figcaption-------------
+				//-----------------figcaption-------------
 
 				prose-figcaption:text-black
 				dark:prose-figcaption:text-font-grey
 
-prose-blockquote:border-l-black prose-blockquote:border-l-4
-dark:prose-blockquote:border-l-gray-300
-dark:prose-blockquote:text-font-grey
-prose-blockquote:text-black/80
+				//-----------------blockquote---------
+				prose-blockquote:border-l-black 
+				prose-blockquote:border-l-4
+				dark:prose-blockquote:border-l-gray-300
+				dark:prose-blockquote:text-font-grey
+				prose-blockquote:text-black/80
 				  prose-h1:mb-6   
 				
 				pb-20 md:pb-10 
-lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
+				lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
 				`}
 		>
 			<header>

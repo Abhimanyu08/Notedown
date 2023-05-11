@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
-import { PHOTO_LIMIT } from "../../../utils/constants";
-import { getHtmlFromMarkdown } from "../../../utils/getResources";
-import { handlePostUpload } from "../../../utils/handleUploadsAndUpdates";
 import FileMetadata from "../../interfaces/FileMetdata";
 import Post from "../../interfaces/Post";
+import { PHOTO_LIMIT } from "@utils/constants";
+import { getHtmlFromMarkdown } from "@utils/getResources";
+import { handlePostUpload } from "@utils/handleUploadsAndUpdates";
 
 export function UploadModal({
 	userId,

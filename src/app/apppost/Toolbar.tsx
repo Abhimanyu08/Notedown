@@ -7,19 +7,16 @@ import React, {
 	useState,
 } from "react";
 import { BlogContext } from "./BlogState";
-import { sendRequestToRceServer } from "../../../utils/sendRequest";
 import { BiCodeAlt } from "react-icons/bi";
 import { usePathname } from "next/navigation";
 import { UserContext } from "../appContext";
 import Upvotes from "interfaces/Upvotes";
 import { FaHeart } from "react-icons/fa";
 import { IoMdShareAlt } from "react-icons/io";
-import {
-	SUPABASE_UPVOTES_TABLE,
-	SUPABASE_POST_TABLE,
-} from "../../../utils/constants";
-import { supabase } from "../../../utils/supabaseClient";
 import Post from "../../interfaces/Post";
+import { SUPABASE_UPVOTES_TABLE, SUPABASE_POST_TABLE } from "@utils/constants";
+import { sendRequestToRceServer } from "@utils/sendRequest";
+import { supabase } from "@utils/supabaseClient";
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 

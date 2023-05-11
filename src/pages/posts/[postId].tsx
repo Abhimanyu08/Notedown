@@ -13,14 +13,6 @@ import { FaHeart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { GoArrowUp } from "react-icons/go";
 import { IoMdShareAlt } from "react-icons/io";
-import {
-	SUPABASE_FILES_BUCKET,
-	SUPABASE_POST_TABLE,
-	SUPABASE_UPVOTES_TABLE,
-} from "../../../utils/constants";
-import { getHtmlFromMarkdown } from "../../../utils/getResources";
-import { sendRequestToRceServer } from "../../../utils/sendRequest";
-import { supabase } from "../../../utils/supabaseClient";
 import { Blog } from "../../components/BlogPostComponents/Blog";
 import BlogLayout from "../../components/BlogPostComponents/BlogLayout";
 import { Toc } from "../../components/BlogPostComponents/TableOfContents";
@@ -31,6 +23,14 @@ import Post from "../../interfaces/Post";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
 import Upvotes from "../../interfaces/Upvotes";
 import { UserContext } from "../_app";
+import {
+	SUPABASE_UPVOTES_TABLE,
+	SUPABASE_POST_TABLE,
+	SUPABASE_FILES_BUCKET,
+} from "@utils/constants";
+import { getHtmlFromMarkdown } from "@utils/getResources";
+import { sendRequestToRceServer } from "@utils/sendRequest";
+import { supabase } from "@utils/supabaseClient";
 
 function checkProps(props: BlogProps | {}): props is BlogProps {
 	return (props as BlogProps).title !== undefined;

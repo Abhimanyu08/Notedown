@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { supabase } from "../../../utils/supabaseClient";
 
 import { Tldraw } from "@tldraw/tldraw";
-import { SUPABASE_IMAGE_BUCKET } from "../../../utils/constants";
 import { CanvasImageContext } from "../../pages/_app";
+import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
+import { supabase } from "@utils/supabaseClient";
 
 function TLDrawing({
 	canvasImageName,

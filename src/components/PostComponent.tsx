@@ -12,13 +12,12 @@ import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { SlOptionsVertical } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
-import { ALLOWED_LANGUAGES } from "../../utils/constants";
-import formatDate from "../../utils/dateFormatter";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import Post from "interfaces/Post";
 import SearchResult from "interfaces/SearchResult";
 import { UserContext } from "app/appContext";
+import formatDate from "@utils/dateFormatter";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
@@ -43,20 +42,24 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 	const pathname = usePathname();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const [mounted, setMounted] = useState(false);
+	const [owner, setOwner] = useState(false);
 	const [showOptions, setShowOptions] = useState(false);
+	const { user } = useContext(UserContext);
 
 	useEffect(() => {
 		if (!mounted) setMounted(true);
 	}, []);
 
-	const { user } = useContext(UserContext);
-	const owner =
-		user?.id !== "undefined" &&
-		post.bloggers?.id !== "undefined" &&
-		user?.id === post.bloggers?.id;
+	useEffect(() => {
+		setOwner(
+			user?.id !== "undefined" &&
+				post.bloggers?.id !== "undefined" &&
+				user?.id === post.bloggers?.id
+		);
+	}, [user]);
 
 	return (
-		<div className="relative pt-4 flex flex-col gap-2">
+		<div className="relative flex flex-col">
 			<div className="flex justify-between">
 				<Link
 					href={
@@ -64,14 +67,14 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 							? `/posts/${id}`
 							: `/posts/preview?postId=${id}`
 					}
-					className="text-lg text-black font-bold md:text-2xl dark:text-gray-100 font-sans link link-hover truncate w-3/4"
+					className="text-lg text-black font-semibold  dark:text-white link link-hover truncate w-3/4"
 				>
 					{title}{" "}
 				</Link>
-				{mounted && owner && pathname?.startsWith("/profile") && (
+				{mounted && owner && pathname?.startsWith("/appprofile") && (
 					<>
 						<button onClick={() => setShowOptions((prev) => !prev)}>
-							<SlOptionsVertical />
+							<SlOptionsVertical size={12} />
 						</button>
 						{showOptions && (
 							<div className="flex absolute text-xs right-4 top-10 divide-x border-2 [&>*]:px-2 [&>*]:py-1 rounded-md">
@@ -131,8 +134,11 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 				)}
 			</div>
 
+			<p className="text-sm md:text-base text-black dark:text-font-grey font-sans ">
+				{description}
+			</p>
 			<div
-				className="flex text-xs text-black/50 dark:text-white/60   max-w-full divide-x-2 divide-black/30
+				className="flex text-xs text-black/50 dark:text-font-grey mt-1  max-w-full divide-x-2 divide-black/30
 			dark:divide-white/40"
 			>
 				<Link
@@ -170,9 +176,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 					<span>{language}</span>
 				</div>
 			</div>
-			<p className="text-sm md:text-base text-black dark:text-white/80 font-sans ">
-				{description}
-			</p>
 		</div>
 	);
 };

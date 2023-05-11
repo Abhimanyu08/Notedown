@@ -1,8 +1,8 @@
 import PostDisplay from "@components/PostDisplay";
 import React from "react";
-import { supabase } from "../../../utils/supabaseClient";
 import PostWithBlogger from "interfaces/PostWithBlogger";
-import { SUPABASE_POST_TABLE, LIMIT } from "../../../utils/constants";
+import { SUPABASE_POST_TABLE, LIMIT } from "@utils/constants";
+import { supabase } from "@utils/supabaseClient";
 
 async function Read() {
 	//How do I deal with pagination in PostDisplay using react server components
@@ -18,6 +18,7 @@ async function Read() {
 
 	return (
 		<div className="w-full mx-auto lg:w-[50%] grow mt-6 px-2 lg:px-0 md:mt-12 overflow-hidden">
+			{/* @ts-expect-error Async Server Component */}
 			<PostDisplay
 				key={"latest_posts"}
 				posts={data || []}

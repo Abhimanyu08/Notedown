@@ -15,7 +15,7 @@ import {
 	onLink,
 	onLatex,
 	onCanvas,
-} from "../../utils/editorToolFunctions";
+} from "@/utils/editorToolFunctions";
 
 import { EditorView } from "codemirror";
 

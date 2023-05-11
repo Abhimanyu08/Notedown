@@ -1,5 +1,5 @@
 import Navbar from "@components/Navbar/Navbar";
-import "../../styles/globals.css";
+import "@/styles/globals.css";
 import { Metadata } from "next";
 import AppContext from "./appContext";
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" className="dark">
-			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black/80 transition-colors duration-300">
+			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<AppContext>
 					<Navbar />
 

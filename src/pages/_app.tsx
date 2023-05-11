@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js";
-import "../../styles/xterm.css";
+import "@/styles/xterm.css";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import {
@@ -9,9 +9,9 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import "../../styles/globals.css";
-import { SUPABASE_BLOGGER_TABLE } from "../../utils/constants";
-import { supabase } from "../../utils/supabaseClient";
+import "@/styles/globals.css";
+import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
+import { supabase } from "@utils/supabaseClient";
 import PostContextComponent from "../Contexts/PostContext";
 import Blogger from "../interfaces/Blogger";
 import { Analytics } from "@vercel/analytics/react";
