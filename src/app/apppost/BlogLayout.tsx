@@ -7,9 +7,8 @@ export default function BlogPreviewLayout({
 }) {
 	return (
 		<div
-			className={`lg:basis-3/5 relative ${
-				true ? "hidden lg:block" : "w-screen"
-			} 
+			className={`lg:basis-3/5 relative 
+			hidden lg:block
 overflow-y-hidden
 				`}
 		>

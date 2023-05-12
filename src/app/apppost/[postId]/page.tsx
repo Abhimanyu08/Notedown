@@ -12,40 +12,25 @@ import Toolbar from "../Toolbar";
 import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
 import { getHtmlFromMarkdown } from "@utils/getResources";
 import { supabase } from "@utils/supabaseClient";
+import { getPostMarkdown } from "@/app/utils/getPostMarkdown";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
 }
 
 async function Post({ params }: { params: PostParams }) {
-	const { data: post, error } = await supabase
-		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
-		.select(
-			"id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)"
-		)
-		.match({ id: params?.postId })
-		.single();
-
-	if (error || !post) return { props: {}, redirect: "/" };
-
-	const filename = post.filename;
-	const { data: fileData, error: fileError } = await supabase.storage
-		.from(SUPABASE_FILES_BUCKET)
-		.download(filename);
-
-	if (fileError || !fileData) return { props: {}, redirect: "/" };
-	const content = (await getHtmlFromMarkdown(fileData)).content;
+	const { content, post } = await getPostMarkdown(params.postId);
 	return (
 		<div className="grow flex flex-row min-h-0 relative pt-10">
 			<TocLayout>
 				<Toc html={content} />
 			</TocLayout>
-			<BlogContextProvider language={post.language}>
+			<BlogContextProvider language={post?.language}>
 				<BlogPreviewLayout>
-					<Blog {...{ ...post, content }} />
+					<Blog {...{ ...post, content }} extraClasses="px-20" />
 				</BlogPreviewLayout>
 				<ToolbarLayout>
-					<Toolbar language={post.language} id={post.id} />
+					<Toolbar language={post?.language} id={params.postId} />
 				</ToolbarLayout>
 			</BlogContextProvider>
 		</div>

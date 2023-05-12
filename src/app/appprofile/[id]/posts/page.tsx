@@ -3,6 +3,7 @@ import PostDisplay from "@components/PostDisplay";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import React from "react";
+import PostControl from "./PostControl";
 
 async function ProfilePosts({ params }: { params: { id: string } }) {
 	const { id } = params;
@@ -16,9 +17,10 @@ async function ProfilePosts({ params }: { params: { id: string } }) {
 		.order("published_on", { ascending: false });
 
 	return (
-		<div className="">
-			{/* @ts-expect-error Async Server Component  */}
+		<div className="w-full flex flex-col gap-4">
+			<PostControl />
 
+			{/* @ts-expect-error Async Server Component  */}
 			<PostDisplay
 				key={"latest_posts"}
 				posts={data || []}

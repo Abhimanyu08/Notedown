@@ -1,7 +1,7 @@
 import PostWithBlogger from "./PostWithBlogger";
 
 export interface BlogProps extends PostWithBlogger {
-	paddingClasses: string;
+	extraClasses: string;
 	content: string;
 	containerId: string;
 	imageToUrl: Record<string, string>;

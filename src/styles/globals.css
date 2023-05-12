@@ -175,4 +175,10 @@
 	border-width: 1px;
 }
 
+button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 /* I shouldn't be doing this, but that's how it is with big software and breaking changes */

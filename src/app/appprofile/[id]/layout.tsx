@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import ProfileControl from "./ProfileControl";
-import Blogger from "@/interfaces/Blogger";
 import {
 	LIMIT,
 	SUPABASE_BLOGGER_TABLE,
@@ -9,9 +8,9 @@ import {
 } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import error from "next/error";
-import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import ProfileContext from "./ProfileContext";
 import ProfileContextProvider from "./ProfileContext";
+import Blogger from "@/interfaces/Blogger";
 
 async function ProfileLayout({
 	children,
@@ -58,8 +57,8 @@ async function ProfileLayout({
 	// 		}),
 	// ]);
 	return (
-		<div className="lg:grid flex lg:w-4/6 mx-auto flex-col grow lg:min-h-0 h-max overflow-y-auto lg:overflow-y-clip lg:grid-cols-7 text-white gap-y-10 pt-10">
-			<div className="lg:col-span-2 flex flex-col items-center">
+		<div className="lg:grid flex lg:w-4/6 mx-auto flex-col grow  h-full overflow-y-auto lg:overflow-y-clip lg:grid-cols-7 text-white gap-y-10 pt-10">
+			<div className="lg:col-span-2 flex flex-col items-center max-h-full">
 				<Image
 					src={userData?.avatar_url || ""}
 					width={140}
@@ -70,7 +69,7 @@ async function ProfileLayout({
 				<ProfileControl />
 			</div>
 
-			<div className="lg:col-span-5 relative">{children}</div>
+			<div className="lg:col-span-5 overflow-auto">{children}</div>
 		</div>
 	);
 }

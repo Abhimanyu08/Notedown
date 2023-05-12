@@ -1,17 +1,16 @@
 // "use client";
 import Link from "next/link";
-import { BlogProps } from "../../interfaces/BlogProps";
 import formatDate from "@utils/dateFormatter";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
 import parser from "@utils/html2Jsx/parser";
+import { BlogProps } from "@/interfaces/BlogProps";
 
 export function Blog({
 	title,
 	description,
 	content,
 	language,
-	containerId,
 	created_by,
 	image_folder,
 	bloggers,
@@ -19,7 +18,7 @@ export function Blog({
 	published,
 	published_on,
 	created_at,
-	paddingClasses = "px-2 lg:px-20",
+	extraClasses,
 }: Partial<BlogProps>) {
 	// useLexica({ content });
 	//THis shouldn't be a client component.
@@ -156,14 +155,13 @@ export function Blog({
 		// 	}}
 		// >
 		<div
-			className={`
-				${paddingClasses}
+			className={
+				`
 				scroll-smooth   
-				max-w-none 
+				// max-w-none 
 				h-full 
 				overflow-x-hidden		
-				overflow-y-auto
-
+				// --------overflow-y-auto
 				prose prose-sm
 				//-------------prose-headings------------
 				prose-headings:text-black
@@ -236,8 +234,10 @@ export function Blog({
 				pb-20 md:pb-10 
 				lg:scrollbar-thin 
 				scrollbar-track-black 
-				scrollbar-thumb-slate-700
-				`}
+				scrollbar-thumb-slate-700` +
+				" " +
+				extraClasses
+			}
 		>
 			<header>
 				<h1 className="text-left " id="title">
@@ -248,7 +248,7 @@ export function Blog({
 				</blockquote>
 				<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 					<span>by</span>
-					<span className="link underline-offset-2 decoration-black dark:decoration-white">
+					<span className="hover:underline underline-offset-2 decoration-black dark:decoration-white">
 						{created_by ? (
 							<Link href={`/profile/${created_by}`}>
 								{bloggers?.name}

@@ -64,7 +64,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 				<Link
 					href={
 						published
-							? `/posts/${id}`
+							? `/apppost/${id}`
 							: `/posts/preview?postId=${id}`
 					}
 					className="text-lg text-black font-semibold  dark:text-white link link-hover truncate w-3/4"
