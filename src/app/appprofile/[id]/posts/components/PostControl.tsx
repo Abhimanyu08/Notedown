@@ -1,13 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { ProfileButton } from "../ProfileButton";
+import React, { useContext, useState } from "react";
+import { ProfileButton } from "../../ProfileButton";
 import { motion } from "framer-motion";
-
-const PostTypes = ["Latest", "Greatest", "Private", "Upvoted"];
+import { PostTypeContext, PostTypes } from "./PostTypeContext";
 
 function PostControl() {
-	const [postType, setPostType] =
-		useState<(typeof PostTypes)[number]>("Latest");
+	const { postType, setPostType } = useContext(PostTypeContext);
 	return (
 		<div className="flex mx-auto justify-center gap-2">
 			{PostTypes.map((type) => {
@@ -17,7 +15,7 @@ function PostControl() {
 						className="px-3 py-1 hover:italic active:scale-95"
 						// className="text-sm bg-gray-800 hover:scale-105 active:scale-95  px-3  border-black border-[1px] transition-[scale] duration-200 rounded-md"
 					>
-						<span className="text-xs">{type}</span>
+						<span className="text-xs capitalize">{type}</span>
 						{postType === type ? (
 							<motion.div
 								className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-md z-[-1]"

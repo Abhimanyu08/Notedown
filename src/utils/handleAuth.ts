@@ -11,11 +11,14 @@ export const handleSignIn = async (provider: "github" | "google", redirectTo: st
     }
 
     console.log(redirectUrl)
-    const { error } = await supabase.auth.signIn(
+    const { error } = await supabase.auth.signInWithOAuth(
         {
             provider,
+            options: {
+                redirectTo
+            }
         },
-        { redirectTo: redirectUrl }
+
     );
     if (error) {
         alert(error.message);

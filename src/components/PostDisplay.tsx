@@ -6,16 +6,17 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import Post from "../interfaces/Post";
-import SearchResult from "../interfaces/SearchResult";
 import { UserContext } from "../pages/_app";
 import PostComponent from "./PostComponent";
 import { supabase } from "@utils/supabaseClient";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
+import Post from "@/interfaces/Post";
+import SearchResult from "@/interfaces/SearchResult";
+import { Database } from "@/interfaces/supabase";
 
 interface PostDisplayProps {
 	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
-	posts: Partial<SearchResult>[] | null;
+	posts: Partial<Database["public"]["Tables"]["posts"]["Row"]>[];
 	cursorKey: keyof SearchResult | "upvoted_on";
 	searchTerm?: string;
 	fetchPosts?: ({
@@ -63,7 +64,7 @@ async function PostDisplay({
 	let idToUpvotes: Record<number, number> = {};
 	if (idArray) {
 		const { data } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
+			.from(SUPABASE_POST_TABLE)
 			.select("id,upvote_count")
 			.in("id", idArray);
 		if (data) {

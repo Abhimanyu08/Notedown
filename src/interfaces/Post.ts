@@ -1,4 +1,5 @@
-import { ALLOWED_LANGUAGES } from "../../utils/constants";
+import { ALLOWED_LANGUAGES } from "@utils/constants"
+
 export default interface Post {
     id: number,
     created_at: string,

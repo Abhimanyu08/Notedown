@@ -1,26 +1,16 @@
-import Blogger from "interfaces/Blogger";
-import Post from "interfaces/Post";
-import PostWithBlogger from "interfaces/PostWithBlogger";
-import { ProfileUser } from "interfaces/ProfileUser";
-import React from "react";
-import {
-	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_POST_TABLE,
-	LIMIT,
-} from "@utils/constants";
+import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
 // import { supabase } from "@/utils/constants";
-import Image from "next/image";
-import ProfileControl from "./ProfileControl";
-import { supabase } from "@utils/supabaseClient";
-import error from "next/error";
-import transformer from "@utils/html2Jsx/transformer";
+import Blogger from "@/interfaces/Blogger";
 import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
+import transformer from "@utils/html2Jsx/transformer";
 import mdToHtml from "@utils/mdToHtml";
+import { supabase } from "@utils/supabaseClient";
+import { cookies } from "next/headers";
 
 async function About({ params }: { params: { id: string } }) {
 	const { data: userData } = await supabase
-		.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+		.from(SUPABASE_BLOGGER_TABLE)
 		.select("id,name,avatar_url,about,twitter,github,web")
 		.eq("id", params.id)
 		.single();

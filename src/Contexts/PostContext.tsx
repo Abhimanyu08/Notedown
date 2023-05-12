@@ -1,6 +1,6 @@
+import Post from "@/interfaces/Post";
+import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import React, { createContext, useState } from "react";
-import Post from "../interfaces/Post";
-import PostWithBlogger from "../interfaces/PostWithBlogger";
 
 export const PostContext = createContext<{
 	homePosts: Partial<PostWithBlogger>[];
