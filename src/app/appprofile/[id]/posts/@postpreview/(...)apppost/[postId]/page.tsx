@@ -2,10 +2,39 @@ import { getPostMarkdown } from "@/app/utils/getPostMarkdown";
 import { Blog } from "@components/BlogPostComponents/Blog";
 import React from "react";
 import { BackButton, ExpandButton } from "../../../components/ModalButtons";
+import { Database } from "@/interfaces/supabase";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { headers, cookies } from "next/headers";
+import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
+import { getHtmlFromMarkdown } from "@utils/getResources";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	if (!params.postId) return <></>;
-	const { content, post } = await getPostMarkdown(params.postId);
+	const supabase = createServerComponentSupabaseClient<Database>({
+		headers,
+		cookies,
+	});
+	const { data: post, error } = await supabase
+		.from(SUPABASE_POST_TABLE)
+		.select(
+			"id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)"
+		)
+		.match({ id: params.postId })
+		.single();
+
+	if (error || !post) return { post: null, content: null };
+
+	const filename = post.filename;
+
+	if (!filename) return { post, content: null };
+	const { data: fileData, error: fileError } = await supabase.storage
+		.from(SUPABASE_FILES_BUCKET)
+		.download(filename);
+
+	if (!fileData) return { post, content: null };
+
+	const content = (await getHtmlFromMarkdown(fileData)).content;
+	// const { content, post } = await getPostMarkdown(params.postId);
 	if (!post || !content) return <></>;
 	return (
 		<div className="h-full w-full absolute bg-black">

@@ -62,11 +62,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 		<div className="relative flex flex-col">
 			<div className="flex justify-between">
 				<Link
-					href={
-						published
-							? `/apppost/${id}`
-							: `/posts/preview?postId=${id}`
-					}
+					href={`/apppost/${id}`}
 					className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
 				>
 					{title}{" "}
