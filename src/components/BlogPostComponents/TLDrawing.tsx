@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { Tldraw } from "@tldraw/tldraw";
-import { CanvasImageContext } from "../../pages/_app";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 
@@ -15,40 +14,40 @@ function TLDrawing({
 	const [app, setApp] = useState<any>();
 	const [currentCanvasImageName, setCurrentCanvasImageName] =
 		useState(canvasImageName);
-	const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
+	// const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
 	const [changeNumber, setChangeNumber] = useState(0);
 
-	useEffect(() => {
-		if (
-			!app ||
-			!canvasImageName ||
-			!Object.hasOwn(canvasImages, currentCanvasImageName)
-		)
-			return;
+	// useEffect(() => {
+	// 	if (
+	// 		!app ||
+	// 		!canvasImageName ||
+	// 		!Object.hasOwn(canvasImages, currentCanvasImageName)
+	// 	)
+	// 		return;
 
-		setCanvasImages((prev) => {
-			if (canvasImageName === currentCanvasImageName) {
-				return {
-					...prev,
-					[canvasImageName]: app,
-				};
-			}
-			return {
-				...prev,
-				[canvasImageName]: app,
-				[currentCanvasImageName]: null,
-			};
-		});
-		setCurrentCanvasImageName(canvasImageName);
-	}, [canvasImageName]);
+	// 	setCanvasImages((prev) => {
+	// 		if (canvasImageName === currentCanvasImageName) {
+	// 			return {
+	// 				...prev,
+	// 				[canvasImageName]: app,
+	// 			};
+	// 		}
+	// 		return {
+	// 			...prev,
+	// 			[canvasImageName]: app,
+	// 			[currentCanvasImageName]: null,
+	// 		};
+	// 	});
+	// 	setCurrentCanvasImageName(canvasImageName);
+	// }, [canvasImageName]);
 
-	const runOnCommad = (canvasImageName: string) => {
-		if (changeNumber === 0) {
-			setChangeNumber((prev) => prev + 1);
-			return;
-		}
-		setCanvasImages((prev) => ({ ...prev, [canvasImageName]: app }));
-	};
+	// const runOnCommad = (canvasImageName: string) => {
+	// 	if (changeNumber === 0) {
+	// 		setChangeNumber((prev) => prev + 1);
+	// 		return;
+	// 	}
+	// 	setCanvasImages((prev) => ({ ...prev, [canvasImageName]: app }));
+	// };
 
 	return (
 		<>
@@ -81,7 +80,7 @@ function TLDrawing({
 						}
 						setApp(app);
 					}}
-					onCommand={() => runOnCommad(canvasImageName)}
+					// onCommand={() => runOnCommad(canvasImageName)}
 				/>
 			</div>
 		</>

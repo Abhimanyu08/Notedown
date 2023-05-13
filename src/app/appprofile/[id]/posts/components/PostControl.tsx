@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useState } from "react";
-import { ProfileButton } from "../../ProfileButton";
+import { ProfileButton } from "../../components/ProfileButton";
 import { motion } from "framer-motion";
 import { PostTypeContext, PostTypes } from "./PostTypeContext";
 
@@ -8,7 +8,7 @@ function PostControl() {
 	const { postType, setPostType } = useContext(PostTypeContext);
 	return (
 		<div className="flex mx-auto justify-center gap-2">
-			{PostTypes.map((type) => {
+			{PostTypes.filter((t) => t !== "postpreview").map((type) => {
 				return (
 					<ProfileButton
 						onClick={() => setPostType(type)}

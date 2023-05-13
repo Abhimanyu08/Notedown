@@ -7,21 +7,24 @@ import { supabase } from "@utils/supabaseClient";
 export async function getPostMarkdown(postId: string) {
 
     const { data: post, error } = await supabase
-        .from<PostWithBlogger>(SUPABASE_POST_TABLE)
+        .from(SUPABASE_POST_TABLE)
         .select(
             "id,created_by,title,description,language,published_on,filename,image_folder, bloggers(name)"
         )
         .match({ id: postId })
         .single();
 
-    if (error || !post) return { props: {}, redirect: "/" };
+    if (error || !post) return { post: null, content: null };
 
     const filename = post.filename;
+
+    if (!filename) return { post, content: null }
     const { data: fileData, error: fileError } = await supabase.storage
         .from(SUPABASE_FILES_BUCKET)
         .download(filename);
 
-    if (fileError || !fileData) return { props: {}, redirect: "/" };
+    if (!fileData) return { post, content: null }
+
     const content = (await getHtmlFromMarkdown(fileData)).content;
     return { post, content }
 }

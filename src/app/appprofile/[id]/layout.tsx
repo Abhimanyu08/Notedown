@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import ProfileControl from "./ProfileControl";
 import {
 	LIMIT,
 	SUPABASE_BLOGGER_TABLE,
@@ -8,9 +7,8 @@ import {
 } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import error from "next/error";
-import ProfileContext from "./ProfileContext";
-import ProfileContextProvider from "./ProfileContext";
 import Blogger from "@/interfaces/Blogger";
+import ProfileControl from "./components/ProfileControl";
 
 async function ProfileLayout({
 	children,
@@ -23,7 +21,7 @@ async function ProfileLayout({
 	// let latest: unknown;
 	// let greatest: unknown;
 	const { data: userData } = await supabase
-		.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+		.from(SUPABASE_BLOGGER_TABLE)
 		.select("id,name,avatar_url,about,twitter,github,web")
 		.eq("id", params.id)
 		.single();
@@ -69,7 +67,9 @@ async function ProfileLayout({
 				<ProfileControl />
 			</div>
 
-			<div className="lg:col-span-5 overflow-auto">{children}</div>
+			<div className="lg:col-span-5 overflow-auto relative">
+				{children}
+			</div>
 		</div>
 	);
 }

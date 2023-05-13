@@ -1,8 +1,15 @@
 "use client";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { createContext } from "react";
 
-export const PostTypes = ["latest", "greatest", "private", "upvoted"] as const;
+export const PostTypes = [
+	"latest",
+	"greatest",
+	"private",
+	"upvoted",
+	"postpreview",
+] as const;
 export type PostTypeTogglerProps = {
 	[k in (typeof PostTypes)[number]]: React.ReactNode;
 };

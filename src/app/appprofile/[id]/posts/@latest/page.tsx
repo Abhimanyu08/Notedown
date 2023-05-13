@@ -7,7 +7,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 	const { id } = params;
 	// await new Promise((res) => setTimeout(res, 20 * 1000));
 	const { data } = await supabase
-		.from<PostWithBlogger>(SUPABASE_POST_TABLE)
+		.from(SUPABASE_POST_TABLE)
 		.select(
 			"id,published,published_on,title,description,language,bloggers(name,id),created_by"
 		)

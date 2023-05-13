@@ -23,7 +23,6 @@ async function PrivatePosts() {
 		.order("created_at", { ascending: false })
 		.limit(LIMIT);
 
-	console.log(userId, data, cookies());
 	return (
 		/* @ts-expect-error Async Server Component  */
 		<PostDisplay

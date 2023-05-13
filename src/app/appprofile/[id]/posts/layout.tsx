@@ -5,9 +5,7 @@ import PostTypeContextProvider, {
 } from "./components/PostTypeContext";
 import PostTypeToggler from "./components/PostTypeToggler";
 
-function ProfilePostsLayout(
-	props: PostTypeTogglerProps & { children: React.ReactNode }
-) {
+function ProfilePostsLayout(props: PostTypeTogglerProps) {
 	return (
 		<div className="w-full flex flex-col gap-4">
 			<PostTypeContextProvider>
