@@ -47,10 +47,10 @@ export function NavbarClientComponent() {
 					<MdLightMode size={20} />
 				)}
 			</div>
-			<Link href={`/read`}>
+			<Link href={`/appread`}>
 				<p className="link-hover cursor-pointer">Read</p>
 			</Link>
-			<Link href={`/edit`}>
+			<Link href={`/`}>
 				<p className="link-hover cursor-pointer">Write</p>
 			</Link>
 			{mounted && <ProfileMenu />}
@@ -78,7 +78,7 @@ function ProfileMenu() {
 					</div>
 					{showProfileOptions && (
 						<OptionsComponent>
-							<Link href={`/profile/${user.id}`}>
+							<Link href={`/appprofile/${user.id}`}>
 								<p className="link-hover cursor-pointer text-xs md:text-base text-white">
 									Profile
 								</p>

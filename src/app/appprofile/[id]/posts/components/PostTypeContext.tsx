@@ -1,32 +1,23 @@
 "use client";
+import { PostTypes } from "@/interfaces/PostTypes";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { createContext } from "react";
 
-export const PostTypes = [
-	"latest",
-	"greatest",
-	"private",
-	"upvoted",
-	"postpreview",
-] as const;
 export type PostTypeTogglerProps = {
-	[k in (typeof PostTypes)[number]]: React.ReactNode;
+	[k in PostTypes]: React.ReactNode;
 };
 
 export const PostTypeContext = createContext<{
-	postType: (typeof PostTypes)[number];
-	setPostType: React.Dispatch<
-		React.SetStateAction<(typeof PostTypes)[number]>
-	>;
+	postType: PostTypes;
+	setPostType: React.Dispatch<React.SetStateAction<PostTypes>>;
 }>({
 	postType: "latest",
 	setPostType: () => "latest",
 });
 
 function PostTypeContextProvider({ children }: { children: React.ReactNode }) {
-	const [postType, setPostType] =
-		useState<(typeof PostTypes)[number]>("latest");
+	const [postType, setPostType] = useState<PostTypes>("latest");
 
 	return (
 		<PostTypeContext.Provider

@@ -52,7 +52,6 @@ export interface Database {
           language: string | null
           published: boolean
           published_on: string | null
-          search_index_col: unknown | null
           title: string
           upvote_count: number
         }

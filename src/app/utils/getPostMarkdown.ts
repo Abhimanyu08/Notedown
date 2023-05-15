@@ -6,6 +6,7 @@ import { supabase } from "@utils/supabaseClient";
 
 export async function getPostMarkdown(postId: string) {
 
+
     const { data: post, error } = await supabase
         .from(SUPABASE_POST_TABLE)
         .select(

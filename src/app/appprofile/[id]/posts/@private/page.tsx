@@ -1,11 +1,10 @@
-import { headers, cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import Post from "@/interfaces/Post";
-import { SUPABASE_POST_TABLE, LIMIT } from "@utils/constants";
-import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import { Database } from "@/interfaces/supabase";
+import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 
 async function PrivatePosts() {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -24,13 +23,20 @@ async function PrivatePosts() {
 		.limit(LIMIT);
 
 	return (
-		/* @ts-expect-error Async Server Component  */
-		<PostDisplay
-			key={"latest_posts"}
-			posts={data || []}
-			cursorKey="published_on"
-			searchTerm={""}
-		/>
+		<>
+			{/* @ts-expect-error Async Server Component  */}
+			<PostDisplay
+				key={"latest_posts"}
+				posts={data || []}
+				cursorKey="published_on"
+				searchTerm={""}
+			/>
+			<Paginator
+				cursorKey="created_at"
+				postType="private"
+				lastPost={data!.at(data!.length - 1)!}
+			/>
+		</>
 	);
 }
 

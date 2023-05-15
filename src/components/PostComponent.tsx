@@ -138,8 +138,8 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 			dark:divide-white/40"
 			>
 				<Link
-					href={`/profile/${created_by}`}
-					className="link underline-offset-2 w-1/3 md:w-1/5 truncate"
+					href={`/appprofile/${created_by}`}
+					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic underline"
 				>
 					{post.bloggers?.name}
 				</Link>

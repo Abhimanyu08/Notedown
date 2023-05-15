@@ -1,6 +1,9 @@
-import Blogger from "./Blogger";
-import Post from "./Post";
+import { Database } from "./supabase";
 
-export default interface PostWithBlogger extends Post {
-    bloggers: Partial<Blogger>
-}
+
+type PostWithBlogger = Partial<Database["public"]["Tables"]["posts"]["Row"]> & {
+    bloggers?: Pick<Database["public"]["Tables"]["bloggers"]["Row"], "name" | "id">[] | Pick<Database["public"]["Tables"]["bloggers"]["Row"], "name" | "id"> | null
+};
+
+export default PostWithBlogger
+
