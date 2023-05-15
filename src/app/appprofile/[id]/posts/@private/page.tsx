@@ -22,6 +22,8 @@ async function PrivatePosts() {
 		.order("created_at", { ascending: false })
 		.limit(LIMIT);
 
+	if (!data) return <p>No posts</p>;
+
 	return (
 		<>
 			{/* @ts-expect-error Async Server Component  */}
@@ -32,6 +34,7 @@ async function PrivatePosts() {
 				searchTerm={""}
 			/>
 			<Paginator
+				key="private"
 				cursorKey="created_at"
 				postType="private"
 				lastPost={data!.at(data!.length - 1)!}

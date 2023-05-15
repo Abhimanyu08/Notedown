@@ -22,3 +22,6 @@ export const langToExtension = {
     rust: ".rs"
 } as const
 export const sleep = async (s: number) => new Promise((res) => setTimeout(res, s * 1000))
+
+
+// 624,608,625,626,597,613,623,382,383
