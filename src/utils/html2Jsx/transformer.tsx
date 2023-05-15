@@ -249,5 +249,5 @@ function getUrlFromImgname(
 	if (imageToUrl && imageToUrl[imageName]) return imageToUrl[imageName];
 	return supabase.storage
 		.from(SUPABASE_IMAGE_BUCKET)
-		.getPublicUrl(`${imageFolder}/${imageName}`).publicURL;
+		.getPublicUrl(`${imageFolder}/${imageName}`).data.publicUrl;
 }
