@@ -1,14 +1,16 @@
+import { Database } from "@/interfaces/supabase";
+import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
-import React from "react";
-import PostWithBlogger from "@/interfaces/PostWithBlogger";
-import Paginator from "@components/Paginator";
+
+export const revalidate = 60 * 60 * 2; //revalidate this page every two hours.
 
 async function GreatestPosts({ params }: { params: { id: string } }) {
 	const { id } = params;
 	// await new Promise((res) => setTimeout(res, 20 * 1000));
-	console.log("Id---------------------------->", id);
+
 	const { data } = await supabase
 		.from(SUPABASE_POST_TABLE)
 		.select(
@@ -21,12 +23,7 @@ async function GreatestPosts({ params }: { params: { id: string } }) {
 	return (
 		<>
 			{/* @ts-expect-error Async Server Component  */}
-			<PostDisplay
-				key={"greatest_posts"}
-				posts={data || []}
-				cursorKey="upvote_count"
-				searchTerm={""}
-			/>
+			<PostDisplay key={"greatest_posts"} posts={data || []} />
 			<Paginator
 				key="greatest"
 				cursorKey="upvote_count"

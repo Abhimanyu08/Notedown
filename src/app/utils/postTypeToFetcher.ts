@@ -54,7 +54,6 @@ const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, curso
 
 const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey) => {
     const cursor = lastPost[cursorKey]
-    console.log(cursor)
     const { data, error } = await supabase
         .from(SUPABASE_POST_TABLE)
         .select(
@@ -66,7 +65,6 @@ const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cur
         .order("upvote_count", { ascending: false })
         .limit(LIMIT);
 
-    console.log(error, data)
     if (error || !data) {
         alert("Failed to return more data");
         return;
@@ -74,47 +72,31 @@ const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cur
     return data
 };
 
-// const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey) => {
-//     const cursor = lastPost[cursorKey]
-// 			const { data } = await supabase
-// 				.from(SUPABASE_UPVOTES_TABLE)
-// 				.select("created_at, post_id")
-// 				.match({ upvoter:  })
-// 				.lt("created_at", cursor)
-// 				.order("created_at", { ascending: false })
-// 				.limit(LIMIT);
-// 			if (data) {
-// 				const { data: posts } = await supabase
-// 					.from<Post>(SUPABASE_POST_TABLE)
-// 					.select(
-// 						"id,created_by,title,description,language,published,published_on,upvote_count,bloggers(name)"
-// 					)
-// 					.in(
-// 						"id",
-// 						data.map((upvote) => upvote.post_id)
-// 					);
-// 				if (posts) {
-// 					let modifiedData: Record<number, string> = {};
-// 					data.forEach(
-// 						(upvote) =>
-// 							(modifiedData[upvote.post_id] = upvote.created_at)
-// 					);
-// 					let upvotedPosts = posts
-// 						.map((post) => ({
-// 							...post,
-// 							upvoted_on: modifiedData[post.id],
-// 						}))
-// 						.sort((a, b) => (a.created_at > b.created_at ? -1 : 1));
-// 					setUpvotedPosts((prev) => [
-// 						...(prev || []),
-// 						...upvotedPosts,
-// 					]);
-// 				}
-// 			}
-// 			return (data?.length || 0) > 0;
-// }
+const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey) => {
+
+    const cursor = lastUpvote[cursorKey]
+
+    const { data, error } = await supabase
+        .from(SUPABASE_UPVOTES_TABLE)
+        .select(
+            "created_at, post_id,upvoter, posts(id,created_by,title,description,language,published,published_on,upvote_count,bloggers(id, name))"
+        )
+        .match({ upvoter: lastUpvote.upvoter })
+        .lt("created_at", cursor)
+        .order("created_at", { ascending: false })
+        .limit(LIMIT);
+
+    console.log(error, data)
+    if (error || !data) {
+        alert("Failed to return more data");
+        return;
+    }
+    return data
+}
+
 postTypeToFetcher.private = fetchPrivatePosts
 postTypeToFetcher.latest = fetchLatestPosts
 postTypeToFetcher.greatest = fetchGreatestPosts
+postTypeToFetcher.upvoted = fetchUpvotedPosts
 
 export default postTypeToFetcher

@@ -24,13 +24,14 @@ function Paginator({
 		if (!extraPostFetcher) return;
 		extraPostFetcher(currentLastPost, cursorKey).then((val) => {
 			if (!val) return;
-			setNewPosts((prev) => [...prev, ...val]);
-			let last = val.at(val.length - 1);
+			let last = val?.at(val.length - 1);
 			if (last) setCurrentLastPost(last);
+			if (val[0].upvoter) val = val.map((p) => p.posts);
+			setNewPosts((prev) => [...prev, ...val!]);
 		});
 	};
 	return (
-		<div className="flex flex-col gap-8">
+		<div className="flex flex-col gap-8 mt-8">
 			{newPosts?.map((post, idx) => (
 				<PostComponent key={idx} post={post} />
 			))}

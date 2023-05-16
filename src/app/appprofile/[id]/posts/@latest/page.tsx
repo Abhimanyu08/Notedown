@@ -19,12 +19,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 	return (
 		<>
 			{/* @ts-expect-error Async Server Component  */}
-			<PostDisplay
-				key={"latest_posts"}
-				posts={data || []}
-				cursorKey="published_on"
-				searchTerm={""}
-			/>
+			<PostDisplay key={"latest_posts"} posts={data || []} />
 			<Paginator
 				key="latest"
 				cursorKey="published_on"

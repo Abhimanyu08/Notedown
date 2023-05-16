@@ -1,60 +1,13 @@
-import Post from "@/interfaces/Post";
 import { Database } from "@/interfaces/supabase";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
-import { Dispatch, SetStateAction } from "react";
 import PostComponent from "./PostComponent";
 
-type PostWithBlogger = Database["public"]["Tables"]["posts"]["Row"] & {
-	blogger: Database["public"]["Tables"]["bloggers"]["Row"];
-};
-
 interface PostDisplayProps {
-	setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
 	posts: Partial<Database["public"]["Tables"]["posts"]["Row"]>[];
-	cursorKey: keyof PostWithBlogger;
-	searchTerm?: string;
-	fetchPosts?: ({
-		cursor,
-		searchTerm,
-	}: {
-		cursor: string | number;
-		searchTerm?: string;
-	}) => Promise<boolean | undefined>;
 }
 
-async function PostDisplay({
-	posts,
-	cursorKey,
-	setPostInAction,
-	searchTerm,
-	fetchPosts,
-}: PostDisplayProps) {
-	// const [cursor, setCursor] = useState(
-	// 	(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] || null
-	// );
-	// const [hasMore, setHasMore] = useState(true);
-
-	// const { user } = useContext(UserContext);
-
-	// useEffect(() => {
-	// 	setCursor(
-	// 		(posts?.at(posts.length - 1) || {})[cursorKey || "created_at"] ||
-	// 			null
-	// 	);
-	// }, [posts]);
-
-	// const onLoadMore: MouseEventHandler = async (e) => {
-	// 	e.preventDefault();
-
-	// 	if (!fetchPosts || !posts || posts.length === 0 || !hasMore) return;
-
-	// 	fetchPosts({
-	// 		cursor: cursor as string | number,
-	// 		searchTerm: searchTerm?.split(" ").join(" | "),
-	// 	}).then((val) => val !== undefined && setHasMore(val));
-	// };
-
+async function PostDisplay({ posts }: PostDisplayProps) {
 	const idArray = posts?.map((post) => post.id!);
 	let idToUpvotes: Record<number, number> = {};
 	if (idArray) {

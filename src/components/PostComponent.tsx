@@ -1,23 +1,14 @@
 "use client";
+import formatDate from "@utils/dateFormatter";
+import { UserContext } from "app/appContext";
+import SearchResult from "interfaces/SearchResult";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-	MouseEventHandler,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { usePathname } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { SlOptionsVertical } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
-import { usePathname } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
-import Post from "interfaces/Post";
-import SearchResult from "interfaces/SearchResult";
-import { UserContext } from "app/appContext";
-import formatDate from "@utils/dateFormatter";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
@@ -159,9 +150,11 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 				{published && (
 					<div className="flex justify-center w-16 ">
 						<span className="flex items-center gap-1">
-							{upvotes &&
-								upvotes > 0 &&
-								formatter.current.format(upvotes)}{" "}
+							{upvotes
+								? formatter.current.format(upvotes)
+								: post.upvote_count
+								? post.upvote_count
+								: 0}{" "}
 							<BiUpvote />
 						</span>
 					</div>

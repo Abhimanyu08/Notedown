@@ -27,12 +27,7 @@ async function PrivatePosts() {
 	return (
 		<>
 			{/* @ts-expect-error Async Server Component  */}
-			<PostDisplay
-				key={"latest_posts"}
-				posts={data || []}
-				cursorKey="published_on"
-				searchTerm={""}
-			/>
+			<PostDisplay key="private_posts" posts={data || []} />
 			<Paginator
 				key="private"
 				cursorKey="created_at"

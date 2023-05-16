@@ -10,7 +10,7 @@ function ProfilePostsLayout(props: PostTypeTogglerProps) {
 		<div className="w-full flex flex-col gap-4 h-full overflow-hidden">
 			<PostTypeContextProvider>
 				<PostControl />
-				<div className="grow overflow-y-auto">
+				<div className="grow overflow-y-auto ">
 					<PostTypeToggler {...props} />
 				</div>
 			</PostTypeContextProvider>
