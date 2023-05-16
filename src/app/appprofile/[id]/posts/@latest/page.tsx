@@ -1,20 +1,18 @@
-import PostWithBlogger from "@/interfaces/PostWithBlogger";
+import { getUserLatestPosts } from "@/app/utils/getData";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
-import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
-import { supabase } from "@utils/supabaseClient";
 
 async function LatestPosts({ params }: { params: { id: string } }) {
-	const { id } = params;
 	// await new Promise((res) => setTimeout(res, 20 * 1000));
-	const { data } = await supabase
-		.from(SUPABASE_POST_TABLE)
-		.select(
-			"id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
-		)
-		.eq("created_by", id)
-		.order("published_on", { ascending: false })
-		.limit(LIMIT);
+	// const { data } = await supabase
+	// 	.from(SUPABASE_POST_TABLE)
+	// 	.select(
+	// 		"id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
+	// 	)
+	// 	.eq("created_by", id)
+	// 	.order("published_on", { ascending: false })
+	// 	.limit(LIMIT);
+	const data = await getUserLatestPosts(params.id);
 
 	return (
 		<>
@@ -28,6 +26,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 			/>
 		</>
 	);
+	return <></>;
 }
 
 export default LatestPosts;

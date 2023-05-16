@@ -4377,6 +4377,11 @@
   dependencies:
     "lru-cache" "^6.0.0"
 
+"server-only@^0.0.1":
+  "integrity" "sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA=="
+  "resolved" "https://registry.npmjs.org/server-only/-/server-only-0.0.1.tgz"
+  "version" "0.0.1"
+
 "sharp@^0.31.0":
   "integrity" "sha512-XcR4+FCLBFKw1bdB+GEhnUNXNXvnt0tDo4WsBsraKymuo/IAuPuCBVAL2wIkUw2r/dwFW5Q5+g66Kwl2dgDFVg=="
   "resolved" "https://registry.npmjs.org/sharp/-/sharp-0.31.3.tgz"

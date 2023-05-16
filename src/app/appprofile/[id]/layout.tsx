@@ -1,14 +1,9 @@
-import React from "react";
-import Image from "next/image";
-import {
-	LIMIT,
-	SUPABASE_BLOGGER_TABLE,
-	SUPABASE_POST_TABLE,
-} from "@utils/constants";
+import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
-import error from "next/error";
-import Blogger from "@/interfaces/Blogger";
+import Image from "next/image";
+import React from "react";
 import ProfileControl from "./components/ProfileControl";
+import { getUser } from "@/app/utils/getData";
 
 async function ProfileLayout({
 	children,
@@ -19,13 +14,8 @@ async function ProfileLayout({
 }) {
 	// let latest: unknown;
 	// let greatest: unknown;
-	const { data: userData } = await supabase
-		.from(SUPABASE_BLOGGER_TABLE)
-		.select("id,name,avatar_url,about,twitter,github,web")
-		.eq("id", params.id)
-		.single();
-
 	// await Promise.all([
+	const userData = await getUser(params.id);
 
 	// 	supabase
 	// 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)

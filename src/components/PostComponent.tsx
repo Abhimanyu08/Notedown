@@ -132,7 +132,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 					href={`/appprofile/${created_by}`}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic underline"
 				>
-					{post.bloggers?.name}
+					{post.bloggers?.name || post.author || ""}
 				</Link>
 				<div className="px-1 w-24  flex justify-center ">
 					{upvoted_on ? (
