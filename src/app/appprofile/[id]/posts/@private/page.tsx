@@ -7,36 +7,35 @@ import { cache } from "react";
 import { Database } from "@/interfaces/supabase";
 
 async function PrivatePosts() {
-	// const supabase = createServerComponentSupabaseClient<Database>({
-	// 	headers,
-	// 	cookies,
-	// });
-	// const userId = (await supabase.auth.getUser()).data.user?.id;
-	// const data = await cache(async () => {
-	// 	const { data } = await supabase
-	// 		.from(SUPABASE_POST_TABLE)
-	// 		.select(
-	// 			"id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
-	// 		)
-	// 		.match({ created_by: userId, published: false })
-	// 		.order("created_at", { ascending: false })
-	// 		.limit(LIMIT);
-	// 	return data;
-	// })();
-	// if (!data) return <p>No posts lol</p>;
-	// return (
-	// 	<>
-	// 		{/* @ts-expect-error Async Server Component  */}
-	// 		<PostDisplay key="private_posts" posts={data || []} />
-	// 		<Paginator
-	// 			key="private"
-	// 			cursorKey="created_at"
-	// 			postType="private"
-	// 			lastPost={data!.at(data!.length - 1)!}
-	// 		/>
-	// 	</>
-	// );
-	return <></>;
+	const supabase = createServerComponentSupabaseClient<Database>({
+		headers,
+		cookies,
+	});
+	const userId = (await supabase.auth.getUser()).data.user?.id;
+	const data = await cache(async () => {
+		const { data } = await supabase
+			.from(SUPABASE_POST_TABLE)
+			.select(
+				"id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
+			)
+			.match({ created_by: userId, published: false })
+			.order("created_at", { ascending: false })
+			.limit(LIMIT);
+		return data;
+	})();
+	if (!data) return <p>No posts lol</p>;
+	return (
+		<>
+			{/* @ts-expect-error Async Server Component  */}
+			<PostDisplay key="private_posts" posts={data || []} />
+			<Paginator
+				key="private"
+				cursorKey="created_at"
+				postType="private"
+				lastPost={data!.at(data!.length - 1)!}
+			/>
+		</>
+	);
 }
 
 export default PrivatePosts;

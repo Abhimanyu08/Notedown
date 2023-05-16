@@ -13,7 +13,7 @@ function ProfileControl({ id }: { id: string }) {
 				<Link href={`/appprofile/${id}`}>About</Link>
 				{!pathname?.endsWith("posts") ? (
 					<motion.div
-						className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-md z-[-1]"
+						className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-sm z-[-1]"
 						layoutId="sidebar"
 						transition={{
 							type: "spring",
@@ -27,7 +27,7 @@ function ProfileControl({ id }: { id: string }) {
 				<Link href={`/appprofile/${id}/posts`}>Posts</Link>
 				{pathname?.endsWith("posts") ? (
 					<motion.div
-						className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-md z-[-1]"
+						className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-sm z-[-1]"
 						layoutId="sidebar"
 						transition={{
 							type: "spring",

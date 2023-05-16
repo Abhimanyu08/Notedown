@@ -16,7 +16,7 @@ export default function useShortCut({
 
     useEffect(() => {
 
-        document.onkeydown = (e) => {
+        const keyDown = (e) => {
             if (keys.includes(e.key)) {
                 keyArray.current.add(e.key);
                 if (keys.length === keyArray.current.size) {
@@ -24,8 +24,16 @@ export default function useShortCut({
                 }
             }
         }
-        document.onkeyup = (e) => {
+        const keyUp = (e) => {
             keyArray.current.delete(e.key)
+        }
+
+        document.onkeydown = keyDown
+        document.onkeyup = keyUp
+
+        return () => {
+            document.removeEventListener("keydown", keyDown)
+            document.removeEventListener("keyup", keyUp)
         }
     }, [])
 

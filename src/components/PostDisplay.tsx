@@ -1,7 +1,7 @@
-import { Database } from "@/interfaces/supabase";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import PostComponent from "./PostComponent";
+import { Database } from "@/interfaces/supabase";
 
 interface PostDisplayProps {
 	posts: Partial<Database["public"]["Tables"]["posts"]["Row"]>[];

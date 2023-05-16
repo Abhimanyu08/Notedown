@@ -20,7 +20,7 @@ function PostControl() {
 						<span className="text-xs capitalize">{type}</span>
 						{postType === type ? (
 							<motion.div
-								className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-md z-[-1]"
+								className="absolute inset-0 bg-neutral-100 dark:bg-gray-800 rounded-sm z-[-1]"
 								layoutId="postbar"
 								transition={{
 									type: "spring",

@@ -1,6 +1,6 @@
 "use client";
 import useShortCut from "@/hooks/useShortcut";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { IoMdArrowBack } from "react-icons/io";
@@ -29,12 +29,14 @@ export function ExpandButton({ postId }: { postId: string }) {
 	);
 }
 
-export function BackButton() {
+export function BackButton({ id }: { id: string }) {
 	const router = useRouter();
 
 	useShortCut({
 		keys: ["Escape"],
-		callback: () => router.back(),
+		callback: () => {
+			router.push(`/appprofile/${id}/posts`);
+		},
 	});
 
 	return (

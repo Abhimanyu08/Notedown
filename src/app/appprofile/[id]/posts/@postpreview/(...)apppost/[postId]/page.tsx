@@ -2,11 +2,11 @@ import { getPostMarkdown } from "@/app/utils/getPostMarkdown";
 import { Blog } from "@components/BlogPostComponents/Blog";
 import React from "react";
 import { BackButton, ExpandButton } from "../../../components/ModalButtons";
-import { Database } from "@/interfaces/supabase";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { headers, cookies } from "next/headers";
 import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
 import { getHtmlFromMarkdown } from "@utils/getResources";
+import { Database } from "@/interfaces/supabase";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	if (!params.postId) return <></>;
@@ -42,7 +42,7 @@ async function PostModal({ params }: { params: { postId: string } }) {
 				<Blog {...{ ...post, content }} extraClasses="w-full" />
 				<div className="flex absolute gap-3 top-2 right-3">
 					<ExpandButton postId={params.postId} />
-					<BackButton />
+					<BackButton id={post.created_by || ""} />
 				</div>
 			</div>
 		</div>

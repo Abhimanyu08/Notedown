@@ -1,7 +1,7 @@
 "use client";
+import SearchResult from "@/interfaces/SearchResult";
 import formatDate from "@utils/dateFormatter";
 import { UserContext } from "app/appContext";
-import SearchResult from "interfaces/SearchResult";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
