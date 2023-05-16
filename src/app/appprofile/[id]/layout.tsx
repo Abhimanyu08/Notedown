@@ -17,7 +17,6 @@ async function ProfileLayout({
 	children: React.ReactNode;
 	params: { id: string };
 }) {
-	const id = params.id;
 	// let latest: unknown;
 	// let greatest: unknown;
 	const { data: userData } = await supabase
@@ -64,7 +63,7 @@ async function ProfileLayout({
 					alt={`Rce-blog profile picture of ${userData?.name}`}
 					className="rounded-full"
 				/>
-				<ProfileControl />
+				<ProfileControl id={params.id} />
 			</div>
 
 			<div className="lg:col-span-5 overflow-auto relative">
