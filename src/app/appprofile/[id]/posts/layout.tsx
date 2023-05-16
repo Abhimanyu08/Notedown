@@ -7,10 +7,12 @@ import PostTypeToggler from "./components/PostTypeToggler";
 
 function ProfilePostsLayout(props: PostTypeTogglerProps) {
 	return (
-		<div className="w-full flex flex-col gap-4">
+		<div className="w-full flex flex-col gap-4 h-full overflow-hidden">
 			<PostTypeContextProvider>
 				<PostControl />
-				<PostTypeToggler {...props} />
+				<div className="grow overflow-y-auto">
+					<PostTypeToggler {...props} />
+				</div>
 			</PostTypeContextProvider>
 		</div>
 	);
