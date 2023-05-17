@@ -27,7 +27,7 @@ function SearchComponent({ id }: { id: string }) {
 				onChange={(e) => setQuery(e.currentTarget.value)}
 				onKeyDown={(e) => {
 					if (e.key === "Enter") {
-						search(query);
+						search(query.trim().split(" ").join(" | "));
 					}
 					if (e.key === "Escape") {
 						setQuery("");

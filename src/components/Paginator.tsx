@@ -36,7 +36,7 @@ function Paginator({
 				<PostComponent key={idx} post={post} />
 			))}
 			<button
-				className="text-xs bg-gray-800 hover:scale-105 active:scale-95  px-3 my-5 py-1 rounded-md w-fit mx-auto"
+				className="text-xs bg-gray-800 hover:scale-105 active:scale-95  px-3 my-5 py-1 rounded-sm w-fit mx-auto"
 				onClick={onLoadMore}
 			>
 				Load more
