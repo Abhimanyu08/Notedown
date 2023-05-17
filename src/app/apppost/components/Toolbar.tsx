@@ -9,7 +9,6 @@ import React, {
 import { BlogContext } from "./BlogState";
 import { BiCodeAlt } from "react-icons/bi";
 import { usePathname } from "next/navigation";
-import { UserContext } from "../appContext";
 import Upvotes from "interfaces/Upvotes";
 import { FaHeart } from "react-icons/fa";
 import { IoMdShareAlt } from "react-icons/io";
@@ -17,6 +16,8 @@ import Post from "../../interfaces/Post";
 import { SUPABASE_UPVOTES_TABLE, SUPABASE_POST_TABLE } from "@utils/constants";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 import { supabase } from "@utils/supabaseClient";
+import { UserContext } from "@/app/appContext";
+import prepareContainer from "@/app/utils/prepareContainer";
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
@@ -58,24 +59,6 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 		fetchUpvotes();
 	}, []);
 
-	const prepareContainer = async () => {
-		if (blogState.containerId || !props.language) return;
-		try {
-			const resp = await sendRequestToRceServer("POST", {
-				language: props.language,
-			});
-
-			if (resp.status !== 201) {
-				console.log(resp.statusText);
-				alert("Couldn't set up remote code execution");
-				return;
-			}
-			const body: { containerId: string } = await resp.json();
-			dispatch({ type: "set containerId", payload: body.containerId });
-		} catch (_) {
-			alert("Couldn't enable remote code execution");
-		}
-	};
 	const onUpvote: MouseEventHandler = async () => {
 		if (!user || !props.id) return;
 		if (upvoted) {
@@ -107,7 +90,18 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 							? "Enable remote code execution"
 							: "Enable remote code execution"
 					} `}
-					onClick={prepareContainer}
+					onClick={() =>
+						prepareContainer(
+							blogState.containerId,
+							blogState.language
+						).then((containerId) => {
+							if (!containerId) return;
+							dispatch({
+								type: "set containerId",
+								payload: containerId,
+							});
+						})
+					}
 				>
 					<BiCodeAlt
 						size={30}

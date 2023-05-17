@@ -49,7 +49,7 @@ export interface Database {
           filename: string | null
           id: number
           image_folder: string | null
-          language: string | null
+          language: "python" | "javascript" | "rust" | null
           published: boolean
           published_on: string | null
           title: string

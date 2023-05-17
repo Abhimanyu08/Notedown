@@ -1,4 +1,5 @@
 "use client";
+import { BlogProps } from "@/interfaces/BlogProps";
 import { ALLOWED_LANGUAGES, langToExtension } from "@utils/constants";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 import { EditorView } from "codemirror";
@@ -19,7 +20,7 @@ interface BlogStateInterface {
 	writingBlock: number | null;
 	author: string;
 	containerId: string;
-	language?: (typeof ALLOWED_LANGUAGES)[number];
+	language: BlogProps["language"] | null;
 }
 
 const blogInitialState: BlogStateInterface = {
@@ -31,7 +32,7 @@ const blogInitialState: BlogStateInterface = {
 	writingBlock: null,
 	author: "",
 	containerId: "",
-	language: "python",
+	language: null,
 };
 interface DispatchObj {
 	type:

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { BlogContext } from "app/apppost/BlogState";
 import { sendRequestToRceServer } from "@utils/sendRequest";
+import { BlogContext } from "@/app/apppost/components/BlogState";
 
 export default function useTerminal({ containerId, blockNumber, mounted }: {
     containerId: string | undefined, blockNumber: number, mounted: boolean

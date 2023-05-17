@@ -50,9 +50,9 @@ export function NavbarClientComponent() {
 			<Link href={`/appread`}>
 				<p className="link-hover cursor-pointer">Read</p>
 			</Link>
-			<Link href={`/`}>
+			{/* <Link href={`/`}>
 				<p className="link-hover cursor-pointer">Write</p>
-			</Link>
+			</Link> */}
 			{mounted && <ProfileMenu />}
 		</div>
 	);
