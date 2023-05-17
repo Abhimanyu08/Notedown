@@ -181,4 +181,10 @@ button {
 	justify-content: center;
 }
 
+.tooltip:hover::after {
+	display: block;
+	font-size: smaller;
+	margin-left: 3px;
+	content: attr(data-tip);
+}
 /* I shouldn't be doing this, but that's how it is with big software and breaking changes */

@@ -16,6 +16,7 @@ function PrivateToolbar(props: { language: BlogProps["language"] }) {
 		<>
 			{props.language && (
 				<ToolbarButton
+					tip="Enable remote code execution"
 					className={``}
 					onClick={() =>
 						prepareContainer(
@@ -40,10 +41,10 @@ function PrivateToolbar(props: { language: BlogProps["language"] }) {
 					/>
 				</ToolbarButton>
 			)}
-			<ToolbarButton className="" onClick={() => {}}>
+			<ToolbarButton className="" onClick={() => {}} tip="Edit markdown">
 				<AiFillEdit size={28} className="dark:text-white  text-black" />
 			</ToolbarButton>
-			<ToolbarButton className="" onClick={() => {}}>
+			<ToolbarButton className="" onClick={() => {}} tip="Publish">
 				<TbNews className=" dark:text-white text-black" size={30} />
 			</ToolbarButton>
 		</>

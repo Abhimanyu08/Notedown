@@ -9,6 +9,7 @@ import { cookies, headers } from "next/headers";
 import BlogContextProvider from "../components/BlogState";
 import PrivateToolbar from "../components/PrivateToolbar";
 import Toolbar from "../components/Toolbar";
+import { getPost } from "@/app/utils/getData";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
@@ -20,32 +21,7 @@ async function Post({ params }: { params: PostParams }) {
 		cookies,
 	});
 
-	const { data: post, error } = await supabase
-		.from(SUPABASE_POST_TABLE)
-		.select(
-			"id,created_by,title,description,language,published_on,published,filename,image_folder, bloggers(id,name)"
-		)
-		.match({ id: params.postId })
-		.single();
-
-	if (error || !post) {
-		console.error(error.message);
-		return <p>Couldn't find post</p>;
-	}
-
-	const filename = post.filename;
-
-	if (!filename) return <p>Couldn't fint post's file</p>;
-	const { data: fileData, error: fileError } = await supabase.storage
-		.from(SUPABASE_FILES_BUCKET)
-		.download(filename);
-
-	if (!fileData || fileError) {
-		console.error(fileError.message);
-		return <p>Couldn't load post's markdown file</p>;
-	}
-
-	const content = (await getHtmlFromMarkdown(fileData)).content;
+	const { post, content } = await getPost(params.postId, supabase);
 
 	return (
 		<div className="grow flex flex-row min-h-0 relative pt-10">

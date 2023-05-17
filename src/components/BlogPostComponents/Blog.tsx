@@ -253,9 +253,9 @@ export function Blog({
 				</blockquote>
 				<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 					<span>by</span>
-					<span className="hover:underline underline-offset-2 decoration-black dark:decoration-white">
+					<span className="underline underline-offset-2 decoration-black dark:decoration-white">
 						{created_by ? (
-							<Link href={`/profile/${created_by}`}>
+							<Link href={`/appprofile/${created_by}`}>
 								{bloggers?.name}
 							</Link>
 						) : (

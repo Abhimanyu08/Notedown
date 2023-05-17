@@ -1,7 +1,9 @@
 import 'server-only';
-import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_POST_TABLE } from "@utils/constants";
+import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import { cache } from "react";
+import { getHtmlFromMarkdown } from '@utils/getResources';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export const getUser = cache(async (id: string) => {
 
@@ -29,3 +31,36 @@ export const getUserLatestPosts = cache(async (id: string) => {
     return data
 })
 
+
+export const getPost = cache(async (postId: string, supabaseClient: SupabaseClient) => {
+    const { data: post, error } = await supabaseClient
+        .from(SUPABASE_POST_TABLE)
+        .select(
+            "id,created_by,title,description,language,published_on,published,filename,image_folder, bloggers(id,name)"
+        )
+        .match({ id: postId })
+        .single();
+
+    if (error || !post) {
+        throw new Error(error.message || "post not found")
+    }
+
+    const filename = post.filename;
+
+    if (!filename) {
+
+        throw new Error("post not found")
+    };
+    const { data: fileData, error: fileError } = await supabaseClient.storage
+        .from(SUPABASE_FILES_BUCKET)
+        .download(filename);
+
+    if (!fileData || fileError) {
+        throw new Error(fileError.message || "couldn't load file data")
+    }
+
+    const content = (await getHtmlFromMarkdown(fileData)).content;
+
+
+    return { post, content }
+})
