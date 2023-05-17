@@ -44,8 +44,6 @@ export function Blog({
 
 	const [author, setAuthor] = useState<string>();
 
-	// useLexica({ content });
-
 	const blogJsx = useMemo(() => {
 		if (!content) return <></>;
 		const tokens = tokenizer(content);
@@ -56,13 +54,6 @@ export function Blog({
 			imageToUrl,
 		});
 		return jsx;
-
-		// return htmlToJsx({
-		// 	html: content,
-		// 	language: language,
-		// 	imageFolder: image_folder || undefined,
-		// 	imageToUrl,
-		// });
 	}, [content, language]);
 
 	useEffect(() => {
