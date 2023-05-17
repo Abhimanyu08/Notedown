@@ -5,6 +5,7 @@ import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
 import parser from "@utils/html2Jsx/parser";
 import { BlogProps } from "@/interfaces/BlogProps";
+import { useMemo } from "react";
 
 export function Blog({
 	title,
@@ -23,14 +24,18 @@ export function Blog({
 	// useLexica({ content });
 	//THis shouldn't be a client component.
 
-	const tokens = tokenizer(content || "");
-	const parsedOutput = parser(tokens);
+	const tokens = useMemo(() => tokenizer(content || ""), [content]);
+	const parsedOutput = useMemo(() => parser(tokens), [tokens]);
 
-	const blogJsx = transformer(parsedOutput, {
-		language,
-		imageFolder: image_folder,
-		imageToUrl,
-	});
+	const blogJsx = useMemo(
+		() =>
+			transformer(parsedOutput, {
+				language,
+				imageFolder: image_folder,
+				imageToUrl,
+			}),
+		[parsedOutput]
+	);
 	// const blogJsx = useMemo(() => {
 	// 	if (!content) return <></>;
 	// 	const tokens = tokenizer(content);
