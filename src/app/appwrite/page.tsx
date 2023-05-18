@@ -81,7 +81,7 @@ function Write() {
 				className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
 					`}
 			>
-				<Toc html={""} />
+				<Toc html={editorState.blogMeta.content} />
 			</div>
 			<div
 				className={`lg:basis-3/5 relative 

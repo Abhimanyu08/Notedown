@@ -33,6 +33,7 @@ the best strategy is to start bottom-up. Start with the smallest components and 
 3. port write page to app router.
 4. Get the modals working correctly
 5. Improve the gallery component
+6. Test and improve user's post uploads, deletes, edits. Profile about updates etc
 
 
 

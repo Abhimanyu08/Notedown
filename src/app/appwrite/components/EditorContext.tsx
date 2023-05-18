@@ -5,6 +5,7 @@ import { EditorView } from "codemirror";
 import { Dispatch, Reducer, createContext, useReducer } from "react";
 
 interface EditorStateInterface {
+	containerId: string | null;
 	editorView: EditorView | null;
 	editingMarkdown: boolean;
 	enabledVimForMarkdown: boolean;
@@ -20,11 +21,13 @@ interface DispatchObj {
 		| "toggle markdown editor"
 		| "toggle vim"
 		| "set editorView"
-		| "set blog meta";
+		| "set blog meta"
+		| "set container id";
 	payload: EditorStateInterface[keyof EditorStateInterface];
 }
 
 const initialEditorState: EditorStateInterface = {
+	containerId: null,
 	editorView: null,
 	editingMarkdown: true,
 	enabledVimForMarkdown: false,
@@ -60,6 +63,11 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 					...state.blogMeta,
 					...(action.payload as EditorStateInterface["blogMeta"]),
 				},
+			};
+		case "set container id":
+			return {
+				...state,
+				containerId: action.payload as string | null,
 			};
 	}
 };

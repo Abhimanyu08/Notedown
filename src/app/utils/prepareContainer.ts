@@ -1,7 +1,7 @@
 import { BlogProps } from "@/interfaces/BlogProps";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 
-export default async function prepareContainer(containerId: string, language: BlogProps["language"] | null) {
+export default async function prepareContainer(language: BlogProps["language"] | null, containerId: string | null) {
     if (containerId || !language)
         return;
     try {
