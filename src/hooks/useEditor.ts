@@ -5,6 +5,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 
 import { BlogProps } from "../interfaces/BlogProps";
 import getExtensions from "@utils/getExtensions";
+import { EditorContext } from "@/app/appwrite/components/EditorContext";
 
 
 interface useEditorProps {
@@ -18,6 +19,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     // const { setRunningBlock } = useContext(BlogContext)
 
+    const context = useContext(EditorContext)
 
     useEffect(() => {
         if (mounted === false) return
@@ -37,6 +39,10 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
             parent: editorParent,
         });
 
+        if (context) {
+            const { dispatch } = context
+            dispatch({ type: "set editorView", payload: view })
+        }
         setEditorView(view);
     }, [code, blockNumber, mounted, language]);
 

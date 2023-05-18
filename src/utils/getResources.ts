@@ -39,7 +39,7 @@ function resetCodeblocks(markdown: string, html: string) {
     return html;
 }
 
-export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{ data: { title: string, description: string, language?: typeof ALLOWED_LANGUAGES[number] }, content: string }> {
+export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{ data: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }, content: string }> {
 
     let data: { [x: string]: any; language?: any; }, content;
     if (typeof file === "string") {
@@ -69,7 +69,7 @@ export async function getHtmlFromMarkdown(file: File | Blob | string): Promise<{
     }
     let html = await mdToHtml(content);
     html = resetCodeblocks(content, html)
-    return { data: data as { title: string, description: string, language?: typeof ALLOWED_LANGUAGES[number] }, content: html }
+    return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content: html }
 
 }
 

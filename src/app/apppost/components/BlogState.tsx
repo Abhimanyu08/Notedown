@@ -129,7 +129,6 @@ function BlogContextProvider({
 			runningRequest,
 			blockToEditor,
 		} = blogState;
-		console.log(runningBlock, writingBlock);
 		// return;
 		if (runningBlock === null && writingBlock === null) return;
 		let block: number;
@@ -138,7 +137,6 @@ function BlogContextProvider({
 		} else {
 			block = writingBlock as number;
 		}
-		console.log(blockToEditor, block);
 		if (runningRequest) {
 			// setBlockToOutput({
 			// 	[(runningBlock || writingBlock) as number]:

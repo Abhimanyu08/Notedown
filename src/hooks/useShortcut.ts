@@ -3,12 +3,14 @@ import { useEffect, useRef } from "react";
 interface useShortcutProps {
     keys: string[]
     callback: () => void
+    dependencyArray?: any[]
 }
 
 
 export default function useShortCut({
     keys,
-    callback
+    callback,
+    dependencyArray
 }: useShortcutProps) {
 
 
@@ -35,6 +37,6 @@ export default function useShortCut({
             document.removeEventListener("keydown", keyDown)
             document.removeEventListener("keyup", keyUp)
         }
-    }, [])
+    }, dependencyArray || [])
 
 }
