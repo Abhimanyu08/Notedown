@@ -1,4 +1,5 @@
 "use client";
+import { StateEffect } from "@codemirror/state";
 import { Toc } from "@components/BlogPostComponents/TableOfContents";
 import EditorToolbar from "./components/EditorToolbar";
 import MarkdownEditor from "./components/MarkdownEditor";
@@ -9,6 +10,8 @@ import useShortCut from "@/hooks/useShortcut";
 import { getHtmlFromMarkdown } from "@utils/getResources";
 import { EditorView } from "codemirror";
 import { convertMarkdownToContent } from "../utils/convertMarkdownToContent";
+import { vim } from "@replit/codemirror-vim";
+import getExtensions from "@utils/getExtensions";
 
 function Write() {
 	const { editorState, dispatch } = useContext(EditorContext);
@@ -34,8 +37,43 @@ function Write() {
 			.catch((e) => {
 				alert((e as Error).message);
 				dispatch({ type: "toggle markdown editor", payload: null });
+				// This workaround is because keyup event is not fired in case of error
+				const altKeyUp = new KeyboardEvent("keyup", {
+					key: "Alt",
+					altKey: true,
+				});
+				const pKeyUp = new KeyboardEvent("keyup", {
+					key: "p",
+				});
+				document.dispatchEvent(altKeyUp);
+				document.dispatchEvent(pKeyUp);
 			});
 	}, [editorState.editingMarkdown]);
+
+	useEffect(() => {
+		if (!editorState.editorView) return;
+
+		if (editorState.enabledVimForMarkdown) {
+			editorState.editorView.dispatch({
+				effects: StateEffect.reconfigure.of([
+					vim(),
+					...getExtensions({
+						language: "markdown",
+					}),
+				]),
+			});
+		}
+
+		if (!editorState.enabledVimForMarkdown) {
+			editorState.editorView.dispatch({
+				effects: StateEffect.reconfigure.of(
+					getExtensions({
+						language: "markdown",
+					})
+				),
+			});
+		}
+	}, [editorState.enabledVimForMarkdown]);
 
 	return (
 		<div className="grow flex flex-row min-h-0 relative pt-10">
