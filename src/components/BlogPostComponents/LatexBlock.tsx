@@ -3,12 +3,7 @@ import React, { useEffect, useState } from "react";
 import Latex from "react-latex";
 
 function CodeWord({ code }: { code: string }) {
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		if (!mounted) setMounted(true);
-	}, []);
-
+	console.log(code);
 	let modifiedCode = code;
 	if (typeof window !== "undefined") {
 		let tempElement = document.createElement("div");

@@ -88,7 +88,11 @@ function Write() {
 							hidden lg:block
 							overflow-y-hidden`}
 			>
-				<div className={editorState.editingMarkdown ? "" : "invisible"}>
+				<div
+					className={
+						editorState.editingMarkdown ? "h-full" : "invisible"
+					}
+				>
 					<MarkdownEditor />
 				</div>
 				<Blog

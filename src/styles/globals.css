@@ -195,4 +195,10 @@ button {
 	margin-left: 3px;
 	content: attr(data-tip);
 }
-/* I shouldn't be doing this, but that's how it is with big software and breaking changes */
+
+.prose :where(code):not(:where([class~="not-prose"] *))::before {
+	content: "";
+}
+.prose :where(code):not(:where([class~="not-prose"] *))::after {
+	content: "";
+}
