@@ -5,33 +5,23 @@ import { EditorView } from "codemirror";
 import { Dispatch, Reducer, createContext, useReducer } from "react";
 
 interface EditorStateInterface {
-	containerId: string | null;
 	editorView: EditorView | null;
 	editingMarkdown: boolean;
 	enabledVimForMarkdown: boolean;
-	blogMeta: {
-		title: string;
-		description: string;
-		language: (typeof ALLOWED_LANGUAGES)[number] | null;
-		content: string;
-	};
 }
 interface DispatchObj {
 	type:
 		| "toggle markdown editor"
 		| "toggle vim"
 		| "set editorView"
-		| "set blog meta"
-		| "set container id";
+		| "set blog meta";
 	payload: EditorStateInterface[keyof EditorStateInterface];
 }
 
 const initialEditorState: EditorStateInterface = {
-	containerId: null,
 	editorView: null,
 	editingMarkdown: true,
 	enabledVimForMarkdown: false,
-	blogMeta: { title: "", description: "", language: null, content: "" },
 };
 
 export const EditorContext = createContext<{
@@ -55,19 +45,6 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				editorView: action.payload as EditorView | null,
-			};
-		case "set blog meta":
-			return {
-				...state,
-				blogMeta: {
-					...state.blogMeta,
-					...(action.payload as EditorStateInterface["blogMeta"]),
-				},
-			};
-		case "set container id":
-			return {
-				...state,
-				containerId: action.payload as string | null,
 			};
 	}
 };

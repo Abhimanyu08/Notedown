@@ -202,3 +202,11 @@ button {
 .prose :where(code):not(:where([class~="not-prose"] *))::after {
 	content: "";
 }
+
+.xterm-helpers {
+	display: none;
+}
+
+#jsx main {
+	height: 100%;
+}

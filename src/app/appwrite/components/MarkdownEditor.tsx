@@ -1,5 +1,5 @@
 import EditorHelperComponent from "@components/EditorHelperComponent";
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import useEditor from "@/hooks/useEditor";
 
@@ -7,15 +7,21 @@ const initialMarkdown =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
 
 function MarkdownEditor() {
-	const { editorState } = useContext(EditorContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const [mounted, setMounted] = useState(false);
 
-	useEditor({
+	const { editorView } = useEditor({
 		language: "markdown",
 		code: initialMarkdown,
 		editorParentId: "markdown-textarea",
 		mounted,
 	});
+
+	useEffect(() => {
+		if (editorView) {
+			dispatch({ type: "set editorView", payload: editorView });
+		}
+	}, [editorView]);
 
 	useEffect(() => {
 		if (!mounted) setMounted(true);
@@ -36,4 +42,4 @@ function MarkdownEditor() {
 	);
 }
 
-export default MarkdownEditor;
+export default memo(MarkdownEditor);

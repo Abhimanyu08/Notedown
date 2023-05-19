@@ -18,9 +18,14 @@ interface BlogStateInterface {
 	runningRequest: boolean;
 	runningBlock: number | null;
 	writingBlock: number | null;
-	author: string;
 	containerId: string;
-	language: BlogProps["language"] | null;
+	blogMeta: Partial<{
+		title: string;
+		author: string;
+		description: string;
+		language: (typeof ALLOWED_LANGUAGES)[number];
+		content: string;
+	}>;
 }
 
 const blogInitialState: BlogStateInterface = {
@@ -30,9 +35,8 @@ const blogInitialState: BlogStateInterface = {
 	runningRequest: false,
 	runningBlock: null,
 	writingBlock: null,
-	author: "",
 	containerId: "",
-	language: null,
+	blogMeta: {},
 };
 interface DispatchObj {
 	type:
@@ -42,7 +46,8 @@ interface DispatchObj {
 		| "set editor"
 		| "set writing block"
 		| "set running block"
-		| "toggle running request";
+		| "toggle running request"
+		| "set blog meta";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
 
@@ -96,6 +101,14 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 				runningRequest: !state.runningRequest,
 			};
 		}
+		case "set blog meta":
+			return {
+				...state,
+				blogMeta: {
+					...state.blogMeta,
+					...(action.payload as BlogStateInterface["blogMeta"]),
+				},
+			};
 		default:
 			return blogInitialState;
 	}
@@ -118,7 +131,9 @@ function BlogContextProvider({
 }) {
 	const [blogState, dispatch] = useReducer<typeof reducer>(reducer, {
 		...blogInitialState,
-		language,
+		blogMeta: {
+			language,
+		},
 	});
 	useEffect(() => {
 		if (!language) return;

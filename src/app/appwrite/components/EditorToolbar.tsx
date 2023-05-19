@@ -5,10 +5,12 @@ import { VscPreview } from "react-icons/vsc";
 import { EditorContext } from "./EditorContext";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { BiCodeAlt } from "react-icons/bi";
+import { BlogContext } from "@/app/apppost/components/BlogState";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
-	const { language } = editorState.blogMeta;
+	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
+	const { language } = blogState.blogMeta;
 
 	return (
 		<>
@@ -16,27 +18,26 @@ function EditorToolbar() {
 				<ToolbarButton
 					className=""
 					tip={` ${
-						editorState.containerId
+						blogState.containerId
 							? "RCE enabled"
 							: "Enable remote code execution"
 					} `}
 					onClick={() =>
-						prepareContainer(
-							language,
-							editorState.containerId
-						).then((containerId) => {
-							if (!containerId) return;
-							dispatch({
-								type: "set container id",
-								payload: containerId,
-							});
-						})
+						prepareContainer(language, blogState.containerId).then(
+							(containerId) => {
+								if (!containerId) return;
+								blogStateDispatch({
+									type: "set containerId",
+									payload: containerId,
+								});
+							}
+						)
 					}
 				>
 					<BiCodeAlt
 						size={30}
 						className={` ${
-							editorState.containerId
+							blogState.containerId
 								? "text-lime-400"
 								: "text-black dark:text-white"
 						} mt-2 ml-2 `}

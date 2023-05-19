@@ -6,20 +6,18 @@ import { MdHideImage, MdImage } from "react-icons/md";
 import { SiVim } from "react-icons/si";
 
 import useEditor from "../../hooks/useEditor";
-import { BlogProps } from "../../interfaces/BlogProps";
 
+import { BlogContext } from "@/app/apppost/components/BlogState";
 import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
-import useTerminal from "../../hooks/useTerminal";
 import getExtensions from "@utils/getExtensions";
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import Terminal from "./Terminal";
 interface CodeProps {
 	code: string;
-	language: BlogProps["language"];
 	blockNumber: number;
 }
 
-function Code({ code, language, blockNumber }: CodeProps) {
+function Code({ code, blockNumber }: CodeProps) {
 	// const {
 	// 	containerId,
 	// 	vimEnabled,
@@ -29,6 +27,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	// 	setWritingBlock,
 	// } = useContext(BlogContext);
 	const { blogState, dispatch } = useContext(BlogContext);
+	const { language } = blogState.blogMeta;
 
 	const [mounted, setMounted] = useState(false);
 	const [openShell, setOpenShell] = useState(true);
@@ -40,15 +39,15 @@ function Code({ code, language, blockNumber }: CodeProps) {
 		editorParentId: `codearea-${blockNumber}`,
 	});
 
-	useTerminal({
-		containerId: blogState.containerId,
-		blockNumber,
-		mounted,
-	});
-
 	useEffect(() => {
 		if (!mounted) setMounted(true);
 	}, [mounted]);
+
+	// useTerminal({
+	// 	containerId: blogState.containerId,
+	// 	blockNumber,
+	// 	mounted,
+	// });
 
 	useEffect(() => {
 		// if (setBlockToEditor && editorView)
@@ -187,7 +186,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 			</div>
 			{mounted && (
 				<div
-					className="w-full"
+					className="w-full border-[1px] border-white"
 					id={`codearea-${blockNumber}`}
 					onDoubleClick={() => {
 						// if (setRunningBlock) setRunningBlock(blockNumber);
@@ -199,14 +198,7 @@ function Code({ code, language, blockNumber }: CodeProps) {
 				></div>
 			)}
 
-			{mounted && (
-				<div
-					className={`not-prose  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
-						openShell ? "" : "hidden"
-					}`}
-					id={`terminal-${blockNumber}`}
-				></div>
-			)}
+			{mounted && <Terminal {...{ blockNumber, openShell }} />}
 		</div>
 	);
 }

@@ -99,7 +99,6 @@ const tagToTransformer: TagToTransformer = {
 			return (
 				<Code
 					key={BLOCK_NUMBER}
-					language={blogMeta.language}
 					code={code}
 					blockNumber={BLOCK_NUMBER}
 				/>

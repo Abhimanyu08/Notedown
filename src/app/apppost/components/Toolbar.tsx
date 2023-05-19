@@ -85,7 +85,7 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 					} `}
 					onClick={() =>
 						prepareContainer(
-							blogState.language,
+							blogState.blogMeta.language,
 							blogState.containerId
 						).then((containerId) => {
 							if (!containerId) return;
