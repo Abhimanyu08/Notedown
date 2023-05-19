@@ -135,7 +135,9 @@ function BlogContextProvider({
 			language,
 		},
 	});
+
 	useEffect(() => {
+		language = language || blogState.blogMeta.language;
 		if (!language) return;
 		const {
 			containerId,

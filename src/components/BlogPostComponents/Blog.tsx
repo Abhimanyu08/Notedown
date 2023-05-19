@@ -239,7 +239,7 @@ export function Blog({
 				pb-20 md:pb-10 
 				lg:scrollbar-thin 
 				scrollbar-track-black 
-				scrollbar-thumb-slate-700 flex flex-col` +
+				scrollbar-thumb-slate-700 ` +
 				" " +
 				extraClasses
 			}
@@ -272,7 +272,7 @@ export function Blog({
 					</span>
 				</div>
 			</header>
-			<article className="grow" id="jsx">
+			<article className="" id="jsx">
 				{blogJsx}
 			</article>
 		</div>
