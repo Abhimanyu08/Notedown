@@ -82,7 +82,7 @@ function getExtensions({ language, blockNumber, setRunningBlock }: getExtensionI
                     fontSize: "16px",
                     lineHeight: "22.4px"
                 }
-            }, { dark: true })
+            }, { dark: true }),
         ]
 
 
@@ -102,6 +102,7 @@ function getExtensions({ language, blockNumber, setRunningBlock }: getExtensionI
         }
     }
     const importantExtensions = [
+        EditorView.lineWrapping,
         mySetupExtensions,
         langToExtension(language),
         tabSize.of(EditorState.tabSize.of(4)),

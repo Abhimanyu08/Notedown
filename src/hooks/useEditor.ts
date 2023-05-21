@@ -38,6 +38,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
             parent: editorParent,
         });
 
+        console.log(view.lineWrapping)
         setEditorView(view);
     }, [code, blockNumber, mounted, language]);
 
