@@ -1,10 +1,9 @@
 "use client";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
 
-import dynamic from "next/dynamic";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
+import TLDrawing from "./TLDrawing";
 
 export default function DrawingOrImage({
 	canvasImageName,
@@ -14,29 +13,31 @@ export default function DrawingOrImage({
 	imageFolder?: string;
 }) {
 	const pathname = usePathname();
-	const [DrawingComponent, setDrawingComponent] = useState<
-		React.ComponentType<{
-			canvasImageName: string;
-			imageFolder?: string | undefined;
-		}>
-	>();
+	// const [DrawingComponent, setDrawingComponent] = useState<
+	// 	React.ComponentType<{
+	// 		canvasImageName: string;
+	// 		imageFolder?: string | undefined;
+	// 	}>
+	// >();
 
-	if (pathname?.startsWith("/edit")) {
-		if (DrawingComponent === undefined) {
-			const DynamicDrawingComponenet = dynamic(
-				() => import(`./TLDrawing`),
-				{
-					ssr: false,
-				}
-			);
-			setDrawingComponent(DynamicDrawingComponenet);
-			return (
-				<DynamicDrawingComponenet
-					{...{ canvasImageName, imageFolder }}
-				/>
-			);
-		}
-		return <DrawingComponent {...{ canvasImageName, imageFolder }} />;
+	if (pathname?.startsWith("/appwrite")) {
+		// if (DrawingComponent === undefined) {
+		// 	const DynamicDrawingComponenet = dynamic(
+		// 		() => import(`./TLDrawing`),
+		// 		{
+		// 			ssr: false,
+		// 		}
+		// 	);
+		// 	setDrawingComponent(DynamicDrawingComponenet);
+
+		// 	return (
+		// 		<DynamicDrawingComponenet
+		// 			{...{ canvasImageName, imageFolder }}
+		// 		/>
+		// 	);
+		// }
+		// return <DrawingComponent {...{ canvasImageName, imageFolder }} />;
+		return <TLDrawing {...{ canvasImageName, imageFolder }} />;
 	}
 
 	const { publicUrl } = supabase.storage

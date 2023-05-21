@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Latex from "react-latex";
 import { SUPABASE_IMAGE_BUCKET } from "../constants";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
@@ -139,10 +139,12 @@ const tagToTransformer: TagToTransformer = {
 		}
 		if (node.children.length === 1 && /^canvas-\d+$/.test(firstWord)) {
 			return (
-				<DrawingOrImage
-					imageFolder={blogMeta.imageFolder}
-					canvasImageName={firstWord}
-				/>
+				<Suspense fallback={<p>Loading...</p>}>
+					<DrawingOrImage
+						imageFolder={blogMeta.imageFolder}
+						canvasImageName={firstWord}
+					/>
+				</Suspense>
 			);
 		}
 		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p>
