@@ -174,3 +174,17 @@
 	border-color: rgba(255, 255, 255, 0.3);
 	border-width: 1px;
 }
+
+.tool {
+	background-color: rgba(31, 41, 55);
+	color: white;
+	font-size: 0.75em;
+	padding: 0 8px 0 8px;
+	border-radius: 2px;
+}
+.tool:hover {
+	transform: scale(1.05);
+}
+.tool:active {
+	transform: scale(0.95);
+}
