@@ -8,10 +8,10 @@ import { supabase } from "../../../utils/supabaseClient";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
 
 export const config = {
-	runtime: "edge",
+	runtime: "experimental-edge",
 };
 
-const langToBadgeColor: Record<typeof ALLOWED_LANGUAGES[number], string> = {
+const langToBadgeColor: Record<(typeof ALLOWED_LANGUAGES)[number], string> = {
 	javascript: "text-yellow-500",
 	python: "text-green-500",
 	rust: "text-red-500",
