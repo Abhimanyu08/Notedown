@@ -8,7 +8,7 @@ import { supabase } from "../../../utils/supabaseClient";
 import PostWithBlogger from "../../interfaces/PostWithBlogger";
 
 export const config = {
-	runtime: "experimental-edge",
+	runtime: "edge",
 };
 
 const langToBadgeColor: Record<(typeof ALLOWED_LANGUAGES)[number], string> = {

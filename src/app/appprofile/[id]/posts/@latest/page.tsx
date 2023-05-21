@@ -26,7 +26,6 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 			/>
 		</>
 	);
-	return <></>;
 }
 
 export default LatestPosts;

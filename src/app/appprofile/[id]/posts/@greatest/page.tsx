@@ -1,6 +1,5 @@
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 

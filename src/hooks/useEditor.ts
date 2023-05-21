@@ -1,11 +1,10 @@
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "codemirror";
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
-import { BlogProps } from "../interfaces/BlogProps";
 import getExtensions from "@utils/getExtensions";
-import { EditorContext } from "@/app/appwrite/components/EditorContext";
+import { BlogProps } from "../interfaces/BlogProps";
 
 
 interface useEditorProps {
@@ -38,11 +37,6 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
             parent: editorParent,
         });
 
-<<<<<<< HEAD
-
-=======
-        console.log(view.lineWrapping)
->>>>>>> 07b091aeb26595ae919724f54f81f5b9e6b5cd75
         setEditorView(view);
     }, [code, blockNumber, mounted, language]);
 
