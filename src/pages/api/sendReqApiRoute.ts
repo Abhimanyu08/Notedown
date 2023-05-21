@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 
 export const config = {
-    runtime: 'edge'
+    runtime: 'experimental-edge'
 }
 
 const handler = async (req: NextRequest) => {

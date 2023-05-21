@@ -10,8 +10,10 @@ function getYoutubeEmbedLink(link: string): string {
     let lastPart = link.match(/\/([^\/]*)$/)?.at(1)
 
     let videoId = lastPart?.match(/watch\?v=(.*)$/)?.at(1)
+    videoId = videoId?.replace(/\&#x26;t/g, '?start')
     if (videoId) {
         embedLink = embedLink + `${videoId}`
+        console.log(embedLink)
         return embedLink
     }
 

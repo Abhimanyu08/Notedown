@@ -14,7 +14,6 @@ export type TextToken = {
 
 
 export default function tokenizer(html: string): Array<NodeToken | TextToken> {
-
     let i = 0
     let tokens = []
     while (i < html.length) {
