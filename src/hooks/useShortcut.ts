@@ -19,7 +19,6 @@ export default function useShortCut({
         document.onkeydown = (e) => {
             if (keys.includes(e.key)) {
                 keyArray.current.add(e.key);
-                console.log("keydown", e.key, keyArray.current)
                 if (keys.length === keyArray.current.size) {
                     callback()
                 }
@@ -27,7 +26,6 @@ export default function useShortCut({
         }
         document.onkeyup = (e) => {
             keyArray.current.delete(e.key)
-            console.log("keyup", e.key, keyArray.current)
         }
     }, [])
 

@@ -38,14 +38,14 @@ export default function DrawingOrImage({
 		return <DrawingComponent {...{ canvasImageName, imageFolder }} />;
 	}
 
-	const { publicURL } = supabase.storage
+	const { publicUrl } = supabase.storage
 		.from(SUPABASE_IMAGE_BUCKET)
-		.getPublicUrl(`${imageFolder}/${canvasImageName}.png`);
+		.getPublicUrl(`${imageFolder}/${canvasImageName}.png`).data;
 
 	return (
 		<div className="w-full bg-black">
 			<img
-				src={publicURL || ""}
+				src={publicUrl || ""}
 				// layout="fill"
 				width={1440}
 				height={1080}
