@@ -18,7 +18,6 @@ function Terminal({
 	const { containerId } = blogState;
 
 	useEffect(() => {
-		console.log(terminal);
 		if (terminal !== undefined) return;
 
 		import("xterm").then((val) => {
@@ -33,7 +32,6 @@ function Terminal({
 			const termElement = document.getElementById(
 				`terminal-${blockNumber}`
 			);
-			console.log(termElement);
 			termElement?.replaceChildren("");
 			if (termElement === null) return;
 			term.open(termElement);
@@ -52,7 +50,6 @@ function Terminal({
 					setSendTerminalCommand(true);
 					return;
 				}
-				console.log(key.key);
 				setTerminalCommand((prev) => prev + key.key);
 				term.write(key.key);
 			});
@@ -74,7 +71,6 @@ function Terminal({
 			runShellCommand({ containerId, command: terminalCommand }).then(
 				(val) => {
 					// setBlockToOutput({ [blockNumber]: val })
-					console.log(terminalCommand);
 					dispatch({
 						type: "set output",
 						payload: { [blockNumber]: val },
@@ -101,7 +97,7 @@ function Terminal({
 		<div
 			className={`not-prose border-[1px] border-white  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
 				openShell ? "" : "hidden"
-			} `}
+			} h-52`}
 			id={`terminal-${blockNumber}`}
 			key={`terminal-${blockNumber}`}
 		></div>
