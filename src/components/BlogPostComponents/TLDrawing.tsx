@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Tldraw } from "@tldraw/tldraw";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
+import { EditorContext } from "@/app/appwrite/components/EditorContext";
 
 function TLDrawing({
 	canvasImageName,
@@ -12,11 +13,12 @@ function TLDrawing({
 	canvasImageName: string;
 	imageFolder?: string;
 }) {
-	const [app, setApp] = useState<any>();
-	const [currentCanvasImageName, setCurrentCanvasImageName] =
-		useState(canvasImageName);
-	// const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
-	const [changeNumber, setChangeNumber] = useState(0);
+	// const [app, setApp] = useState<any>();
+	// const [currentCanvasImageName, setCurrentCanvasImageName] =
+	// 	useState(canvasImageName);
+	// // const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
+	// const [changeNumber, setChangeNumber] = useState(0);
+	const { dispatch } = useContext(EditorContext);
 
 	// useEffect(() => {
 	// 	if (
@@ -62,24 +64,27 @@ function TLDrawing({
 					disableAssets={false}
 					darkMode={false}
 					onMount={(app) => {
-						if (imageFolder && canvasImageName) {
-							supabase.storage
-								.from(SUPABASE_IMAGE_BUCKET)
-								.download(
-									`${imageFolder}/${canvasImageName}.png`
-								)
-								.then((val) => {
-									if (!val.data) return;
-									const file = new File(
-										[val.data],
-										`${canvasImageName}.png`
-									);
-									app.addMediaFromFiles([file]).then((app) =>
-										app.zoomToFit()
-									);
-								});
-						}
-						setApp(app);
+						// if (imageFolder && canvasImageName) {
+						// 	supabase.storage
+						// 		.from(SUPABASE_IMAGE_BUCKET)
+						// 		.download(
+						// 			`${imageFolder}/${canvasImageName}.png`
+						// 		)
+						// 		.then((val) => {
+						// 			if (!val.data) return;
+						// 			const file = new File(
+						// 				[val.data],
+						// 				`${canvasImageName}.png`
+						// 			);
+						// 			app.addMediaFromFiles([file]).then((app) =>
+						// 				app.zoomToFit()
+						// 			);
+						// 		});
+						// }
+						dispatch({
+							type: "set canvas apps",
+							payload: { [canvasImageName]: app },
+						});
 					}}
 					// onCommand={() => runOnCommad(canvasImageName)}
 				/>

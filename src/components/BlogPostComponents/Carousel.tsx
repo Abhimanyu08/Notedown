@@ -3,15 +3,11 @@ import Image from "next/image";
 import React, { useState } from "react";
 
 function Carousel({
-	images,
-	height,
-	width,
+	imageNames,
 	captions,
 }: {
-	images: string[];
+	imageNames: string[];
 	captions: string[];
-	height: number;
-	width: number;
 }) {
 	const [show, setShow] = useState(0);
 
@@ -20,12 +16,12 @@ function Carousel({
 		e.preventDefault();
 		if ((e.target as any).id === "pre") {
 			if (show === 0) {
-				setShow(images.length - 1);
+				setShow(imageNames.length - 1);
 			} else {
 				setShow(show - 1);
 			}
 		} else {
-			if (show === images.length - 1) {
+			if (show === imageNames.length - 1) {
 				setShow(0);
 			} else {
 				setShow(show + 1);
@@ -40,7 +36,7 @@ function Carousel({
 				className={`relative flex w-[600%] h-auto`}
 				// style={{ transform: `translateX(-${100 * show}%)` }}
 			>
-				{images.map((image, idx) => (
+				{imageNames.map((image, idx) => (
 					<div
 						key={idx}
 						className="w-1/6 transition-transform duration-300 carousel"

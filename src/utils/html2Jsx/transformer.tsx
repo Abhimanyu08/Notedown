@@ -205,7 +205,7 @@ const tagToTransformer: TagToTransformer = {
 
 			return (
 				<Carousel
-					images={imageUrls}
+					imageNames={imageUrls}
 					captions={captions}
 					width={175}
 					height={120}
@@ -220,7 +220,7 @@ const tagToTransformer: TagToTransformer = {
 					blogMeta.imageFolder,
 					blogMeta.imageToUrl
 				) || "";
-			return <ImageWithCaption src={url} alt={alt} />;
+			return <ImageWithCaption name={src} src={url} alt={alt} />;
 		}
 		if (alt && !src) {
 			return <LexicaImage alt={alt} />;
@@ -250,6 +250,6 @@ function getUrlFromImgname(
 	if (imageToUrl && imageToUrl[imageName]) return imageToUrl[imageName];
 	const publicUrl = supabase.storage
 		.from(SUPABASE_IMAGE_BUCKET)
-		.getPublicUrl(`${imageFolder}/${imageName}`).data?.publicURL;
+		.getPublicUrl(`${imageFolder}/${imageName}`).data?.publicUrl;
 	return publicUrl;
 }

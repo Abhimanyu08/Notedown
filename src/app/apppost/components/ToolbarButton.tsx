@@ -2,9 +2,9 @@ import React from "react";
 
 interface ToolbarButtonProps {
 	children: React.ReactNode;
-	tip: string;
-	className: string;
-	onClick: React.MouseEventHandler<HTMLButtonElement>;
+	className?: string;
+	tip?: string;
+	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 function ToolbarButton({
@@ -15,7 +15,10 @@ function ToolbarButton({
 }: ToolbarButtonProps) {
 	return (
 		<button
-			className={className + " w-fit px-3 tooltip"}
+			className={
+				className +
+				" w-fit px-3 tooltip active:scale-95 hover:scale-105"
+			}
 			onClick={onClick}
 			data-tip={tip}
 		>

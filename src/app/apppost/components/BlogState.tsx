@@ -1,14 +1,13 @@
 "use client";
-import { BlogProps } from "@/interfaces/BlogProps";
 import { ALLOWED_LANGUAGES, langToExtension } from "@utils/constants";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 import { EditorView } from "codemirror";
 import React, {
 	Dispatch,
 	Reducer,
-	useReducer,
 	createContext,
 	useEffect,
+	useReducer,
 } from "react";
 
 interface BlogStateInterface {
@@ -26,6 +25,9 @@ interface BlogStateInterface {
 		language: (typeof ALLOWED_LANGUAGES)[number];
 		content: string;
 	}>;
+	canvasApps: Record<string, any>;
+	uploadedImages: Record<string, File>;
+	imagesToUpload: string[];
 }
 
 const blogInitialState: BlogStateInterface = {
@@ -37,6 +39,9 @@ const blogInitialState: BlogStateInterface = {
 	writingBlock: null,
 	containerId: "",
 	blogMeta: {},
+	canvasApps: {},
+	uploadedImages: {},
+	imagesToUpload: [],
 };
 interface DispatchObj {
 	type:
@@ -47,7 +52,11 @@ interface DispatchObj {
 		| "set writing block"
 		| "set running block"
 		| "toggle running request"
-		| "set blog meta";
+		| "set blog meta"
+		| "set canvas apps"
+		| "set image folder"
+		| "add images to upload"
+		| "remove image from upload";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
 
@@ -108,6 +117,40 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 					...state.blogMeta,
 					...(action.payload as BlogStateInterface["blogMeta"]),
 				},
+			};
+		case "set canvas apps":
+			return {
+				...state,
+				canvasApps: {
+					...state.canvasApps,
+					...(action.payload as Record<string, any>),
+				},
+			};
+
+		case "set image folder":
+			return {
+				...state,
+				uploadedImages: {
+					...state.uploadedImages,
+					...(action.payload as Record<string, File>),
+				},
+			};
+
+		case "add images to upload":
+			return {
+				...state,
+				imagesToUpload: [
+					...state.imagesToUpload,
+					action.payload as string,
+				],
+			};
+
+		case "remove image from upload":
+			return {
+				...state,
+				imagesToUpload: state.imagesToUpload.filter(
+					(i) => i !== (action.payload as string)
+				),
 			};
 		default:
 			return blogInitialState;

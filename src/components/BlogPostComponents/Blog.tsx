@@ -210,7 +210,7 @@ export function Blog({
 				hover:prose-a:underline-offset-2
 
 				// ---------------prose-code---------------
-				dark:prose-code:bg-gray-900
+				dark:prose-code:bg-gray-800
 				dark:prose-code:text-gray-300
 				prose-code:bg-white
 				prose-code:text-black

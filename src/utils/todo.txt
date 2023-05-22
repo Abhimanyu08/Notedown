@@ -20,7 +20,6 @@
 4. Modals are inconsistent with the website design
 5. Upvoted by you section is ugly.
 6. Design is all over the place.
-7. User should automatically go to the next line when he hits the right boundary of the editor
 
 
 

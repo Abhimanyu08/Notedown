@@ -1,6 +1,5 @@
 "use client";
 import useEditor from "@/hooks/useEditor";
-import { ALLOWED_LANGUAGES } from "@utils/constants";
 import { EditorView } from "codemirror";
 import { Dispatch, Reducer, createContext, useReducer } from "react";
 
@@ -10,12 +9,9 @@ interface EditorStateInterface {
 	enabledVimForMarkdown: boolean;
 }
 interface DispatchObj {
-	type:
-		| "toggle markdown editor"
-		| "toggle vim"
-		| "set editorView"
-		| "set blog meta";
-	payload: EditorStateInterface[keyof EditorStateInterface];
+	type: "toggle markdown editor" | "toggle vim" | "set editorView";
+
+	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
 
 const initialEditorState: EditorStateInterface = {
@@ -41,6 +37,7 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 			};
 		case "toggle markdown editor":
 			return { ...state, editingMarkdown: !state.editingMarkdown };
+
 		case "set editorView":
 			return {
 				...state,
