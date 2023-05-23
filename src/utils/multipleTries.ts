@@ -6,10 +6,15 @@ export async function tryNTimesSupabaseTableFunction<T>(functionToTry: () => Pro
 
     //tries to perform a supabase table operation totalTrial number of times, throws an error if doesn't succeed
 
-    const resp = await functionToTry()
-    if (!resp.error && resp.data) return resp.data
+    const { data, error, statusText } = await functionToTry()
+    if (data) return data
 
-    if (totalTrials === 0) throw resp.error
+    if (totalTrials === 0) {
+        if (error) {
+            throw error
+        }
+        throw new Error(statusText)
+    }
 
     totalTrials -= 1
     return tryNTimesSupabaseTableFunction(functionToTry, totalTrials)

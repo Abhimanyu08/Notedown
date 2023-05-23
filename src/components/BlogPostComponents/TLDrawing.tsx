@@ -5,6 +5,7 @@ import { Tldraw } from "@tldraw/tldraw";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import { EditorContext } from "@/app/appwrite/components/EditorContext";
+import { BlogContext } from "@/app/apppost/components/BlogState";
 
 function TLDrawing({
 	canvasImageName,
@@ -18,7 +19,15 @@ function TLDrawing({
 	// 	useState(canvasImageName);
 	// // const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
 	// const [changeNumber, setChangeNumber] = useState(0);
-	const { dispatch } = useContext(EditorContext);
+	const { dispatch } = useContext(BlogContext);
+	useEffect(() => {
+		return () => {
+			dispatch({
+				type: "remove canvas app",
+				payload: canvasImageName,
+			});
+		};
+	}, []);
 
 	// useEffect(() => {
 	// 	if (
@@ -81,12 +90,13 @@ function TLDrawing({
 						// 			);
 						// 		});
 						// }
+					}}
+					onCommand={(app) => {
 						dispatch({
 							type: "set canvas apps",
 							payload: { [canvasImageName]: app },
 						});
 					}}
-					// onCommand={() => runOnCommad(canvasImageName)}
 				/>
 			</div>
 		</>

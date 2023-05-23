@@ -186,34 +186,23 @@ const tagToTransformer: TagToTransformer = {
 		return defaultTagToJsx(beforeNode, blogMeta, parent);
 	},
 
-	img: (node, blogMeta, _) => {
+	img: (node, _, __) => {
 		const { alt, src } = node.attributes as { alt: string; src: string };
 
 		if (src.split(",").length > 1) {
-			// const imageUrls = src
-			// 	.split(",")
-			// 	.map(
-			// 		(imageName) =>
-			// 			getUrlFromImgname(
-			// 				imageName,
-			// 				blogMeta.imageFolder,
-			// 				blogMeta.imageToUrl
-			// 			) || ""
-			// 	);
-
 			const captions = alt.split(";");
 
-			return <Carousel imageNames={src.split(",")} captions={captions} />;
+			return (
+				<Carousel
+					imageNames={src.split(",")}
+					captions={captions}
+					key={src}
+				/>
+			);
 		}
 
 		if (src) {
-			const url =
-				getUrlFromImgname(
-					src,
-					blogMeta.imageFolder,
-					blogMeta.imageToUrl
-				) || "";
-			return <ImageWithCaption name={src} alt={alt} />;
+			return <ImageWithCaption name={src} alt={alt} key={src} />;
 		}
 		if (alt && !src) {
 			return <LexicaImage alt={alt} />;

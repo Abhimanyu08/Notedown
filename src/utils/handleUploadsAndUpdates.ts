@@ -32,15 +32,15 @@ export async function handlePostUpload({ userId, postMetadata, markdownFile, ima
             description: postMetadata.description,
             language: postMetadata.language,
             created_by: userId
-        }), 3);
+        }).select("*"), 3);
 
         //upload markdown file
         const folderName = makeFolderName(userId, newPost.id)
         const fileName = `${folderName}/${markdownFile.name}`
-        tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_FILES_BUCKET).upload(fileName, markdownFile), 3)
+        await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_FILES_BUCKET).upload(fileName, markdownFile), 3)
 
         //upload images
-        Promise.all(
+        await Promise.all(
             imagesToUpload.map((image) => {
 
                 tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(`${folderName}/${processImageName(image.name)}`, image), 3)
@@ -53,7 +53,7 @@ export async function handlePostUpload({ userId, postMetadata, markdownFile, ima
             supabase.from(SUPABASE_POST_TABLE).update({
                 image_folder: folderName,
                 filename: fileName
-            }).eq("id", newPost.id), 3)
+            }).eq("id", newPost.id).select("*"), 3)
 
         return finalNewPost
 

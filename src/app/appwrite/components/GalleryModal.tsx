@@ -1,8 +1,12 @@
 "use client";
 import { BlogContext } from "@/app/apppost/components/BlogState";
+import ToolbarButton from "@/app/apppost/components/ToolbarButton";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
+import { processImageName } from "@utils/makeFolderName";
 import Image from "next/image";
 import React, { memo, useContext, useState } from "react";
+import { BiImageAdd } from "react-icons/bi";
+import { IoMdAdd } from "react-icons/io";
 import { MdContentCopy } from "react-icons/md";
 
 function GalleryModal() {
@@ -23,10 +27,15 @@ function GalleryModal() {
 				className="hidden"
 				multiple
 			/>
-			<input type="checkbox" name="" id="gallery" className="hidden" />
+			<input
+				type="checkbox"
+				name=""
+				id="gallery"
+				className="hidden modal-input"
+			/>
 			<label
 				htmlFor="gallery"
-				className="absolute top-0 left-0 w-full h-full z-10 text-white"
+				className="absolute top-0 left-0 w-full h-full z-10 text-white modal-box"
 			>
 				<label className="w-3/4 h-3/4 bg-black border-[1px] border-white overflow-auto">
 					<div className="grid grid-cols-3 w-full  auto-rows-max">
@@ -62,29 +71,38 @@ function GalleryModal() {
 						)}
 						<label
 							htmlFor="gallery-input"
-							className="w-full h-full text-center p-auto hover:bg-gray-800 aspect-square"
+							className="w-full h-full group flex flex-col items-center justify-center p-auto hover:bg-gray-800 aspect-square"
 						>
-							Add images
+							<BiImageAdd
+								size={40}
+								className="group-hover:scale-105 group-active:scale-95"
+							/>
 						</label>
 					</div>
 				</label>
-				{namesToCopy.length > 0 && (
-					<div className="flex w-3/4">
-						<p className="grow overflow-x-auto border-b-[1px] border-white">
-							{namesToCopy.join(",")}
-						</p>
-						<label
-							onClick={() => {
-								navigator.clipboard.writeText(
-									namesToCopy.join(",")
-								);
-							}}
-							htmlFor="gallery"
-						>
-							<MdContentCopy />
-						</label>
-					</div>
-				)}
+				<div
+					className={`flex self-center w-3/4 ${
+						namesToCopy.length > 0 ? "visible" : "invisible"
+					}`}
+				>
+					<p className="grow overflow-x-auto border-b-[1px] border-white">
+						{namesToCopy.join(",") || "hello"}
+					</p>
+
+					<label
+						onClick={() => {
+							navigator.clipboard.writeText(
+								namesToCopy.join(",")
+							);
+						}}
+						htmlFor="gallery"
+						data-tip="Copy"
+						className="flex items-center gap-1 text-sm group"
+					>
+						<MdContentCopy className="group-hover:scale-110 group-active:scale-90" />
+						<span>copy</span>
+					</label>
+				</div>
 			</label>
 		</>
 	);
@@ -133,10 +151,7 @@ const getImagesObj = (e: React.ChangeEvent<HTMLInputElement>) => {
 	const obj: Record<string, File> = {};
 	Array.from(e.currentTarget.files).map((file) => {
 		let fileName = file.name;
-		fileName = fileName
-			.split(" ")
-			.map((i) => i.toLowerCase())
-			.join("");
+		fileName = processImageName(fileName);
 
 		obj[fileName] = file;
 	});

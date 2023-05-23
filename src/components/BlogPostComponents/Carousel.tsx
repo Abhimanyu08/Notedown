@@ -1,7 +1,7 @@
 "use client";
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import Image from "next/image";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 function Carousel({
 	imageNames,
@@ -11,7 +11,18 @@ function Carousel({
 	captions: string[];
 }) {
 	const [show, setShow] = useState(0);
-	const { blogState } = useContext(BlogContext);
+	const { blogState, dispatch } = useContext(BlogContext);
+
+	useEffect(() => {
+		dispatch({
+			type: "add images to upload",
+			payload: imageNames,
+		});
+
+		return () => {
+			dispatch({ type: "remove image from upload", payload: imageNames });
+		};
+	}, []);
 
 	//show -> The idx of the image to show out of all the images.
 	const onSlide: React.MouseEventHandler<HTMLDivElement> = (e) => {

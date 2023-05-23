@@ -6,37 +6,22 @@ import { EditorContext } from "./EditorContext";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { BiCodeAlt } from "react-icons/bi";
 import { TfiGallery } from "react-icons/tfi";
+import { GrDocumentUpload } from "react-icons/gr";
 import { BlogContext } from "@/app/apppost/components/BlogState";
+import { FaFileUpload } from "react-icons/fa";
+import useUploadPost from "../hooks/useUploadPost";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const { language } = blogState.blogMeta;
 
+	const [startUpload, setStartUpload] = useState(false);
+
+	useUploadPost({ startUpload });
+
 	return (
 		<>
-			{/* <GalleryModal /> */}
-			{/* <input
-				type="file"
-				onChange={(e) => {
-					if (!e.currentTarget.files) return;
-					const file = e.currentTarget.files[0];
-					let fileName = file.name;
-					fileName = fileName
-						.split(" ")
-						.map((i) => i.toLowerCase())
-						.join("");
-					blogStateDispatch({
-						type: "set image folder",
-						payload: {
-							[fileName]: file,
-						},
-					});
-				}}
-				id="gallery"
-				accept="image/*"
-				className="hidden"
-			/> */}
 			<ToolbarButton
 				className={`${language ? "" : "invisible"}`}
 				tip={` ${
@@ -85,6 +70,12 @@ function EditorToolbar() {
 				<label htmlFor="gallery">
 					<TfiGallery size={24} />
 				</label>
+			</ToolbarButton>
+			<ToolbarButton
+				tip="Upload post/changes"
+				onClick={() => setStartUpload(true)}
+			>
+				<FaFileUpload size={26} />
 			</ToolbarButton>
 		</>
 	);

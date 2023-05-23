@@ -1,3 +1,4 @@
+"use client";
 import React, { useContext, useEffect } from "react";
 import Image from "next/image";
 import { EditorContext } from "@/app/appwrite/components/EditorContext";
@@ -13,7 +14,7 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 		dispatch({ type: "add images to upload", payload: [name] });
 
 		return () => {
-			dispatch({ type: "remove image from upload", payload: name });
+			dispatch({ type: "remove image from upload", payload: [name] });
 		};
 	}, []);
 

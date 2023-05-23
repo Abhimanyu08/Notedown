@@ -58,7 +58,8 @@ interface DispatchObj {
 		| "set canvas apps"
 		| "set image to files"
 		| "add images to upload"
-		| "remove image from upload";
+		| "remove image from upload"
+		| "remove canvas app";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
 
@@ -151,8 +152,15 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				imagesToUpload: state.imagesToUpload.filter(
-					(i) => i !== (action.payload as string)
+					(i) => !(action.payload as string[]).includes(i)
 				),
+			};
+		case "remove canvas app":
+			const currentCanvasApps = { ...state.canvasApps };
+			delete currentCanvasApps[action.payload as string];
+			return {
+				...state,
+				canvasApps: currentCanvasApps,
 			};
 		default:
 			return blogInitialState;

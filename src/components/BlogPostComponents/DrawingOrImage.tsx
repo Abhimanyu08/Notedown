@@ -37,7 +37,12 @@ export default function DrawingOrImage({
 		// 	);
 		// }
 		// return <DrawingComponent {...{ canvasImageName, imageFolder }} />;
-		return <TLDrawing {...{ canvasImageName, imageFolder }} />;
+		return (
+			<TLDrawing
+				{...{ canvasImageName, imageFolder }}
+				key={canvasImageName}
+			/>
+		);
 	}
 
 	const { publicUrl } = supabase.storage
