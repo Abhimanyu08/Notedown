@@ -210,3 +210,24 @@ button {
 /* #jsx main {
 	height: 100%;
 } */
+
+#gallery + label {
+	display: none;
+}
+
+#gallery:checked + label {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	gap: 0.75rem;
+}
+
+/* .carousel {
+	transform: rotate(90deg);
+}
+
+.carousel-image {
+	transform: rotate(-90deg);
+} */

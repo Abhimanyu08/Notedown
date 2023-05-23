@@ -5,11 +5,12 @@ import { BlogContext } from "@/app/apppost/components/BlogState";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	const { blogState, dispatch } = useContext(BlogContext);
-	const src =
-		window.URL.createObjectURL(blogState.uploadedImages[name]) || "";
+	const src = blogState.imagesToFiles[name]
+		? window.URL.createObjectURL(blogState.imagesToFiles[name])
+		: blogState.uploadedImages[name];
 
 	useEffect(() => {
-		dispatch({ type: "add images to upload", payload: name });
+		dispatch({ type: "add images to upload", payload: [name] });
 
 		return () => {
 			dispatch({ type: "remove image from upload", payload: name });

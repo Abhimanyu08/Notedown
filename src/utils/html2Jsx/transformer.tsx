@@ -190,27 +190,20 @@ const tagToTransformer: TagToTransformer = {
 		const { alt, src } = node.attributes as { alt: string; src: string };
 
 		if (src.split(",").length > 1) {
-			const imageUrls = src
-				.split(",")
-				.map(
-					(imageName) =>
-						getUrlFromImgname(
-							imageName,
-							blogMeta.imageFolder,
-							blogMeta.imageToUrl
-						) || ""
-				);
+			// const imageUrls = src
+			// 	.split(",")
+			// 	.map(
+			// 		(imageName) =>
+			// 			getUrlFromImgname(
+			// 				imageName,
+			// 				blogMeta.imageFolder,
+			// 				blogMeta.imageToUrl
+			// 			) || ""
+			// 	);
 
 			const captions = alt.split(";");
 
-			return (
-				<Carousel
-					imageNames={imageUrls}
-					captions={captions}
-					width={175}
-					height={120}
-				/>
-			);
+			return <Carousel imageNames={src.split(",")} captions={captions} />;
 		}
 
 		if (src) {
@@ -220,7 +213,7 @@ const tagToTransformer: TagToTransformer = {
 					blogMeta.imageFolder,
 					blogMeta.imageToUrl
 				) || "";
-			return <ImageWithCaption name={src} src={url} alt={alt} />;
+			return <ImageWithCaption name={src} alt={alt} />;
 		}
 		if (alt && !src) {
 			return <LexicaImage alt={alt} />;

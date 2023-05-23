@@ -16,7 +16,7 @@ function EditorToolbar() {
 	return (
 		<>
 			{/* <GalleryModal /> */}
-			<input
+			{/* <input
 				type="file"
 				onChange={(e) => {
 					if (!e.currentTarget.files) return;
@@ -36,7 +36,7 @@ function EditorToolbar() {
 				id="gallery"
 				accept="image/*"
 				className="hidden"
-			/>
+			/> */}
 			<ToolbarButton
 				className={`${language ? "" : "invisible"}`}
 				tip={` ${
@@ -89,28 +89,5 @@ function EditorToolbar() {
 		</>
 	);
 }
-
-// function GalleryModal() {
-// 	const [show, setShow] = useState(false);
-// 	return (
-// 		<>
-// 			<input
-// 				type="checkbox"
-// 				name=""
-// 				id="gallery"
-// 				className="hidden"
-// 				onChange={(e) => setShow(e.currentTarget.checked)}
-// 			/>
-// 			<label
-// 				className={`absolute top-0 left-0 w-1/2 h-1/2 bg-red-400  ${
-// 					show ? "block" : "hidden"
-// 				}`}
-// 				htmlFor="gallery"
-// 			>
-// 				hello
-// 			</label>
-// 		</>
-// 	);
-// }
 
 export default EditorToolbar;

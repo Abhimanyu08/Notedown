@@ -26,7 +26,8 @@ interface BlogStateInterface {
 		content: string;
 	}>;
 	canvasApps: Record<string, any>;
-	uploadedImages: Record<string, File>;
+	uploadedImages: Record<string, string>;
+	imagesToFiles: Record<string, File>;
 	imagesToUpload: string[];
 }
 
@@ -40,6 +41,7 @@ const blogInitialState: BlogStateInterface = {
 	containerId: "",
 	blogMeta: {},
 	canvasApps: {},
+	imagesToFiles: {},
 	uploadedImages: {},
 	imagesToUpload: [],
 };
@@ -54,7 +56,7 @@ interface DispatchObj {
 		| "toggle running request"
 		| "set blog meta"
 		| "set canvas apps"
-		| "set image folder"
+		| "set image to files"
 		| "add images to upload"
 		| "remove image from upload";
 	payload: BlogStateInterface[keyof BlogStateInterface];
@@ -127,11 +129,11 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 				},
 			};
 
-		case "set image folder":
+		case "set image to files":
 			return {
 				...state,
-				uploadedImages: {
-					...state.uploadedImages,
+				imagesToFiles: {
+					...state.imagesToFiles,
 					...(action.payload as Record<string, File>),
 				},
 			};
@@ -141,7 +143,7 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 				...state,
 				imagesToUpload: [
 					...state.imagesToUpload,
-					action.payload as string,
+					...(action.payload as string[]),
 				],
 			};
 
