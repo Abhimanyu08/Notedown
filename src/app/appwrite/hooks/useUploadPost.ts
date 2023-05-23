@@ -11,7 +11,7 @@ import { UserContext } from "@/app/appContext";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
-    const [uploadStage, setUploadStage] = useState<"file" | "photos" | "canvas">("file")
+    const [uploading, setUploading] = useState(false)
     const { editorState } = useContext(EditorContext)
     const { blogState } = useContext(BlogContext)
     const { user } = useContext(UserContext);
@@ -20,10 +20,22 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     useEffect(() => {
 
         if (startUpload) {
+            setUploading(true)
             const postMeta = prepareForUpload()
             uploadPostFile(postMeta).then((post) => {
                 uploadPostImages({ postId: `${post.id}` })
                 uploadCanvasImages({ postId: `${post.id}` })
+                return post
+            }).then((post) => {
+                const folderName = created_by + "/" + post.id
+                const fileName = created_by + "/" + post.id + "/" + postMeta.markdownFile.name
+                tryNTimesSupabaseTableFunction<Post>(() =>
+                    supabase.from(SUPABASE_POST_TABLE).update({
+                        image_folder: folderName,
+                        filename: fileName
+                    }).eq("id", post.id).select("*"), 3)
+
+                setUploading(false)
             })
         }
     }, [startUpload])
@@ -89,6 +101,8 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         console.log(results)
         // we need to delete the previous canvas images because user has redrawn them.
     }
+
+    return { uploading }
 
 }
 

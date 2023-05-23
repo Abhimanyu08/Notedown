@@ -18,7 +18,7 @@ function EditorToolbar() {
 
 	const [startUpload, setStartUpload] = useState(false);
 
-	useUploadPost({ startUpload });
+	const { uploading } = useUploadPost({ startUpload });
 
 	return (
 		<>
@@ -75,7 +75,10 @@ function EditorToolbar() {
 				tip="Upload post/changes"
 				onClick={() => setStartUpload(true)}
 			>
-				<FaFileUpload size={26} />
+				<FaFileUpload
+					size={26}
+					className={`${uploading ? "animate-bounce" : ""}`}
+				/>
 			</ToolbarButton>
 		</>
 	);
