@@ -1,17 +1,17 @@
 "use client";
-import { BlogProps } from "@/interfaces/BlogProps";
-import React, { useContext } from "react";
-import { BiCodeAlt } from "react-icons/bi";
-import { BlogContext } from "./BlogState";
-import { UserContext } from "@/app/appContext";
 import prepareContainer from "@/app/utils/prepareContainer";
-import ToolbarButton from "./ToolbarButton";
+import { BlogProps } from "@/interfaces/BlogProps";
+import { useContext } from "react";
 import { AiFillEdit } from "react-icons/ai";
+import { BiCodeAlt } from "react-icons/bi";
 import { TbNews } from "react-icons/tb";
+import { BlogContext } from "./BlogState";
+import ToolbarButton from "./ToolbarButton";
 
 function PrivateToolbar(props: { language: BlogProps["language"] }) {
 	const { blogState, dispatch } = useContext(BlogContext);
-	const { user } = useContext(UserContext);
+	// const { session } = useSupabase();
+	// const user = session?.user;
 	return (
 		<>
 			{props.language && (
@@ -20,8 +20,8 @@ function PrivateToolbar(props: { language: BlogProps["language"] }) {
 					className={``}
 					onClick={() =>
 						prepareContainer(
-							blogState.containerId,
-							blogState.language
+							blogState.blogMeta.language,
+							blogState.containerId
 						).then((containerId) => {
 							if (!containerId) return;
 							dispatch({

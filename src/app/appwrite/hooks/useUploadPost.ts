@@ -1,13 +1,11 @@
+import { useSupabase } from "@/app/appContext";
+import { BlogContext } from "@/app/apppost/components/BlogState";
 import Post from "@/interfaces/Post";
-import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET } from "@utils/constants";
-import { makeFolderName } from "@utils/makeFolderName";
+import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
 import { supabase } from "@utils/supabaseClient";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
-import { BlogContext } from "@/app/apppost/components/BlogState";
-import { language } from "gray-matter";
-import { UserContext } from "@/app/appContext";
 
 function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: boolean, setStartUpload: React.Dispatch<React.SetStateAction<boolean>> }) {
 
@@ -16,8 +14,9 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
     const [newPostId, setNewPostId] = useState<number>()
     const { editorState } = useContext(EditorContext)
     const { blogState } = useContext(BlogContext)
-    const { user } = useContext(UserContext);
-    const created_by = user?.id
+
+    const { session } = useSupabase()
+    const created_by = session?.user?.id
 
     useEffect(() => {
 

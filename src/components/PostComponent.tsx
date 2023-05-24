@@ -1,10 +1,10 @@
 "use client";
 import SearchResult from "@/interfaces/SearchResult";
 import formatDate from "@utils/dateFormatter";
-import { UserContext } from "app/appContext";
+import { useSupabase } from "app/appContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { SlOptionsVertical } from "react-icons/sl";
@@ -35,7 +35,8 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 	const [mounted, setMounted] = useState(false);
 	const [owner, setOwner] = useState(false);
 	const [showOptions, setShowOptions] = useState(false);
-	const { user } = useContext(UserContext);
+	const { session } = useSupabase();
+	const user = session?.user;
 
 	useEffect(() => {
 		if (!mounted) setMounted(true);

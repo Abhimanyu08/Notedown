@@ -1,5 +1,4 @@
 "use client";
-import { UserContext } from "app/appContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import {
 import { HiMenu } from "react-icons/hi";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { handleLogout, handleSignIn } from "@/utils/handleAuth";
+import { useSupabase } from "@/app/appContext";
 
 export function NavbarClientComponent() {
 	const [mounted, setMounted] = useState(false);
@@ -59,12 +59,12 @@ export function NavbarClientComponent() {
 }
 
 function ProfileMenu() {
-	const { user } = useContext(UserContext);
 	const route = usePathname();
+	const { supabase, session } = useSupabase();
 	const [showProfileOptions, setShowProfileOptions] = useState(false);
 	return (
 		<>
-			{user ? (
+			{session?.user ? (
 				<div className="relative">
 					<div
 						className=""
@@ -78,7 +78,10 @@ function ProfileMenu() {
 					</div>
 					{showProfileOptions && (
 						<OptionsComponent>
-							<Link href={`/appprofile/${user.id}`}>
+							<Link
+								href={`/appprofile/${session.user.id}`}
+								onClick={() => setShowProfileOptions(false)}
+							>
 								<p className="link-hover cursor-pointer text-xs md:text-base text-white">
 									Profile
 								</p>
@@ -86,7 +89,7 @@ function ProfileMenu() {
 							<div
 								onClick={(e) => {
 									e.preventDefault();
-									handleLogout();
+									handleLogout(supabase);
 								}}
 								className="link-hover cursor-pointer text-xs md:text-base text-white"
 							>
@@ -108,7 +111,11 @@ function ProfileMenu() {
 							<div
 								onClick={(e) => {
 									e.preventDefault();
-									handleSignIn("github", route || "/");
+									handleSignIn(
+										supabase,
+										"github",
+										route || "/"
+									);
 								}}
 								// className="btn btn-xs md:btn-sm normal-case w-fit text-white"
 								className="flex gap-2 items-center hover:bg-gray-500 px-4 p-2  rounded-md cursor-pointer"
@@ -122,7 +129,11 @@ function ProfileMenu() {
 							<div
 								onClick={(e) => {
 									e.preventDefault();
-									handleSignIn("google", route || "/");
+									handleSignIn(
+										supabase,
+										"google",
+										route || "/"
+									);
 								}}
 								// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"
 								className="flex gap-2 items-center hover:bg-gray-500 px-4 p-2  rounded-md cursor-pointer"

@@ -2,6 +2,9 @@ import Navbar from "@components/Navbar/Navbar";
 import "@/styles/globals.css";
 import { Metadata } from "next";
 import AppContext from "./appContext";
+import SupabaseProvider from "./appContext";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cookies, headers } from "next/headers";
 export const metadata: Metadata = {
 	title: "Rce-blog",
 	description:
@@ -21,21 +24,30 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	// Layouts must accept a children prop.
 	// This will be populated with nested layouts or pages
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const supabase = createServerComponentSupabaseClient({
+		headers,
+		cookies,
+	});
+
+	const {
+		data: { session },
+	} = await supabase.auth.getSession();
+
 	return (
 		<html lang="en" className="dark">
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
-				<AppContext>
+				<SupabaseProvider session={session}>
 					<Navbar />
 
 					{children}
-				</AppContext>
+				</SupabaseProvider>
 			</body>
 		</html>
 	);
