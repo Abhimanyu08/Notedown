@@ -17,7 +17,6 @@ import MarkdownEditor from "./components/MarkdownEditor";
 function Write() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
-
 	useShortCut({
 		keys: ["Alt", "p"],
 		callback: () => {
