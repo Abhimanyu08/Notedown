@@ -21,7 +21,10 @@ async function Post({ params }: { params: PostParams }) {
 		cookies,
 	});
 
-	const { post, content } = await getPost(params.postId, supabase);
+	const { post, content, imagesToUrls } = await getPost(
+		params.postId,
+		supabase
+	);
 
 	return (
 		<div className="grow flex flex-row min-h-0 relative pt-10">
@@ -31,7 +34,14 @@ async function Post({ params }: { params: PostParams }) {
 			>
 				<Toc html={content} />
 			</div>
-			<BlogContextProvider language={post?.language}>
+			<BlogContextProvider
+				blogMeta={{
+					title: post.title,
+					description: post.description,
+					language: post.language,
+				}}
+				uploadedImages={imagesToUrls}
+			>
 				<div
 					className={`lg:basis-3/5 relative 
 							hidden lg:block

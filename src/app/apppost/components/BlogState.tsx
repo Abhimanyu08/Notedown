@@ -45,6 +45,7 @@ const blogInitialState: BlogStateInterface = {
 	uploadedImages: {},
 	imagesToUpload: [],
 };
+
 interface DispatchObj {
 	type:
 		| "set containerId"
@@ -177,20 +178,24 @@ export const BlogContext = createContext<{
 
 function BlogContextProvider({
 	children,
-	language,
+	blogMeta,
+	uploadedImages,
 }: {
 	children: React.ReactNode;
-	language?: (typeof ALLOWED_LANGUAGES)[number];
+	blogMeta: BlogStateInterface["blogMeta"];
+	uploadedImages: BlogStateInterface["uploadedImages"];
 }) {
 	const [blogState, dispatch] = useReducer<typeof reducer>(reducer, {
 		...blogInitialState,
 		blogMeta: {
-			language,
+			...blogInitialState.blogMeta,
+			...blogMeta,
 		},
+		uploadedImages,
 	});
 
 	useEffect(() => {
-		language = language || blogState.blogMeta.language;
+		let language = blogState.blogMeta.language;
 		if (!language) return;
 		const {
 			containerId,

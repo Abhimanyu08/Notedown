@@ -9,9 +9,11 @@ import { BlogContext } from "@/app/apppost/components/BlogState";
 import { language } from "gray-matter";
 import { UserContext } from "@/app/appContext";
 
-function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
+function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: boolean, setStartUpload: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const [uploading, setUploading] = useState(false)
+    const [uploadStatus, setUploadStatus] = useState("")
+    const [newPostId, setNewPostId] = useState<number>()
     const { editorState } = useContext(EditorContext)
     const { blogState } = useContext(BlogContext)
     const { user } = useContext(UserContext);
@@ -19,25 +21,15 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     useEffect(() => {
 
-        if (startUpload) {
-            setUploading(true)
-            const postMeta = prepareForUpload()
-            uploadPostFile(postMeta).then((post) => {
-                uploadPostImages({ postId: `${post.id}` })
-                uploadCanvasImages({ postId: `${post.id}` })
-                return post
-            }).then((post) => {
-                const folderName = created_by + "/" + post.id
-                const fileName = created_by + "/" + post.id + "/" + postMeta.markdownFile.name
-                tryNTimesSupabaseTableFunction<Post>(() =>
-                    supabase.from(SUPABASE_POST_TABLE).update({
-                        image_folder: folderName,
-                        filename: fileName
-                    }).eq("id", post.id).select("*"), 3)
+        if (created_by && startUpload) {
+            try {
 
-                setUploading(false)
-            })
+                upload()
+            } catch (e) {
+                setStartUpload(false)
+            }
         }
+
     }, [startUpload])
 
 
@@ -56,6 +48,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
 
     const uploadPostFile = async ({ title, description, language, markdownFile }: { title: string, description: string, language: string, markdownFile: File }) => {
+        console.log(created_by)
         const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).insert({
             title,
             description,
@@ -71,38 +64,79 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
 
 
-    const uploadPostImages = async ({ postId }: { postId: string }) => {
-        const imagesToUpload = blogState.imagesToUpload
-        await Promise.all(
-            imagesToUpload.map((image) => {
+    const uploadPostImages = async ({ postId }: { postId: number }) => {
 
-                const folderName = created_by + "/" + postId + "/" + image
-                const imageFile = blogState.imagesToFiles[image]
-                tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, imageFile), 3)
-            })
-        ).catch((reason) => { throw new Error(reason) })
+        const imagesToUpload = Array.from(new Set(blogState.imagesToUpload))
+
+        for (const image of imagesToUpload) {
+
+            setUploadStatus(`Uploading ${image}`)
+            const folderName = created_by + "/" + postId + "/" + image
+            const imageFile = blogState.imagesToFiles[image]
+            await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, imageFile), 3)
+        }
+
 
     }
 
-    const uploadCanvasImages = async ({ postId }: { postId: string }) => {
+    const uploadCanvasImages = async ({ postId }: { postId: number }) => {
         const canvasApps = blogState.canvasApps
 
 
+        for (const [canvasImageName, canvasApp] of Object.entries(canvasApps)) {
 
-        const results = await Promise.allSettled(Object.entries(canvasApps).map(async ([canvasImageName, canvasApp]) => {
             if (canvasApp === null) return;
+            setUploadStatus(`Uploading ${canvasImageName}`)
             const newCanvasImage = await canvasApp.getImage("png");
             const folderName = created_by + "/" + postId + "/" + canvasImageName + ".png"
-            tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, newCanvasImage), 3)
-
-        }))
-
-
-        console.log(results)
-        // we need to delete the previous canvas images because user has redrawn them.
+            await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, newCanvasImage), 3)
+        }
     }
 
-    return { uploading }
+    const finalUpdateToPost = async ({ postId, postMeta }: { postId: number, postMeta: ReturnType<typeof prepareForUpload> }) => {
+        const folderName = created_by + "/" + postId
+        const fileName = created_by + "/" + postId + "/" + postMeta.markdownFile.name
+        tryNTimesSupabaseTableFunction<Post>(() =>
+            supabase.from(SUPABASE_POST_TABLE).update({
+                image_folder: folderName,
+                filename: fileName
+            }).eq("id", postId).select("*"), 3)
+
+    }
+
+
+    const upload = async () => {
+        try {
+
+            setUploading(true)
+
+
+            setUploadStatus("preparing for upload")
+            const postMeta = prepareForUpload()
+
+            setUploadStatus("Uploading markdown file")
+            const post = await uploadPostFile(postMeta)
+
+            setUploadStatus("Uploading Images")
+            await uploadPostImages({ postId: post.id })
+
+            setUploadStatus("Uploading Canvas images")
+            await uploadCanvasImages({ postId: post.id })
+
+            await finalUpdateToPost({ postId: post.id, postMeta })
+            setUploadStatus("Finished Uploading")
+            setNewPostId(post.id)
+            setUploading(false)
+        } catch (e) {
+
+            alert((e as Error).message)
+            setUploading(false)
+            setStartUpload(false)
+        }
+
+    }
+
+    return { uploading, uploadStatus, newPostId }
 
 }
 

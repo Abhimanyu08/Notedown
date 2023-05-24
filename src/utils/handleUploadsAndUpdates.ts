@@ -1,4 +1,4 @@
-import Post from "../src/interfaces/Post"
+import Post from "@/interfaces/Post"
 import { ALLOWED_LANGUAGES, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "./constants"
 import { makeFolderName, processImageName } from "./makeFolderName"
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "./multipleTries"

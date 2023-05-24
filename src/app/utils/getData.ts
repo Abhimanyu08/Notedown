@@ -1,5 +1,5 @@
 import 'server-only';
-import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
+import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import { cache } from "react";
 import { getHtmlFromMarkdown } from '@utils/getResources';
@@ -58,9 +58,19 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
     if (!fileData || fileError) {
         throw new Error(fileError.message || "couldn't load file data")
     }
+    const imagesToUrls: Record<string, string> = {}
+    const { data } = await supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).list(post.image_folder)
+    if (data) {
+        for (let file of data) {
+
+            const { publicUrl } = supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).getPublicUrl(post.image_folder + "/" + file.name).data
+
+            imagesToUrls[file.name] = publicUrl
+        }
+    }
 
     const content = (await getHtmlFromMarkdown(fileData)).content;
 
 
-    return { post, content }
+    return { post, content, imagesToUrls }
 })

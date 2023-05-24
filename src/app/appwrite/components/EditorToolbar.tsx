@@ -18,7 +18,10 @@ function EditorToolbar() {
 
 	const [startUpload, setStartUpload] = useState(false);
 
-	const { uploading } = useUploadPost({ startUpload });
+	const { uploading, uploadStatus, newPostId } = useUploadPost({
+		startUpload,
+		setStartUpload,
+	});
 
 	return (
 		<>
@@ -80,6 +83,7 @@ function EditorToolbar() {
 					className={`${uploading ? "animate-bounce" : ""}`}
 				/>
 			</ToolbarButton>
+			{newPostId ? <p>{newPostId}</p> : <p>{uploadStatus}</p>}
 		</>
 	);
 }

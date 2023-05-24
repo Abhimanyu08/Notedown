@@ -88,7 +88,7 @@ function Carousel({
 					❮
 				</div>
 				<figcaption
-					className={`text-center text-sm  text-black dark:text-gray-200 italic`}
+					className={`text-center text-xs  dark:text-font-grey  text-black  italic`}
 				>
 					{captions.at(show) || ""}
 				</figcaption>
