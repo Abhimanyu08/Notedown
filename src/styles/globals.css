@@ -196,11 +196,11 @@ button:active {
 	scale: 0.9;
 }
 
-.tooltip:hover {
+.tooltip {
 	position: relative;
 }
 
-.tooltip:hover::after {
+.tooltip::after {
 	display: block;
 	position: absolute;
 	/* float: right; */
@@ -211,10 +211,14 @@ button:active {
 	left: calc(100% + 10px);
 	content: attr(data-tip);
 	color: white;
-	z-index: 20;
+	z-index: 50;
 }
-.tooltip-top:hover::after {
+.tooltip-top::after {
 	top: -20px;
+	left: 0px;
+}
+.tooltip-bottom::after {
+	top: calc(100% + 10px);
 	left: 0px;
 }
 
@@ -224,14 +228,6 @@ button:active {
 .prose :where(code):not(:where([class~="not-prose"] *))::after {
 	content: "";
 }
-
-/* .xterm-helpers {
-	display: none;
-} */
-
-/* #jsx main {
-	height: 100%;
-} */
 
 .modal-input {
 	display: none;

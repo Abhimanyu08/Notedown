@@ -56,7 +56,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 				<Link
 					href={`/apppost/${id}`}
 					className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
-					prefetch={false}
+					// prefetch={false}
 				>
 					{title}{" "}
 				</Link>

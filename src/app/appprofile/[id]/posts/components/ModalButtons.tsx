@@ -15,16 +15,13 @@ export function ExpandButton({ postId }: { postId: string }) {
 		`/apppost/${postId}`;
 
 	return (
-		<button className="dark:bg-gray-800 p-2 rounded-full relative group">
+		<button
+			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
+			data-tip="Expand"
+		>
 			<a href={url}>
 				<BsArrowsAngleExpand size={14} />
 			</a>
-			<span
-				className="absolute invisible group-hover:visible text-xs border-[1px] border-gray-800 top-10 w-max p-1 
-			right-2 rounded-md"
-			>
-				Expand
-			</span>
 		</button>
 	);
 }
@@ -40,19 +37,12 @@ export function BackButton({ id }: { id: string }) {
 	});
 
 	return (
-		<div className="relative group">
-			<button
-				onClick={() => router.back()}
-				className="dark:bg-gray-800 p-2 rounded-full"
-			>
-				<IoMdArrowBack />
-			</button>
-			<span
-				className="absolute invisible group-hover:visible text-xs border-[1px] border-gray-800 top-10 w-max p-1 
-			right-2 rounded-md"
-			>
-				Back to Posts (Esc)
-			</span>
-		</div>
+		<button
+			onClick={() => router.back()}
+			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
+			data-tip="Back to Posts(Esc)"
+		>
+			<IoMdArrowBack size={16} />
+		</button>
 	);
 }
