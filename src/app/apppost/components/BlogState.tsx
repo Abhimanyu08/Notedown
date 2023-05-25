@@ -24,6 +24,7 @@ interface BlogStateInterface {
 		description: string;
 		language: (typeof ALLOWED_LANGUAGES)[number];
 		content: string;
+		imageFolder: string;
 	}>;
 	canvasApps: Record<string, any>;
 	uploadedImages: Record<string, string>;
@@ -182,8 +183,8 @@ function BlogContextProvider({
 	uploadedImages,
 }: {
 	children: React.ReactNode;
-	blogMeta: BlogStateInterface["blogMeta"];
-	uploadedImages: BlogStateInterface["uploadedImages"];
+	blogMeta?: BlogStateInterface["blogMeta"];
+	uploadedImages?: BlogStateInterface["uploadedImages"];
 }) {
 	const [blogState, dispatch] = useReducer<typeof reducer>(reducer, {
 		...blogInitialState,
@@ -191,7 +192,7 @@ function BlogContextProvider({
 			...blogInitialState.blogMeta,
 			...blogMeta,
 		},
-		uploadedImages,
+		uploadedImages: uploadedImages || {},
 	});
 
 	useEffect(() => {

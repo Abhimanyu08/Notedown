@@ -25,7 +25,7 @@ function Carousel({
 	}, []);
 
 	//show -> The idx of the image to show out of all the images.
-	const onSlide: React.MouseEventHandler<HTMLDivElement> = (e) => {
+	const onSlide: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
 		if ((e.target as any).id === "pre") {
 			if (show === 0) {
@@ -80,25 +80,25 @@ function Carousel({
 				))}
 			</div>
 			<div className="flex justify-between not-prose items-center mt-2 h-5">
-				<div
+				<button
 					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5  text-center"
 					id="pre"
 					onClick={onSlide}
 				>
 					❮
-				</div>
+				</button>
 				<figcaption
 					className={`text-center text-xs  dark:text-font-grey  text-black  italic`}
 				>
 					{captions.at(show) || ""}
 				</figcaption>
-				<div
+				<button
 					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5 text-center"
 					id="post"
 					onClick={onSlide}
 				>
 					❯
-				</div>
+				</button>
 			</div>
 		</>
 	);

@@ -19,37 +19,31 @@ type BlogMeta = Partial<{
 	imageToUrl: Record<string, string>;
 }>;
 
-function defaultTagToJsx(
-	node: HtmlNode,
-	blogMeta: BlogMeta,
-	parent?: HtmlNode
-) {
+function defaultTagToJsx(node: HtmlNode, parent?: HtmlNode) {
 	return React.createElement(
 		node.tagName,
 		node.attributes,
-		node.children.map((child) => transformer(child, blogMeta, parent))
+		node.children.map((child) => transformer(child))
 	);
 }
 
 export default function transformer(
 	node: HtmlNode | TextNode,
-	blogMeta: BlogMeta,
 	parent?: HtmlNode
 ): JSX.Element {
 	if (node.tagName === "text") {
 		return <>{(node as TextNode).text}</>;
 	}
 	if (tagToTransformer[node.tagName]) {
-		return tagToTransformer[node.tagName]!(node, blogMeta, parent);
+		return tagToTransformer[node.tagName]!(node, parent);
 	}
 
-	return defaultTagToJsx(node, blogMeta, parent);
+	return defaultTagToJsx(node, parent);
 }
 
 type TagToTransformer = {
 	[k in keyof HTMLElementTagNameMap]?: (
 		node: HtmlNode,
-		blogMeta: BlogMeta,
 		parent?: HtmlNode
 	) => JSX.Element;
 };
@@ -78,7 +72,7 @@ const tagToTransformer: TagToTransformer = {
 		return <CodeWord code={code} />;
 	},
 
-	pre: (node, blogMeta, parent) => {
+	pre: (node) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
 		let code =
@@ -94,7 +88,7 @@ const tagToTransformer: TagToTransformer = {
 			language?: string;
 		};
 
-		if (blogMeta.language && !blockLanguage) {
+		if (!blockLanguage) {
 			BLOCK_NUMBER += 1;
 			return (
 				<Code
@@ -107,7 +101,7 @@ const tagToTransformer: TagToTransformer = {
 		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
 	},
 
-	a: (node, _, parent) => {
+	a: (node) => {
 		const { href } = node.attributes as { href: string };
 
 		if (
@@ -128,10 +122,10 @@ const tagToTransformer: TagToTransformer = {
 
 		let newAttributes = { ...node.attributes, target: "_blank" };
 		node.attributes = newAttributes;
-		return defaultTagToJsx(node, {}, parent);
+		return defaultTagToJsx(node);
 	},
 
-	p: (node, blogMeta, parent) => {
+	p: (node) => {
 		let firstWord = "";
 		if (node.children.length == 0) return <></>;
 		if (node.children[0].tagName === "text") {
@@ -141,7 +135,7 @@ const tagToTransformer: TagToTransformer = {
 			return (
 				<Suspense fallback={<p>Loading...</p>}>
 					<DrawingOrImage
-						imageFolder={blogMeta.imageFolder}
+						// imageFolder={blogMeta.imageFolder}
 						canvasImageName={firstWord}
 					/>
 				</Suspense>
@@ -175,18 +169,17 @@ const tagToTransformer: TagToTransformer = {
 		if (imgNode !== undefined) {
 			return (
 				<>
-					{transformer(beforeNode, blogMeta, parent)}
-					{transformer(imgNode, blogMeta, parent)}
-					{nodesAfterImage.length > 0 &&
-						transformer(afterNode, blogMeta, parent)}
+					{transformer(beforeNode)}
+					{transformer(imgNode)}
+					{nodesAfterImage.length > 0 && transformer(afterNode)}
 				</>
 			);
 		}
 
-		return defaultTagToJsx(beforeNode, blogMeta, parent);
+		return defaultTagToJsx(beforeNode);
 	},
 
-	img: (node, _, __) => {
+	img: (node) => {
 		const { alt, src } = node.attributes as { alt: string; src: string };
 
 		if (src.split(",").length > 1) {
@@ -222,16 +215,4 @@ function headingsRenderer(tag: HeadTags, headingText: string) {
 		},
 		headingText
 	);
-}
-
-function getUrlFromImgname(
-	imageName: string,
-	imageFolder?: string,
-	imageToUrl?: Record<string, string>
-) {
-	if (imageToUrl && imageToUrl[imageName]) return imageToUrl[imageName];
-	const publicUrl = supabase.storage
-		.from(SUPABASE_IMAGE_BUCKET)
-		.getPublicUrl(`${imageFolder}/${imageName}`).data?.publicUrl;
-	return publicUrl;
 }

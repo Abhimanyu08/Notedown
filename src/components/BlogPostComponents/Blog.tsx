@@ -11,11 +11,8 @@ export function Blog({
 	title,
 	description,
 	content,
-	language,
 	created_by,
-	image_folder,
 	bloggers,
-	imageToUrl,
 	published,
 	published_on,
 	created_at,
@@ -27,15 +24,7 @@ export function Blog({
 	const tokens = useMemo(() => tokenizer(content || ""), [content]);
 	const parsedOutput = useMemo(() => parser(tokens), [tokens]);
 
-	const blogJsx = useMemo(
-		() =>
-			transformer(parsedOutput, {
-				language,
-				imageFolder: image_folder,
-				imageToUrl,
-			}),
-		[parsedOutput]
-	);
+	const blogJsx = useMemo(() => transformer(parsedOutput), [parsedOutput]);
 	// const blogJsx = useMemo(() => {
 	// 	if (!content) return <></>;
 	// 	const tokens = tokenizer(content);

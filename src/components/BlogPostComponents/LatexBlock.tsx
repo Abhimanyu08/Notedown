@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Latex from "react-latex";
 
 function CodeWord({ code }: { code: string }) {
-	console.log(code);
 	let modifiedCode = code;
 	if (typeof window !== "undefined") {
 		let tempElement = document.createElement("div");

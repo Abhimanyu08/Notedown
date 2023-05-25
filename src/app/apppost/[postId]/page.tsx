@@ -39,6 +39,7 @@ async function Post({ params }: { params: PostParams }) {
 					title: post.title,
 					description: post.description,
 					language: post.language,
+					imageFolder: post.image_folder,
 				}}
 				uploadedImages={imagesToUrls}
 			>

@@ -1,11 +1,8 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
-import { Tldraw } from "@tldraw/tldraw";
-import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
-import { supabase } from "@utils/supabaseClient";
-import { EditorContext } from "@/app/appwrite/components/EditorContext";
 import { BlogContext } from "@/app/apppost/components/BlogState";
+import { Tldraw } from "@tldraw/tldraw";
 
 function TLDrawing({
 	canvasImageName,
