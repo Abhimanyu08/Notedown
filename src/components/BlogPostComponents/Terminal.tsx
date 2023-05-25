@@ -95,7 +95,7 @@ function Terminal({
 
 	return (
 		<div
-			className={`not-prose border-[1px] border-white  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
+			className={`not-prose border-[1px] border-white/50 rounded-sm  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
 				openShell ? "" : "hidden"
 			} h-52`}
 			id={`terminal-${blockNumber}`}

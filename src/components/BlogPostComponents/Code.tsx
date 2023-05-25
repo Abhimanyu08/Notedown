@@ -110,10 +110,10 @@ function Code({ code, blockNumber }: CodeProps) {
 
 	return (
 		<div className="flex relative flex-col w-full ">
-			<div className="flex flex-row  gap-5 w-fit self-end bg-black py-1 px-3 rounded-t-md">
+			<div className="flex flex-row  gap-5 w-fit self-end border-[1px] border-b-0 border-white/50 bg-black py-1 px-3 rounded-t-md">
 				{mounted && (
 					<>
-						<button
+						<CodeAreaButton
 							onClick={() => {
 								// setRunningBlock(blockNumber);
 								dispatch({
@@ -122,8 +122,7 @@ function Code({ code, blockNumber }: CodeProps) {
 								});
 							}}
 							className="md:tooltip"
-							data-tip="Run Code (Shift+Enter)"
-							id={`run-${blockNumber}`}
+							tip="Run Code (Shift+Enter)"
 						>
 							<BsPlayFill
 								className={`text-cyan-400 ${
@@ -131,8 +130,8 @@ function Code({ code, blockNumber }: CodeProps) {
 								}`}
 								size={16}
 							/>
-						</button>
-						<button
+						</CodeAreaButton>
+						<CodeAreaButton
 							onClick={() => {
 								dispatch({
 									type: "set writing block",
@@ -140,35 +139,28 @@ function Code({ code, blockNumber }: CodeProps) {
 								});
 							}}
 							className="md:tooltip"
-							data-tip="Write code to file without running"
+							tip="Write code to file without running"
 						>
-							<BsPencilFill size={14} className="text-cyan-400" />
-						</button>
+							<BsPencilFill size={12} className="text-cyan-400" />
+						</CodeAreaButton>
 					</>
 				)}
-				<button
-					onClick={onUndo}
-					className="md:tooltip "
-					data-tip="back to original code"
-				>
+				<CodeAreaButton onClick={onUndo} tip="back to original code">
 					<FcUndo className="text-cyan-400" />
-				</button>
-				<button
+				</CodeAreaButton>
+				<CodeAreaButton
 					onClick={() => setOpenShell((prev) => !prev)}
-					className="md:tooltip  "
-					data-tip={`${
-						openShell ? "Hide Terminal" : "Show Terminal"
-					}`}
+					tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
 				>
 					{openShell ? (
 						<MdImage className="text-cyan-400" />
 					) : (
 						<MdHideImage className="text-cyan-400" />
 					)}
-				</button>
-				<button
+				</CodeAreaButton>
+				<CodeAreaButton
 					className="md:tooltip hidden lg:block mr-1"
-					data-tip="Enable Vim"
+					tip="Enable Vim"
 					onClick={() => {
 						// if (setVimEnabled) setVimEnabled((prev) => !prev);
 						dispatch({ type: "toggle vim", payload: {} });
@@ -176,17 +168,15 @@ function Code({ code, blockNumber }: CodeProps) {
 				>
 					<SiVim
 						className={`${
-							blogState.vimEnabled
-								? "text-lime-400"
-								: "text-cyan-400"
+							blogState.vimEnabled ? "text-lime-400" : ""
 						}`}
 						size={14}
 					/>
-				</button>
+				</CodeAreaButton>
 			</div>
 			{mounted && (
 				<div
-					className="w-full border-[1px] border-white"
+					className="w-full border-[1px] border-white/50 rounded-sm"
 					id={`codearea-${blockNumber}`}
 					onDoubleClick={() => {
 						// if (setRunningBlock) setRunningBlock(blockNumber);
@@ -202,5 +192,30 @@ function Code({ code, blockNumber }: CodeProps) {
 		</div>
 	);
 }
+
+const CodeAreaButton = ({
+	children,
+	tip,
+	className,
+	onClick,
+}: {
+	children: React.ReactNode;
+	tip?: string;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}) => {
+	return (
+		<button
+			className={
+				"tooltip tooltip-top text-cyan-400 hover:scale-110 active:scale-90 " +
+					className || ""
+			}
+			onClick={onClick}
+			data-tip={tip}
+		>
+			{children}
+		</button>
+	);
+};
 
 export default Code;

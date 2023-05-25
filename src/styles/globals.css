@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-.tooltip-left::before {
+/* .tooltip-left::before {
 	color: white;
 	text-transform: capitalize;
 }
 .tooltip {
 	color: white;
 	text-transform: capitalize;
-}
+} */
 
 #jsx span:where([class~="cm-editor"]) {
 	font-size: 0.875rem; /* 14px */
@@ -189,11 +189,26 @@ button {
 	justify-content: center;
 }
 
+.tooltip:hover {
+	position: relative;
+}
+
 .tooltip:hover::after {
 	display: block;
-	font-size: x-small;
-	margin-left: 3px;
+	position: absolute;
+	/* float: right; */
+	white-space: nowrap;
+	font-size: 10px;
+	line-height: 14px;
+	top: 0px;
+	left: calc(100% + 10px);
 	content: attr(data-tip);
+	color: white;
+	z-index: 20;
+}
+.tooltip-top:hover::after {
+	top: -20px;
+	left: 0px;
 }
 
 .prose :where(code):not(:where([class~="not-prose"] *))::before {

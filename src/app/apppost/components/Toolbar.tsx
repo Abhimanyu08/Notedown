@@ -1,10 +1,9 @@
 "use client";
-import { UserContext } from "@/app/appContext";
+import { useSupabase } from "@/app/appContext";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { SUPABASE_POST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import { BlogProps } from "interfaces/BlogProps";
-import Upvotes from "interfaces/Upvotes";
 import { usePathname } from "next/navigation";
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BiCodeAlt } from "react-icons/bi";
@@ -17,7 +16,8 @@ const formatter = Intl.NumberFormat("en", { notation: "compact" });
 function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 	const pathname = usePathname();
 	const { blogState, dispatch } = useContext(BlogContext);
-	const { user } = useContext(UserContext);
+	const { session } = useSupabase();
+	const user = session?.user;
 	const [linkCopied, setLinkCopied] = useState(false);
 
 	const [upvoted, setUpvoted] = useState<boolean | null>(null);

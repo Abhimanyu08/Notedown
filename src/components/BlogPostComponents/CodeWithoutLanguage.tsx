@@ -25,6 +25,7 @@ function CodeWithoutLanguage({
 	const [_, setImported] = useState(false);
 	useEffect(() => {
 		if (language) {
+			language = language.toLowerCase();
 			if (!Object.keys(languageToImporter).includes(language)) {
 				alert(`${language} not supported`);
 			}

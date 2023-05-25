@@ -6,6 +6,8 @@ import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { cache } from "react";
 import { Database } from "@/interfaces/supabase";
 
+export const revalidate = 0; // don't cache this page
+
 async function PrivatePosts({ params }: { params: { id: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
 		headers,
