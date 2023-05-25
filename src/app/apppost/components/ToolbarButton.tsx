@@ -16,8 +16,9 @@ function ToolbarButton({
 	return (
 		<button
 			className={
-				className +
-				" w-fit px-3 tooltip active:scale-95 hover:scale-105"
+				className ||
+				"" +
+					"w-fit justify-start tooltip active:scale-95 hover:scale-105"
 			}
 			onClick={onClick}
 			data-tip={tip}

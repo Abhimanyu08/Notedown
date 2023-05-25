@@ -123,7 +123,7 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
             await uploadCanvasImages({ postId: post.id })
 
             await finalUpdateToPost({ postId: post.id, postMeta })
-            setUploadStatus("Finished Uploading")
+            setUploadStatus("Finished Uploading !")
             setNewPostId(post.id)
             setUploading(false)
         } catch (e) {

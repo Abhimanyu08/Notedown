@@ -1,7 +1,8 @@
 import ToolbarButton from "@/app/apppost/components/ToolbarButton";
+import { motion } from "framer-motion";
 import { useContext, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
-import { VscPreview } from "react-icons/vsc";
+import { VscLoading, VscPreview } from "react-icons/vsc";
 import { EditorContext } from "./EditorContext";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { BiCodeAlt } from "react-icons/bi";
@@ -10,6 +11,7 @@ import { GrDocumentUpload } from "react-icons/gr";
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import { FaFileUpload } from "react-icons/fa";
 import useUploadPost from "../hooks/useUploadPost";
+import Link from "next/link";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
@@ -17,14 +19,29 @@ function EditorToolbar() {
 	const { language } = blogState.blogMeta;
 
 	const [startUpload, setStartUpload] = useState(false);
+	const [hideNotification, setHideNotification] = useState(false);
 
 	const { uploading, uploadStatus, newPostId } = useUploadPost({
 		startUpload,
 		setStartUpload,
 	});
 
+	// useEffect(() => {
+
+	// 	if (newPostId) {
+	// 		setTimeout(() => setHideNotification(true), 2500)
+	// 	}
+	// }, [newPostId])
+
 	return (
 		<>
+			{/* <div className="absolute flex flex-col items-center justify-center z-10 top-0 left-0 w-full h-full bg-black/60">
+				<div className="flex bg-black">
+					<p>Post Uploaded!</p>
+					<button>Post Preview</button>
+					<button>Continue editing</button>
+				</div>
+			</div> */}
 			<ToolbarButton
 				className={`${language ? "" : "invisible"}`}
 				tip={` ${
@@ -75,15 +92,38 @@ function EditorToolbar() {
 				</label>
 			</ToolbarButton>
 			<ToolbarButton
-				tip="Upload post/changes"
+				tip={uploading ? "" : "Upload Post/changes"}
 				onClick={() => setStartUpload(true)}
 			>
-				<FaFileUpload
-					size={26}
-					className={`${uploading ? "animate-bounce" : ""}`}
-				/>
+				{uploading ? (
+					<div className="flex gap-2 items-center">
+						<VscLoading size={26} className="animate-spin" />
+						<p className="text-xs w-48 truncate">{uploadStatus}</p>
+					</div>
+				) : (
+					<>
+						<FaFileUpload size={26} />
+					</>
+				)}
 			</ToolbarButton>
-			{newPostId ? <p>{newPostId}</p> : <p>{uploadStatus}</p>}
+
+			{newPostId && (
+				<motion.p
+					initial={{ opacity: 1 }}
+					animate={{ opacity: 0 }}
+					transition={{
+						duration: 10,
+					}}
+				>
+					<Link
+						href={`/apppost/${newPostId}`}
+						className="underline underline-offset-2"
+					>
+						New Post
+					</Link>{" "}
+					Uploaded!
+				</motion.p>
+			)}
 		</>
 	);
 }

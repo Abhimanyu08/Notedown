@@ -6,12 +6,13 @@ import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { cache } from "react";
 import { Database } from "@/interfaces/supabase";
 
-async function PrivatePosts() {
+async function PrivatePosts({ params }: { params: { id: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
 		headers,
 		cookies,
 	});
 	const userId = (await supabase.auth.getUser()).data.user?.id;
+	if (userId !== params.id) return <></>;
 	const data = await cache(async () => {
 		const { data } = await supabase
 			.from(SUPABASE_POST_TABLE)
