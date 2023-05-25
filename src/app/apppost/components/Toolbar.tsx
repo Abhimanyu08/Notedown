@@ -10,6 +10,7 @@ import { BiCodeAlt } from "react-icons/bi";
 import { FaHeart } from "react-icons/fa";
 import { IoMdShareAlt } from "react-icons/io";
 import { BlogContext } from "./BlogState";
+import ToolbarButton from "./ToolbarButton";
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
@@ -74,11 +75,8 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 	return (
 		<>
 			{props.language && (
-				<div
-					className={`btn btn-circle ${
-						blogState.containerId ? "" : "btn-ghost"
-					} tooltip`}
-					data-tip={` ${
+				<ToolbarButton
+					tip={` ${
 						user
 							? "Enable remote code execution"
 							: "Enable remote code execution"
@@ -102,14 +100,14 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 							blogState.containerId
 								? "text-lime-400"
 								: "text-black dark:text-white"
-						} mt-2 ml-2 `}
+						}`}
 					/>
-				</div>
+				</ToolbarButton>
 			)}
 
-			<div
-				className="btn btn-circle btn-ghost tooltip relative"
-				data-tip="share"
+			<ToolbarButton
+				className="relative"
+				tip="Share this post"
 				onClick={() => {
 					const link =
 						window.location.hostname === "localhost"
@@ -121,10 +119,7 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 					});
 				}}
 			>
-				<IoMdShareAlt
-					size={30}
-					className="text-black dark:text-white mt-2 ml-2"
-				/>
+				<IoMdShareAlt size={30} />
 				<span
 					className={` normal-case absolute left-10 top-2 text-lime-400 ${
 						linkCopied ? "" : "hidden"
@@ -132,12 +127,11 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 				>
 					Link Copied!
 				</span>
-			</div>
+			</ToolbarButton>
 
-			<div className="flex items-center">
-				<div
-					className="btn btn-circle  btn-ghost tooltip"
-					data-tip={` ${
+			<div className="flex items-center gap-2">
+				<ToolbarButton
+					tip={` ${
 						user
 							? `${upvoted ? "Remove Upvote" : "Upvote"}`
 							: "Please login to upvote"
@@ -146,13 +140,13 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 				>
 					<FaHeart
 						size={26}
-						className={`mt-3 ml-[10px] ${
+						className={`${
 							upvoted
 								? "text-rose-500"
 								: "dark:text-white text-black"
 						}`}
 					/>
-				</div>
+				</ToolbarButton>
 				<span>{formatter.format(upvotes || 0)}</span>
 			</div>
 		</>

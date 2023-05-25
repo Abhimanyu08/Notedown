@@ -189,6 +189,12 @@ button {
 	align-items: center;
 	justify-content: center;
 }
+button:hover {
+	scale: 1.1;
+}
+button:active {
+	scale: 0.9;
+}
 
 .tooltip:hover {
 	position: relative;

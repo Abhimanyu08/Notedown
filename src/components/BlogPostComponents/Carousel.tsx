@@ -81,7 +81,7 @@ function Carousel({
 			</div>
 			<div className="flex justify-between not-prose items-center mt-2 h-5">
 				<button
-					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5  text-center"
+					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5  text-center cursor-pointer"
 					id="pre"
 					onClick={onSlide}
 				>
@@ -93,7 +93,7 @@ function Carousel({
 					{captions.at(show) || ""}
 				</figcaption>
 				<button
-					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5 text-center"
+					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5 text-center cursor-pointer"
 					id="post"
 					onClick={onSlide}
 				>
@@ -102,33 +102,6 @@ function Carousel({
 			</div>
 		</>
 	);
-	// return (
-	// 	<div className="w-full  overflow-y-auto carousel aspect-[4/3] not-prose ">
-	// 		{imageNames.map((i, idx) => {
-	// 			return (
-	// 				<div className="flex flex-col">
-	// 					<Image
-	// 						alt={captions[idx]}
-	// 						src={
-	// 							blogState.imagesToFiles[i]
-	// 								? window.URL.createObjectURL(
-	// 										blogState.imagesToFiles[i]
-	// 								  )
-	// 								: blogState.uploadedImages[i]
-	// 						}
-	// 						width={1440}
-	// 						height={1080}
-	// 						loading="lazy"
-	// 						className="carousel-image"
-	// 					/>
-	// 					<figcaption>{captions[idx]}</figcaption>
-	// 				</div>
-
-	// 				// <figcaption>{captions[idx]}</figcaption>
-	// 			);
-	// 		})}
-	// 	</div>
-	// );
 }
 
 export default Carousel;
