@@ -12,6 +12,7 @@ import { HtmlNode, TextNode } from "./parser";
 
 import ImageWithCaption from "../../src/components/BlogPostComponents/ImageWithCaption";
 import LexicaImage from "../../src/components/BlogPostComponents/LexicaImage";
+let BLOCK_NUMBER = 0;
 
 type BlogMeta = Partial<{
 	language: BlogProps["language"];
@@ -43,6 +44,7 @@ export default function transformer(
 		return tagToTransformer[node.tagName]!(node, blogMeta, parent);
 	}
 
+	if (node.tagName === "main") BLOCK_NUMBER = 0;
 	return defaultTagToJsx(node, blogMeta, parent);
 }
 
@@ -55,8 +57,6 @@ type TagToTransformer = {
 };
 
 type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-
-let BLOCK_NUMBER = 0;
 
 const tagToTransformer: TagToTransformer = {
 	...(() => {
@@ -257,6 +257,6 @@ function getUrlFromImgname(
 	if (imageToUrl && imageToUrl[imageName]) return imageToUrl[imageName];
 	const publicUrl = supabase.storage
 		.from(SUPABASE_IMAGE_BUCKET)
-		.getPublicUrl(`${imageFolder}/${imageName}`).data?.publicURL;
+		.getPublicUrl(`${imageFolder}/${imageName}`).data?.publicUrl;
 	return publicUrl;
 }
