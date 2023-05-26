@@ -30,7 +30,7 @@ function EditorHelperComponent() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { editorView } = editorState;
 	return (
-		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap ">
+		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
 			<button
 				className="tool"
 				onClick={() => {

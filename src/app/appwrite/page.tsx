@@ -89,8 +89,8 @@ function Write() {
 							overflow-y-hidden`}
 			>
 				<div
-					className={`absolute top-0 left-0 w-full h-full ${
-						editorState.editingMarkdown ? "" : "invisible"
+					className={`absolute flex flex-col top-0 left-0 w-full h-full overflow-y-auto ${
+						editorState.editingMarkdown ? "" : "hidden"
 					}`}
 				>
 					<MarkdownEditor />
@@ -102,7 +102,7 @@ function Write() {
 						name: "hello",
 					}}
 					extraClasses={
-						editorState.editingMarkdown ? "invisible" : "px-20"
+						editorState.editingMarkdown ? "hidden" : "px-20"
 					}
 				/>
 			</div>

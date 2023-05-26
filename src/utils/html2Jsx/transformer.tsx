@@ -8,6 +8,7 @@ import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import React, { Suspense } from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
+import Codesandbox from "@components/BlogPostComponents/Codesandbox";
 
 let BLOCK_NUMBER = 0;
 
@@ -87,6 +88,15 @@ const tagToTransformer: TagToTransformer = {
 					blockNumber={BLOCK_NUMBER}
 				/>
 			);
+		}
+		if (blockLanguage.toLowerCase() === "sandpack") {
+			try {
+				const settings = JSON.parse(code);
+				return <Codesandbox settingsString={code} />;
+			} catch (e) {
+				alert((e as Error).message);
+				return <p>Invalid JSON in your settings. </p>;
+			}
 		}
 		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
 	},
