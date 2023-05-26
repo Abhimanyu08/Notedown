@@ -1,10 +1,3 @@
-import React, { Suspense } from "react";
-import Latex from "react-latex";
-import { SUPABASE_IMAGE_BUCKET } from "../constants";
-import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
-import { supabase } from "../supabaseClient";
-import { HtmlNode, TextNode } from "./parser";
-import { BlogProps } from "@/interfaces/BlogProps";
 import Carousel from "@components/BlogPostComponents/Carousel";
 import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
@@ -12,12 +5,11 @@ import DrawingOrImage from "@components/BlogPostComponents/DrawingOrImage";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import CodeWord from "@components/BlogPostComponents/LatexBlock";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
+import React, { Suspense } from "react";
+import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
+import { HtmlNode, TextNode } from "./parser";
 
-type BlogMeta = Partial<{
-	language: BlogProps["language"];
-	imageFolder: string;
-	imageToUrl: Record<string, string>;
-}>;
+let BLOCK_NUMBER = 0;
 
 function defaultTagToJsx(node: HtmlNode, parent?: HtmlNode) {
 	return React.createElement(
@@ -37,7 +29,7 @@ export default function transformer(
 	if (tagToTransformer[node.tagName]) {
 		return tagToTransformer[node.tagName]!(node, parent);
 	}
-
+	if (node.tagName === "main") BLOCK_NUMBER = 0;
 	return defaultTagToJsx(node, parent);
 }
 
@@ -49,8 +41,6 @@ type TagToTransformer = {
 };
 
 type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-
-let BLOCK_NUMBER = 0;
 
 const tagToTransformer: TagToTransformer = {
 	...(() => {

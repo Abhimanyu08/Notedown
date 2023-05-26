@@ -280,6 +280,7 @@ function BlogContextProvider({
 		runCodeRequest({ code, run, containerId, fileName, language }).then(
 			(val) => {
 				// setBlockToOutput((prev) => ({ ...prev, [block]: val }));
+				console.log(val);
 				dispatch({ type: "set output", payload: { [block]: val } });
 
 				dispatch({ type: "set running block", payload: null });

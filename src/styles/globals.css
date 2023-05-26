@@ -196,11 +196,11 @@ button:active {
 	scale: 0.9;
 }
 
-.tooltip {
+.tooltip:hover {
 	position: relative;
 }
 
-.tooltip::after {
+.tooltip:hover::after {
 	display: block;
 	position: absolute;
 	/* float: right; */
@@ -213,11 +213,11 @@ button:active {
 	color: white;
 	z-index: 50;
 }
-.tooltip-top::after {
+.tooltip-top:hover::after {
 	top: -20px;
 	left: 0px;
 }
-.tooltip-bottom::after {
+.tooltip-bottom:hover::after {
 	top: calc(100% + 10px);
 	left: 0px;
 }

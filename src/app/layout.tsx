@@ -1,7 +1,7 @@
 import Navbar from "@components/Navbar/Navbar";
 import "@/styles/globals.css";
+import "@/styles/xterm.css";
 import { Metadata } from "next";
-import AppContext from "./appContext";
 import SupabaseProvider from "./appContext";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
