@@ -2,17 +2,19 @@ import EditorHelperComponent from "@components/EditorHelperComponent";
 import React, { memo, useContext, useEffect, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import useEditor from "@/hooks/useEditor";
+import { BlogContext } from "@/app/apppost/components/BlogState";
 
 const initialMarkdown =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
 
 function MarkdownEditor() {
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { blogState } = useContext(BlogContext);
 	const [mounted, setMounted] = useState(false);
 
 	const { editorView } = useEditor({
 		language: "markdown",
-		code: initialMarkdown,
+		code: blogState.blogMeta.markdown || initialMarkdown,
 		editorParentId: "markdown-textarea",
 		mounted,
 	});

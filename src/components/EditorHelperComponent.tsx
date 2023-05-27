@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction, useContext } from "react";
+import React, { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import { StateEffect } from "@codemirror/state";
 import { FaBold, FaItalic } from "react-icons/fa";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
@@ -19,6 +20,8 @@ import {
 
 import { EditorView } from "codemirror";
 import { EditorContext } from "@/app/appwrite/components/EditorContext";
+import { vim } from "@replit/codemirror-vim";
+import getExtensions from "@utils/getExtensions";
 
 interface EditorHelperProps {
 	editorView: EditorView | null;
@@ -29,6 +32,30 @@ interface EditorHelperProps {
 function EditorHelperComponent() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { editorView } = editorState;
+	useEffect(() => {
+		if (!editorState.editorView) return;
+
+		if (editorState.enabledVimForMarkdown) {
+			editorState.editorView.dispatch({
+				effects: StateEffect.reconfigure.of([
+					vim(),
+					...getExtensions({
+						language: "markdown",
+					}),
+				]),
+			});
+		}
+
+		if (!editorState.enabledVimForMarkdown) {
+			editorState.editorView.dispatch({
+				effects: StateEffect.reconfigure.of(
+					getExtensions({
+						language: "markdown",
+					})
+				),
+			});
+		}
+	}, [editorState.enabledVimForMarkdown]);
 	return (
 		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
 			<button

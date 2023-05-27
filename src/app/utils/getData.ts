@@ -71,6 +71,7 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
 
     const content = (await getHtmlFromMarkdown(fileData)).content;
 
+    const markdown = await fileData.text()
 
-    return { post, content, imagesToUrls }
+    return { post, content, imagesToUrls, markdown }
 })

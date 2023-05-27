@@ -27,22 +27,22 @@ async function Post({ params }: { params: PostParams }) {
 	);
 
 	return (
-		<div className="grow flex flex-row min-h-0 relative pt-10">
-			<div
-				className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
+		<BlogContextProvider
+			blogMeta={{
+				title: post.title,
+				description: post.description,
+				language: post.language,
+				imageFolder: post.image_folder,
+			}}
+			uploadedImages={imagesToUrls}
+		>
+			<div className="grow flex flex-row min-h-0 relative pt-10">
+				<div
+					className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
 					`}
-			>
-				<Toc html={content} />
-			</div>
-			<BlogContextProvider
-				blogMeta={{
-					title: post.title,
-					description: post.description,
-					language: post.language,
-					imageFolder: post.image_folder,
-				}}
-				uploadedImages={imagesToUrls}
-			>
+				>
+					<Toc html={content} />
+				</div>
 				<div
 					className={`lg:basis-3/5 relative 
 							hidden lg:block
@@ -57,8 +57,8 @@ async function Post({ params }: { params: PostParams }) {
 						<PrivateToolbar language={post.language} />
 					)}
 				</div>
-			</BlogContextProvider>
-		</div>
+			</div>
+		</BlogContextProvider>
 	);
 }
 

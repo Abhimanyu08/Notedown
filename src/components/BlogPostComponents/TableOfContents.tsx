@@ -1,10 +1,17 @@
+import { BlogContext } from "@/app/apppost/components/BlogState";
 import parser, { HtmlNode } from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer, {
 	createHeadingIdFromHeadingText,
 	extractTextFromChildren,
 } from "@utils/html2Jsx/transformer";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 
 const headingToMargin: Record<string, string> = {
 	h2: "ml-0",
@@ -18,9 +25,12 @@ export function Toc({
 	html,
 	setShowContents,
 }: {
-	html?: string;
+	html: string;
 	setShowContents?: Dispatch<SetStateAction<boolean>>;
 }) {
+	// const { blogState } = useContext(BlogContext);
+	// const html = blogState.blogMeta.content;
+
 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
 	const matches = Array.from(html?.matchAll(re) || []);
 	const headings: string[] = [];

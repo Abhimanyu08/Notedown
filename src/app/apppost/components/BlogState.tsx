@@ -25,6 +25,7 @@ interface BlogStateInterface {
 		language: (typeof ALLOWED_LANGUAGES)[number];
 		content: string;
 		imageFolder: string;
+		markdown: string;
 	}>;
 	canvasApps: Record<string, any>;
 	uploadedImages: Record<string, string>;
@@ -62,6 +63,7 @@ interface DispatchObj {
 		| "add images to upload"
 		| "remove image from upload"
 		| "remove container"
+		| "set uploaded images"
 		| "remove canvas app";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
@@ -169,6 +171,12 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				containerId: null,
+			};
+
+		case "set uploaded images":
+			return {
+				...state,
+				uploadedImages: action.payload as Record<string, string>,
 			};
 		default:
 			return blogInitialState;
