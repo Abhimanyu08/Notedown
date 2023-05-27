@@ -106,7 +106,7 @@ function Code({ code, blockNumber }: CodeProps) {
 				),
 			});
 		}
-	}, [blogState.vimEnabled]);
+	}, [blogState.vimEnabled, editorView]);
 
 	return (
 		<div className="flex flex-col w-full ">

@@ -190,10 +190,10 @@ button {
 	justify-content: center;
 }
 button:hover {
-	scale: 1.1;
+	scale: 1.05;
 }
 button:active {
-	scale: 0.9;
+	scale: 0.95;
 }
 
 .tooltip:hover {

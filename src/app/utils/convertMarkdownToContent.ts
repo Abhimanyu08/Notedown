@@ -3,7 +3,7 @@ import { EditorView } from "codemirror";
 
 export const convertMarkdownToContent = async (editorView: EditorView | null) => {
     if (!editorView) return;
-    const markdown = editorView?.state.doc.toJSON().join("\n");
+    const markdown = editorView?.state.sliceDoc();
     if (!markdown) return;
     try {
 

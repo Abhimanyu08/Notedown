@@ -58,7 +58,7 @@ function getExtensions({ language, blockNumber, setRunningBlock }: getExtensionI
             EditorView.theme({
                 "&": {
                     color: "#fff",
-                    backgroundColor: "rgb(0 0 0)",
+                    backgroundColor: "rgba(0 0 0 0.7)",
                 },
                 ".cm-content": {
                     caretColor: "#0e9",

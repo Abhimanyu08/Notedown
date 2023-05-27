@@ -243,22 +243,19 @@ function BlogContextProvider({
 
 		dispatch({ type: "toggle running request", payload: {} });
 
-		const firstLine = blockToEditor[block]?.state.doc
-			.toJSON()
-			.filter((l) => l !== "")
-			.at(0);
+		const firstLine = blockToEditor[block]?.state.doc.lineAt(0).text;
+		console.log(firstLine);
 		const fileName = checkFileName(firstLine || "");
 		let codeArray: string[] = [];
 
 		for (let i = 0; i <= block; i++) {
 			if (document.getElementById(`codearea-${i}`)) {
-				let blockCodeArray = blockToEditor[i].state.doc
-					.toJSON()
-					.filter((l) => l !== "");
-				const firstLineOfBlock = blockCodeArray[0];
+				let firstLineOfBlock =
+					blockToEditor[i].state.doc.lineAt(0).text;
+				console.log(firstLineOfBlock);
 				if (!fileName) {
 					if (!checkFileName(firstLineOfBlock)) {
-						codeArray = codeArray.concat(blockCodeArray);
+						codeArray.push(blockToEditor[i].state.sliceDoc());
 					}
 				} else {
 					const blockFileName = checkFileName(firstLineOfBlock);
@@ -268,7 +265,7 @@ function BlogContextProvider({
 							fileName ||
 						blockFileName === fileName + langToExtension[language]
 					) {
-						codeArray = codeArray.concat(blockCodeArray.slice(1));
+						codeArray.push(blockToEditor[i].state.sliceDoc());
 					}
 				}
 			}
@@ -276,11 +273,10 @@ function BlogContextProvider({
 
 		const code = codeArray.join("\n");
 		const run = typeof writingBlock !== "number";
-		console.log(run, code);
+		console.log(code);
 		runCodeRequest({ code, run, containerId, fileName, language }).then(
 			(val) => {
 				// setBlockToOutput((prev) => ({ ...prev, [block]: val }));
-				console.log(val);
 				dispatch({ type: "set output", payload: { [block]: val } });
 
 				dispatch({ type: "set running block", payload: null });

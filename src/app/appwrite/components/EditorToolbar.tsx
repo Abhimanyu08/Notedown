@@ -19,7 +19,6 @@ function EditorToolbar() {
 	const { language } = blogState.blogMeta;
 
 	const [startUpload, setStartUpload] = useState(false);
-	const [hideNotification, setHideNotification] = useState(false);
 
 	const { uploading, uploadStatus, newPostId } = useUploadPost({
 		startUpload,

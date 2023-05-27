@@ -50,10 +50,7 @@ const tagToTransformer: TagToTransformer = {
 		> = {};
 		for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
 			headingToRenderers[heading as HeadTags] = (node) =>
-				headingsRenderer(
-					heading as HeadTags,
-					(node.children[0] as TextNode).text
-				);
+				headingsRenderer(heading as HeadTags, node.children);
 		}
 		return headingToRenderers;
 	})(),
@@ -120,7 +117,10 @@ const tagToTransformer: TagToTransformer = {
 			);
 		}
 
-		let newAttributes = { ...node.attributes, target: "_blank" };
+		let newAttributes = { ...node.attributes };
+		if (!node.attributes.href.startsWith("#")) {
+			newAttributes = { ...node.attributes, target: "_blank" };
+		}
 		node.attributes = newAttributes;
 		return defaultTagToJsx(node);
 	},
@@ -204,7 +204,12 @@ const tagToTransformer: TagToTransformer = {
 	},
 };
 
-function headingsRenderer(tag: HeadTags, headingText: string) {
+function headingsRenderer(
+	tag: HeadTags,
+	headingChildren: HtmlNode["children"]
+) {
+	const headingText = extractTextFromChildren(headingChildren);
+	console.log(headingText);
 	return React.createElement(
 		tag,
 		{
@@ -213,6 +218,15 @@ function headingsRenderer(tag: HeadTags, headingText: string) {
 				.map((w) => w.toLowerCase())
 				.join("-"),
 		},
-		headingText
+		headingChildren.map((child) => transformer(child))
 	);
 }
+
+const extractTextFromChildren = (children: HtmlNode["children"]): string => {
+	const textArray = children.map((c) => {
+		if (c.tagName === "text") return c.text;
+		return extractTextFromChildren(c.children);
+	});
+
+	return textArray.join(" ");
+};

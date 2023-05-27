@@ -33,7 +33,7 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
 
 
     const prepareForUpload = () => {
-        const markdown = editorState.editorView?.state.doc.toJSON().join("\n")
+        const markdown = editorState.editorView?.state.sliceDoc()
         if (!markdown) throw new Error("Couldn't read markdown")
         const markdownFile = new File([markdown], "file.md")
 

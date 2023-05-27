@@ -31,7 +31,6 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
             doc: code,
             extensions: getExtensions({ language, blockNumber, setRunningBlock: () => null })
         })
-
         let view = new EditorView({
             state: startState,
             parent: editorParent,
