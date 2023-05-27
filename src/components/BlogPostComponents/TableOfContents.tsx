@@ -27,7 +27,7 @@ export function Toc({
 	const headingIds: string[] = [];
 	const headingTypes: string[] = [];
 	matches.forEach((match) => {
-		const headingElem = parser(tokenizer(matches.at(0)!.at(0)!))
+		const headingElem = parser(tokenizer(match.at(0)!))
 			.children[0] as HtmlNode;
 		const headingText = extractTextFromChildren(headingElem.children);
 		const headingId = createHeadingIdFromHeadingText(headingText);

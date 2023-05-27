@@ -21,21 +21,19 @@ async function PostModal({ params }: { params: { postId: string } }) {
 		supabase
 	);
 	return (
-		<div className="h-full w-full absolute bg-black">
-			<div className="flex flex-col items-center justify-center h-full w-full relative">
-				<BlogContextProvider
-					uploadedImages={imagesToUrls}
-					blogMeta={{
-						language: post.language,
-						imageFolder: post.image_folder,
-					}}
-				>
-					<Blog {...{ ...post, content }} extraClasses="w-full" />
-				</BlogContextProvider>
-				<div className="flex absolute gap-3 top-2 right-3">
-					<ExpandButton postId={params.postId} />
-					<BackButton id={post.created_by || ""} />
-				</div>
+		<div className="flex flex-col items-center justify-center h-full w-full relative">
+			<BlogContextProvider
+				uploadedImages={imagesToUrls}
+				blogMeta={{
+					language: post.language,
+					imageFolder: post.image_folder,
+				}}
+			>
+				<Blog {...{ ...post, content }} extraClasses="w-full px-4" />
+			</BlogContextProvider>
+			<div className="flex absolute gap-3 top-2 right-3">
+				<ExpandButton postId={params.postId} />
+				<BackButton id={post.created_by || ""} />
 			</div>
 		</div>
 	);
