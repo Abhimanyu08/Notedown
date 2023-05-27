@@ -209,24 +209,29 @@ function headingsRenderer(
 	headingChildren: HtmlNode["children"]
 ) {
 	const headingText = extractTextFromChildren(headingChildren);
-	console.log(headingText);
 	return React.createElement(
 		tag,
 		{
-			id: headingText
-				.split(" ")
-				.map((w) => w.toLowerCase())
-				.join("-"),
+			id: createHeadingIdFromHeadingText(headingText),
 		},
 		headingChildren.map((child) => transformer(child))
 	);
 }
 
-const extractTextFromChildren = (children: HtmlNode["children"]): string => {
+export const createHeadingIdFromHeadingText = (headingText: string) => {
+	return headingText
+		.split(" ")
+		.map((w) => w.toLowerCase())
+		.join("-");
+};
+
+export const extractTextFromChildren = (
+	children: HtmlNode["children"]
+): string => {
 	const textArray = children.map((c) => {
 		if (c.tagName === "text") return c.text;
 		return extractTextFromChildren(c.children);
 	});
 
-	return textArray.join(" ");
+	return textArray.join("");
 };

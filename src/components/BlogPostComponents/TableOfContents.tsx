@@ -1,3 +1,9 @@
+import parser, { HtmlNode } from "@utils/html2Jsx/parser";
+import tokenizer from "@utils/html2Jsx/tokenizer";
+import transformer, {
+	createHeadingIdFromHeadingText,
+	extractTextFromChildren,
+} from "@utils/html2Jsx/transformer";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const headingToMargin: Record<string, string> = {
@@ -17,7 +23,21 @@ export function Toc({
 }) {
 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
 	const matches = Array.from(html?.matchAll(re) || []);
+	const headings: string[] = [];
+	const headingIds: string[] = [];
+	const headingTypes: string[] = [];
+	matches.forEach((match) => {
+		const headingElem = parser(tokenizer(matches.at(0)!.at(0)!))
+			.children[0] as HtmlNode;
+		const headingText = extractTextFromChildren(headingElem.children);
+		const headingId = createHeadingIdFromHeadingText(headingText);
 
+		headings.push(headingText);
+		headingIds.push(headingId);
+		headingTypes.push(headingElem.tagName);
+	});
+
+	console.log(headings, headingIds, headingTypes);
 	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
 	// const [open, setOpen] = useState(true);
 
@@ -56,23 +76,19 @@ export function Toc({
 						Title
 					</a>
 				</li>
-				{matches?.map((match) => {
+				{headings.map((heading, idx) => {
 					return (
 						<li
 							className={`
-							${headingToMargin[match.at(1)!]} 
+							${headingToMargin[headingTypes[idx]]} 
 							break-words`}
-							key={match.at(4)}
+							key={heading}
 						>
 							<a
-								href={`#${match
-									.at(4)
-									?.split(" ")
-									.map((w) => w.toLowerCase())
-									.join("-")}`}
+								href={`#${headingIds[idx]}`}
 								className={`hover:text-black hover:font-bold hover:dark:text-white`}
 							>
-								{match.at(4)}
+								{heading}
 							</a>
 						</li>
 					);
