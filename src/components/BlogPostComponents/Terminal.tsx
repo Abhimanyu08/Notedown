@@ -85,12 +85,12 @@ function Terminal({
 	useEffect(() => {
 		if (
 			!Object.hasOwn(blogState.blockToOutput, blockNumber) ||
-			blogState.blockToOutput[blockNumber] === ""
+			blogState.blockToOutput[blockNumber] === null
 		)
 			return;
 		terminal?.writeln("\r\n" + blogState.blockToOutput[blockNumber] || "");
 		// if (setBlockToOutput) setBlockToOutput({})
-		dispatch({ type: "set output", payload: { [blockNumber]: "" } });
+		dispatch({ type: "set output", payload: { [blockNumber]: null } });
 	}, [blogState.blockToOutput]);
 
 	return (
