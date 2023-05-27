@@ -29,6 +29,15 @@ function Write() {
 		convertMarkdownToContent(editorState.editorView)
 			.then((val) => {
 				if (!val) return;
+				if (
+					blogState.blogMeta.language !== val.data.language &&
+					blogState.containerId
+				) {
+					blogStateDispatch({
+						type: "remove container",
+						payload: null,
+					});
+				}
 				blogStateDispatch({
 					type: "set blog meta",
 					payload: { ...val?.data, content: val?.content },

@@ -17,7 +17,7 @@ interface BlogStateInterface {
 	runningRequest: boolean;
 	runningBlock: number | null;
 	writingBlock: number | null;
-	containerId: string;
+	containerId: string | null;
 	blogMeta: Partial<{
 		title: string;
 		author: string;
@@ -39,7 +39,7 @@ const blogInitialState: BlogStateInterface = {
 	runningRequest: false,
 	runningBlock: null,
 	writingBlock: null,
-	containerId: "",
+	containerId: null,
 	blogMeta: {},
 	canvasApps: {},
 	imagesToFiles: {},
@@ -61,6 +61,7 @@ interface DispatchObj {
 		| "set image to files"
 		| "add images to upload"
 		| "remove image from upload"
+		| "remove container"
 		| "remove canvas app";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
@@ -163,6 +164,11 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				canvasApps: currentCanvasApps,
+			};
+		case "remove container":
+			return {
+				...state,
+				containerId: null,
 			};
 		default:
 			return blogInitialState;
