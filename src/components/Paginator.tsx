@@ -6,6 +6,7 @@ import { supabase } from "@utils/supabaseClient";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import postTypeToFetcher from "@/app/utils/postTypeToFetcher";
 import { PostTypes } from "@/interfaces/PostTypes";
+import { useSupabase } from "@/app/appContext";
 
 function Paginator({
 	postType,
@@ -16,17 +17,18 @@ function Paginator({
 	lastPost: PostWithBlogger;
 	cursorKey: keyof PostWithBlogger;
 }) {
+	const { supabase } = useSupabase();
 	const [newPosts, setNewPosts] = useState<PostWithBlogger[]>([]);
 	const [currentLastPost, setCurrentLastPost] =
 		useState<PostWithBlogger>(lastPost);
 	const extraPostFetcher = postTypeToFetcher[postType];
 	const onLoadMore = () => {
 		if (!extraPostFetcher) return;
-		extraPostFetcher(currentLastPost, cursorKey).then((val) => {
+		extraPostFetcher(currentLastPost, cursorKey, supabase).then((val) => {
 			if (!val) return;
 			let last = val?.at(val.length - 1);
 			if (last) setCurrentLastPost(last);
-			if (val[0].upvoter) val = val.map((p) => p.posts);
+			if (val?.at(0)?.upvoter) val = val.map((p) => p.posts);
 			setNewPosts((prev) => [...prev, ...val!]);
 		});
 	};

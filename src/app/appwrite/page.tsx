@@ -13,10 +13,10 @@ import { convertMarkdownToContent } from "../utils/convertMarkdownToContent";
 import { EditorContext } from "./components/EditorContext";
 import EditorToolbar from "./components/EditorToolbar";
 import MarkdownEditor from "./components/MarkdownEditor";
-import BlogLayout from "./components/BlogLayout";
+import EditorLayout from "./components/BlogLayout";
 
 function Write() {
-	return <BlogLayout />;
+	return <EditorLayout />;
 }
 
 export default Write;

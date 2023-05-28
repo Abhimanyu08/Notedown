@@ -173,7 +173,7 @@ export function Blog({
 				prose-p:font-sans
 				prose-p:tracking-normal
 				prose-p:text-black/80
-				dark:prose-p:text-font-grey
+				dark:prose-p:text-gray-300
 
 				// -------------prose-li--------
 				marker:prose-li:text-black
@@ -182,7 +182,7 @@ export function Blog({
 				prose-li:font-sans
 				md:prose-li:text-[16px]	
 				prose-li:leading-7
-				dark:prose-li:text-font-grey
+				dark:prose-li:text-gray-300
 
 				// -----------prose-string-----------
 				prose-strong:font-bold
@@ -215,13 +215,13 @@ export function Blog({
 				//-----------------figcaption-------------
 
 				prose-figcaption:text-black
-				dark:prose-figcaption:text-font-grey
+				dark:prose-figcaption:text-gray-400
 
 				//-----------------blockquote---------
 				prose-blockquote:border-l-black 
 				prose-blockquote:border-l-4
 				dark:prose-blockquote:border-l-gray-300
-				dark:prose-blockquote:text-font-grey
+				dark:prose-blockquote:text-gray-300
 				prose-blockquote:text-black/80
 				  prose-h1:mb-6   
 				

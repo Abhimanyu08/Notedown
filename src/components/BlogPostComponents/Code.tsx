@@ -110,7 +110,7 @@ function Code({ code, blockNumber }: CodeProps) {
 
 	return (
 		<div className="flex flex-col w-full ">
-			<div className="flex flex-row  gap-5 w-fit self-end border-[1px] border-b-0 border-white/50 bg-black py-1 px-3 rounded-t-md">
+			<div className="flex flex-row  gap-5 w-fit self-end border-[1px] border-b-0 border-white/50 bg-[#15181c] py-1 px-3 rounded-t-md">
 				{mounted && (
 					<>
 						<CodeAreaButton

@@ -9,14 +9,17 @@ import { EditorContext } from "./EditorContext";
 import EditorToolbar from "./EditorToolbar";
 import MarkdownEditor from "./MarkdownEditor";
 import { getPost } from "@/app/utils/getData";
+import { useSupabase } from "@/app/appContext";
 
-function BlogLayout({
+function EditorLayout({
 	post,
 	imagesToUrls,
 	markdown,
-}: Awaited<ReturnType<typeof getPost>>) {
+}: Partial<Awaited<ReturnType<typeof getPost>>>) {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
+	const { session } = useSupabase();
+
 	useShortCut({
 		keys: ["Alt", "p"],
 		callback: () => {
@@ -40,7 +43,7 @@ function BlogLayout({
 
 			blogStateDispatch({
 				type: "set uploaded images",
-				payload: imagesToUrls,
+				payload: imagesToUrls!,
 			});
 		}
 	}, []);
@@ -104,7 +107,8 @@ function BlogLayout({
 				<Blog
 					{...blogState.blogMeta}
 					bloggers={{
-						name: "hello",
+						name: blogState.blogMeta.author,
+						id: session?.user.id,
 					}}
 					extraClasses={
 						editorState.editingMarkdown ? "hidden" : "px-20"
@@ -118,4 +122,4 @@ function BlogLayout({
 	);
 }
 
-export default BlogLayout;
+export default EditorLayout;

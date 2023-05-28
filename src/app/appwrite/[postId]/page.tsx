@@ -2,7 +2,7 @@ import { getPost } from "@/app/utils/getData";
 import { Database } from "@/interfaces/supabase";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
-import BlogLayout from "../components/BlogLayout";
+import EditorLayout from "../components/BlogLayout";
 
 async function EditPost({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -15,7 +15,7 @@ async function EditPost({ params }: { params: { postId: string } }) {
 		supabase
 	);
 
-	return <BlogLayout {...{ post, content, markdown, imagesToUrls }} />;
+	return <EditorLayout {...{ post, content, markdown, imagesToUrls }} />;
 }
 
 export default EditPost;

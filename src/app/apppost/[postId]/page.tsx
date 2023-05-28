@@ -50,7 +50,7 @@ async function Post({ params }: { params: PostParams }) {
 				>
 					<Blog content={content} {...post} extraClasses="px-20" />
 				</div>
-				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white ml-10 mt-20">
+				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
 					{post.published ? (
 						<Toolbar language={post?.language} id={params.postId} />
 					) : (

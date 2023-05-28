@@ -1,17 +1,18 @@
 import { PostTypes } from "@/interfaces/PostTypes";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_POST_TABLE, LIMIT, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
-import { supabase } from "@utils/supabaseClient";
 
 type Value<T> = T[keyof T]
 
 const postTypeToFetcher: { [k in PostTypes]?: (
     lastPost: PostWithBlogger,
-    cursorKey: keyof PostWithBlogger
+    cursorKey: keyof PostWithBlogger,
+    supabase: SupabaseClient
 
 ) => Promise<PostWithBlogger[] | undefined> } = {}
 
-const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey) => {
+const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
     const { data, error } = await supabase
         .from(SUPABASE_POST_TABLE)
@@ -31,7 +32,7 @@ const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, curs
     return data;
 };
 
-const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey) => {
+const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
     const { data, error } = await supabase
         .from(SUPABASE_POST_TABLE)
@@ -52,7 +53,7 @@ const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, curso
     return data
 };
 
-const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey) => {
+const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
     const { data, error } = await supabase
         .from(SUPABASE_POST_TABLE)
@@ -72,7 +73,7 @@ const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cur
     return data
 };
 
-const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey) => {
+const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey, supabase) => {
 
     const cursor = lastUpvote[cursorKey]
 
