@@ -32,6 +32,7 @@ function EditorLayout({
 			blogStateDispatch({
 				type: "set blog meta",
 				payload: {
+					id: post.id,
 					title: post.title,
 					description: post.description,
 					author: post.bloggers?.name,

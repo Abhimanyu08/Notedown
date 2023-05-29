@@ -19,6 +19,7 @@ interface BlogStateInterface {
 	writingBlock: number | null;
 	containerId: string | null;
 	blogMeta: Partial<{
+		id: number;
 		title: string;
 		author: string;
 		description: string;
@@ -64,6 +65,8 @@ interface DispatchObj {
 		| "remove image from upload"
 		| "remove container"
 		| "set uploaded images"
+		// | "add images to delete"
+		// | "remove images from imagesToDelete"
 		| "remove canvas app";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
@@ -178,6 +181,24 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 				...state,
 				uploadedImages: action.payload as Record<string, string>,
 			};
+
+		// case "add images to delete":
+		// 	return {
+		// 		...state,
+		// 		imagesToDelete: [
+		// 			...state.imagesToDelete,
+		// 			...(action.payload as string[]).filter((i) =>
+		// 				Object.hasOwn(state.uploadedImages, i)
+		// 			),
+		// 		],
+		// 	};
+		// case "remove images from imagesToDelete":
+		// 	return {
+		// 		...state,
+		// 		imagesToDelete: state.imagesToDelete.filter(
+		// 			(i) => !(action.payload as string[]).includes(i)
+		// 		),
+		// 	};
 		default:
 			return blogInitialState;
 	}

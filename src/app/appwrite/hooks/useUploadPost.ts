@@ -47,7 +47,6 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
 
 
     const uploadPostFile = async ({ title, description, language, markdownFile }: { title: string, description: string, language: string, markdownFile: File }) => {
-        console.log(created_by)
         const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).insert({
             title,
             description,
@@ -133,6 +132,15 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
             setStartUpload(false)
         }
 
+    }
+    const update = async () => {
+        // prepareUpload()
+        //update the post row in the table to have new title,description,language etc.
+        // upload new markdown file for the blog post
+        //delete the images that need to be deleted
+        //upload image files that need to be uploaded
+        //upload canvas files that need to be uploaded
+        //done
     }
 
     return { uploading, uploadStatus, newPostId }
