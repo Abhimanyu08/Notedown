@@ -1,15 +1,13 @@
+import { getPost } from "@/app/utils/getData";
 import { Database } from "@/interfaces/supabase";
-import { Blog } from "@components/BlogPostComponents/Blog";
-import { Toc } from "@components/BlogPostComponents/TableOfContents";
+import Blog from "@components/BlogPostComponents/Blog";
+import Toc from "@components/BlogPostComponents/TableOfContents";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { SUPABASE_FILES_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
-import { getHtmlFromMarkdown } from "@utils/getResources";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { cookies, headers } from "next/headers";
 import BlogContextProvider from "../components/BlogState";
 import PrivateToolbar from "../components/PrivateToolbar";
 import Toolbar from "../components/Toolbar";
-import { getPost } from "@/app/utils/getData";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
