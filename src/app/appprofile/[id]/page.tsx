@@ -15,7 +15,7 @@ async function About({ params }: { params: { id: string } }) {
 		<>
 			<h1 className="text-3xl tracking-normal">{userData?.name}</h1>
 			<AboutJsxWrapper>
-				{transformer(parser(tokenizer(aboutHtml)), {})}
+				{transformer(parser(tokenizer(aboutHtml)))}
 			</AboutJsxWrapper>
 		</>
 	);

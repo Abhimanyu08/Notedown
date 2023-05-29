@@ -35,7 +35,8 @@ function EditorLayout({
 					id: post.id,
 					title: post.title,
 					description: post.description,
-					author: post.bloggers?.name,
+					author: (post.bloggers as { id: string; name: string })
+						.name,
 					markdown,
 					imageFolder: post.image_folder,
 					language: post.language,
@@ -115,8 +116,8 @@ function EditorLayout({
 					<Blog
 						{...blogState.blogMeta}
 						bloggers={{
-							name: blogState.blogMeta.author,
-							id: session?.user.id,
+							name: blogState.blogMeta.author || null,
+							id: session?.user.id || "",
 						}}
 					/>
 				</div>

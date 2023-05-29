@@ -32,7 +32,7 @@ function Code({ code, blockNumber }: CodeProps) {
 	const [mounted, setMounted] = useState(false);
 	const [openShell, setOpenShell] = useState(true);
 	const { editorView } = useEditor({
-		language,
+		language: language!,
 		blockNumber,
 		code,
 		mounted,
@@ -74,7 +74,7 @@ function Code({ code, blockNumber }: CodeProps) {
 	};
 
 	useEffect(() => {
-		if (!editorView) return;
+		if (!editorView || !language) return;
 		if (blogState.vimEnabled) {
 			editorView.dispatch({
 				effects: StateEffect.reconfigure.of([

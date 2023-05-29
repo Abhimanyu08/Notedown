@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import getYoutubeEmbedLink from "../../../utils/getYoutubeEmbedLink";
 
 function LoomDemoModal() {
 	const [show, setShow] = useState(false);

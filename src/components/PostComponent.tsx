@@ -45,8 +45,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 	useEffect(() => {
 		setOwner(
 			user?.id !== "undefined" &&
-				post.bloggers?.id !== "undefined" &&
-				user?.id === post.bloggers?.id
+				(post.bloggers as { id: string; name: string }).id !==
+					"undefined" &&
+				user?.id === (post.bloggers as { id: string; name: string }).id
 		);
 	}, [user]);
 
@@ -134,7 +135,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 					href={`/appprofile/${created_by}`}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic underline"
 				>
-					{post.bloggers?.name || post.author || ""}
+					{(post.bloggers as { id: string; name: string }).name ||
+						post.author ||
+						""}
 				</Link>
 				<div className="px-1 w-24  flex justify-center ">
 					{upvoted_on ? (

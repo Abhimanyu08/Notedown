@@ -248,10 +248,26 @@ const Blog = memo(
 						<span className="underline underline-offset-2 decoration-black dark:decoration-white">
 							{created_by ? (
 								<Link href={`/appprofile/${created_by}`}>
-									{bloggers?.name}
+									{
+										(
+											bloggers as {
+												name: string;
+												id: string;
+											}
+										)?.name
+									}
 								</Link>
 							) : (
-								<span>{bloggers?.name}</span>
+								<span>
+									{
+										(
+											bloggers as {
+												name: string;
+												id: string;
+											}
+										)?.name
+									}
+								</span>
 							)}
 						</span>
 						<span>on</span>

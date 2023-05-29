@@ -73,31 +73,31 @@ const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cur
     return data
 };
 
-const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey, supabase) => {
+// const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey, supabase) => {
 
-    const cursor = lastUpvote[cursorKey]
+//     const cursor = lastUpvote[cursorKey]
 
-    const { data, error } = await supabase
-        .from(SUPABASE_UPVOTES_TABLE)
-        .select(
-            "created_at, post_id,upvoter, posts(id,created_by,title,description,language,published,published_on,upvote_count,bloggers(id, name))"
-        )
-        .match({ upvoter: lastUpvote.upvoter })
-        .lt("created_at", cursor)
-        .order("created_at", { ascending: false })
-        .limit(LIMIT);
+//     const { data, error } = await supabase
+//         .from(SUPABASE_UPVOTES_TABLE)
+//         .select(
+//             "created_at, post_id,upvoter, posts(id,created_by,title,description,language,published,published_on,upvote_count,bloggers(id, name))"
+//         )
+//         .match({ upvoter: lastUpvote.upvoter })
+//         .lt("created_at", cursor)
+//         .order("created_at", { ascending: false })
+//         .limit(LIMIT);
 
-    console.log(error, data)
-    if (error || !data) {
-        alert("Failed to return more data");
-        return;
-    }
-    return data
-}
+//     console.log(error, data)
+//     if (error || !data) {
+//         alert("Failed to return more data");
+//         return;
+//     }
+//     return data
+// }
 
 postTypeToFetcher.private = fetchPrivatePosts
 postTypeToFetcher.latest = fetchLatestPosts
 postTypeToFetcher.greatest = fetchGreatestPosts
-postTypeToFetcher.upvoted = fetchUpvotedPosts
+// postTypeToFetcher.upvoted = fetchUpvotedPosts
 
 export default postTypeToFetcher

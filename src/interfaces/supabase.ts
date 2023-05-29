@@ -1,3 +1,5 @@
+import { ALLOWED_LANGUAGES } from "@utils/constants"
+
 export type Json =
   | string
   | number
@@ -49,9 +51,10 @@ export interface Database {
           filename: string | null
           id: number
           image_folder: string | null
-          language: "python" | "javascript" | "rust" | null
+          language: typeof ALLOWED_LANGUAGES[number] | null
           published: boolean
           published_on: string | null
+          search_index_col: unknown | null
           title: string
           upvote_count: number
         }
@@ -109,6 +112,45 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      private_search: {
+        Args: {
+          user_id: string
+          search_term: string
+          cursor: number
+        }
+        Returns: {
+          id: number
+          created_by: string
+          title: string
+          description: string
+          published: boolean
+          created_at: string
+          published_on: string
+          language: typeof ALLOWED_LANGUAGES[number] | null
+          upvote_count: number
+          author: string
+          search_rank: number
+        }[]
+      }
+      public_search: {
+        Args: {
+          search_term: string
+          cursor: number
+        }
+        Returns: {
+          id: number
+          created_by: string
+          title: string
+          description: string
+          published: boolean
+          created_at: string
+          published_on: string
+          language: string
+          upvote_count: number
+          author: string
+          search_rank: number
+        }[]
+      }
       ranked_search_private: {
         Args: {
           user_id: string
@@ -141,6 +183,25 @@ export interface Database {
           description: string
           published: boolean
           created_at: string
+          published_on: string
+          language: string
+          upvote_count: number
+          author: string
+          search_rank: number
+        }[]
+      }
+      search_upvotes: {
+        Args: {
+          user_id: string
+          search_term: string
+          cursor: number
+        }
+        Returns: {
+          id: number
+          created_by: string
+          title: string
+          description: string
+          published: boolean
           published_on: string
           language: string
           upvote_count: number

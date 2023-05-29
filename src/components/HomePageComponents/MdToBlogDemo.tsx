@@ -5,10 +5,10 @@ import {
 	BsArrowRightCircleFill,
 } from "react-icons/bs";
 import { SiConvertio } from "react-icons/si";
-import { ALLOWED_LANGUAGES } from "../../../utils/constants";
-import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import useEditor from "../../hooks/useEditor";
-import { Blog } from "../BlogPostComponents/Blog";
+import Blog from "@components/BlogPostComponents/Blog";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
+import { getHtmlFromMarkdown } from "@utils/getResources";
 
 function MdToBlog({ markdown }: { markdown: string }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 				setBlogData({
 					title: data.title,
 					description: data.description,
-					language: data.language,
+					language: data.language || undefined,
 					content,
 				});
 			})
@@ -150,11 +150,14 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 						title={blogData?.title}
 						language={blogData?.language}
 						description={blogData?.description}
-						bloggers={{ name: "You" }}
+						bloggers={{
+							name: "You",
+							id: "f2c61fc8-bcdb-46e9-aad2-99c0608cf485",
+						}}
 						image_folder={
 							"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
 						}
-						paddingClasses="px-12"
+						extraClasses="px-12"
 					/>
 				</div>
 				<span className="self-center dark:text-white text-black font-semibold text-sm">
@@ -205,11 +208,14 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 							title={blogData?.title}
 							language={blogData?.language}
 							description={blogData?.description}
-							bloggers={{ name: "You" }}
+							bloggers={{
+								name: "You",
+								id: "f2c61fc8-bcdb-46e9-aad2-99c0608cf485",
+							}}
 							image_folder={
 								"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
 							}
-							paddingClasses="px-12"
+							extraClasses="px-12"
 						/>
 					</div>
 				</div>

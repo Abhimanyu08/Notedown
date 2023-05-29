@@ -9,14 +9,15 @@ export function PublishModal({ post, afterActionCallback }: ModalProps) {
 	const onPublish: MouseEventHandler = async (e) => {
 		if (!id) return;
 		const { data, error } = await supabase
-			.from<Post>(SUPABASE_POST_TABLE)
+			.from(SUPABASE_POST_TABLE)
 			.update({
 				published: true,
 				published_on: published_on
 					? published_on
 					: new Date().toISOString(),
 			})
-			.match({ id });
+			.match({ id })
+			.select("*");
 		if (error || !data || data.length === 0) {
 			alert("Error in publishing post");
 			return;

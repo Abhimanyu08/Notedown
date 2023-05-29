@@ -12,10 +12,10 @@ function SearchComponent({ id }: { id: string }) {
 		const { data, error } = await supabase.rpc(SEARCH_PRIVATE, {
 			user_id: id,
 			search_term: query,
-			cursor: null,
+			cursor: 1,
 		});
 		if (!data || data.length === 0 || error) setSearchResults([]);
-		setSearchResults(data);
+		setSearchResults(data || []);
 	};
 	return (
 		<div className="relative hover:absolute top-0 left-0 w-full">

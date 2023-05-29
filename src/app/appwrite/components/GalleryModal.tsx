@@ -43,7 +43,10 @@ function GalleryModal() {
 							(entry) => {
 								const [imageName, imageFile] = entry;
 								return (
-									<div className="col-span-1 flex items-center relative group">
+									<div
+										className="col-span-1 flex items-center relative group"
+										key={imageName}
+									>
 										<GridObject
 											{...{ imageName, imageFile }}
 											onCheck={(e) => {

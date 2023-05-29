@@ -117,7 +117,7 @@ export function About({
 	const aboutJSX = useMemo(() => {
 		return (
 			<AboutJsxWrapper>
-				{transformer(parser(tokenizer(originalAboutInHtml)), {})}
+				{transformer(parser(tokenizer(originalAboutInHtml)))}
 			</AboutJsxWrapper>
 		);
 	}, [originalAboutInHtml]);
@@ -125,7 +125,7 @@ export function About({
 	const editedAboutJsx = useMemo(() => {
 		return (
 			<AboutJsxWrapper>
-				{transformer(parser(tokenizer(editedAboutInHtml)), {})}
+				{transformer(parser(tokenizer(editedAboutInHtml)))}
 			</AboutJsxWrapper>
 		);
 	}, [editedAboutInHtml]);
@@ -135,11 +135,12 @@ export function About({
 		editedAboutInHtml: string
 	) => {
 		const { data } = await supabase
-			.from<Blogger>(SUPABASE_BLOGGER_TABLE)
+			.from(SUPABASE_BLOGGER_TABLE)
 			.update({
 				about: editedAboutInMd,
 			})
-			.eq("id", userId);
+			.eq("id", userId)
+			.select();
 		if (!data) return;
 		const newProfile: ProfileUser = data.at(0) as Blogger;
 		newProfile["htmlAbout"] = editedAboutInHtml;

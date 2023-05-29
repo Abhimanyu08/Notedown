@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react';
 
 import getExtensions from "@utils/getExtensions";
 import { BlogProps } from "../interfaces/BlogProps";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
 
 
 interface useEditorProps {
-    language: BlogProps["language"] | "markdown"
+    language: typeof ALLOWED_LANGUAGES[number] | "markdown"
     code: string
     editorParentId: string
     blockNumber?: number

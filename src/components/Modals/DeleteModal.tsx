@@ -7,15 +7,18 @@ import {
 	SUPABASE_IMAGE_BUCKET,
 } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
+import { Database } from "@/interfaces/supabase";
 
 export function DeleteModal({ post, afterActionCallback }: ModalProps) {
 	const onDelete: MouseEventHandler = async (e) => {
 		let { id, filename, published, image_folder, created_by } = post;
 		if (!id) return;
-		let postData: Post | undefined, imageData, error;
+		let postData: Database["public"]["Tables"]["posts"]["Row"] | undefined,
+			imageData,
+			error;
 		if (!filename || !image_folder || !created_by) {
 			const { data, error } = await supabase
-				.from<Post>(SUPABASE_POST_TABLE)
+				.from(SUPABASE_POST_TABLE)
 				.select("filename, image_folder, created_by")
 				.match({ id });
 
@@ -28,9 +31,10 @@ export function DeleteModal({ post, afterActionCallback }: ModalProps) {
 		await Promise.all([
 			//delete the row corresponding to this post from the table
 			supabase
-				.from<Post>(SUPABASE_POST_TABLE)
+				.from(SUPABASE_POST_TABLE)
 				.delete()
 				.match({ id })
+				.select("*")
 				.then((val) => {
 					postData = val.data?.at(0);
 				}),

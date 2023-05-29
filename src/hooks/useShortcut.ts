@@ -18,7 +18,7 @@ export default function useShortCut({
 
     useEffect(() => {
 
-        const keyDown = (e) => {
+        const keyDown = (e: KeyboardEvent) => {
             if (keys.includes(e.key)) {
                 keyArray.current.add(e.key);
                 if (keys.length === keyArray.current.size) {
@@ -26,7 +26,7 @@ export default function useShortCut({
                 }
             }
         }
-        const keyUp = (e) => {
+        const keyUp = (e: KeyboardEvent) => {
             keyArray.current.delete(e.key)
         }
 

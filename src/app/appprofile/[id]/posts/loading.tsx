@@ -3,8 +3,8 @@ import React from "react";
 function PostsLoading() {
 	return (
 		<div className="flex flex-col gap-10">
-			{Array.from({ length: 4 }).map(() => (
-				<SinglePostLoading />
+			{Array.from({ length: 4 }).map((_, i) => (
+				<SinglePostLoading key={i} />
 			))}
 		</div>
 	);
