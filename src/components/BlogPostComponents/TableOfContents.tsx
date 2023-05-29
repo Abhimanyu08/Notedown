@@ -1,17 +1,10 @@
-import { BlogContext } from "@/app/apppost/components/BlogState";
 import parser, { HtmlNode } from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
-import transformer, {
+import {
 	createHeadingIdFromHeadingText,
 	extractTextFromChildren,
 } from "@utils/html2Jsx/transformer";
-import {
-	Dispatch,
-	SetStateAction,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { Dispatch, SetStateAction, memo } from "react";
 
 const headingToMargin: Record<string, string> = {
 	h2: "ml-0",
@@ -21,7 +14,7 @@ const headingToMargin: Record<string, string> = {
 	h6: "ml-16",
 };
 
-export function Toc({
+const Toc = memo(function Toc({
 	html,
 	setShowContents,
 }: {
@@ -47,7 +40,6 @@ export function Toc({
 		headingTypes.push(headingElem.tagName);
 	});
 
-	console.log(headings, headingIds, headingTypes);
 	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
 	// const [open, setOpen] = useState(true);
 
@@ -106,4 +98,6 @@ export function Toc({
 			</ul>
 		</div>
 	);
-}
+});
+
+export default Toc;

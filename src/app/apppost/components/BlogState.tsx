@@ -157,11 +157,17 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			};
 
 		case "remove image from upload":
+			const imagesToUpload = state.imagesToUpload;
+			const imagesToDelete = action.payload as string[];
+			for (let image of imagesToDelete) {
+				const index = imagesToUpload.findIndex((i) => i === image);
+				if (index !== -1) {
+					imagesToUpload.splice(index, 1);
+				}
+			}
 			return {
 				...state,
-				imagesToUpload: state.imagesToUpload.filter(
-					(i) => !(action.payload as string[]).includes(i)
-				),
+				imagesToUpload: imagesToUpload,
 			};
 		case "remove canvas app":
 			const currentCanvasApps = { ...state.canvasApps };

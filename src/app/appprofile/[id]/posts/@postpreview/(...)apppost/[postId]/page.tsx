@@ -1,14 +1,10 @@
-import { getPostMarkdown } from "@/app/utils/getPostMarkdown";
-import { Blog } from "@components/BlogPostComponents/Blog";
-import React from "react";
-import { BackButton, ExpandButton } from "../../../components/ModalButtons";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { headers, cookies } from "next/headers";
-import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
-import { getHtmlFromMarkdown } from "@utils/getResources";
-import { Database } from "@/interfaces/supabase";
-import { getPost } from "@/app/utils/getData";
 import BlogContextProvider from "@/app/apppost/components/BlogState";
+import { getPost } from "@/app/utils/getData";
+import { Database } from "@/interfaces/supabase";
+import Blog from "@components/BlogPostComponents/Blog";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cookies, headers } from "next/headers";
+import { BackButton, ExpandButton } from "../../../components/ModalButtons";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({

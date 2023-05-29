@@ -2,14 +2,14 @@
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import { convertMarkdownToContent } from "@/app/utils/convertMarkdownToContent";
 import useShortCut from "@/hooks/useShortcut";
-import { Blog } from "@components/BlogPostComponents/Blog";
-import { Toc } from "@components/BlogPostComponents/TableOfContents";
+import Blog from "@components/BlogPostComponents/Blog";
 import { useContext, useEffect } from "react";
 import { EditorContext } from "./EditorContext";
 import EditorToolbar from "./EditorToolbar";
 import MarkdownEditor from "./MarkdownEditor";
 import { getPost } from "@/app/utils/getData";
 import { useSupabase } from "@/app/appContext";
+import Toc from "@components/BlogPostComponents/TableOfContents";
 
 function EditorLayout({
 	post,
@@ -99,22 +99,27 @@ function EditorLayout({
 			>
 				<div
 					className={`absolute flex flex-col top-0 left-0 w-full h-full overflow-y-auto ${
-						editorState.editingMarkdown ? "" : "hidden"
+						editorState.editingMarkdown ? "" : "invisible"
 					}`}
 				>
 					<MarkdownEditor />
 				</div>
 
-				<Blog
-					{...blogState.blogMeta}
-					bloggers={{
-						name: blogState.blogMeta.author,
-						id: session?.user.id,
-					}}
-					extraClasses={
-						editorState.editingMarkdown ? "hidden" : "px-20"
-					}
-				/>
+				<div
+					className={`${
+						editorState.editingMarkdown
+							? "hidden"
+							: "overflow-y-auto w-full h-full"
+					}`}
+				>
+					<Blog
+						{...blogState.blogMeta}
+						bloggers={{
+							name: blogState.blogMeta.author,
+							id: session?.user.id,
+						}}
+					/>
+				</div>
 			</div>
 			<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
 				<EditorToolbar />

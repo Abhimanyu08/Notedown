@@ -63,6 +63,7 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
     if (data) {
         for (let file of data) {
 
+            if (/$canvas-(\d+)$/.test(file.name)) continue
             const { publicUrl } = supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).getPublicUrl(post.image_folder + "/" + file.name).data
 
             imagesToUrls[file.name] = publicUrl

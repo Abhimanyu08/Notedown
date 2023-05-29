@@ -18,9 +18,11 @@ function Carousel({
 			type: "add images to upload",
 			payload: imageNames,
 		});
-
 		return () => {
-			dispatch({ type: "remove image from upload", payload: imageNames });
+			dispatch({
+				type: "remove image from upload",
+				payload: imageNames,
+			});
 		};
 	}, []);
 

@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import { Tldraw } from "@tldraw/tldraw";
@@ -11,7 +11,7 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	// const [currentCanvasImageName, setCurrentCanvasImageName] =
 	// 	useState(canvasImageName);
 	// // const { canvasImages, setCanvasImages } = useContext(CanvasImageContext);
-	// const [changeNumber, setChangeNumber] = useState(0);
+	const [changeNumber, setChangeNumber] = useState(0);
 	const { blogState, dispatch } = useContext(BlogContext);
 	const { supabase } = useSupabase();
 	useEffect(() => {
@@ -47,13 +47,16 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	// 	setCurrentCanvasImageName(canvasImageName);
 	// }, [canvasImageName]);
 
-	// const runOnCommad = (canvasImageName: string) => {
-	// 	if (changeNumber === 0) {
-	// 		setChangeNumber((prev) => prev + 1);
-	// 		return;
-	// 	}
-	// 	setCanvasImages((prev) => ({ ...prev, [canvasImageName]: app }));
-	// };
+	const runOnCommad = (app: any) => {
+		if (changeNumber === 0) {
+			setChangeNumber((prev) => prev + 1);
+			return;
+		}
+		dispatch({
+			type: "set canvas apps",
+			payload: { [canvasImageName]: app },
+		});
+	};
 
 	return (
 		<>
@@ -91,10 +94,7 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 						}
 					}}
 					onCommand={(app) => {
-						dispatch({
-							type: "set canvas apps",
-							payload: { [canvasImageName]: app },
-						});
+						runOnCommad(app);
 					}}
 				/>
 			</div>

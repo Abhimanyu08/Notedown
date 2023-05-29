@@ -1,6 +1,6 @@
 import ToolbarButton from "@/app/apppost/components/ToolbarButton";
 import { motion } from "framer-motion";
-import { useContext, useState } from "react";
+import { memo, useContext, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { VscLoading, VscPreview } from "react-icons/vsc";
 import { EditorContext } from "./EditorContext";
@@ -48,7 +48,8 @@ function EditorToolbar() {
 						? "RCE enabled"
 						: "Enable remote code execution"
 				} `}
-				onClick={() =>
+				onClick={() => {
+					console.log(`${blogState.containerId}`);
 					prepareContainer(language, blogState.containerId).then(
 						(containerId) => {
 							if (!containerId) return;
@@ -57,8 +58,8 @@ function EditorToolbar() {
 								payload: containerId,
 							});
 						}
-					)
-				}
+					);
+				}}
 			>
 				<BiCodeAlt
 					size={30}
@@ -114,17 +115,23 @@ function EditorToolbar() {
 						duration: 10,
 					}}
 				>
-					<Link
-						href={`/apppost/${newPostId}`}
-						className="underline underline-offset-2"
-					>
-						New Post
-					</Link>{" "}
-					Uploaded!
+					{blogState.blogMeta.id ? (
+						<p>Post Updated !!</p>
+					) : (
+						<>
+							<Link
+								href={`/apppost/${newPostId}`}
+								className="underline underline-offset-2"
+							>
+								New Post
+							</Link>{" "}
+							Uploaded!
+						</>
+					)}
 				</motion.p>
 			)}
 		</>
 	);
 }
 
-export default EditorToolbar;
+export default memo(EditorToolbar);

@@ -8,16 +8,8 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 
 	useEffect(() => {
 		dispatch({ type: "add images to upload", payload: [name] });
-		// dispatch({
-		// 	type: "remove images from imagesToDelete",
-		// 	payload: [name],
-		// });
-		// we don't need to perform the above step since we'll only delete imagesToDelete - (imagesToDelete intersection imagesToUpload)
-
 		return () => {
 			dispatch({ type: "remove image from upload", payload: [name] });
-			// dispatch({ type: "add images to delete", payload: [name] });
-			//we don't even need to add images to delete. We'll just delete the images which are key of uploadedImages but are absent from imageToUpload.
 		};
 	}, []);
 
