@@ -11,7 +11,7 @@ function ProfilePostsLayout(
 ) {
 	return (
 		<PostTypeContextProvider>
-			<div className="w-full flex flex-col gap-4 h-full overflow-hidden">
+			<div className="w-full flex flex-col gap-4 h-full overflow-hidden relative">
 				<div className="flex  justify-between gap-2">
 					<div className="flex justify-start gap-2 mr-4 self-end">
 						<PostControl />
@@ -20,7 +20,7 @@ function ProfilePostsLayout(
 						<SearchComponent id={props.params.id} />
 					</div>
 				</div>
-				<div className="grow overflow-y-auto ">
+				<div className="overflow-y-auto grow">
 					<PostTypeToggler {...props} />
 				</div>
 			</div>

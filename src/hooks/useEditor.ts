@@ -38,6 +38,9 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
         });
 
         setEditorView(view);
+        return () => {
+            view.destroy()
+        }
     }, [code, blockNumber, mounted, language]);
 
     return {
