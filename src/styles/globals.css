@@ -258,3 +258,12 @@ button:active {
 .carousel-image {
 	transform: rotate(-90deg);
 } */
+
+#footer-section {
+	margin-top: 10px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-color: rgb(156 163 175);
+}

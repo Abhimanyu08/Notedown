@@ -3,7 +3,7 @@ import PostDisplay from "@components/PostDisplay";
 import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 
-export const revalidate = 60 * 60 * 2; //revalidate this page every two hours.
+export const revalidate = 60 * 60 * 24; //revalidate this page every day.
 
 async function GreatestPosts({ params }: { params: { id: string } }) {
 	const { id } = params;

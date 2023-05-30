@@ -64,6 +64,7 @@ function EditorLayout({
 						payload: null,
 					});
 				}
+				console.log(val.content);
 				blogStateDispatch({
 					type: "set blog meta",
 					payload: { ...val?.data, content: val?.content },

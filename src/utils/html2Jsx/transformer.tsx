@@ -9,8 +9,10 @@ import React, { Suspense } from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
 import Codesandbox from "@components/BlogPostComponents/Codesandbox";
+import { RiArrowGoBackFill } from "react-icons/ri";
 
 let BLOCK_NUMBER = 0;
+let footNotes: { id: number; node: HtmlNode }[] = [];
 
 function defaultTagToJsx(node: HtmlNode, parent?: HtmlNode) {
 	return React.createElement(
@@ -30,8 +32,36 @@ export default function transformer(
 	if (tagToTransformer[node.tagName]) {
 		return tagToTransformer[node.tagName]!(node, parent);
 	}
-	if (node.tagName === "main") BLOCK_NUMBER = 0;
-	return defaultTagToJsx(node, parent);
+	if (node.tagName === "main") {
+		BLOCK_NUMBER = 0;
+		footNotes = [];
+	}
+	return (
+		<>
+			{defaultTagToJsx(node, parent)}
+			{node.tagName === "main" && footNotes.length > 0 && (
+				<div id="footer-section">
+					{footNotes
+						.sort((a, b) => (a.id < b.id ? -1 : 1))
+						.map((footNote) => {
+							return (
+								<li className="flex gap-2 ">
+									<span className="not-prose hover:underline text-gray-100 hover:text-white">
+										<a
+											href={`#footnote-referrer-${footNote.id}`}
+											className=""
+										>
+											{footNote.id}.
+										</a>
+									</span>
+									{transformer(footNote.node)}
+								</li>
+							);
+						})}
+				</div>
+			)}
+		</>
+	);
 }
 
 type TagToTransformer = {
@@ -100,9 +130,10 @@ const tagToTransformer: TagToTransformer = {
 
 	a: (node) => {
 		const { href } = node.attributes as { href: string };
+		const linkText = node.children;
 
 		if (
-			node.children.length === 0 &&
+			linkText.length === 0 &&
 			(href.startsWith("https://www.youtube.com") ||
 				href.startsWith("https://youtu.be"))
 		) {
@@ -117,11 +148,32 @@ const tagToTransformer: TagToTransformer = {
 			);
 		}
 
-		let newAttributes = { ...node.attributes };
-		if (!node.attributes.href.startsWith("#")) {
-			newAttributes = { ...node.attributes, target: "_blank" };
+		// let newAttributes = { ...node.attributes };
+
+		// node.attributes = newAttributes;
+
+		const footNoteRegex = /\^(\d+)/;
+		if (
+			linkText.length === 1 &&
+			linkText[0].tagName === "text" &&
+			!href &&
+			footNoteRegex.test(linkText[0].text)
+		) {
+			const footNoteId = linkText[0].text.match(footNoteRegex)?.at(1);
+			node.attributes["href"] = `#footnote-${footNoteId}`;
+			return (
+				<sup
+					id={`footnote-referrer-${footNoteId}`}
+					className="not-prose text-gray-100 pl-[3px]  hover:underline hover:text-white"
+				>
+					{React.createElement("a", node.attributes, footNoteId)}
+				</sup>
+			);
 		}
-		node.attributes = newAttributes;
+		if (!node.attributes.href.startsWith("#")) {
+			// newAttributes = { ...node.attributes, target: "_blank" };
+			node.attributes["target"] = "_blank";
+		}
 		return defaultTagToJsx(node);
 	},
 
@@ -141,7 +193,36 @@ const tagToTransformer: TagToTransformer = {
 				</Suspense>
 			);
 		}
-		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p>
+		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
+
+		if (
+			node.children[0].tagName === "text" &&
+			/^\[(\d+)\]:/.test(node.children[0].text)
+		) {
+			//This is a footnote
+			const firstChild = node.children[0].text;
+			const footnoteId = firstChild.match(/^\[(\d+)\]/)?.at(1);
+			const remainingTextOfFirstChild = firstChild
+				.match(/^\[\d+\]:(.*)/)
+				?.at(1);
+
+			const newFirstChild: TextNode = {
+				tagName: "text",
+				text: remainingTextOfFirstChild || "",
+			};
+
+			const newPNode: HtmlNode = {
+				tagName: "span",
+				attributes: {
+					id: `footnote-${footnoteId}`,
+					className: "footnote-reference",
+				},
+				children: [newFirstChild, ...node.children.slice(1)],
+			};
+			footNotes.push({ id: parseInt(footnoteId || "0"), node: newPNode });
+			return <></>;
+		}
+
 		let nodesBeforeImage = [];
 		let i = 0;
 		let child = node.children[i];
@@ -159,12 +240,12 @@ const tagToTransformer: TagToTransformer = {
 		let beforeNode: HtmlNode = {
 			tagName: "p",
 			children: nodesBeforeImage,
-			attributes: {},
+			attributes: node.attributes,
 		};
 		let afterNode: HtmlNode = {
 			tagName: "p",
 			children: nodesAfterImage,
-			attributes: {},
+			attributes: node.attributes,
 		};
 		if (imgNode !== undefined) {
 			return (
