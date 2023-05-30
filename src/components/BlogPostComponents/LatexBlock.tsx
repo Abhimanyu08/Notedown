@@ -12,6 +12,9 @@ function CodeWord({ code }: { code: string }) {
 	if (modifiedCode.startsWith("$") && modifiedCode.endsWith("$")) {
 		return <Latex>{modifiedCode}</Latex>;
 	}
+	if (modifiedCode.startsWith("~~") && modifiedCode.endsWith("~~")) {
+		return <del>{modifiedCode.slice(2, modifiedCode.length - 2)}</del>;
+	}
 	return <code>{modifiedCode}</code>;
 }
 
