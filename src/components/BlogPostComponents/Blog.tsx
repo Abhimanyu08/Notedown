@@ -288,10 +288,6 @@ const Blog = memo(
 		);
 	},
 	(prevProps, newProps) => {
-		console.log(
-			"calculating equal function",
-			prevProps.content === newProps.content
-		);
 		return (
 			prevProps.content === newProps.content &&
 			prevProps.title === newProps.title &&

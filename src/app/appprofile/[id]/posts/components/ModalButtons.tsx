@@ -14,10 +14,17 @@ export function ExpandButton({ postId }: { postId: string }) {
 		port +
 		`/apppost/${postId}`;
 
+	useShortCut({
+		keys: ["e"],
+		callback: () => {
+			window.location.href = url;
+		},
+	});
+
 	return (
 		<button
 			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
-			data-tip="Expand"
+			data-tip="Expand (E)"
 		>
 			<a href={url}>
 				<BsArrowsAngleExpand size={14} />
@@ -32,6 +39,7 @@ export function BackButton({ id }: { id: string }) {
 	useShortCut({
 		keys: ["Escape"],
 		callback: () => {
+			console.log("calling backbutton shortcut");
 			router.push(`/appprofile/${id}/posts`);
 		},
 	});

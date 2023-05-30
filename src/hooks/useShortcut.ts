@@ -30,8 +30,8 @@ export default function useShortCut({
             keyArray.current.delete(e.key)
         }
 
-        document.onkeydown = keyDown
-        document.onkeyup = keyUp
+        document.addEventListener("keydown", keyDown)
+        document.addEventListener("keyup", keyUp)
 
         return () => {
             document.removeEventListener("keydown", keyDown)
