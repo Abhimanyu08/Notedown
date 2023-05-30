@@ -1,6 +1,7 @@
 import Carousel from "@components/BlogPostComponents/Carousel";
 import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
+import Codesandbox from "@components/BlogPostComponents/Codesandbox";
 import DrawingOrImage from "@components/BlogPostComponents/DrawingOrImage";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import CodeWord from "@components/BlogPostComponents/LatexBlock";
@@ -8,8 +9,6 @@ import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import React, { Suspense } from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
-import Codesandbox from "@components/BlogPostComponents/Codesandbox";
-import { RiArrowGoBackFill } from "react-icons/ri";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: HtmlNode }[] = [];

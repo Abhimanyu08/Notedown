@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import Latex from "react-latex";
 
 function CodeWord({ code }: { code: string }) {
