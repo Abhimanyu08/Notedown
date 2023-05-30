@@ -44,7 +44,7 @@ export default function transformer(
 						.sort((a, b) => (a.id < b.id ? -1 : 1))
 						.map((footNote) => {
 							return (
-								<li className="flex gap-2 ">
+								<li className="flex gap-2 " key={footNote.id}>
 									<span className="not-prose hover:underline text-gray-100 hover:text-white">
 										<a
 											href={`#footnote-referrer-${footNote.id}`}
