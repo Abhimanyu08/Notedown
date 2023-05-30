@@ -209,12 +209,19 @@ function headingsRenderer(
 	headingChildren: HtmlNode["children"]
 ) {
 	const headingText = extractTextFromChildren(headingChildren);
+	const headingId = createHeadingIdFromHeadingText(headingText);
 	return React.createElement(
 		tag,
 		{
-			id: createHeadingIdFromHeadingText(headingText),
+			id: headingId,
+			className: "not-prose",
 		},
-		headingChildren.map((child) => transformer(child))
+		<a
+			href={`#${headingId}`}
+			className="hover:underline underline-offset-2"
+		>
+			{headingChildren.map((child) => transformer(child))}
+		</a>
 	);
 }
 
