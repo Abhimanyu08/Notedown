@@ -2,6 +2,9 @@ import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import PostComponent from "./PostComponent";
 import { Database } from "@/interfaces/supabase";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { revalidatePath } from "next/cache";
+import { headers, cookies } from "next/headers";
 
 interface PostDisplayProps {
 	posts: Partial<Database["public"]["Tables"]["posts"]["Row"]>[];
@@ -22,6 +25,29 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 		}
 	}
 
+	async function publishPostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: true,
+				published_on: new Date().toISOString(),
+			})
+			.match({ id: postId });
+
+		const { data } = await supabase.auth.getUser();
+
+		const profileId = data.user?.id;
+		console.log("Profile id in server action --------> ", profileId);
+
+		revalidatePath(`/appprofile/${profileId}/posts/latest`);
+		revalidatePath(`/appprofile/${profileId}/posts/private`);
+	}
+
 	return (
 		<>
 			{(posts?.length || 0) > 0 ? (
@@ -31,6 +57,7 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 							key={idx}
 							post={post}
 							upvotes={idToUpvotes[post.id!]}
+							publishAction={publishPostAction}
 						/>
 					))}
 				</div>

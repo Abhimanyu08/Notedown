@@ -4,21 +4,36 @@ import formatDate from "@utils/dateFormatter";
 import { useSupabase } from "@/app/AppContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import {
+	MouseEventHandler,
+	useEffect,
+	useRef,
+	useState,
+	useTransition,
+} from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
 import { SlOptions, SlOptionsVertical } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { SUPABASE_POST_TABLE } from "@utils/constants";
+import { revalidatePath } from "next/cache";
+import { headers, cookies } from "next/headers";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
 	upvotes?: number;
+	publishAction?: (postId: number) => Promise<void>;
 	// author?: string;
 	// owner: boolean;
 	// setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
+const PostComponent: React.FC<PostComponentProps> = ({
+	post,
+	upvotes,
+	publishAction,
+}) => {
 	const {
 		id,
 		title,
@@ -52,7 +67,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 
 	return (
 		<div className="relative flex flex-col">
-			<PostOptions {...{ published: !!published, postId: post.id! }} />
+			<PostOptions
+				{...{ published: !!published, postId: post.id!, publishAction }}
+			/>
 			<Link
 				href={`/apppost/${id}`}
 				className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
@@ -114,15 +131,18 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 const PostOptions = ({
 	published,
 	postId,
+	publishAction,
 }: {
 	published: boolean;
 	postId: number;
+	publishAction?: (postId: number) => Promise<void>;
 }) => {
 	const pathname = usePathname();
 	const { session } = useSupabase();
 
 	const profileId = pathname?.split("/").at(2);
 	const owner = profileId === session?.user.id;
+	const [isPending, startTransition] = useTransition();
 
 	return (
 		<div className="absolute right-0 top-2 rounded-full p-2 hover:bg-gray-800 group">
@@ -152,14 +172,20 @@ const PostOptions = ({
 								</label>
 							</PostOptionButton>
 						) : (
-							<PostOptionButton>
-								<label
-									htmlFor={`publish`}
-									// onClick={onAction}
-								>
+							<PostOptionButton
+								onClick={() =>
+									startTransition(() => {
+										if (publishAction)
+											publishAction(postId);
+									})
+								}
+							>
+								<div className="">
 									<TbNews className="inline" size={15} />
-									Publish
-								</label>
+									<span>
+										{isPending ? "Publishing" : "Publish"}
+									</span>
+								</div>
 							</PostOptionButton>
 						)}
 						<PostOptionButton>
@@ -179,9 +205,18 @@ const PostOptions = ({
 	);
 };
 
-const PostOptionButton = ({ children }: { children: React.ReactNode }) => {
+const PostOptionButton = ({
+	children,
+	onClick,
+}: {
+	children: React.ReactNode;
+	onClick?: MouseEventHandler;
+}) => {
 	return (
-		<button className="text-xs cursor-pointer  rounded-sm w-full mx-auto [&>*]:flex [&>*]:justify-start [&>*]:gap-1">
+		<button
+			className="text-xs cursor-pointer  rounded-sm w-full mx-auto [&>*]:flex [&>*]:justify-start [&>*]:gap-1"
+			onClick={onClick}
+		>
 			{children}
 		</button>
 	);
