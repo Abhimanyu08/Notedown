@@ -6,9 +6,13 @@ import PostTypeContextProvider, {
 import PostTypeToggler from "./components/PostTypeToggler";
 import SearchComponent from "./components/SearchComponent";
 
-function ProfilePostsLayout(
-	props: PostTypeTogglerProps & { params: { id: string } }
-) {
+function ProfilePostsLayout({
+	children,
+	params,
+}: {
+	children: React.ReactNode;
+	params: { id: string };
+}) {
 	return (
 		<PostTypeContextProvider>
 			<div className="w-full flex flex-col gap-4 h-full overflow-hidden relative">
@@ -17,11 +21,12 @@ function ProfilePostsLayout(
 						<PostControl />
 					</div>
 					<div className="grow">
-						<SearchComponent id={props.params.id} />
+						<SearchComponent id={params.id} />
 					</div>
 				</div>
 				<div className="overflow-y-auto grow">
-					<PostTypeToggler {...props} />
+					{/* <PostTypeToggler {...props} /> */}
+					{children}
 				</div>
 			</div>
 		</PostTypeContextProvider>

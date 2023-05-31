@@ -39,8 +39,9 @@ export function BackButton({ id }: { id: string }) {
 	useShortCut({
 		keys: ["Escape"],
 		callback: () => {
-			console.log("calling backbutton shortcut");
-			router.push(`/appprofile/${id}/posts`);
+			// console.log("calling backbutton shortcut");
+			// router.push(`/appprofile/${id}/posts`);
+			router.back();
 		},
 	});
 

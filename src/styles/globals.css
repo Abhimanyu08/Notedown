@@ -215,7 +215,7 @@ button:active {
 }
 .tooltip-bottom:hover::after {
 	top: calc(100% + 10px);
-	left: -10px;
+	left: -15px;
 }
 .prose :where(code):not(:where([class~="not-prose"] *))::before {
 	content: "";

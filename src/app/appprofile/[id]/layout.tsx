@@ -4,6 +4,9 @@ import Image from "next/image";
 import React from "react";
 import ProfileControl from "./components/ProfileControl";
 import { getUser } from "@/app/utils/getData";
+import { Database } from "@/interfaces/supabase";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { headers, cookies } from "next/headers";
 
 async function ProfileLayout({
 	children,
@@ -15,7 +18,11 @@ async function ProfileLayout({
 	// let latest: unknown;
 	// let greatest: unknown;
 	// await Promise.all([
-	const userData = await getUser(params.id);
+	const supabase = createServerComponentSupabaseClient<Database>({
+		headers,
+		cookies,
+	});
+	const userData = await getUser(params.id, supabase);
 
 	// 	supabase
 	// 		.from<PostWithBlogger>(SUPABASE_POST_TABLE)

@@ -4,7 +4,7 @@ import { Database } from "@/interfaces/supabase";
 import Blog from "@components/BlogPostComponents/Blog";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
-import { BackButton, ExpandButton } from "../../../components/ModalButtons";
+import { BackButton, ExpandButton } from "../../components/ModalButtons";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({

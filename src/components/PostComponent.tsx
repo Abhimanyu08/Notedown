@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
-import { SlOptionsVertical } from "react-icons/sl";
+import { SlOptions, SlOptionsVertical } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 
 export interface PostComponentProps {
@@ -30,7 +30,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 		created_at,
 		upvoted_on,
 	} = post;
-	const pathname = usePathname();
 	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
 	const [mounted, setMounted] = useState(false);
 	const [owner, setOwner] = useState(false);
@@ -53,76 +52,14 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 
 	return (
 		<div className="relative flex flex-col">
-			<div className="flex justify-between">
-				<Link
-					href={`/apppost/${id}`}
-					className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
-					// prefetch={false}
-				>
-					{title}{" "}
-				</Link>
-				{mounted && owner && pathname?.startsWith("/appprofile") && (
-					<>
-						<button onClick={() => setShowOptions((prev) => !prev)}>
-							<SlOptionsVertical size={12} />
-						</button>
-						{showOptions && (
-							<div className="flex absolute text-xs right-4 top-10 divide-x border-2 [&>*]:px-2 [&>*]:py-1 rounded-md">
-								{!published && (
-									<a
-										className="hover:bg-slate-500 flex items-end gap-1"
-										href={`/edit?postId=${id}`}
-									>
-										<AiFillEdit
-											className="inline"
-											size={15}
-										/>{" "}
-										Edit
-									</a>
-								)}
-								{published ? (
-									<label
-										htmlFor={`unpublish`}
-										// onClick={onAction}
-										className="hover:bg-slate-500 flex items-end gap-1"
-									>
-										<TbNewsOff
-											className="inline"
-											size={15}
-										/>{" "}
-										Unpublish
-									</label>
-								) : (
-									<label
-										htmlFor={`publish`}
-										// onClick={onAction}
-										className="hover:bg-slate-500 flex items-end gap-1"
-									>
-										<TbNews className="inline" size={15} />
-										Publish
-									</label>
-								)}
-								<label
-									htmlFor={`delete`}
-									// onClick={onAction}
-									className="hover:bg-slate-500 flex gap-1 items-end"
-								>
-									<AiFillDelete
-										className="inline"
-										size={15}
-									/>{" "}
-									Delete
-								</label>
-							</div>
-						)}
-					</>
-					// <div className="flex absolute top-4 right-2 gap-3 text-black dark:text-white">
-					// 	{!published && (
-					// 	)}
-
-					// </div>
-				)}
-			</div>
+			<PostOptions {...{ published: !!published, postId: post.id! }} />
+			<Link
+				href={`/apppost/${id}`}
+				className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
+				// prefetch={false}
+			>
+				{title}{" "}
+			</Link>
 
 			<p className="text-sm md:text-base text-black dark:text-font-grey font-sans ">
 				{description}
@@ -174,4 +111,79 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 	);
 };
 
+const PostOptions = ({
+	published,
+	postId,
+}: {
+	published: boolean;
+	postId: number;
+}) => {
+	const pathname = usePathname();
+	const { session } = useSupabase();
+
+	const profileId = pathname?.split("/").at(2);
+	const owner = profileId === session?.user.id;
+
+	return (
+		<div className="absolute right-0 top-2 rounded-full p-2 hover:bg-gray-800 group">
+			{owner && pathname?.startsWith("/appprofile") && (
+				<>
+					<button>
+						<SlOptions size={12} />
+					</button>
+					<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover:visible transition-all duration-200">
+						{!published && (
+							<PostOptionButton>
+								<a href={`/appwrite/${postId}`}>
+									<AiFillEdit className="inline" size={15} />{" "}
+									<span>Edit</span>
+								</a>
+							</PostOptionButton>
+						)}
+						{published ? (
+							<PostOptionButton>
+								<label
+									htmlFor={`unpublish`}
+									className="flex gap-1"
+									// onClick={onAction}
+								>
+									<TbNewsOff className="inline" size={15} />{" "}
+									<span>Unpublish</span>
+								</label>
+							</PostOptionButton>
+						) : (
+							<PostOptionButton>
+								<label
+									htmlFor={`publish`}
+									// onClick={onAction}
+								>
+									<TbNews className="inline" size={15} />
+									Publish
+								</label>
+							</PostOptionButton>
+						)}
+						<PostOptionButton>
+							<label
+								htmlFor={`delete`}
+								// onClick={onAction}
+								// className="flex justify-start w-full gap-1"
+							>
+								<AiFillDelete className="inline" size={15} />{" "}
+								Delete
+							</label>
+						</PostOptionButton>
+					</div>
+				</>
+			)}
+		</div>
+	);
+};
+
+const PostOptionButton = ({ children }: { children: React.ReactNode }) => {
+	return (
+		<button className="text-xs cursor-pointer  rounded-sm w-full mx-auto [&>*]:flex [&>*]:justify-start [&>*]:gap-1">
+			{children}
+		</button>
+	);
+};
 export default PostComponent;
