@@ -1,12 +1,10 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { ProfileButton } from "../../components/ProfileButton";
-import { motion } from "framer-motion";
-import { PostTypeContext } from "./PostTypeContext";
-import { PostTypesList } from "@/interfaces/PostTypes";
 import { useSupabase } from "@/app/AppContext";
-import { usePathname } from "next/navigation";
+import { PostTypesList } from "@/interfaces/PostTypes";
+import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ProfileButton } from "../../components/ProfileButton";
 
 function PostControl() {
 	// const { postType, setPostType } = useContext(PostTypeContext);
