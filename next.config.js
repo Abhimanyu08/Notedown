@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	async redirects() {
+		return [
+			{
+				source: "/appprofile/:id/posts",
+				destination: "/appprofile/:id/posts/latest",
+				permanent: true,
+			},
+		];
+	},
 	experimental: {
 		appDir: true,
 	},

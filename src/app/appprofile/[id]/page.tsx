@@ -1,11 +1,9 @@
 import { getUser } from "@/app/utils/getData";
-import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
 // import { supabase } from "@/utils/constants";
 import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
 import mdToHtml from "@utils/mdToHtml";
-import { supabase } from "@utils/supabaseClient";
 
 async function About({ params }: { params: { id: string } }) {
 	const userData = await getUser(params.id);

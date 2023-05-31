@@ -3,8 +3,9 @@ import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BU
 import { cache } from "react";
 import { getHtmlFromMarkdown } from '@utils/getResources';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { supabase } from '@utils/supabaseClient';
 
-export const getUser = cache(async (id: string, supabase: SupabaseClient) => {
+export const getUser = cache(async (id: string) => {
 
     const { data: userData } = await supabase
         .from(SUPABASE_BLOGGER_TABLE)
@@ -16,7 +17,7 @@ export const getUser = cache(async (id: string, supabase: SupabaseClient) => {
 })
 
 
-export const getUserLatestPosts = cache(async (id: string, supabase: SupabaseClient) => {
+export const getUserLatestPosts = cache(async (id: string) => {
 
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)

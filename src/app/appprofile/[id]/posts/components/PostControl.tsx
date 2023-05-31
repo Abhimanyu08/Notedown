@@ -29,9 +29,7 @@ function PostControl() {
 						// className="text-sm bg-gray-800 hover:scale-105 ative:scale-95  px-3  border-black border-[1px] transition-[scale] duration-200 rounded-md"
 					>
 						<Link
-							href={`/appprofile/${profileId}/posts/${
-								type === "latest" ? "" : type
-							}`}
+							href={`/appprofile/${profileId}/posts/${type}`}
 							className="flex items-center"
 						>
 							<span className="text-xs capitalize">{type}</span>
