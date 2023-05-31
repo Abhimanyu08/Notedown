@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import { Tldraw } from "@tldraw/tldraw";
-import { useSupabase } from "@/app/appContext";
+import { useSupabase } from "@/app/AppContext";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
 
 function TLDrawing({ canvasImageName }: { canvasImageName: string }) {

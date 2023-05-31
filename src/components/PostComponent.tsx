@@ -1,7 +1,7 @@
 "use client";
 import SearchResult from "@/interfaces/SearchResult";
 import formatDate from "@utils/dateFormatter";
-import { useSupabase } from "app/appContext";
+import { useSupabase } from "@/app/AppContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";

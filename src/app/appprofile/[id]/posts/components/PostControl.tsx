@@ -4,7 +4,7 @@ import { ProfileButton } from "../../components/ProfileButton";
 import { motion } from "framer-motion";
 import { PostTypeContext } from "./PostTypeContext";
 import { PostTypesList } from "@/interfaces/PostTypes";
-import { useSupabase } from "@/app/appContext";
+import { useSupabase } from "@/app/AppContext";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 

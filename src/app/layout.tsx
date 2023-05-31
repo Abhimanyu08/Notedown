@@ -2,7 +2,7 @@ import Navbar from "@components/Navbar/Navbar";
 import "@/styles/globals.css";
 import "@/styles/xterm.css";
 import { Metadata } from "next";
-import SupabaseProvider from "./appContext";
+import SupabaseProvider from "./AppContext";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
 export const metadata: Metadata = {

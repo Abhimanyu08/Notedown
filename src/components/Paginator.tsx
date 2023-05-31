@@ -6,7 +6,7 @@ import { supabase } from "@utils/supabaseClient";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import postTypeToFetcher from "@/app/utils/postTypeToFetcher";
 import { PostTypes } from "@/interfaces/PostTypes";
-import { useSupabase } from "@/app/appContext";
+import { useSupabase } from "@/app/AppContext";
 
 function Paginator({
 	postType,

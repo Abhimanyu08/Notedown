@@ -10,7 +10,7 @@ import {
 import { HiMenu } from "react-icons/hi";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { handleLogout, handleSignIn } from "@/utils/handleAuth";
-import { useSupabase } from "@/app/appContext";
+import { useSupabase } from "@/app/AppContext";
 
 export function NavbarClientComponent() {
 	const [mounted, setMounted] = useState(false);

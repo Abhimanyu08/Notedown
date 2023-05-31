@@ -8,7 +8,7 @@ import { EditorContext } from "./EditorContext";
 import EditorToolbar from "./EditorToolbar";
 import MarkdownEditor from "./MarkdownEditor";
 import { getPost } from "@/app/utils/getData";
-import { useSupabase } from "@/app/appContext";
+import { useSupabase } from "@/app/AppContext";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 
 function EditorLayout({

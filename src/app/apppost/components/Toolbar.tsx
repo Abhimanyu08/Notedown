@@ -1,5 +1,5 @@
 "use client";
-import { useSupabase } from "@/app/appContext";
+import { useSupabase } from "@/app/AppContext";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { SUPABASE_POST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
