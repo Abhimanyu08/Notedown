@@ -1,18 +1,23 @@
 import { getPost } from "@/app/utils/getData";
+import { Database } from "@/interfaces/supabase";
 import Blog from "@components/BlogPostComponents/Blog";
 import Toc from "@components/BlogPostComponents/TableOfContents";
-import { supabase } from "@utils/supabaseClient";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import BlogContextProvider from "../components/BlogState";
-import Toolbar from "../components/Toolbar";
-
-export const revalidate = 60 * 60 * 24 * 365 * 10;
+import { cookies, headers } from "next/headers";
+import BlogContextProvider from "../../components/BlogState";
+import PrivateToolbar from "../../components/PrivateToolbar";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
 }
 
-async function Post({ params }: { params: PostParams }) {
+async function PrivatePost({ params }: { params: PostParams }) {
+	const supabase = createServerComponentSupabaseClient<Database>({
+		headers,
+		cookies,
+	});
+
 	const { post, content, imagesToUrls } = await getPost(
 		params.postId,
 		supabase
@@ -43,11 +48,11 @@ async function Post({ params }: { params: PostParams }) {
 					<Blog content={content} {...post} extraClasses="px-20" />
 				</div>
 				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
-					<Toolbar language={post?.language} id={params.postId} />
+					<PrivateToolbar language={post.language} />
 				</div>
 			</div>
 		</BlogContextProvider>
 	);
 }
 
-export default Post;
+export default PrivatePost;

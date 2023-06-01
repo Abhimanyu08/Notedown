@@ -1,10 +1,17 @@
 import BlogContextProvider from "@/app/apppost/components/BlogState";
 import { getPost } from "@/app/utils/getData";
+import { Database } from "@/interfaces/supabase";
 import Blog from "@components/BlogPostComponents/Blog";
-import { supabase } from "@utils/supabaseClient";
-import { BackButton, ExpandButton } from "../../components/ModalButtons";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cookies, headers } from "next/headers";
+import { BackButton, ExpandButton } from "../../../components/ModalButtons";
 
-async function PostModal({ params }: { params: { postId: string } }) {
+async function PrivatePostModal({ params }: { params: { postId: string } }) {
+	const supabase = createServerComponentSupabaseClient<Database>({
+		headers,
+		cookies,
+	});
+
 	const { post, content, imagesToUrls } = await getPost(
 		params.postId,
 		supabase
@@ -28,4 +35,4 @@ async function PostModal({ params }: { params: { postId: string } }) {
 	);
 }
 
-export default PostModal;
+export default PrivatePostModal;

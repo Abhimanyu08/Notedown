@@ -15,7 +15,6 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 	// 	.order("published_on", { ascending: false })
 	// 	.limit(LIMIT);
 	const data = await getUserLatestPosts(params.id);
-	console.log(data);
 
 	return (
 		<>

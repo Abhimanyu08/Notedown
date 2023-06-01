@@ -1,20 +1,8 @@
-"use client";
 import SearchResult from "@/interfaces/SearchResult";
 import formatDate from "@utils/dateFormatter";
-import { useSupabase } from "@/app/AppContext";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-	MouseEventHandler,
-	useEffect,
-	useRef,
-	useState,
-	useTransition,
-} from "react";
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { BiUpvote } from "react-icons/bi";
-import { SlOptions, SlOptionsVertical } from "react-icons/sl";
-import { TbNews, TbNewsOff } from "react-icons/tb";
+import { PostOptions } from "./PostOptions";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { revalidatePath } from "next/cache";
@@ -23,17 +11,11 @@ import { headers, cookies } from "next/headers";
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
 	upvotes?: number;
-	publishAction?: (postId: number) => Promise<void>;
-	// author?: string;
-	// owner: boolean;
-	// setPostInAction?: Dispatch<SetStateAction<Partial<Post> | null>>;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({
-	post,
-	upvotes,
-	publishAction,
-}) => {
+const formatter = Intl.NumberFormat("en", { notation: "compact" });
+
+const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 	const {
 		id,
 		title,
@@ -45,35 +27,65 @@ const PostComponent: React.FC<PostComponentProps> = ({
 		created_at,
 		upvoted_on,
 	} = post;
-	const formatter = useRef(Intl.NumberFormat("en", { notation: "compact" }));
-	const [mounted, setMounted] = useState(false);
-	const [owner, setOwner] = useState(false);
-	const [showOptions, setShowOptions] = useState(false);
-	const { session } = useSupabase();
-	const user = session?.user;
 
-	useEffect(() => {
-		if (!mounted) setMounted(true);
-	}, []);
+	async function publishPostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: true,
+				published_on: new Date().toISOString(),
+			})
+			.match({ id: postId });
 
-	useEffect(() => {
-		setOwner(
-			user?.id !== "undefined" &&
-				(post.bloggers as { id: string; name: string }).id !==
-					"undefined" &&
-				user?.id === (post.bloggers as { id: string; name: string }).id
-		);
-	}, [user]);
+		const { data } = await supabase.auth.getUser();
+
+		const profileId = data.user?.id;
+		console.log("Profile id in server action --------> ", profileId);
+
+		revalidatePath(`/appprofile/${profileId}/posts/latest`);
+		revalidatePath(`/appprofile/${profileId}/posts/private`);
+	}
+
+	async function unpublishPostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: false,
+			})
+			.match({ id: postId });
+
+		const { data } = await supabase.auth.getUser();
+
+		const profileId = data.user?.id;
+		console.log("Profile id in server action --------> ", profileId);
+
+		revalidatePath(`/appprofile/${profileId}/posts/latest`);
+		revalidatePath(`/appprofile/${profileId}/posts/private`);
+	}
 
 	return (
 		<div className="relative flex flex-col">
 			<PostOptions
-				{...{ published: !!published, postId: post.id!, publishAction }}
+				{...{
+					published: !!published,
+					postId: post.id!,
+					publishPostAction,
+					unpublishPostAction,
+				}}
 			/>
 			<Link
-				href={`/apppost/${id}`}
+				href={published ? `/apppost/${id}` : `/apppost/private/${id}`}
 				className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
-				// prefetch={false}
 			>
 				{title}{" "}
 			</Link>
@@ -110,7 +122,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					<div className="flex justify-center w-16 ">
 						<span className="flex items-center gap-1">
 							{upvotes
-								? formatter.current.format(upvotes)
+								? formatter.format(upvotes)
 								: post.upvote_count
 								? post.upvote_count
 								: 0}{" "}
@@ -128,97 +140,4 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	);
 };
 
-const PostOptions = ({
-	published,
-	postId,
-	publishAction,
-}: {
-	published: boolean;
-	postId: number;
-	publishAction?: (postId: number) => Promise<void>;
-}) => {
-	const pathname = usePathname();
-	const { session } = useSupabase();
-
-	const profileId = pathname?.split("/").at(2);
-	const owner = profileId === session?.user.id;
-	const [isPending, startTransition] = useTransition();
-
-	return (
-		<div className="absolute right-0 top-2 rounded-full p-2 hover:bg-gray-800 group">
-			{owner && pathname?.startsWith("/appprofile") && (
-				<>
-					<button>
-						<SlOptions size={12} />
-					</button>
-					<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover:visible transition-all duration-200">
-						{!published && (
-							<PostOptionButton>
-								<a href={`/appwrite/${postId}`}>
-									<AiFillEdit className="inline" size={15} />{" "}
-									<span>Edit</span>
-								</a>
-							</PostOptionButton>
-						)}
-						{published ? (
-							<PostOptionButton>
-								<label
-									htmlFor={`unpublish`}
-									className="flex gap-1"
-									// onClick={onAction}
-								>
-									<TbNewsOff className="inline" size={15} />{" "}
-									<span>Unpublish</span>
-								</label>
-							</PostOptionButton>
-						) : (
-							<PostOptionButton
-								onClick={() =>
-									startTransition(() => {
-										if (publishAction)
-											publishAction(postId);
-									})
-								}
-							>
-								<div className="">
-									<TbNews className="inline" size={15} />
-									<span>
-										{isPending ? "Publishing" : "Publish"}
-									</span>
-								</div>
-							</PostOptionButton>
-						)}
-						<PostOptionButton>
-							<label
-								htmlFor={`delete`}
-								// onClick={onAction}
-								// className="flex justify-start w-full gap-1"
-							>
-								<AiFillDelete className="inline" size={15} />{" "}
-								Delete
-							</label>
-						</PostOptionButton>
-					</div>
-				</>
-			)}
-		</div>
-	);
-};
-
-const PostOptionButton = ({
-	children,
-	onClick,
-}: {
-	children: React.ReactNode;
-	onClick?: MouseEventHandler;
-}) => {
-	return (
-		<button
-			className="text-xs cursor-pointer  rounded-sm w-full mx-auto [&>*]:flex [&>*]:justify-start [&>*]:gap-1"
-			onClick={onClick}
-		>
-			{children}
-		</button>
-	);
-};
 export default PostComponent;

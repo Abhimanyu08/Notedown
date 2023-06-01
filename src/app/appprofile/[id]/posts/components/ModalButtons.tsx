@@ -1,18 +1,25 @@
 "use client";
 import useShortCut from "@/hooks/useShortcut";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { IoMdArrowBack } from "react-icons/io";
 
-export function ExpandButton({ postId }: { postId: string }) {
+export function ExpandButton({
+	postId,
+	privatePost,
+}: {
+	postId?: string;
+	privatePost?: boolean;
+}) {
 	const port = process.env.NODE_ENV === "development" ? ":3000" : "";
 	const url =
 		window.location.protocol +
 		"//" +
 		window.location.hostname +
 		port +
-		`/apppost/${postId}`;
+		privatePost
+			? `/apppost/private/${postId}`
+			: `/apppost/${postId}`;
 
 	useShortCut({
 		keys: ["e"],
