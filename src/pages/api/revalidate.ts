@@ -8,7 +8,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
         const { pathToRevalidate } = JSON.parse(req.body)
-        await res.revalidate(`/${pathToRevalidate}`)
+        console.log(pathToRevalidate)
+        await res.revalidate(pathToRevalidate)
         return res.json({ revalidated: true })
 
     } catch (err) {

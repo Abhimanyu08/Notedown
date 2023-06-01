@@ -1,10 +1,9 @@
-import { cookies, headers } from "next/headers";
+import { getUserPrivatePosts } from "@/app/utils/getData";
+import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
-import { cache } from "react";
-import { Database } from "@/interfaces/supabase";
+import { cookies, headers } from "next/headers";
 
 async function PrivatePosts({ params }: { params: { id: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -12,18 +11,9 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 		cookies,
 	});
 	const userId = (await supabase.auth.getUser()).data.user?.id;
-	if (userId !== params.id) return <></>;
-	const data = await cache(async () => {
-		const { data } = await supabase
-			.from(SUPABASE_POST_TABLE)
-			.select(
-				"id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
-			)
-			.match({ created_by: userId, published: false })
-			.order("created_at", { ascending: false })
-			.limit(LIMIT);
-		return data;
-	})();
+	if (userId === undefined || userId !== params.id) return <></>;
+	const data = await getUserPrivatePosts(userId, supabase);
+
 	if (!data) return <p>No posts lol</p>;
 	return (
 		<>

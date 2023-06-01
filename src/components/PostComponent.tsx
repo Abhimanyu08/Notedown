@@ -11,11 +11,18 @@ import { headers, cookies } from "next/headers";
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
 	upvotes?: number;
+	publishPostAction?: (postId: number) => Promise<void>;
+	unpublishPostAction?: (postId: number) => Promise<void>;
 }
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
-const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
+const PostComponent: React.FC<PostComponentProps> = ({
+	post,
+	upvotes,
+	publishPostAction,
+	unpublishPostAction,
+}) => {
 	const {
 		id,
 		title,
@@ -27,51 +34,6 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, upvotes }) => {
 		created_at,
 		upvoted_on,
 	} = post;
-
-	async function publishPostAction(postId: number) {
-		"use server";
-		const supabase = createServerComponentSupabaseClient({
-			headers,
-			cookies,
-		});
-		await supabase
-			.from(SUPABASE_POST_TABLE)
-			.update({
-				published: true,
-				published_on: new Date().toISOString(),
-			})
-			.match({ id: postId });
-
-		const { data } = await supabase.auth.getUser();
-
-		const profileId = data.user?.id;
-		console.log("Profile id in server action --------> ", profileId);
-
-		revalidatePath(`/appprofile/${profileId}/posts/latest`);
-		revalidatePath(`/appprofile/${profileId}/posts/private`);
-	}
-
-	async function unpublishPostAction(postId: number) {
-		"use server";
-		const supabase = createServerComponentSupabaseClient({
-			headers,
-			cookies,
-		});
-		await supabase
-			.from(SUPABASE_POST_TABLE)
-			.update({
-				published: false,
-			})
-			.match({ id: postId });
-
-		const { data } = await supabase.auth.getUser();
-
-		const profileId = data.user?.id;
-		console.log("Profile id in server action --------> ", profileId);
-
-		revalidatePath(`/appprofile/${profileId}/posts/latest`);
-		revalidatePath(`/appprofile/${profileId}/posts/private`);
-	}
 
 	return (
 		<div className="relative flex flex-col">

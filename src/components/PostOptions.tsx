@@ -1,7 +1,8 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
+import { sendRevalidationRequest } from "@utils/sendRequest";
 import { usePathname } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
@@ -42,12 +43,12 @@ export function PostOptions({
 						)}
 						{published ? (
 							<PostOptionButton
-								onClick={() =>
+								onClick={() => {
 									startTransition(() => {
 										if (unpublishPostAction)
 											unpublishPostAction(postId);
-									})
-								}
+									});
+								}}
 							>
 								<div className="">
 									<TbNewsOff className="inline" size={15} />{" "}
@@ -56,12 +57,12 @@ export function PostOptions({
 							</PostOptionButton>
 						) : (
 							<PostOptionButton
-								onClick={() =>
+								onClick={() => {
 									startTransition(() => {
 										if (publishPostAction)
 											publishPostAction(postId);
-									})
-								}
+									});
+								}}
 							>
 								<div className="">
 									<TbNews className="inline" size={15} />

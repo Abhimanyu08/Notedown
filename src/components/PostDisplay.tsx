@@ -1,6 +1,9 @@
+import { getUpvotes } from "@/app/utils/getData";
 import { Database } from "@/interfaces/supabase";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
-import { supabase } from "@utils/supabaseClient";
+import { revalidatePath } from "next/cache";
+import { cookies, headers } from "next/headers";
 import PostComponent from "./PostComponent";
 
 interface PostDisplayProps {
@@ -11,15 +14,50 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 	const idArray = posts?.map((post) => post.id!);
 	let idToUpvotes: Record<number, number> = {};
 	if (idArray) {
-		const { data } = await supabase
-			.from(SUPABASE_POST_TABLE)
-			.select("id,upvote_count")
-			.in("id", idArray);
+		const data = await getUpvotes(idArray);
 		if (data) {
 			data.forEach((post) => {
 				idToUpvotes[post.id] = post.upvote_count;
 			});
 		}
+	}
+
+	async function publishPostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: true,
+				published_on: new Date().toISOString(),
+			})
+			.match({ id: postId });
+
+		const { data } = await supabase.auth.getUser();
+
+		const profileId = data.user?.id;
+		console.log("Profile id in server action --------> ", profileId);
+
+		revalidatePath("/appprofile/[id]/posts/latest");
+	}
+
+	async function unpublishPostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: false,
+			})
+			.match({ id: postId });
+
+		revalidatePath("/appprofile/[id]/posts/latest");
 	}
 
 	return (
@@ -31,6 +69,7 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 							key={idx}
 							post={post}
 							upvotes={idToUpvotes[post.id!]}
+							{...{ publishPostAction, unpublishPostAction }}
 						/>
 					))}
 				</div>
