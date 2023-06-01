@@ -1,5 +1,5 @@
 "use client";
-import { useSupabase } from "@/app/AppContext";
+import { useSupabase } from "@/app/appContext";
 import { PostTypesList } from "@/interfaces/PostTypes";
 import { motion } from "framer-motion";
 import Link from "next/link";

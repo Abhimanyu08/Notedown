@@ -1,5 +1,5 @@
 // "use client";
-import { useSupabase } from "@/app/AppContext";
+import { useSupabase } from "@/app/appContext";
 import postTypeToFetcher from "@/app/utils/postTypeToFetcher";
 import { PostTypes } from "@/interfaces/PostTypes";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";

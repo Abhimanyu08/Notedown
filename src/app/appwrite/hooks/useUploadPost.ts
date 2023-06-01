@@ -1,4 +1,4 @@
-import { useSupabase } from "@/app/AppContext";
+import { useSupabase } from "@/app/appContext";
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import Post from "@/interfaces/Post";
 import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";

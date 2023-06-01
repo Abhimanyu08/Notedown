@@ -1,5 +1,5 @@
 "use client";
-import { useSupabase } from "@/app/AppContext";
+import { useSupabase } from "@/app/appContext";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
