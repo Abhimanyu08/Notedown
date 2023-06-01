@@ -1,11 +1,11 @@
 // "use client";
-import Link from "next/link";
+import { BlogProps } from "@/interfaces/BlogProps";
 import formatDate from "@utils/dateFormatter";
+import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
-import parser from "@utils/html2Jsx/parser";
-import { BlogProps } from "@/interfaces/BlogProps";
-import { memo, useMemo } from "react";
+import Link from "next/link";
+import { memo } from "react";
 
 const Blog = memo(
 	function Blog({
@@ -21,13 +21,11 @@ const Blog = memo(
 	}: Partial<BlogProps>) {
 		// useLexica({ content });
 		//THis shouldn't be a client component.
-		const tokens = useMemo(() => tokenizer(content || ""), [content]);
-		const parsedOutput = useMemo(() => parser(tokens), [tokens]);
+		const tokens = tokenizer(content || "");
+		const parsedOutput = parser(tokens);
 
-		const blogJsx = useMemo(
-			() => transformer(parsedOutput),
-			[parsedOutput]
-		);
+		const blogJsx = transformer(parsedOutput);
+
 		// const blogJsx = useMemo(() => {
 		// 	if (!content) return <></>;
 		// 	const tokens = tokenizer(content);

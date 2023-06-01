@@ -1,7 +1,5 @@
 import PostDisplay from "@components/PostDisplay";
-import React from "react";
-import PostWithBlogger from "interfaces/PostWithBlogger";
-import { SUPABASE_POST_TABLE, LIMIT } from "@utils/constants";
+import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 
 async function Read() {

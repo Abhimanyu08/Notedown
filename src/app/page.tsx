@@ -15,12 +15,12 @@ async function Home() {
 			"
 			>
 				<div className="self-center flex gap-10 font-semibold lg:text-xl text-black">
-					<Link href="/read">
+					<Link href="/appread">
 						<div className="cursor-pointer bg-amber-400 flex items-center gap-2 px-3 lg:px-4 py-1 lg:py-2 rounded-md  ">
 							Read <AiFillRead size={24} />
 						</div>
 					</Link>
-					<Link href="/edit">
+					<Link href="/appwrite">
 						<div className="cursor-pointer px-3 lg:px-4 py-1 lg:py-2 rounded-md   flex items-center gap-2 bg-amber-400">
 							Write <FaPencilAlt />
 						</div>
