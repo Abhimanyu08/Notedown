@@ -64,9 +64,9 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 		<>
 			{(posts?.length || 0) > 0 ? (
 				<div className="flex flex-col gap-8">
-					{posts?.map((post, idx) => (
+					{posts?.map((post) => (
 						<PostComponent
-							key={idx}
+							key={post.id}
 							post={post}
 							upvotes={idToUpvotes[post.id!]}
 							{...{ publishPostAction, unpublishPostAction }}

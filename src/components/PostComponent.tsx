@@ -40,7 +40,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			<PostOptions
 				{...{
 					published: !!published,
-					postId: post.id!,
+					postId: id!,
+					postTitle: title!,
 					publishPostAction,
 					unpublishPostAction,
 				}}
