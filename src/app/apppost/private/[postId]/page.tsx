@@ -7,6 +7,7 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { cookies, headers } from "next/headers";
 import BlogContextProvider from "../../components/BlogState";
 import PrivateToolbar from "../../components/PrivateToolbar";
+import { redirect } from "next/navigation";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
@@ -18,41 +19,49 @@ async function PrivatePost({ params }: { params: PostParams }) {
 		cookies,
 	});
 
-	const { post, content, imagesToUrls } = await getPost(
-		params.postId,
-		supabase
-	);
+	try {
+		const { post, content, imagesToUrls } = await getPost(
+			params.postId,
+			supabase
+		);
 
-	return (
-		<BlogContextProvider
-			blogMeta={{
-				title: post.title,
-				description: post.description,
-				language: post.language,
-				imageFolder: post.image_folder,
-			}}
-			uploadedImages={imagesToUrls}
-		>
-			<div className="grow flex flex-row min-h-0 relative pt-10">
-				<div
-					className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
+		return (
+			<BlogContextProvider
+				blogMeta={{
+					title: post.title,
+					description: post.description,
+					language: post.language,
+					imageFolder: post.image_folder,
+				}}
+				uploadedImages={imagesToUrls}
+			>
+				<div className="grow flex flex-row min-h-0 relative pt-10">
+					<div
+						className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
 					`}
-				>
-					<Toc html={content} />
-				</div>
-				<div
-					className={`lg:basis-3/5 relative 
+					>
+						<Toc html={content} />
+					</div>
+					<div
+						className={`lg:basis-3/5 relative 
 							hidden lg:block
 							overflow-y-hidden`}
-				>
-					<Blog content={content} {...post} extraClasses="px-20" />
+					>
+						<Blog
+							content={content}
+							{...post}
+							extraClasses="px-20"
+						/>
+					</div>
+					<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
+						<PrivateToolbar language={post.language} />
+					</div>
 				</div>
-				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
-					<PrivateToolbar language={post.language} />
-				</div>
-			</div>
-		</BlogContextProvider>
-	);
+			</BlogContextProvider>
+		);
+	} catch (e) {
+		redirect("/");
+	}
 }
 
 export default PrivatePost;

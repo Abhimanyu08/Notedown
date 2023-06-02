@@ -62,6 +62,7 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 			.match({ id: postId });
 
 		revalidatePath("/appprofile/[id]/posts/latest");
+		revalidatePath("/apppost/[postId]");
 	}
 
 	async function deletePostAction(postId: number) {

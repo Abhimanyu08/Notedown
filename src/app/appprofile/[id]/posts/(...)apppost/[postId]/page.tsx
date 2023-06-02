@@ -22,7 +22,7 @@ async function PostModal({ params }: { params: { postId: string } }) {
 			</BlogContextProvider>
 			<div className="flex absolute gap-3 top-2 right-3">
 				<BackButton id={post.created_by || ""} />
-				<ExpandButton postId={params.postId} />
+				<ExpandButton postId={params.postId} privatePost={false} />
 			</div>
 		</div>
 	);
