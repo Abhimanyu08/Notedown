@@ -40,11 +40,6 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 			})
 			.match({ id: postId });
 
-		const { data } = await supabase.auth.getUser();
-
-		const profileId = data.user?.id;
-		console.log("Profile id in server action --------> ", profileId);
-
 		revalidatePath("/appprofile/[id]/posts/latest");
 	}
 
@@ -62,7 +57,6 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 			.match({ id: postId });
 
 		revalidatePath("/appprofile/[id]/posts/latest");
-		revalidatePath("/apppost/[postId]");
 	}
 
 	async function deletePostAction(postId: number) {

@@ -10,7 +10,7 @@ const postTypeToFetcher: { [k in PostTypes]?: (
     cursorKey: keyof PostWithBlogger,
     supabase: SupabaseClient
 
-) => Promise<PostWithBlogger[] | undefined> } = {}
+) => Promise<PostWithBlogger[] | null | undefined> } = {}
 
 const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
@@ -45,11 +45,11 @@ const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, curso
         .order("published_on", { ascending: false })
         .limit(LIMIT);
 
-    if (error || !data) {
+    // if (error || !data) {
 
-        alert("Failed to return more data");
-        return
-    }
+    //     alert("Failed to return more data");
+    //     return
+    // }
     return data
 };
 

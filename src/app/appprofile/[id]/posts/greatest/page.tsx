@@ -1,10 +1,9 @@
-import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 
-export const revalidate = 60 * 60 * 24; //revalidate this page every day.
+export const revalidate = 0; //dont't revalidate this page cause it's possible my 0 DAU site has a sudden surge in traffic and my blog posts keep getting upvoted left, right and center.
 
 async function GreatestPosts({ params }: { params: { id: string } }) {
 	const { id } = params;

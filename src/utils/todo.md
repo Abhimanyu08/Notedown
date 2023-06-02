@@ -1,16 +1,19 @@
-3. Allow users to embed executable, non-executable code blocks 
+3. Allow users to embed executable, non-executable code blocks
 4. Migrate to Next13 (major)
 5. refactor htmlToJsx, getting really hard to maintain.
 6. Allow talking to the blog post or summarizing at least (using langchain?)
 7. Add support for codesandboxes.
 8. Write lots and lots of posts(major)
 9. Steal some ideas from https://ped.ro/writing/code-blocks-but-better
-10. Something really really cool would be if I allow users to write mdx on the /edit page. Very hard to get that working though. We'll see.
+10. Something really really cool would be if I allow users to write mdx on the
+    /edit page. Very hard to get that working though. We'll see.
 11. need to take more control over markdown -> html conversion.
 12. Figure out rss thing.
-13. Allow users to configure the og/display images for their blog posts. Give them a option to generate one using lexica or openai.
+13. Allow users to configure the og/display images for their blog posts. Give
+    them a option to generate one using lexica or openai.
 14. Huge huge scope for code improvements
-15. Need to enable two way data flow. from markdown editor -> preview, but also from preview -> markdown editor
+15. Need to enable two way data flow. from markdown editor -> preview, but also
+    from preview -> markdown editor
 16. Turn editor page into a WYSIWYG editor for markdown noobs.
 
 ## Minor annoyances:
@@ -21,21 +24,6 @@
 5. Upvoted by you section is ugly.
 6. Design is all over the place.
 
-
-
 ## Migration Plans (Next 13):
 
-The problem with migration from next 12 to 13 is that we have to start top-down by default. i.e We need to move our routes from pages to app. But I think
-the best strategy is to start bottom-up. Start with the smallest components and work your way from there.
-
-1. Get the pagination working
-2. Get search functionality working
-3. port write page to app router.
-4. Get the modals working correctly
-5. Improve the gallery component
-6. Test and improve user's post uploads, deletes, edits. Profile about updates etc
-
-
-
-
-
+1. Get the paginator working using server actions.
