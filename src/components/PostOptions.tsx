@@ -1,11 +1,8 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
-import { sendRevalidationRequest } from "@utils/sendRequest";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { BiCheck } from "react-icons/bi";
-import { IoMdClose } from "react-icons/io";
 import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
@@ -16,12 +13,14 @@ export function PostOptions({
 	postTitle,
 	publishPostAction,
 	unpublishPostAction,
+	deletePostAction,
 }: {
 	published: boolean;
 	postId: number;
 	postTitle: string;
 	publishPostAction?: (postId: number) => Promise<void>;
 	unpublishPostAction?: (postId: number) => Promise<void>;
+	deletePostAction?: (postId: number) => Promise<void>;
 }) {
 	const pathname = usePathname();
 	const { session } = useSupabase();
@@ -32,7 +31,17 @@ export function PostOptions({
 
 	return (
 		<>
-			{/* <ActionModal action="delete" postTitle={postTitle} /> */}
+			<ActionModal
+				action="delete"
+				postTitle={postTitle}
+				isActionPending={isPending}
+				postId={postId}
+				onAction={() => {
+					startTransition(() => {
+						if (deletePostAction) deletePostAction(postId);
+					});
+				}}
+			/>
 			<ActionModal
 				action="publish"
 				postId={postId}
@@ -92,7 +101,7 @@ export function PostOptions({
 								</PostOptionButton>
 							)}
 							<PostOptionButton>
-								<label htmlFor={`delete`}>
+								<label htmlFor={`delete-${postId}`}>
 									<AiFillDelete
 										className="inline"
 										size={15}

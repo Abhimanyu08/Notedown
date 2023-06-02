@@ -1,7 +1,11 @@
 import { getUpvotes } from "@/app/utils/getData";
 import { Database } from "@/interfaces/supabase";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { SUPABASE_POST_TABLE } from "@utils/constants";
+import {
+	SUPABASE_FILES_BUCKET,
+	SUPABASE_IMAGE_BUCKET,
+	SUPABASE_POST_TABLE,
+} from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import PostComponent from "./PostComponent";
@@ -60,6 +64,44 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 		revalidatePath("/appprofile/[id]/posts/latest");
 	}
 
+	async function deletePostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		const { data } = await supabase
+			.from(SUPABASE_POST_TABLE)
+			.delete()
+			.match({ id: postId })
+			.select("filename, image_folder, published")
+			.single();
+
+		if (data) {
+			await supabase.storage
+				.from(SUPABASE_FILES_BUCKET)
+				.remove([data?.filename]);
+
+			const { data: imageFiles } = await supabase.storage
+				.from(SUPABASE_IMAGE_BUCKET)
+				.list(data.image_folder);
+
+			if (imageFiles) {
+				const imageNames = imageFiles.map(
+					(i) => `${data.image_folder}/${i.name}`
+				);
+				await supabase.storage
+					.from(SUPABASE_IMAGE_BUCKET)
+					.remove(imageNames);
+			}
+			if (data.published) {
+				revalidatePath("/appprofile/[id]/posts/latest");
+			} else {
+				revalidatePath("/appprofile/[id]/posts/private");
+			}
+		}
+	}
+
 	return (
 		<>
 			{(posts?.length || 0) > 0 ? (
@@ -69,7 +111,11 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 							key={post.id}
 							post={post}
 							upvotes={idToUpvotes[post.id!]}
-							{...{ publishPostAction, unpublishPostAction }}
+							{...{
+								publishPostAction,
+								unpublishPostAction,
+								deletePostAction,
+							}}
 						/>
 					))}
 				</div>

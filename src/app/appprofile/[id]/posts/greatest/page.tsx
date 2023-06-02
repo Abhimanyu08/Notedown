@@ -1,3 +1,4 @@
+import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { LIMIT, SUPABASE_POST_TABLE } from "@utils/constants";
@@ -14,7 +15,7 @@ async function GreatestPosts({ params }: { params: { id: string } }) {
 		.select(
 			"id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at,upvote_count"
 		)
-		.eq("created_by", id)
+		.match({ created_by: id, published: true })
 		.order("upvote_count", { ascending: false })
 		.limit(LIMIT);
 

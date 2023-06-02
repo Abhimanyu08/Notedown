@@ -3,16 +3,13 @@ import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
 import { BiUpvote } from "react-icons/bi";
 import { PostOptions } from "./PostOptions";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { SUPABASE_POST_TABLE } from "@utils/constants";
-import { revalidatePath } from "next/cache";
-import { headers, cookies } from "next/headers";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
 	upvotes?: number;
 	publishPostAction?: (postId: number) => Promise<void>;
 	unpublishPostAction?: (postId: number) => Promise<void>;
+	deletePostAction?: (postId: number) => Promise<void>;
 }
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -22,6 +19,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	upvotes,
 	publishPostAction,
 	unpublishPostAction,
+	deletePostAction,
 }) => {
 	const {
 		id,
@@ -44,6 +42,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					postTitle: title!,
 					publishPostAction,
 					unpublishPostAction,
+					deletePostAction,
 				}}
 			/>
 			<Link
