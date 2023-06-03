@@ -11,6 +11,9 @@ import { getPost } from "@/app/utils/getData";
 import { useSupabase } from "@/app/appContext";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 
+const initialMarkdown =
+	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
+
 function EditorLayout({
 	post,
 	imagesToUrls,
@@ -104,7 +107,11 @@ function EditorLayout({
 						editorState.editingMarkdown ? "" : "invisible"
 					}`}
 				>
-					<MarkdownEditor />
+					<MarkdownEditor
+						initialMarkdown={
+							blogState.blogMeta.markdown || initialMarkdown
+						}
+					/>
 				</div>
 
 				<div

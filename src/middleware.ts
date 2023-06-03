@@ -4,6 +4,13 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next()
     const supabase = createMiddlewareSupabaseClient({ req, res })
-    await supabase.auth.getSession()
+    const { data } = await supabase.auth.getSession()
+    if (data.session?.user) {
+        if (req.nextUrl.pathname === "/") {
+            const url = req.nextUrl.clone()
+            url.pathname = `/appprofile/${data.session.user.id}`
+            return NextResponse.redirect(url)
+        }
+    }
     return res
 }

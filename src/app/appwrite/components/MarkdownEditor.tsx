@@ -4,17 +4,15 @@ import { EditorContext } from "./EditorContext";
 import useEditor from "@/hooks/useEditor";
 import { BlogContext } from "@/app/apppost/components/BlogState";
 
-const initialMarkdown =
-	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
+// This component should be page diagnostic.
 
-function MarkdownEditor() {
+function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	const { editorState, dispatch } = useContext(EditorContext);
-	const { blogState } = useContext(BlogContext);
 	const [mounted, setMounted] = useState(false);
 
 	const { editorView } = useEditor({
 		language: "markdown",
-		code: blogState.blogMeta.markdown || initialMarkdown,
+		code: initialMarkdown,
 		editorParentId: "markdown-textarea",
 		mounted,
 	});

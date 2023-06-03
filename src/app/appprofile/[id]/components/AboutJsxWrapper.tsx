@@ -1,36 +1,17 @@
-// "use client";
-import { BlogProps } from "@/interfaces/BlogProps";
-import formatDate from "@utils/dateFormatter";
 import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
-import Link from "next/link";
 import { memo } from "react";
 
-const Blog = memo(
-	function Blog({
-		title,
-		description,
-		content,
-		created_by,
-		bloggers,
-		published,
-		published_on,
-		created_at,
-		extraClasses = "px-20",
-	}: Partial<BlogProps>) {
-		const tokens = tokenizer(content || "");
-		const parsedOutput = parser(tokens);
+const AboutJsxWrapper = memo(function ({ html }: { html: string }) {
+	const jsx = transformer(parser(tokenizer(html)));
 
-		const blogJsx = transformer(parsedOutput);
+	return (
+		<div
+			className="
 
-		return (
-			<div
-				className={
-					`
 				scroll-smooth   
 				// max-w-none 
-				h-full 
 				overflow-x-hidden		
 				// --------overflow-y-auto
 				prose prose-sm
@@ -105,69 +86,13 @@ const Blog = memo(
 				pb-20 md:pb-10 
 				lg:scrollbar-thin 
 				scrollbar-track-black 
-				scrollbar-thumb-slate-700 ` +
-					" " +
-					extraClasses
-				}
-			>
-				<header>
-					<h1 className="text-left " id="title">
-						{title}
-					</h1>
-					<blockquote className="text-left text-lg">
-						{description}
-					</blockquote>
-					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
-						<span>by</span>
-						<span className="underline underline-offset-2 decoration-black dark:decoration-white">
-							{created_by ? (
-								<Link href={`/appprofile/${created_by}`}>
-									{
-										(
-											bloggers as {
-												name: string;
-												id: string;
-											}
-										)?.name
-									}
-								</Link>
-							) : (
-								<span>
-									{
-										(
-											bloggers as {
-												name: string;
-												id: string;
-											}
-										)?.name
-									}
-								</span>
-							)}
-						</span>
-						<span>on</span>
-						<span className="">
-							{published && published_on
-								? formatDate(published_on)
-								: created_at
-								? formatDate(created_at)
-								: formatDate(new Date().toDateString())}
-						</span>
-					</div>
-				</header>
-				<article className="" id="jsx">
-					{blogJsx}
-				</article>
-			</div>
-			// </BlogContext.Provider>
-		);
-	},
-	(prevProps, newProps) => {
-		return (
-			prevProps.content === newProps.content &&
-			prevProps.title === newProps.title &&
-			prevProps.description === newProps.description
-		);
-	}
-);
+				scrollbar-thumb-slate-700
+				
+		 "
+		>
+			{jsx}
+		</div>
+	);
+});
 
-export default Blog;
+export default AboutJsxWrapper;
