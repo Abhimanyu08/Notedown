@@ -184,7 +184,7 @@
 	border-width: 1px;
 }
 
-button:where([class="tool"]) {
+button:where(.tool) {
 	display: flex;
 	align-items: center;
 	justify-content: center;

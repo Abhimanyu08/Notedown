@@ -5,7 +5,7 @@ import PostDisplay from "@components/PostDisplay";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
 
-export const revalidate = 0; //no need to cache private posts
+// export const revalidate = 0;
 
 async function PrivatePosts({ params }: { params: { id: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
