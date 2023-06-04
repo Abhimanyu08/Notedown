@@ -30,7 +30,7 @@ export function ExpandButton({
 
 	return (
 		<button
-			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
+			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom tooltip-left"
 			data-tip="Expand (E)"
 		>
 			<a href={url}>
@@ -55,7 +55,7 @@ export function BackButton({ id }: { id: string }) {
 	return (
 		<button
 			onClick={() => router.back()}
-			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
+			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom tooltip-left"
 			data-tip="Back to Posts(Esc)"
 		>
 			<IoMdArrowBack size={16} />
