@@ -22,16 +22,12 @@ import { EditorView } from "codemirror";
 import { EditorContext } from "@/app/appwrite/components/EditorContext";
 import { vim } from "@replit/codemirror-vim";
 import getExtensions from "@utils/getExtensions";
-
-interface EditorHelperProps {
-	editorView: EditorView | null;
-	enabledVimForMarkdown: boolean;
-	setEnabledVimForMarkdown: Dispatch<SetStateAction<boolean>>;
-}
+import { usePathname } from "next/navigation";
 
 function EditorHelperComponent() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { editorView } = editorState;
+	const pathname = usePathname();
 	useEffect(() => {
 		if (!editorState.editorView) return;
 
@@ -106,14 +102,16 @@ function EditorHelperComponent() {
 			>
 				Code block
 			</button>
-			<button
-				className="btn btn-xs normal-case tool"
-				onClick={() => {
-					if (editorView) onImage(editorView);
-				}}
-			>
-				Image
-			</button>
+			{!pathname?.startsWith("/appprofile") && (
+				<button
+					className="btn btn-xs normal-case tool"
+					onClick={() => {
+						if (editorView) onImage(editorView);
+					}}
+				>
+					Image
+				</button>
+			)}
 			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
@@ -158,14 +156,16 @@ function EditorHelperComponent() {
 			>
 				LaTeX
 			</button>
-			<button
-				className="btn btn-xs normal-case tool"
-				onClick={() => {
-					if (editorView) onCanvas(editorView);
-				}}
-			>
-				Canvas
-			</button>
+			{!pathname?.startsWith("/appprofile") && (
+				<button
+					className="btn btn-xs normal-case tool"
+					onClick={() => {
+						if (editorView) onCanvas(editorView);
+					}}
+				>
+					Canvas
+				</button>
+			)}
 			<button
 				className="btn btn-xs tool gap-2"
 				onClick={() => dispatch({ type: "toggle vim", payload: null })}

@@ -4,7 +4,7 @@ import transformer from "@utils/html2Jsx/transformer";
 import { memo } from "react";
 
 const AboutJsxWrapper = memo(function ({ html }: { html: string }) {
-	const jsx = transformer(parser(tokenizer(html)));
+	// const jsx = transformer(parser(tokenizer(html)));
 
 	return (
 		<div
@@ -89,9 +89,8 @@ const AboutJsxWrapper = memo(function ({ html }: { html: string }) {
 				scrollbar-thumb-slate-700
 				
 		 "
-		>
-			{jsx}
-		</div>
+			dangerouslySetInnerHTML={{ __html: html }}
+		></div>
 	);
 });
 

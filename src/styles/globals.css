@@ -207,6 +207,7 @@ button:active {
 	left: calc(100% + 10px);
 	content: attr(data-tip);
 	color: white;
+	text-transform: capitalize;
 }
 
 .tooltip-top:hover::after {
@@ -215,12 +216,13 @@ button:active {
 }
 .tooltip-bottom:hover::after {
 	top: calc(100% + 10px);
-	left: -15px;
+	left: 8px;
+	/* left: -15px; */
 }
-.prose :where(code):not(:where([class~="not-prose"] *))::before {
+.prose :not(pre) :where(code):not(:where([class~="not-prose"] *))::before {
 	content: "";
 }
-.prose :where(code):not(:where([class~="not-prose"] *))::after {
+.prose :not(pre) :where(code):not(:where([class~="not-prose"] *))::after {
 	content: "";
 }
 
