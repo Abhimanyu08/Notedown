@@ -1,7 +1,13 @@
 "use client";
 import { EditorContext } from "@/app/appwrite/components/EditorContext";
 import MarkdownEditor from "@/app/appwrite/components/MarkdownEditor";
-import React, { useContext, useState, useEffect, useTransition } from "react";
+import React, {
+	useContext,
+	useState,
+	useEffect,
+	useTransition,
+	useRef,
+} from "react";
 import AboutJsxWrapper from "./AboutJsxWrapper";
 import mdToHtml from "@utils/mdToHtml";
 import { AiFillEdit } from "react-icons/ai";
@@ -13,15 +19,18 @@ import { usePathname } from "next/navigation";
 import useShortCut from "@/hooks/useShortcut";
 
 function AboutEditor({
+	name,
 	aboutMarkdown,
 	aboutHtml,
 	changeAbout,
 }: {
+	name: string;
 	aboutMarkdown: string;
 	aboutHtml: string;
-	changeAbout: (about: string) => Promise<void>;
+	changeAbout: (name: string, about: string) => Promise<void>;
 }) {
 	const [html, setHtml] = useState(aboutHtml);
+	const [newName, setNewName] = useState(name);
 	const [editAbout, setEditAbout] = useState(false);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const [isPending, startTransition] = useTransition();
@@ -78,6 +87,7 @@ function AboutEditor({
 						onClick={() => {
 							startTransition(() =>
 								changeAbout(
+									newName || name,
 									editorState.editorView?.state.sliceDoc() ||
 										""
 								).then(() => {
@@ -117,7 +127,24 @@ function AboutEditor({
 			)}
 
 			{editAbout && (
-				<div className="absolute top-20 left-0 bg-black z-20 w-full grow">
+				<div className="w-[500px] absolute top-0 left-0">
+					{editorState.editingMarkdown ? (
+						<input
+							type="text"
+							className="h-10 bg-black placeholder:text-white text-white border-[1px] border-gray-800  w-60 px-2 focus:placeholder:invisible focus:border-gray-300 top-1 left-1 absolute"
+							value={newName}
+							onChange={(e) => setNewName(e.target.value)}
+						/>
+					) : (
+						<h1 className="text-3xl tracking-normal mb-10 bg-black pl-1">
+							{newName}
+						</h1>
+					)}
+				</div>
+			)}
+
+			{editAbout && (
+				<div className="absolute top-20 left-0 bg-black z-20 w-full h-[580px]">
 					<div
 						className={` ${
 							editorState.editingMarkdown ? "" : "hidden"

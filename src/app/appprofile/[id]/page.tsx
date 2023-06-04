@@ -8,12 +8,13 @@ import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import AboutEditor from "./components/AboutEditor";
 import AboutJsxWrapper from "./components/AboutJsxWrapper";
+import { AiFillEdit } from "react-icons/ai";
 
 async function About({ params }: { params: { id: string } }) {
 	const userData = await getUser(params.id);
 	const aboutHtml = await mdToHtml(userData?.about || "");
 
-	async function changeAbout(about: string) {
+	async function changeAbout(name: string, about: string) {
 		"use server";
 		const supabase = createServerComponentSupabaseClient({
 			headers,
@@ -24,6 +25,7 @@ async function About({ params }: { params: { id: string } }) {
 			await supabase
 				.from(SUPABASE_BLOGGER_TABLE)
 				.update({
+					name,
 					about,
 				})
 				.eq("id", data.user?.id);
@@ -33,12 +35,21 @@ async function About({ params }: { params: { id: string } }) {
 
 	return (
 		<EditorContextProvider>
-			<div className="flex flex-col w-full relative h-full">
+			<div className="flex flex-col w-full relative h-full pl-1">
 				<h1 className="text-3xl tracking-normal mb-10">
 					{userData?.name}
 				</h1>
 				<AboutJsxWrapper html={aboutHtml} />
+
+				{/* <label
+					className="absolute top-2 right-2 dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
+					data-tip="edit"
+					htmlFor="edit-about"
+				>
+					<AiFillEdit size={14} />
+				</label> */}
 				<AboutEditor
+					name={userData?.name || ""}
 					aboutHtml={aboutHtml}
 					aboutMarkdown={userData?.about || ""}
 					changeAbout={changeAbout}
