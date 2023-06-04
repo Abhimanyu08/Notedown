@@ -28,6 +28,7 @@ async function PrivatePost({ params }: { params: PostParams }) {
 		return (
 			<BlogContextProvider
 				blogMeta={{
+					id: parseInt(params.postId!),
 					title: post.title,
 					description: post.description,
 					language: post.language,

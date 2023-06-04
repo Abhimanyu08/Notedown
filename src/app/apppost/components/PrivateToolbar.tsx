@@ -7,6 +7,7 @@ import { BiCodeAlt } from "react-icons/bi";
 import { TbNews } from "react-icons/tb";
 import { BlogContext } from "./BlogState";
 import ToolbarButton from "./ToolbarButton";
+import Link from "next/link";
 
 function PrivateToolbar(props: { language: BlogProps["language"] }) {
 	const { blogState, dispatch } = useContext(BlogContext);
@@ -41,8 +42,13 @@ function PrivateToolbar(props: { language: BlogProps["language"] }) {
 					/>
 				</ToolbarButton>
 			)}
-			<ToolbarButton className="" onClick={() => {}} tip="Edit markdown">
-				<AiFillEdit size={28} className="dark:text-white  text-black" />
+			<ToolbarButton className="" tip="Edit markdown">
+				<Link href={`/appwrite/${blogState.blogMeta.id}`}>
+					<AiFillEdit
+						size={28}
+						className="dark:text-white  text-black"
+					/>
+				</Link>
 			</ToolbarButton>
 			<ToolbarButton className="" onClick={() => {}} tip="Publish">
 				<TbNews className=" dark:text-white text-black" size={30} />
