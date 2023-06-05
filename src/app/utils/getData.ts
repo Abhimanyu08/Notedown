@@ -1,7 +1,7 @@
 import 'server-only';
 import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { cache } from "react";
-import { getHtmlFromMarkdown } from '@utils/getResources';
+import { getHtmlFromMarkdownFile } from '@utils/getResources';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@utils/supabaseClient';
 
@@ -92,7 +92,7 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
         }
     }
 
-    const content = (await getHtmlFromMarkdown(fileData)).content;
+    const content = (await getHtmlFromMarkdownFile(fileData)).content;
 
     const markdown = await fileData.text()
 

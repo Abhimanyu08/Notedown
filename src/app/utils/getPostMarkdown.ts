@@ -1,6 +1,6 @@
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET } from "@utils/constants";
-import { getHtmlFromMarkdown } from "@utils/getResources";
+import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import { supabase } from "@utils/supabaseClient";
 
 
@@ -26,6 +26,6 @@ export async function getPostMarkdown(postId: string) {
 
     if (!fileData) return { post, content: null }
 
-    const content = (await getHtmlFromMarkdown(fileData)).content;
+    const content = (await getHtmlFromMarkdownFile(fileData)).content;
     return { post, content }
 }

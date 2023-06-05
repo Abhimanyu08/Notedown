@@ -8,7 +8,7 @@ import { SiConvertio } from "react-icons/si";
 import useEditor from "../../hooks/useEditor";
 import Blog from "@components/BlogPostComponents/Blog";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
-import { getHtmlFromMarkdown } from "@utils/getResources";
+import { getHtmlFromMarkdownFile } from "@utils/getResources";
 
 function MdToBlog({ markdown }: { markdown: string }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -37,7 +37,7 @@ function MdToBlog({ markdown }: { markdown: string }) {
 	}>({});
 
 	const updateBlogData = (newMarkdown: string) => {
-		getHtmlFromMarkdown(newMarkdown)
+		getHtmlFromMarkdownFile(newMarkdown)
 			.then(({ data, content }) => {
 				setBlogData({
 					title: data.title,

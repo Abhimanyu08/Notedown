@@ -1,4 +1,4 @@
-import { getHtmlFromMarkdown } from "@utils/getResources";
+import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import { EditorView } from "codemirror";
 
 export const convertMarkdownToContent = async (editorView: EditorView | null) => {
@@ -7,7 +7,7 @@ export const convertMarkdownToContent = async (editorView: EditorView | null) =>
     if (!markdown) return;
     try {
 
-        return getHtmlFromMarkdown(markdown)
+        return getHtmlFromMarkdownFile(markdown)
     } catch (e) {
 
         throw e
