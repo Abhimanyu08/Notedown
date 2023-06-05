@@ -111,7 +111,15 @@ function AboutEditor({
 					<button
 						className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
 						data-tip="close"
-						onClick={() => setEditAbout(false)}
+						onClick={() => {
+							if (!editorState.editingMarkdown) {
+								dispatch({
+									type: "toggle markdown editor",
+									payload: null,
+								});
+							}
+							setEditAbout(false);
+						}}
 					>
 						<IoMdClose />
 					</button>
