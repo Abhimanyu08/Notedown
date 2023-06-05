@@ -34,6 +34,7 @@ function AboutEditor({
 	const [editAbout, setEditAbout] = useState(false);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const [isPending, startTransition] = useTransition();
+	const [owner, setOwner] = useState(false);
 	const { session } = useSupabase();
 	const pathname = usePathname();
 
@@ -50,8 +51,12 @@ function AboutEditor({
 			dispatch({ type: "toggle markdown editor", payload: null });
 		},
 	});
-
-	if (pathname?.split("/").at(2) !== session?.user.id) {
+	useEffect(() => {
+		setOwner(
+			!!(session?.user && pathname?.split("/").at(2) === session.user.id)
+		);
+	}, [session]);
+	if (!owner) {
 		return <></>;
 	}
 
@@ -126,7 +131,7 @@ function AboutEditor({
 				</div>
 			) : (
 				<button
-					className="absolute top-2 right-2 dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
+					className="absolute top-2 right-2 dark:hover:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
 					data-tip="edit"
 					onClick={() => setEditAbout((prev) => !prev)}
 				>
