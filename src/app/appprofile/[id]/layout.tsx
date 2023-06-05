@@ -14,7 +14,6 @@ async function ProfileLayout({
 	params: { id: string };
 }) {
 	const userData = await getUser(params.id);
-	console.log(userData);
 	if (!userData) return <></>;
 
 	async function revalidateProfile() {

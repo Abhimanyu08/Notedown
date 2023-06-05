@@ -1,12 +1,9 @@
 "use client";
 import { BlogContext } from "@/app/apppost/components/BlogState";
-import ToolbarButton from "@/app/apppost/components/ToolbarButton";
-import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import { processImageName } from "@utils/makeFolderName";
 import Image from "next/image";
 import React, { memo, useContext, useState } from "react";
-import { BiImageAdd } from "react-icons/bi";
-import { IoMdAdd } from "react-icons/io";
+import { BiCheck, BiImageAdd } from "react-icons/bi";
 import { MdContentCopy } from "react-icons/md";
 
 function GalleryModal() {
@@ -35,10 +32,17 @@ function GalleryModal() {
 			/>
 			<label
 				htmlFor="gallery"
-				className="absolute top-0 left-0 w-full h-full z-10 text-white modal-box"
+				className="absolute top-0 bg-black/60 left-0 w-full gap-3 h-full z-10 text-white modal-box"
+				onClick={(e) => {
+					setNamesToCopy([]);
+				}}
 			>
-				<label className="w-3/4 h-3/4 bg-black border-[1px] border-white overflow-auto">
-					<div className="grid grid-cols-3 w-full  auto-rows-max">
+				<label
+					className="w-3/4 h-3/4 bg-black border-[1px] border-white overflow-auto"
+					htmlFor="utility"
+					onClick={(e) => e.stopPropagation()}
+				>
+					<div className="grid grid-cols-4 w-full  auto-rows-max">
 						{Object.entries(blogState.imagesToFiles).map(
 							(entry) => {
 								const [imageName, imageFile] = entry;
@@ -84,12 +88,12 @@ function GalleryModal() {
 					</div>
 				</label>
 				<div
-					className={`flex self-center w-3/4 ${
+					className={`flex gap-2 justify-center self-center w-3/4 ${
 						namesToCopy.length > 0 ? "visible" : "invisible"
 					}`}
 				>
-					<p className="grow overflow-x-auto border-b-[1px] border-white">
-						{namesToCopy.join(",") || "hello"}
+					<p className="overflow-x-auto border-b-[1px] border-white">
+						{namesToCopy.join(", ") || "hello"}
 					</p>
 
 					<label
@@ -97,13 +101,14 @@ function GalleryModal() {
 							navigator.clipboard.writeText(
 								namesToCopy.join(",")
 							);
+							setNamesToCopy([]);
 						}}
 						htmlFor="gallery"
 						data-tip="Copy"
-						className="flex items-center gap-1 text-sm group"
+						className="flex items-center self-end  gap-1 text-sm group hover:bg-gray-800 px-2 py-1 rounded-md active:scale-90"
 					>
-						<MdContentCopy className="group-hover:scale-110 group-active:scale-90" />
-						<span>copy</span>
+						<MdContentCopy className="" />
+						<span>Copy</span>
 					</label>
 				</div>
 			</label>
@@ -125,24 +130,32 @@ const GridObject = memo(
 	}) {
 		return (
 			<>
+				<input
+					type="checkbox"
+					name=""
+					id={imageName}
+					className="hidden"
+					onChange={onCheck}
+				/>
 				<Image
 					src={window.URL.createObjectURL(imageFile) || ""}
 					alt={imageName}
 					width={1440}
 					height={1080}
 				/>
-				<div
-					className={`w-full h-full bg-black/50 absolute top-0 left-0  flex items-center justify-center 
-			${checked ? "" : "opacity-0 bg group-hover:opacity-100"}`}
+				<label
+					className={`w-full h-full  absolute top-0 left-0  flex items-center justify-center 
+			bg-black/40 hover:bg-black/80 ${checked ? "bg-black/80" : ""}`}
+					htmlFor={imageName}
 				>
-					<input
-						type="checkbox"
-						name=""
-						id=""
-						className="w-4 h-6"
-						onChange={onCheck}
-					/>
-				</div>
+					<div
+						className={` rounded-full p-2  ${
+							checked ? "bg-blue-500" : "bg-gray-700"
+						} hover:scale-105 active:scale-95`}
+					>
+						<BiCheck size={20} />
+					</div>
+				</label>
 			</>
 		);
 	},
