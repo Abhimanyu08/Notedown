@@ -19,11 +19,7 @@
 ## Minor annoyances:
 
 2. 2 code blocks one after other merge into one another.
-3. There's no confirmation of some kind when one publishes or unpublishes a post
-4. Modals are inconsistent with the website design
-5. Upvoted by you section is ugly.
-6. Design is all over the place.
+3. Upvoted by you section is ugly.
+4. Design is all over the place.
 
 ## Migration Plans (Next 13):
-
-1. Get the paginator working using server actions.
