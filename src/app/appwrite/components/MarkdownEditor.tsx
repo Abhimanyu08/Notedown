@@ -20,6 +20,10 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	useEffect(() => {
 		if (editorView) {
 			dispatch({ type: "set editorView", payload: editorView });
+			dispatch({
+				type: "set previous uploaded doc",
+				payload: editorView.state.doc,
+			});
 		}
 	}, [editorView]);
 

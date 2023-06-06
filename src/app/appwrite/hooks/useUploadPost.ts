@@ -7,7 +7,7 @@ import { supabase } from "@utils/supabaseClient";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 
-function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: boolean, setStartUpload: React.Dispatch<React.SetStateAction<boolean>> }) {
+function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const [uploading, setUploading] = useState(false)
     const [uploadStatus, setUploadStatus] = useState("")
@@ -30,7 +30,7 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
                 }
                 upload()
             } catch (e) {
-                setStartUpload(false)
+                setUploading(false)
             }
         }
 
@@ -157,7 +157,6 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
 
             alert((e as Error).message)
             setUploading(false)
-            setStartUpload(false)
         }
 
     }
@@ -190,13 +189,11 @@ function useUploadPost({ startUpload = false, setStartUpload }: { startUpload: b
 
             setUploadStatus("Finished updating!")
             setUploading(false)
-            setStartUpload(false)
             setNewPostId(blogState.blogMeta.id)
             //done
         } catch (e) {
             alert((e as Error).message)
             setUploading(false)
-            setStartUpload(false)
         }
     }
 
