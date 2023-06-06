@@ -22,7 +22,10 @@ export default function useSearch(query: string) {
 
     useEffect(() => {
 
-        if (!query) return
+        if (!query) {
+            setSearchResults([])
+            return
+        }
         let searchQuery = query.trim().split(" ").join(" | ")
         setSearchError(null)
         setSearchResults([])

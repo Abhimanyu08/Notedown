@@ -3,6 +3,7 @@ import useSearch from "@/hooks/useSearch";
 import useShortCut from "@/hooks/useShortcut";
 import PostComponent from "@components/PostComponent";
 import { useEffect, useRef, useState } from "react";
+import { VscLoading } from "react-icons/vsc";
 
 function SearchModal() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -47,7 +48,10 @@ function SearchModal() {
 				className="modal-box backdrop-blur-sm"
 				onClick={() => setSearchQuery("")}
 			>
-				<label htmlFor="" className="w-1/2 h-4/5 flex flex-col gap-5">
+				<label
+					htmlFor=""
+					className="w-1/2 h-4/5 flex flex-col gap-5 relative text-white"
+				>
 					<input
 						type="text"
 						name=""
@@ -62,6 +66,12 @@ function SearchModal() {
 						}}
 						ref={searchInputRef}
 					/>
+					{searching && (
+						<VscLoading
+							className="absolute top-3 right-3 animate-spin"
+							size={20}
+						/>
+					)}
 					{searchResults.length > 0 && (
 						<div className="flex flex-col gap-8 flex-initial overflow-y-auto bg-black p-4 rounded-sm border-[1px] border-gray-500">
 							{searchResults.map((post) => (
