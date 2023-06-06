@@ -145,7 +145,7 @@ export interface Database {
           published: boolean
           created_at: string
           published_on: string
-          language: string
+          language: typeof ALLOWED_LANGUAGES[number] | null
           upvote_count: number
           author: string
           search_rank: number

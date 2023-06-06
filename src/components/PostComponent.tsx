@@ -63,7 +63,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					href={`/appprofile/${created_by}`}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic underline"
 				>
-					{(post.bloggers as { id: string; name: string }).name ||
+					{(post.bloggers as { id: string; name: string })?.name ||
 						post.author ||
 						""}
 				</Link>

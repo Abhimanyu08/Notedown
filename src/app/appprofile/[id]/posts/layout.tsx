@@ -1,10 +1,5 @@
 import React from "react";
 import PostControl from "./components/PostControl";
-import PostTypeContextProvider, {
-	PostTypeTogglerProps,
-} from "./components/PostTypeContext";
-import PostTypeToggler from "./components/PostTypeToggler";
-import SearchComponent from "./components/SearchComponent";
 
 function ProfilePostsLayout({
 	children,
@@ -19,9 +14,13 @@ function ProfilePostsLayout({
 				<div className="flex justify-start gap-2 mr-4 self-end">
 					<PostControl />
 				</div>
-				<div className="grow">
-					<SearchComponent id={params.id} />
-				</div>
+				<label
+					className="rounded-md flex justify-between w-44 items-center px-3 py-2 border-[1px] border-gray-500 text-xs text-gray-500"
+					htmlFor="search"
+				>
+					<span>Search</span>
+					<span>Alt+K</span>
+				</label>
 			</div>
 			<div className="overflow-y-auto grow">
 				{/* <PostTypeToggler {...props} /> */}
