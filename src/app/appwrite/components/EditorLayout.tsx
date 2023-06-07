@@ -18,7 +18,8 @@ function EditorLayout({
 	post,
 	imagesToUrls,
 	markdown,
-}: Partial<Awaited<ReturnType<typeof getPost>>>) {
+	userName,
+}: Partial<Awaited<ReturnType<typeof getPost>>> & { userName?: string }) {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const { session } = useSupabase();
@@ -135,7 +136,7 @@ function EditorLayout({
 					<Blog
 						{...blogState.blogMeta}
 						bloggers={{
-							name: blogState.blogMeta.author || null,
+							name: blogState.blogMeta.author || userName || "",
 							id: session?.user.id || "",
 						}}
 					/>

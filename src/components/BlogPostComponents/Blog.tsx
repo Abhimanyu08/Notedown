@@ -20,6 +20,7 @@ const Blog = memo(
 		extraClasses = "px-20",
 	}: Partial<BlogProps>) {
 		const tokens = tokenizer(content || "");
+		let blogger = bloggers as { id: string; name: string };
 		const parsedOutput = parser(tokens);
 
 		const blogJsx = transformer(parsedOutput);
@@ -119,30 +120,10 @@ const Blog = memo(
 					</blockquote>
 					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 						<span>by</span>
-						<span className="underline underline-offset-2 decoration-black dark:decoration-white">
-							{created_by ? (
-								<Link href={`/appprofile/${created_by}`}>
-									{
-										(
-											bloggers as {
-												name: string;
-												id: string;
-											}
-										)?.name
-									}
-								</Link>
-							) : (
-								<span>
-									{
-										(
-											bloggers as {
-												name: string;
-												id: string;
-											}
-										)?.name
-									}
-								</span>
-							)}
+						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-white">
+							<Link href={`/appprofile/${blogger.id}`}>
+								{blogger.name}
+							</Link>
 						</span>
 						<span>on</span>
 						<span className="">
