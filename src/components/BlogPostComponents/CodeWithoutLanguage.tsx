@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { BiCheck } from "react-icons/bi";
+import { MdContentCopy } from "react-icons/md";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import js from "react-syntax-highlighter/dist/cjs/languages/hljs/javascript";
 import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python";
@@ -23,6 +25,14 @@ function CodeWithoutLanguage({
 	language?: string;
 }) {
 	const [_, setImported] = useState(false);
+	const [copied, setCopied] = useState(false);
+
+	useEffect(() => {
+		if (copied) {
+			setTimeout(() => setCopied(false), 2000);
+		}
+	}, [copied]);
+
 	useEffect(() => {
 		if (language) {
 			language = language.toLowerCase();
@@ -36,7 +46,22 @@ function CodeWithoutLanguage({
 	}, [language]);
 
 	return (
-		<div className="not-prose">
+		<div className="not-prose relative group">
+			<button
+				className="absolute top-2 right-2 p-1 rounded-md bg-black/70 opacity-0 group-hover:opacity-100"
+				onClick={() => {
+					navigator.clipboard
+						.writeText(code)
+						.then(() => setCopied(true));
+				}}
+			>
+				{" "}
+				{copied ? (
+					<BiCheck size={20} className="text-gray-100" />
+				) : (
+					<MdContentCopy size={20} className="text-gray-100" />
+				)}
+			</button>
 			<SyntaxHighlighter language={language || ""} style={theme}>
 				{code}
 			</SyntaxHighlighter>
