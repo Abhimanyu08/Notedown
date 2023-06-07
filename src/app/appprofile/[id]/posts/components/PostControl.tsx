@@ -13,7 +13,6 @@ function PostControl() {
 	const profileId = pathname?.split("/").at(2);
 	let postType = pathname?.split("/").at(-1);
 	if (postType === "posts") postType = "latest";
-	console.log(profileId, session?.user.id);
 	return (
 		<>
 			{PostTypesList.filter((t) => t !== "postpreview").map((type) => {

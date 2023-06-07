@@ -43,16 +43,53 @@ function GalleryModal() {
 					onClick={(e) => e.stopPropagation()}
 				>
 					<div className="grid grid-cols-4 w-full  auto-rows-max">
-						{Object.entries(blogState.imagesToFiles).map(
+						{Object.entries(blogState.uploadedImages).map(
 							(entry) => {
-								const [imageName, imageFile] = entry;
+								const [imageName, imageUrl] = entry;
+								if (/^canvas-(\d+)\.png/.test(imageName))
+									return null;
 								return (
 									<div
 										className="col-span-1 flex items-center relative group"
 										key={imageName}
 									>
 										<GridObject
-											{...{ imageName, imageFile }}
+											{...{ imageName, imageUrl }}
+											onCheck={(e) => {
+												if (e.target.checked)
+													setNamesToCopy((prev) => [
+														...prev,
+														imageName,
+													]);
+												else {
+													setNamesToCopy((prev) =>
+														prev.filter(
+															(i) =>
+																i !== imageName
+														)
+													);
+												}
+											}}
+											checked={namesToCopy.includes(
+												imageName
+											)}
+										/>
+									</div>
+								);
+							}
+						)}
+						{Object.entries(blogState.imagesToFiles).map(
+							(entry) => {
+								const [imageName, imageFile] = entry;
+								const imageUrl =
+									window.URL.createObjectURL(imageFile);
+								return (
+									<div
+										className="col-span-1 flex items-center relative group"
+										key={imageName}
+									>
+										<GridObject
+											{...{ imageName, imageUrl }}
 											onCheck={(e) => {
 												if (e.target.checked)
 													setNamesToCopy((prev) => [
@@ -88,7 +125,7 @@ function GalleryModal() {
 					</div>
 				</label>
 				<div
-					className={`flex gap-2 justify-center self-center w-3/4 ${
+					className={`flex gap-2 justify-center self-center w-3/4 bg-black ${
 						namesToCopy.length > 0 ? "visible" : "invisible"
 					}`}
 				>
@@ -119,12 +156,12 @@ function GalleryModal() {
 const GridObject = memo(
 	function GridObject({
 		imageName,
-		imageFile,
+		imageUrl,
 		onCheck,
 		checked,
 	}: {
 		imageName: string;
-		imageFile: File;
+		imageUrl: string;
 		onCheck: React.ChangeEventHandler<HTMLInputElement>;
 		checked: boolean;
 	}) {
@@ -138,7 +175,7 @@ const GridObject = memo(
 					onChange={onCheck}
 				/>
 				<Image
-					src={window.URL.createObjectURL(imageFile) || ""}
+					src={imageUrl}
 					alt={imageName}
 					width={1440}
 					height={1080}

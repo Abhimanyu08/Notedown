@@ -54,7 +54,7 @@ export const getUpvotes = cache(async (idArray: number[]) => {
 })
 
 
-export const getPost = cache(async (postId: string, supabaseClient: SupabaseClient) => {
+export const getPost = async (postId: string, supabaseClient: SupabaseClient) => {
     const { data: post, error } = await supabaseClient
         .from(SUPABASE_POST_TABLE)
         .select(
@@ -85,7 +85,7 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
     if (data) {
         for (let file of data) {
 
-            if (/$canvas-(\d+)$/.test(file.name)) continue
+            // if (/^canvas-(\d+)\.png$/.test(file.name)) continue
             const { publicUrl } = supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).getPublicUrl(post.image_folder + "/" + file.name).data
 
             imagesToUrls[file.name] = publicUrl
@@ -97,4 +97,4 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
     const markdown = await fileData.text()
 
     return { post, content, imagesToUrls, markdown }
-})
+}

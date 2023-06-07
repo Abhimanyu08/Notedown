@@ -6,6 +6,7 @@ import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
+import Link from "next/link";
 
 export function PostOptions({
 	published,
@@ -73,13 +74,16 @@ export function PostOptions({
 						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover:visible transition-all duration-200">
 							{!published && (
 								<PostOptionButton>
-									<a href={`/appwrite/${postId}`}>
+									<Link
+										href={`/appwrite/${postId}`}
+										prefetch={false}
+									>
 										<AiFillEdit
 											className="inline"
 											size={15}
 										/>{" "}
 										<span>Edit</span>
-									</a>
+									</Link>
 								</PostOptionButton>
 							)}
 							{published ? (

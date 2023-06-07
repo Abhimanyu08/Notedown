@@ -1,6 +1,5 @@
 "use client";
 import { BlogContext } from "@/app/apppost/components/BlogState";
-import { convertMarkdownToContent } from "@/app/utils/convertMarkdownToContent";
 import useShortCut from "@/hooks/useShortcut";
 import Blog from "@components/BlogPostComponents/Blog";
 import { useContext, useEffect } from "react";
@@ -10,6 +9,7 @@ import MarkdownEditor from "./MarkdownEditor";
 import { getPost } from "@/app/utils/getData";
 import { useSupabase } from "@/app/appContext";
 import Toc from "@components/BlogPostComponents/TableOfContents";
+import { getHtmlFromMarkdownFile } from "@utils/getResources";
 
 const initialMarkdown =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
@@ -50,12 +50,24 @@ function EditorLayout({
 				type: "set uploaded images",
 				payload: imagesToUrls!,
 			});
+			getHtmlFromMarkdownFile(markdown || "")
+				.then((val) => {
+					if (!val) return;
+
+					blogStateDispatch({
+						type: "set blog meta",
+						payload: { ...val?.data, content: val?.content },
+					});
+				})
+				.catch((e) => {
+					alert((e as Error).message);
+				});
 		}
 	}, []);
 
 	useEffect(() => {
 		if (editorState.editingMarkdown) return;
-		convertMarkdownToContent(editorState.editorView)
+		getHtmlFromMarkdownFile(editorState.editorView?.state.sliceDoc() || "")
 			.then((val) => {
 				if (!val) return;
 				if (
@@ -67,7 +79,6 @@ function EditorLayout({
 						payload: null,
 					});
 				}
-				console.log(val.content);
 				blogStateDispatch({
 					type: "set blog meta",
 					payload: { ...val?.data, content: val?.content },

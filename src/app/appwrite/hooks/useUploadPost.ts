@@ -3,35 +3,44 @@ import { BlogContext } from "@/app/apppost/components/BlogState";
 import Post from "@/interfaces/Post";
 import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
-import { supabase } from "@utils/supabaseClient";
+// import { supabase } from "@utils/supabaseClient";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
+import { useRouter } from "next/navigation";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const [uploading, setUploading] = useState(false)
+    const [uploadFinished, setUploadFinished] = useState(false)
     const [uploadStatus, setUploadStatus] = useState("")
-    const [newPostId, setNewPostId] = useState<number>()
     const { editorState } = useContext(EditorContext)
-    const { blogState } = useContext(BlogContext)
+    const { blogState, dispatch } = useContext(BlogContext)
+    const [newPostId, setNewPostId] = useState<number | null>(blogState.blogMeta.id || null)
 
-    const { session } = useSupabase()
+    const { supabase, session } = useSupabase()
     const created_by = session?.user?.id
 
     useEffect(() => {
 
-        if (created_by && startUpload) {
-            try {
 
-                if (blogState.blogMeta.id) {
-                    //id is already here which means user is updating his post
-                    update()
-                    return
-                }
-                upload()
-            } catch (e) {
+        if (created_by && startUpload) {
+            setUploadFinished(false)
+            let process = upload
+            if (blogState.blogMeta.id) process = update
+
+            process().then((postId) => {
+                setUploadStatus("Finished!")
+                setNewPostId(postId)
                 setUploading(false)
-            }
+                afterUpload(postId)
+                setUploadFinished(true)
+
+            }).catch((e) => {
+                alert((e as Error).message)
+                setUploading(false)
+                setUploadFinished(true)
+            })
+
         }
 
     }, [startUpload])
@@ -82,6 +91,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const deleteRedundantImages = async ({ postId }: { postId: number }) => {
 
         const uploadedImages = Object.keys(blogState.uploadedImages)
+
         const imagesToDelete = uploadedImages.filter(i => !(blogState.imagesToUpload.includes(i))).map(i => created_by + '/' + postId + "/" + i)
 
         console.log(imagesToDelete)
@@ -131,73 +141,83 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
 
     const upload = async () => {
-        try {
 
-            setUploading(true)
+        setUploading(true)
 
 
-            setUploadStatus("preparing for upload")
-            const postMeta = prepareForUpload()
+        setUploadStatus("preparing for upload")
+        const postMeta = prepareForUpload()
 
-            setUploadStatus("Uploading markdown file")
-            const post = await uploadPostRow(postMeta)
-            await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
+        setUploadStatus("Uploading markdown file")
+        const post = await uploadPostRow(postMeta)
+        await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
 
-            setUploadStatus("Uploading Images")
-            await uploadPostImages({ postId: post.id })
+        setUploadStatus("Uploading Images")
+        await uploadPostImages({ postId: post.id })
 
-            setUploadStatus("Uploading Canvas images")
-            await uploadCanvasImages({ postId: post.id })
+        setUploadStatus("Uploading Canvas images")
+        await uploadCanvasImages({ postId: post.id })
 
-            await finalUpdateToPost({ postId: post.id, postMeta })
-            setUploadStatus("Finished Uploading !")
-            setNewPostId(post.id)
-            setUploading(false)
-        } catch (e) {
+        await finalUpdateToPost({ postId: post.id, postMeta })
 
-            alert((e as Error).message)
-            setUploading(false)
-        }
+        return post.id
+
 
     }
     const update = async () => {
-        if (!blogState.blogMeta.id) return
-        try {
-            const postId = blogState.blogMeta.id
-            setUploading(true)
-            setUploadStatus("preparing for update")
-            const postMeta = prepareForUpload()
+        const postId = blogState.blogMeta.id!
+        setUploading(true)
+        setUploadStatus("preparing for update")
+        const postMeta = prepareForUpload()
 
-            setUploadStatus("updating post row")
-            //update the post row in the table to have new title,description,language etc.
-            await updatePostRow({ postId, ...postMeta })
-            // upload new markdown file for the blog post
-            setUploadStatus("updating markdown file")
-            await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })
+        setUploadStatus("updating post row")
+        //update the post row in the table to have new title,description,language etc.
+        await updatePostRow({ postId, ...postMeta })
+        // upload new markdown file for the blog post
+        setUploadStatus("updating markdown file")
+        await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })
 
-            //delete the images that need to be deleted
-            setUploadStatus("deleting redundant images")
-            await deleteRedundantImages({ postId })
+        //delete the images that need to be deleted
+        setUploadStatus("deleting redundant images")
+        await deleteRedundantImages({ postId })
 
-            //upload image files that need to be uploaded
-            setUploadStatus("Uploading new images")
-            await uploadPostImages({ postId })
+        //upload image files that need to be uploaded
+        setUploadStatus("Uploading new images")
+        await uploadPostImages({ postId })
 
-            //upload canvas files that need to be uploaded
-            setUploadStatus("Updating and uploading new canvas images")
-            await uploadCanvasImages({ postId })
+        //upload canvas files that need to be uploaded
+        setUploadStatus("Updating and uploading new canvas images")
+        await uploadCanvasImages({ postId })
 
-            setUploadStatus("Finished updating!")
-            setUploading(false)
-            setNewPostId(blogState.blogMeta.id)
-            //done
-        } catch (e) {
-            alert((e as Error).message)
-            setUploading(false)
-        }
+        setUploadStatus("Finished updating!")
+        setUploading(false)
+        setNewPostId(postId)
+        //done
+        return postId
     }
 
-    return { uploading, uploadStatus, newPostId }
+    const afterUpload = (postId: number) => {
+        const addedUploads: Record<string, string> = {}
+        for (let imageName of blogState.imagesToUpload) {
+            if (!Object.hasOwn(blogState.uploadedImages, imageName)) {
+                if (/^canvas-(\d+)\.png/.test(imageName)) {
+                    addedUploads[imageName] = ""
+                    continue
+                }
+                addedUploads[imageName] = URL.createObjectURL(blogState.imagesToFiles[imageName])
+            }
+            else {
+                addedUploads[imageName] = blogState.uploadedImages[imageName]
+            }
+        }
+        dispatch({ type: "set uploaded images", payload: addedUploads })
+
+        dispatch({ type: "empty canvas apps", payload: null })
+        dispatch({ type: "set blog meta", payload: { id: postId } })
+
+    }
+
+    return { uploading, uploadStatus, newPostId, uploadFinished }
 
 }
 

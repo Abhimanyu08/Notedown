@@ -1,6 +1,12 @@
 import ToolbarButton from "@/app/apppost/components/ToolbarButton";
 import { motion } from "framer-motion";
-import { memo, useContext, useEffect, useState } from "react";
+import {
+	MouseEventHandler,
+	memo,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { VscLoading, VscPreview } from "react-icons/vsc";
 import { EditorContext } from "./EditorContext";
@@ -12,6 +18,8 @@ import { BlogContext } from "@/app/apppost/components/BlogState";
 import { FaFileUpload } from "react-icons/fa";
 import useUploadPost from "../hooks/useUploadPost";
 import Link from "next/link";
+import { getHtmlFromMarkdownFile } from "@utils/getResources";
+import { useRouter } from "next/navigation";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
@@ -20,31 +28,20 @@ function EditorToolbar() {
 	const [startUpload, setStartUpload] = useState(false);
 	const [changed, setChanged] = useState(false);
 
-	const { uploading, uploadStatus, newPostId } = useUploadPost({
-		startUpload,
-	});
+	const { uploading, uploadStatus, newPostId, uploadFinished } =
+		useUploadPost({
+			startUpload,
+		});
 
 	useEffect(() => {
-		if (startUpload && !uploading) {
-			setStartUpload(false);
+		//check for changed in markdown every 2 seconds
 
-			dispatch({
-				type: "set previous uploaded doc",
-				payload: editorState.editorView!.state.doc,
-			});
-		}
-	}, [startUpload]);
-
-	useEffect(() => {
 		if (!editorState.editorView || !editorState.previousUploadedDoc) return;
 		const interval = window.setInterval(() => {
-			const hasChanged =
-				Object.keys(blogState.canvasApps).length > 0 ||
-				!editorState.editorView!.state.doc.eq(
-					editorState.previousUploadedDoc!
-				);
+			const hasChanged = !editorState.editorView!.state.doc.eq(
+				editorState.previousUploadedDoc!
+			);
 
-			console.log(hasChanged);
 			setChanged(!!hasChanged);
 		}, 2000);
 
@@ -52,6 +49,40 @@ function EditorToolbar() {
 			clearInterval(interval);
 		};
 	}, [editorState.editorView, editorState.previousUploadedDoc]);
+
+	useEffect(() => {
+		if (uploadFinished) {
+			setStartUpload(false);
+		}
+	}, [uploadFinished]);
+
+	const onUpload = async (
+		currentEditorState: typeof editorState,
+		currentBlogState: typeof blogState
+	) => {
+		//Just before starting to upload we need to convert markdown to content one last time in case user has pressed upload button without prevewing and his `imagesToUpload` and `imagesToDelete` are not in sync.
+		await getHtmlFromMarkdownFile(
+			currentEditorState.editorView?.state.sliceDoc() || ""
+		)
+			.then((val) => {
+				if (!val) return;
+
+				blogStateDispatch({
+					type: "set blog meta",
+					payload: { ...val?.data, content: val?.content },
+				});
+			})
+			.catch((e) => {
+				alert((e as Error).message);
+			});
+
+		if (changed || Object.keys(currentBlogState.canvasApps).length > 0)
+			setStartUpload(true);
+		dispatch({
+			type: "set previous uploaded doc",
+			payload: currentEditorState.editorView!.state.doc,
+		});
+	};
 
 	return (
 		<>
@@ -107,7 +138,7 @@ function EditorToolbar() {
 			</ToolbarButton>
 			<ToolbarButton
 				tip={uploading ? "" : "Upload Post/changes"}
-				onClick={() => setStartUpload(true)}
+				onClick={() => onUpload(editorState, blogState)}
 			>
 				{uploading ? (
 					<div className="flex gap-2 items-center">
@@ -117,7 +148,10 @@ function EditorToolbar() {
 				) : (
 					<div className="flex gap-2 items-center">
 						<FaFileUpload size={26} />
-						{changed && <sup className="text-lg text-white">*</sup>}
+						{(Object.keys(blogState.canvasApps).length > 0 ||
+							changed) && (
+							<sup className="text-lg text-white">*</sup>
+						)}
 					</div>
 				)}
 			</ToolbarButton>
