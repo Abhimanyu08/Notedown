@@ -3,7 +3,7 @@ export const PostTypesList = [
     "greatest",
     "private",
     "upvoted",
-    "postpreview",
+    "drafts"
 ] as const;
 
 

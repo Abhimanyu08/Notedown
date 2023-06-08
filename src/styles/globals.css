@@ -207,7 +207,7 @@ button:active {
 	left: calc(100% + 10px);
 	content: attr(data-tip);
 	color: white;
-	text-transform: capitalize;
+	text-transform: none;
 }
 
 .tooltip-top:hover::after {

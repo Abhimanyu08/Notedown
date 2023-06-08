@@ -6,6 +6,7 @@ import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
 import Link from "next/link";
 import { memo } from "react";
+import BlogAuthor from "./BlogAuthor";
 
 const Blog = memo(
 	function Blog({
@@ -121,9 +122,7 @@ const Blog = memo(
 					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 						<span>by</span>
 						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-white">
-							<Link href={`/appprofile/${blogger.id}`}>
-								{blogger.name}
-							</Link>
+							<BlogAuthor createdBy={created_by || null} />
 						</span>
 						<span>on</span>
 						<span className="">

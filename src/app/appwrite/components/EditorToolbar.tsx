@@ -13,13 +13,13 @@ import { EditorContext } from "./EditorContext";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { BiCodeAlt } from "react-icons/bi";
 import { TfiGallery } from "react-icons/tfi";
-import { CgDanger } from "react-icons/cg";
+import { RiDeviceRecoverLine } from "react-icons/ri";
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import { FaFileUpload } from "react-icons/fa";
 import useUploadPost from "../hooks/useUploadPost";
 import Link from "next/link";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
@@ -27,6 +27,7 @@ function EditorToolbar() {
 	const { language } = blogState.blogMeta;
 	const [startUpload, setStartUpload] = useState(false);
 	const [changed, setChanged] = useState(false);
+	const [draftTimestamp, setDraftTimestamp] = useState<number | null>(null);
 
 	const { uploading, uploadStatus, newPostId, uploadFinished } =
 		useUploadPost({
@@ -42,7 +43,7 @@ function EditorToolbar() {
 				editorState.previousUploadedDoc!
 			);
 
-			setChanged(!!hasChanged);
+			setChanged(hasChanged);
 		}, 2000);
 
 		return () => {
@@ -51,8 +52,29 @@ function EditorToolbar() {
 	}, [editorState.editorView, editorState.previousUploadedDoc]);
 
 	useEffect(() => {
+		//periodically store markdown in localStorage to prevent from accidental loss of work
+		if (!editorState.editorView) return;
+		const timeStamp = Date.now();
+		setDraftTimestamp(timeStamp);
+		const interval = window.setInterval(() => {
+			let key = `draft-${timeStamp}`;
+			if (blogState.blogMeta.id)
+				key = `post-${blogState.blogMeta.id};${key}`;
+			localStorage.setItem(
+				key,
+				editorState.editorView!.state.sliceDoc() || ""
+			);
+		}, 4000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	}, [editorState.editorView, blogState.blogMeta.id]);
+
+	useEffect(() => {
 		if (uploadFinished) {
 			setStartUpload(false);
+			localStorage.removeItem(`draft-${draftTimestamp}`);
 		}
 	}, [uploadFinished]);
 

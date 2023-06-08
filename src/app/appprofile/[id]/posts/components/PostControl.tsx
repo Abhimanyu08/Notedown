@@ -15,7 +15,7 @@ function PostControl() {
 	if (postType === "posts") postType = "latest";
 	return (
 		<>
-			{PostTypesList.filter((t) => t !== "postpreview").map((type) => {
+			{PostTypesList.map((type) => {
 				if (session?.user.id !== profileId && type === "private")
 					return;
 				return (

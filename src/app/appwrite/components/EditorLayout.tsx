@@ -2,7 +2,7 @@
 import { BlogContext } from "@/app/apppost/components/BlogState";
 import useShortCut from "@/hooks/useShortcut";
 import Blog from "@components/BlogPostComponents/Blog";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import EditorToolbar from "./EditorToolbar";
 import MarkdownEditor from "./MarkdownEditor";
@@ -10,19 +10,22 @@ import { getPost } from "@/app/utils/getData";
 import { useSupabase } from "@/app/appContext";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
+import { useSearchParams } from "next/navigation";
 
-const initialMarkdown =
+let initialMarkdownMeta =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
 
 function EditorLayout({
 	post,
 	imagesToUrls,
 	markdown,
-	userName,
-}: Partial<Awaited<ReturnType<typeof getPost>>> & { userName?: string }) {
+}: Partial<Awaited<ReturnType<typeof getPost>>>) {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
-	const { session } = useSupabase();
+	const searchParams = useSearchParams();
+	const [initialMarkdown, setInitialMarkdown] = useState(
+		markdown || initialMarkdownMeta
+	);
 
 	useShortCut({
 		keys: ["Alt", "p"],
@@ -32,6 +35,21 @@ function EditorLayout({
 	});
 
 	useEffect(() => {
+		let postMarkdown = markdown;
+		if (searchParams?.has("draft")) {
+			let key = `draft-${searchParams.get(`draft`)}`;
+			if (post?.id) key = `post-${post.id};${key}`;
+			console.log(key);
+			let draftText = localStorage.getItem(key);
+			console.log(draftText);
+			if (draftText) {
+				postMarkdown = draftText;
+
+				setInitialMarkdown(draftText);
+			}
+
+			localStorage.removeItem(key);
+		}
 		if (post) {
 			blogStateDispatch({
 				type: "set blog meta",
@@ -41,7 +59,7 @@ function EditorLayout({
 					description: post.description,
 					author: (post.bloggers as { id: string; name: string })
 						.name,
-					markdown,
+					markdown: postMarkdown,
 					imageFolder: post.image_folder,
 					language: post.language,
 				},
@@ -119,11 +137,7 @@ function EditorLayout({
 						editorState.editingMarkdown ? "" : "invisible"
 					}`}
 				>
-					<MarkdownEditor
-						initialMarkdown={
-							blogState.blogMeta.markdown || initialMarkdown
-						}
-					/>
+					<MarkdownEditor initialMarkdown={initialMarkdown} />
 				</div>
 
 				<div
@@ -133,13 +147,7 @@ function EditorLayout({
 							: "overflow-y-auto w-full h-full"
 					}`}
 				>
-					<Blog
-						{...blogState.blogMeta}
-						bloggers={{
-							name: blogState.blogMeta.author || userName || "",
-							id: session?.user.id || "",
-						}}
-					/>
+					<Blog {...blogState.blogMeta} />
 				</div>
 			</div>
 			<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
