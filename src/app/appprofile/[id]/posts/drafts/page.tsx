@@ -49,7 +49,7 @@ function Drafts() {
 		<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
 			{drafts.map((draft) => {
 				return (
-					<div className="flex flex-col">
+					<div className="flex flex-col" key={draft.timeStamp}>
 						<Link
 							href={
 								draft.postId

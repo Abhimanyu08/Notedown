@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { createContext } from "react";
 
 export type PostTypeTogglerProps = {
-	[k in PostTypes]: React.ReactNode;
+	[k in PostTypes | "postpreview"]: React.ReactNode;
 };
 
 export const PostTypeContext = createContext<{
