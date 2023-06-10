@@ -189,10 +189,10 @@ button:where(.tool) {
 	align-items: center;
 	justify-content: center;
 }
-button:hover {
+button:hover:not(.no-scale) {
 	scale: 1.05;
 }
-button:active {
+button:active:not(.no-scale) {
 	scale: 0.95;
 }
 
@@ -268,4 +268,8 @@ button:active {
 	border-top-width: 1px;
 	border-bottom-width: 1px;
 	border-color: rgb(156 163 175);
+}
+
+.toast {
+	box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.8);
 }

@@ -1,57 +1,55 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import {
+	onBlockQuote,
+	onBold,
+	onCanvas,
+	onCodeBlock,
+	onCodeWord,
+	onImage,
+	onItalic,
+	onLatex,
+	onLink,
+	onOrdererdList,
+	onSelect,
+	onUnordererdList,
+} from "@/utils/editorToolFunctions";
 import { StateEffect } from "@codemirror/state";
+import { memo, useContext, useEffect } from "react";
 import { FaBold, FaItalic } from "react-icons/fa";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
-import {
-	onBold,
-	onItalic,
-	onSelect,
-	onCodeWord,
-	onCodeBlock,
-	onImage,
-	onOrdererdList,
-	onUnordererdList,
-	onBlockQuote,
-	onLink,
-	onLatex,
-	onCanvas,
-} from "@/utils/editorToolFunctions";
 
-import { EditorView } from "codemirror";
 import { EditorContext } from "@/app/appwrite/components/EditorContext";
 import { vim } from "@replit/codemirror-vim";
 import getExtensions from "@utils/getExtensions";
+import langToCodeMirrorExtension from "@utils/langToExtension";
 import { usePathname } from "next/navigation";
 
 function EditorHelperComponent() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { editorView } = editorState;
 	const pathname = usePathname();
-	useEffect(() => {
-		if (!editorState.editorView) return;
 
-		if (editorState.enabledVimForMarkdown) {
-			editorState.editorView.dispatch({
-				effects: StateEffect.reconfigure.of([
-					vim(),
-					...getExtensions({
-						language: "markdown",
-					}),
-				]),
-			});
-		}
+	const onToggleVim = () => {
+		if (!editorState.editorView) return;
 
 		if (!editorState.enabledVimForMarkdown) {
 			editorState.editorView.dispatch({
-				effects: StateEffect.reconfigure.of(
-					getExtensions({
-						language: "markdown",
-					})
-				),
+				effects: StateEffect.appendConfig.of([vim({ status: true })]),
+			});
+			// editorState.editorView.state.facet()
+		}
+		// C
+		if (editorState.enabledVimForMarkdown) {
+			editorState.editorView.dispatch({
+				effects: StateEffect.reconfigure.of([
+					...getExtensions(),
+					langToCodeMirrorExtension("markdown"),
+				]),
 			});
 		}
-	}, [editorState.enabledVimForMarkdown]);
+		dispatch({ type: "toggle vim", payload: null });
+	};
+
 	return (
 		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
 			<button
@@ -166,10 +164,7 @@ function EditorHelperComponent() {
 					Canvas
 				</button>
 			)}
-			<button
-				className="btn btn-xs tool gap-2"
-				onClick={() => dispatch({ type: "toggle vim", payload: null })}
-			>
+			<button className="btn btn-xs tool gap-2" onClick={onToggleVim}>
 				<SiVim
 					className={` ${
 						editorState.enabledVimForMarkdown
@@ -186,4 +181,4 @@ function EditorHelperComponent() {
 	);
 }
 
-export default EditorHelperComponent;
+export default memo(EditorHelperComponent);

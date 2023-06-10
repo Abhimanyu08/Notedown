@@ -1,33 +1,27 @@
-import ToolbarButton from "@/app/apppost/components/ToolbarButton";
-import { motion } from "framer-motion";
-import {
-	MouseEventHandler,
-	memo,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
-import { AiFillEdit } from "react-icons/ai";
-import { VscLoading, VscPreview } from "react-icons/vsc";
-import { EditorContext } from "./EditorContext";
-import prepareContainer from "@/app/utils/prepareContainer";
-import { BiCodeAlt } from "react-icons/bi";
-import { TfiGallery } from "react-icons/tfi";
-import { RiDeviceRecoverLine } from "react-icons/ri";
 import { BlogContext } from "@/app/apppost/components/BlogState";
-import { FaFileUpload } from "react-icons/fa";
-import useUploadPost from "../hooks/useUploadPost";
-import Link from "next/link";
+import ToolbarButton from "@/app/apppost/components/ToolbarButton";
+import prepareContainer from "@/app/utils/prepareContainer";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
-import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { memo, useContext, useEffect, useState } from "react";
+import { AiFillEdit } from "react-icons/ai";
+import { BiCodeAlt } from "react-icons/bi";
+import { FaFileUpload } from "react-icons/fa";
+import { TfiGallery } from "react-icons/tfi";
+import { VscLoading, VscPreview } from "react-icons/vsc";
+import useUploadPost from "../hooks/useUploadPost";
+import { EditorContext } from "./EditorContext";
+import { ToastContext } from "@/contexts/ToastProvider";
+import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
+	const context = useContext(ToastContext);
 	const { language } = blogState.blogMeta;
 	const [startUpload, setStartUpload] = useState(false);
 	const [changed, setChanged] = useState(false);
-	const [draftTimestamp, setDraftTimestamp] = useState<number | null>(null);
 
 	const { uploading, uploadStatus, newPostId, uploadFinished } =
 		useUploadPost({
@@ -52,29 +46,20 @@ function EditorToolbar() {
 	}, [editorState.editorView, editorState.previousUploadedDoc]);
 
 	useEffect(() => {
-		//periodically store markdown in localStorage to prevent from accidental loss of work
-		if (!editorState.editorView) return;
-		const timeStamp = Date.now();
-		setDraftTimestamp(timeStamp);
-		const interval = window.setInterval(() => {
-			let key = `draft-${timeStamp}`;
-			if (blogState.blogMeta.id)
-				key = `post-${blogState.blogMeta.id};${key}`;
-			localStorage.setItem(
-				key,
-				editorState.editorView!.state.sliceDoc() || ""
-			);
-		}, 4000);
-
-		return () => {
-			clearInterval(interval);
-		};
-	}, [editorState.editorView, blogState.blogMeta.id]);
-
-	useEffect(() => {
 		if (uploadFinished) {
 			setStartUpload(false);
-			localStorage.removeItem(`draft-${draftTimestamp}`);
+			const localStorageKey = makeLocalStorageDraftKey(
+				editorState.timeStamp!,
+				blogState.blogMeta.id
+			);
+			console.log(localStorageKey);
+			localStorage.removeItem(localStorageKey);
+
+			blogStateDispatch({
+				type: "set blog meta",
+				payload: { id: newPostId },
+			});
+			context?.setMessage("Changed Uploaded");
 		}
 	}, [uploadFinished]);
 
@@ -177,30 +162,6 @@ function EditorToolbar() {
 					</div>
 				)}
 			</ToolbarButton>
-
-			{newPostId && (
-				<motion.p
-					initial={{ opacity: 1 }}
-					animate={{ opacity: 0 }}
-					transition={{
-						duration: 10,
-					}}
-				>
-					{blogState.blogMeta.id ? (
-						<p>Post Updated !!</p>
-					) : (
-						<>
-							<Link
-								href={`/apppost/${newPostId}`}
-								className="underline underline-offset-2"
-							>
-								New Post
-							</Link>{" "}
-							Uploaded!
-						</>
-					)}
-				</motion.p>
-			)}
 		</>
 	);
 }

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import getExtensions from "@utils/getExtensions";
 import { BlogProps } from "../interfaces/BlogProps";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
+import langToCodeMirrorExtension from "@utils/langToExtension";
 
 
 interface useEditorProps {
@@ -23,14 +24,16 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
     useEffect(() => {
         if (mounted === false) return
         const editorParent = document.getElementById(editorParentId)
-        if (!editorParent) return
+        if (!editorParent || !language) return
 
         editorParent?.replaceChildren("")
 
 
         let startState = EditorState.create({
             doc: code,
-            extensions: getExtensions({ language, blockNumber, setRunningBlock: () => null })
+            extensions: [
+                langToCodeMirrorExtension(language!),
+                ...getExtensions()]
         })
         let view = new EditorView({
             state: startState,

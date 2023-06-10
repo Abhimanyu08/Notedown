@@ -1,8 +1,9 @@
-import EditorHelperComponent from "@components/EditorHelperComponent";
-import React, { memo, useContext, useEffect, useState } from "react";
-import { EditorContext } from "./EditorContext";
 import useEditor from "@/hooks/useEditor";
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { StateEffect } from "@codemirror/state";
+import EditorHelperComponent from "@components/EditorHelperComponent";
+import { memo, useContext, useEffect, useState } from "react";
+import { EditorContext } from "./EditorContext";
+import langToCodeMirrorExtension from "@utils/langToExtension";
 
 // This component should be page diagnostic.
 
@@ -20,10 +21,6 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	useEffect(() => {
 		if (editorView) {
 			dispatch({ type: "set editorView", payload: editorView });
-			dispatch({
-				type: "set previous uploaded doc",
-				payload: editorView.state.doc,
-			});
 		}
 	}, [editorView]);
 
@@ -39,7 +36,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 		<>
 			<EditorHelperComponent />
 			<div
-				className={`grow pb-20 lg:pb-0 overflow-y-auto  w-full`}
+				className={`flex-initial pb-20 lg:pb-0 overflow-y-auto  w-full`}
 				id="markdown-textarea"
 			></div>
 		</>

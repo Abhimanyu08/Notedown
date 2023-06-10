@@ -12,6 +12,8 @@ import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
 import getExtensions from "@utils/getExtensions";
 import Terminal from "./Terminal";
+import { keymap } from "@codemirror/view";
+import langToCodeMirrorExtension from "@utils/langToExtension";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
@@ -72,38 +74,39 @@ function Code({ code, blockNumber }: CodeProps) {
 			changes: { from: 0, to: docLength, insert: code },
 		});
 	};
+	useEffect(() => {
+		if (!editorView) return;
+		editorView.dispatch({
+			effects: StateEffect.appendConfig.of([
+				keymap.of([
+					{
+						key: "Shift-Enter",
+						run() {
+							dispatch({
+								type: "set running block",
+								payload: blockNumber,
+							});
+							return true;
+						},
+					},
+				]),
+			]),
+		});
+	}, [editorView]);
 
 	useEffect(() => {
 		if (!editorView || !language) return;
 		if (blogState.vimEnabled) {
 			editorView.dispatch({
-				effects: StateEffect.reconfigure.of([
-					vim(),
-					...getExtensions({
-						language,
-						blockNumber,
-						setRunningBlock: (blockNumber) =>
-							dispatch({
-								type: "set running block",
-								payload: blockNumber,
-							}),
-					}),
-				]),
+				effects: StateEffect.appendConfig.of(vim()),
 			});
 		}
 		if (!blogState.vimEnabled) {
 			editorView.dispatch({
-				effects: StateEffect.reconfigure.of(
-					getExtensions({
-						language,
-						blockNumber,
-						setRunningBlock: (blockNumber) =>
-							dispatch({
-								type: "set running block",
-								payload: blockNumber,
-							}),
-					})
-				),
+				effects: StateEffect.reconfigure.of([
+					langToCodeMirrorExtension(language!),
+					...getExtensions(),
+				]),
 			});
 		}
 	}, [blogState.vimEnabled, editorView]);

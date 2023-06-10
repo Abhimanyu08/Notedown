@@ -5,6 +5,8 @@ import { Metadata } from "next";
 import SupabaseProvider from "./appContext";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
+import ToastProvider from "@/contexts/ToastProvider";
+import ToastDisplay from "@components/ToastDisplay";
 export const metadata: Metadata = {
 	title: "Rce-blog",
 	description:
@@ -44,48 +46,14 @@ export default async function RootLayout({
 		<html lang="en" className="dark">
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<SupabaseProvider session={session}>
-					<Navbar />
+					<ToastProvider>
+						<Navbar />
 
-					{children}
+						{children}
+						<ToastDisplay />
+					</ToastProvider>
 				</SupabaseProvider>
 			</body>
 		</html>
 	);
 }
-// <Head>
-// 				{/* <!-- HTML Meta Tags --> */}
-// 				<title>RCE-Blog</title>
-// 				<meta
-// 					name="description"
-// 					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
-// 				/>
-
-// 				{/* <!-- Facebook Meta Tags --> */}
-// 				<meta property="og:url" content="https://rce-blog.xyz/" />
-// 				<meta property="og:type" content="website" />
-// 				<meta property="og:title" content="RCE-Blog" />
-// 				<meta
-// 					property="og:description"
-// 					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
-// 				/>
-// 				<meta
-// 					property="og:image"
-// 					content="https://rce-blog.xyz/api/og"
-// 				/>
-
-// 				{/* <!-- Twitter Meta Tags --> */}
-// 				<meta name="twitter:card" content="summary_large_image" />
-// 				<meta property="twitter:domain" content="rce-blog.xyz" />
-// 				<meta property="twitter:url" content="https://rce-blog.xyz" />
-// 				<meta name="twitter:title" content="RCE-Blog" />
-// 				<meta
-// 					name="twitter:description"
-// 					content="Write posts/notes containing prose, executable code snippets, free hand drawings and images."
-// 				/>
-// 				<meta
-// 					name="twitter:image"
-// 					content="https://rce-blog.xyz/api/og"
-// 				/>
-
-// 				{/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
-// 			</Head>

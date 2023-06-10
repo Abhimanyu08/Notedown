@@ -8,13 +8,15 @@ interface EditorStateInterface {
 	editingMarkdown: boolean;
 	enabledVimForMarkdown: boolean;
 	previousUploadedDoc: EditorView["state"]["doc"] | null;
+	timeStamp: string | null;
 }
 interface DispatchObj {
 	type:
 		| "toggle markdown editor"
 		| "toggle vim"
 		| "set editorView"
-		| "set previous uploaded doc";
+		| "set previous uploaded doc"
+		| "set time stamp";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -24,6 +26,7 @@ const initialEditorState: EditorStateInterface = {
 	editingMarkdown: true,
 	enabledVimForMarkdown: false,
 	previousUploadedDoc: null,
+	timeStamp: null,
 };
 
 export const EditorContext = createContext<{
@@ -56,6 +59,11 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 				previousUploadedDoc: action.payload as
 					| EditorView["state"]["doc"]
 					| null,
+			};
+		case "set time stamp":
+			return {
+				...state,
+				timeStamp: action.payload as string,
 			};
 	}
 };

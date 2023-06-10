@@ -11,23 +11,12 @@ import { EditorView } from "codemirror";
 
 // import {  } from "@codemirror/t";
 import { tags as t } from "@lezer/highlight";
-import { javascript } from "@codemirror/lang-javascript";
-import { markdown } from "@codemirror/lang-markdown";
-import { python } from "@codemirror/lang-python";
-import { rust } from "@codemirror/lang-rust";
-
-import { ALLOWED_LANGUAGES } from "./constants";
 
 
 
-interface getExtensionInput {
-    language: typeof ALLOWED_LANGUAGES[number] | "markdown"
-    blockNumber?: number;
-    setRunningBlock?: ((blockNumber: number) => void) | undefined
-}
 
 
-function getExtensions({ language, blockNumber, setRunningBlock }: getExtensionInput): Extension[] {
+function getExtensions(): Extension[] {
 
     const mySetupExtensions =
         [
@@ -87,37 +76,18 @@ function getExtensions({ language, blockNumber, setRunningBlock }: getExtensionI
                     lineHeight: "22.4px"
                 }
             }, { dark: true }),
+
+
         ]
 
 
     let tabSize = new Compartment();
-    let languageCompartment = new Compartment();
-    const langToExtension = (lang: typeof language): Extension => {
-        switch (lang) {
-            case "javascript":
-                return languageCompartment.of(javascript({ jsx: true, typescript: true }))
-            case "python":
-                return languageCompartment.of(python())
-            case "rust":
-                return languageCompartment.of(rust())
-            case "markdown":
-                return languageCompartment.of(markdown())
 
-        }
-    }
     const importantExtensions = [
         EditorView.lineWrapping,
-        langToExtension(language),
         mySetupExtensions,
         tabSize.of(EditorState.tabSize.of(4)),
-        keymap.of([{
-            key: "Shift-Enter",
-            run() {
-                if (!setRunningBlock || blockNumber === undefined) return false;
-                setRunningBlock(blockNumber)
-                return true;
-            }
-        }])
+
     ]
 
 
@@ -302,5 +272,7 @@ const oneDarkHighlightStyle = HighlightStyle.define([
 /// Extension to enable the One Dark theme (both the editor theme and
 /// the highlight style).
 const oneDark: Extension = [oneDarkTheme, syntaxHighlighting(oneDarkHighlightStyle)]
+
+
 
 export default getExtensions

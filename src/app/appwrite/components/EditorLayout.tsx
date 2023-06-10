@@ -11,6 +11,9 @@ import { useSupabase } from "@/app/appContext";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import { useSearchParams } from "next/navigation";
+import BlogMarkdownEditor from "./BlogMarkdownEditor";
+import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
+import { Text } from "@codemirror/state";
 
 let initialMarkdownMeta =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
@@ -37,18 +40,17 @@ function EditorLayout({
 	useEffect(() => {
 		let postMarkdown = markdown;
 		if (searchParams?.has("draft")) {
-			let key = `draft-${searchParams.get(`draft`)}`;
-			if (post?.id) key = `post-${post.id};${key}`;
-			console.log(key);
+			const key = makeLocalStorageDraftKey(
+				searchParams.get("draft")!,
+				post?.id
+			);
+
 			let draftText = localStorage.getItem(key);
-			console.log(draftText);
 			if (draftText) {
 				postMarkdown = draftText;
 
 				setInitialMarkdown(draftText);
 			}
-
-			localStorage.removeItem(key);
 		}
 		if (post) {
 			blogStateDispatch({
@@ -63,6 +65,10 @@ function EditorLayout({
 					imageFolder: post.image_folder,
 					language: post.language,
 				},
+			});
+			dispatch({
+				type: "set previous uploaded doc",
+				payload: Text.of([markdown!]),
 			});
 
 			blogStateDispatch({
@@ -81,6 +87,11 @@ function EditorLayout({
 				.catch((e) => {
 					alert((e as Error).message);
 				});
+		} else {
+			dispatch({
+				type: "set previous uploaded doc",
+				payload: initialMarkdown,
+			});
 		}
 	}, []);
 
@@ -137,7 +148,10 @@ function EditorLayout({
 						editorState.editingMarkdown ? "" : "invisible"
 					}`}
 				>
-					<MarkdownEditor initialMarkdown={initialMarkdown} />
+					<BlogMarkdownEditor
+						initialMarkdown={initialMarkdown}
+						postId={post?.id}
+					/>
 				</div>
 
 				<div

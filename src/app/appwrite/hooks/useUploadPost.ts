@@ -32,7 +32,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 setUploadStatus("Finished!")
                 setNewPostId(postId)
                 setUploading(false)
-                afterUpload(postId)
+                afterUpload()
                 setUploadFinished(true)
 
             }).catch((e) => {
@@ -190,13 +190,11 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         await uploadCanvasImages({ postId })
 
         setUploadStatus("Finished updating!")
-        setUploading(false)
-        setNewPostId(postId)
         //done
         return postId
     }
 
-    const afterUpload = (postId: number) => {
+    const afterUpload = () => {
         const addedUploads: Record<string, string> = {}
         for (let imageName of blogState.imagesToUpload) {
             if (!Object.hasOwn(blogState.uploadedImages, imageName)) {
@@ -213,7 +211,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         dispatch({ type: "set uploaded images", payload: addedUploads })
 
         dispatch({ type: "empty canvas apps", payload: null })
-        dispatch({ type: "set blog meta", payload: { id: postId } })
 
     }
 
