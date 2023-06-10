@@ -3,8 +3,8 @@ const nextConfig = {
 	async redirects() {
 		return [
 			{
-				source: "/appprofile/:id/posts",
-				destination: "/appprofile/:id/posts/latest",
+				source: "/profile/:id/posts",
+				destination: "/profile/:id/posts/latest",
 				permanent: true,
 			},
 		];

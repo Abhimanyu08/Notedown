@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { NavbarClientComponent } from "./NavbarClientComponent";
+import ProfileMenu from "./ProfileMenu";
+import DarkModeToggle from "./DarkModeToggle";
 
 function Navbar() {
 	return (
@@ -12,7 +13,14 @@ function Navbar() {
 					<p className="link-hover cursor-pointer">About</p>
 				</Link>
 			</div>
-			<NavbarClientComponent />
+			<div className="flex gap-6 items-center md:gap-10">
+				<DarkModeToggle />
+				<Link href={`/write`}>
+					<p className="link-hover cursor-pointer">Write</p>
+				</Link>
+				{/* @ts-expect-error Async Server Component  */}
+				<ProfileMenu />
+			</div>
 		</div>
 	);
 }

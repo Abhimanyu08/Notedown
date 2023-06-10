@@ -7,6 +7,7 @@ import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
 import Link from "next/link";
+import useOwner from "@/hooks/useOwner";
 
 export function PostOptions({
 	published,
@@ -24,10 +25,7 @@ export function PostOptions({
 	deletePostAction?: (postId: number) => Promise<void>;
 }) {
 	const pathname = usePathname();
-	const { session } = useSupabase();
-
-	const profileId = pathname?.split("/").at(2);
-	const owner = profileId === session?.user.id;
+	const owner = useOwner();
 	const [isPending, startTransition] = useTransition();
 
 	return (
@@ -71,7 +69,7 @@ export function PostOptions({
 						<button className="flex justify-center items-center">
 							<SlOptions size={12} />
 						</button>
-						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover:visible transition-all duration-200">
+						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover:visible group-focus:visible transition-all duration-200">
 							{!published && (
 								<PostOptionButton>
 									<Link

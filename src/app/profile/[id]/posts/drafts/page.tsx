@@ -2,20 +2,24 @@
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import PostsLoading from "../loading";
+import { MdDelete } from "react-icons/md";
 
 function Drafts() {
 	const [drafts, setDrafts] = useState<
-		{
-			timeStamp: string;
-			time: string;
-			date: string;
-			draftData: Awaited<ReturnType<typeof getHtmlFromMarkdownFile>>;
-			postId?: string;
-		}[]
-	>([]);
+		| {
+				key: string;
+				timeStamp: string;
+				time: string;
+				date: string;
+				draftData: Awaited<ReturnType<typeof getHtmlFromMarkdownFile>>;
+				postId?: string;
+		  }[]
+		| null
+	>(null);
 
 	useEffect(() => {
-		if (drafts.length > 0) return;
+		if (drafts && drafts.length > 0) return;
 		processDrafts();
 	}, []);
 
@@ -33,6 +37,7 @@ function Drafts() {
 				if (timeStamp) {
 					const formattedTimeStamp = new Date(parseInt(timeStamp));
 					draftsToAdd.push({
+						key,
 						timeStamp,
 						date: formattedTimeStamp.toLocaleDateString(),
 						time: formattedTimeStamp.toLocaleTimeString(),
@@ -47,35 +52,58 @@ function Drafts() {
 
 	return (
 		<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
-			{drafts.map((draft) => {
-				return (
-					<div className="flex flex-col" key={draft.timeStamp}>
-						<Link
-							href={
-								draft.postId
-									? `/write/${draft.postId}?draft=${draft.timeStamp}`
-									: `/write?draft=${draft.timeStamp}`
-							}
-							className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
-						>
-							{draft.draftData.data.title}
-						</Link>
-						<p className="text-sm md:text-base mt-1 text-black dark:text-font-grey font-sans ">
-							{draft.draftData.data.description}
-						</p>
-						<p className="text-sm text-font-grey mt-2">
-							created on{" "}
-							<span className="text-gray-100 font-bold">
-								{draft.date}
-							</span>{" "}
-							at{" "}
-							<span className="text-gray-100 font-bold">
-								{draft.time}
-							</span>
-						</p>
-					</div>
-				);
-			})}
+			{drafts ? (
+				<>
+					{drafts.map((draft) => {
+						return (
+							<div
+								className="flex flex-col relative"
+								key={draft.timeStamp}
+							>
+								<button
+									className="absolute top-2 right-2"
+									onClick={() => {
+										localStorage.removeItem(draft.key);
+										setDrafts((prev) => {
+											const newDrafts = prev!.filter(
+												(d) => d.key !== draft.key
+											);
+											return newDrafts;
+										});
+									}}
+								>
+									<MdDelete />
+								</button>
+								<Link
+									href={
+										draft.postId
+											? `/write/${draft.postId}?draft=${draft.timeStamp}`
+											: `/write?draft=${draft.timeStamp}`
+									}
+									className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
+								>
+									{draft.draftData.data.title}
+								</Link>
+								<p className="text-sm md:text-base mt-1 text-black dark:text-font-grey font-sans ">
+									{draft.draftData.data.description}
+								</p>
+								<p className="text-sm text-font-grey mt-2">
+									created on{" "}
+									<span className="text-gray-100 font-bold">
+										{draft.date}
+									</span>{" "}
+									at{" "}
+									<span className="text-gray-100 font-bold">
+										{draft.time}
+									</span>
+								</p>
+							</div>
+						);
+					})}
+				</>
+			) : (
+				<PostsLoading />
+			)}
 		</div>
 	);
 }
