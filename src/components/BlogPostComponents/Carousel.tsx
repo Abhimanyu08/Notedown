@@ -1,5 +1,5 @@
 "use client";
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { BlogContext } from "@/app/post/components/BlogState";
 import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";
 

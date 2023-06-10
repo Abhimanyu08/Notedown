@@ -1,6 +1,6 @@
 import { memo, useContext, useEffect, useState } from "react";
 import { sendRequestToRceServer } from "@utils/sendRequest";
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { BlogContext } from "@/app/post/components/BlogState";
 
 function Terminal({
 	blockNumber,

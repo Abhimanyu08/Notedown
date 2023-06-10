@@ -1,11 +1,11 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { BlogContext } from "@/app/post/components/BlogState";
 import { Tldraw } from "@tldraw/tldraw";
 import { useSupabase } from "@/app/appContext";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
-import { EditorContext } from "@/app/appwrite/components/EditorContext";
+import { EditorContext } from "@/app/write/components/EditorContext";
 
 function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	const [changeNumber, setChangeNumber] = useState(0);

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { BlogContext } from "@/app/post/components/BlogState";
 import { useContext } from "react";
 import TLDrawing from "./TLDrawing";
 
@@ -15,7 +15,7 @@ export default function DrawingOrImage({
 
 	const { blogState } = useContext(BlogContext);
 
-	if (pathname?.startsWith("/appwrite")) {
+	if (pathname?.startsWith("/write")) {
 		return <TLDrawing {...{ canvasImageName }} key={canvasImageName} />;
 	}
 

@@ -40,7 +40,7 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/appprofile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/latest");
 	}
 
 	async function unpublishPostAction(postId: number) {
@@ -56,7 +56,7 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/appprofile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/latest");
 	}
 
 	async function deletePostAction(postId: number) {
@@ -90,9 +90,9 @@ async function PostDisplay({ posts }: PostDisplayProps) {
 					.remove(imageNames);
 			}
 			if (data.published) {
-				revalidatePath("/appprofile/[id]/posts/latest");
+				revalidatePath("/profile/[id]/posts/latest");
 			} else {
-				revalidatePath("/appprofile/[id]/posts/private");
+				revalidatePath("/profile/[id]/posts/private");
 			}
 		}
 	}

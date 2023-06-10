@@ -66,7 +66,7 @@ export function PostOptions({
 				}}
 			/>
 			<div className="absolute right-0 top-2 rounded-full p-2 hover:bg-gray-800 group">
-				{owner && pathname?.startsWith("/appprofile") && (
+				{owner && pathname?.startsWith("/profile") && (
 					<>
 						<button className="flex justify-center items-center">
 							<SlOptions size={12} />
@@ -75,7 +75,7 @@ export function PostOptions({
 							{!published && (
 								<PostOptionButton>
 									<Link
-										href={`/appwrite/${postId}`}
+										href={`/write/${postId}`}
 										prefetch={false}
 									>
 										<AiFillEdit

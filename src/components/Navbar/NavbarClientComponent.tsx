@@ -1,7 +1,9 @@
 "use client";
+import { useSupabase } from "@/app/appContext";
+import { handleLogout, handleSignIn } from "@/utils/handleAuth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	AiFillCloseCircle,
 	AiFillGithub,
@@ -9,8 +11,6 @@ import {
 } from "react-icons/ai";
 import { HiMenu } from "react-icons/hi";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { handleLogout, handleSignIn } from "@/utils/handleAuth";
-import { useSupabase } from "@/app/appContext";
 
 export function NavbarClientComponent() {
 	const [mounted, setMounted] = useState(false);
@@ -47,10 +47,7 @@ export function NavbarClientComponent() {
 					<MdLightMode size={20} />
 				)}
 			</div>
-			<Link href={`/appread`}>
-				<p className="link-hover cursor-pointer">Read</p>
-			</Link>
-			<Link href={`/appwrite`}>
+			<Link href={`/write`}>
 				<p className="link-hover cursor-pointer">Write</p>
 			</Link>
 			{mounted && <ProfileMenu />}
@@ -79,7 +76,7 @@ function ProfileMenu() {
 					{showProfileOptions && (
 						<OptionsComponent>
 							<Link
-								href={`/appprofile/${session.user.id}`}
+								href={`/profile/${session.user.id}`}
 								onClick={() => setShowProfileOptions(false)}
 							>
 								<p className="link-hover cursor-pointer text-xs md:text-base text-white">

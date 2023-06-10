@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 import Image from "next/image";
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { BlogContext } from "@/app/post/components/BlogState";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	const { blogState, dispatch } = useContext(BlogContext);

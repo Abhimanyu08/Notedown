@@ -46,7 +46,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				}}
 			/>
 			<Link
-				href={published ? `/apppost/${id}` : `/apppost/private/${id}`}
+				href={published ? `/post/${id}` : `/post/private/${id}`}
 				className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
 			>
 				{title}{" "}
@@ -60,7 +60,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			dark:divide-white/40"
 			>
 				<Link
-					href={`/appprofile/${created_by}`}
+					href={`/profile/${created_by}`}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic underline"
 				>
 					{(post.bloggers as { id: string; name: string })?.name ||

@@ -7,7 +7,7 @@ import { SiVim } from "react-icons/si";
 
 import useEditor from "../../hooks/useEditor";
 
-import { BlogContext } from "@/app/apppost/components/BlogState";
+import { BlogContext } from "@/app/post/components/BlogState";
 import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
 import getExtensions from "@utils/getExtensions";

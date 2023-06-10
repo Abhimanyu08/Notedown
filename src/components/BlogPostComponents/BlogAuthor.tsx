@@ -24,9 +24,7 @@ function BlogAuthor({ createdBy }: { createdBy: string | null }) {
 	}, [session?.user.id]);
 
 	return (
-		<Link href={`/appprofile/${createdBy || session?.user.id}`}>
-			{author}
-		</Link>
+		<Link href={`/profile/${createdBy || session?.user.id}`}>{author}</Link>
 	);
 }
 

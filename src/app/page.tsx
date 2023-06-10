@@ -2,7 +2,6 @@ import DemoLabel from "@components/HomePageComponents/DemoLabel";
 import HeaderText from "@components/HomePageComponents/HeaderText";
 import LoomDemoModal from "@components/HomePageComponents/LoomDemoModal";
 import Link from "next/link";
-import { AiFillRead } from "react-icons/ai";
 import { FaPencilAlt } from "react-icons/fa";
 
 async function Home() {
@@ -15,12 +14,7 @@ async function Home() {
 			"
 			>
 				<div className="self-center flex gap-10 font-semibold lg:text-xl text-black">
-					<Link href="/appread">
-						<div className="cursor-pointer bg-amber-400 flex items-center gap-2 px-3 lg:px-4 py-1 lg:py-2 rounded-md  ">
-							Read <AiFillRead size={24} />
-						</div>
-					</Link>
-					<Link href="/appwrite">
+					<Link href="/write">
 						<div className="cursor-pointer px-3 lg:px-4 py-1 lg:py-2 rounded-md   flex items-center gap-2 bg-amber-400">
 							Write <FaPencilAlt />
 						</div>

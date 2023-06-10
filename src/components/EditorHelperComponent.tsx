@@ -18,7 +18,7 @@ import { FaBold, FaItalic } from "react-icons/fa";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
 
-import { EditorContext } from "@/app/appwrite/components/EditorContext";
+import { EditorContext } from "@/app/write/components/EditorContext";
 import { vim } from "@replit/codemirror-vim";
 import getExtensions from "@utils/getExtensions";
 import langToCodeMirrorExtension from "@utils/langToExtension";
@@ -100,7 +100,7 @@ function EditorHelperComponent() {
 			>
 				Code block
 			</button>
-			{!pathname?.startsWith("/appprofile") && (
+			{!pathname?.startsWith("/profile") && (
 				<button
 					className="btn btn-xs normal-case tool"
 					onClick={() => {
@@ -154,7 +154,7 @@ function EditorHelperComponent() {
 			>
 				LaTeX
 			</button>
-			{!pathname?.startsWith("/appprofile") && (
+			{!pathname?.startsWith("/profile") && (
 				<button
 					className="btn btn-xs normal-case tool"
 					onClick={() => {

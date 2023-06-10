@@ -8,7 +8,7 @@ function Navbar() {
 				<Link href="/">
 					<p className="link-hover cursor-pointer">Home</p>
 				</Link>
-				<Link href="/appposts/597">
+				<Link href="/posts/597">
 					<p className="link-hover cursor-pointer">About</p>
 				</Link>
 			</div>
