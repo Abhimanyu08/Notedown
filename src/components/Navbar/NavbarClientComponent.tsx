@@ -84,9 +84,9 @@ function ProfileMenu() {
 								</p>
 							</Link>
 							<div
-								onClick={(e) => {
+								onClick={async (e) => {
 									e.preventDefault();
-									handleLogout(supabase);
+									await handleLogout(supabase);
 								}}
 								className="link-hover cursor-pointer text-xs md:text-base text-white"
 							>

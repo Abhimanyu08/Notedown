@@ -17,6 +17,7 @@ import { VscLoading } from "react-icons/vsc";
 import { useSupabase } from "@/app/appContext";
 import { usePathname } from "next/navigation";
 import useShortCut from "@/hooks/useShortcut";
+import useOwner from "@/hooks/useOwner";
 
 function AboutEditor({
 	name,
@@ -34,9 +35,7 @@ function AboutEditor({
 	const [editAbout, setEditAbout] = useState(false);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const [isPending, startTransition] = useTransition();
-	const [owner, setOwner] = useState(false);
-	const { session } = useSupabase();
-	const pathname = usePathname();
+	const owner = useOwner();
 
 	useEffect(() => {
 		if (!editorState.editingMarkdown && editorState.editorView) {
@@ -51,11 +50,7 @@ function AboutEditor({
 			dispatch({ type: "toggle markdown editor", payload: null });
 		},
 	});
-	useEffect(() => {
-		setOwner(
-			!!(session?.user && pathname?.split("/").at(2) === session.user.id)
-		);
-	}, [session]);
+
 	if (!owner) {
 		return <></>;
 	}

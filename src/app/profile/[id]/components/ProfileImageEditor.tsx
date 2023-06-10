@@ -1,5 +1,6 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
+import useOwner from "@/hooks/useOwner";
 import {
 	SUPABASE_BLOGGER_TABLE,
 	SUPABASE_IMAGE_BUCKET,
@@ -26,16 +27,10 @@ function ProfileImageEditor({
 		"deleted" | "added picture" | null
 	>(null);
 	const [changing, setChanging] = useState(false);
-	const [owner, setOwner] = useState(false);
-	const pathname = usePathname();
-	const { session, supabase } = useSupabase();
+	const owner = useOwner();
+	const { supabase } = useSupabase();
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
-	useEffect(() => {
-		setOwner(
-			!!(session?.user && pathname?.split("/").at(2) === session.user.id)
-		);
-	}, [session]);
 	if (!owner) {
 		return <></>;
 	}
