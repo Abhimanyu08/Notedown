@@ -6,6 +6,39 @@ import ProfileControl from "./components/ProfileControl";
 import ProfileImageEditor from "./components/ProfileImageEditor";
 import { BsPersonCircle } from "react-icons/bs";
 import SearchModal from "./posts/components/SearchModal";
+import { Metadata } from "next";
+import { supabase } from "@utils/supabaseClient";
+import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { id: string };
+}): Promise<Metadata | undefined> {
+	const { data } = await supabase
+		.from(SUPABASE_BLOGGER_TABLE)
+		.select("name, about")
+		.eq("id", params.id)
+		.single();
+	if (!data) return;
+
+	const { name: title, about: description } = data;
+	return {
+		title,
+		description,
+		openGraph: {
+			title: title!,
+			description: description!,
+			type: "profile",
+			url: `https://rce-blog.xyz/profile/${params.id}`,
+		},
+		twitter: {
+			card: "summary",
+			title: title!,
+			description: description!,
+		},
+	};
+}
 
 async function ProfileLayout({
 	children,

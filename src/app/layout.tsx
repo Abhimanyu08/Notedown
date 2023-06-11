@@ -11,6 +11,9 @@ export const metadata: Metadata = {
 	title: "Rce-blog",
 	description:
 		"Write posts/notes containing prose, executable code snippets, free hand drawings and images.",
+	icons: {
+		icon: "/icon.png",
+	},
 	twitter: {
 		title: "Rce-blog",
 		description:
@@ -21,6 +24,7 @@ export const metadata: Metadata = {
 		url: "http://rce-blog.xyz",
 		type: "website",
 		title: "Rce-blog",
+		siteName: "Rce-blog",
 		description:
 			"Write posts/notes containing prose, executable code snippets, free hand drawings and images.",
 	},

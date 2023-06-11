@@ -6,8 +6,41 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import BlogContextProvider from "../components/BlogState";
 import Toolbar from "../components/Toolbar";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+import { SUPABASE_POST_TABLE } from "@utils/constants";
 
 export const revalidate = 60 * 60 * 24 * 365 * 10;
+
+export async function generateMetadata({
+	params,
+}: {
+	params: PostParams;
+}): Promise<Metadata | undefined> {
+	const { data } = await supabase
+		.from(SUPABASE_POST_TABLE)
+		.select("title, description, bloggers(name), published_on")
+		.eq("id", params.postId)
+		.single();
+	if (!data) return;
+
+	const { title, description } = data;
+	return {
+		title,
+		description,
+		openGraph: {
+			title,
+			description: description!,
+			type: "article",
+			publishedTime: data.published_on!,
+			url: `https://rce-blog.xyz/post/${params.postId}`,
+		},
+		twitter: {
+			card: "summary",
+			title,
+			description: description!,
+		},
+	};
+}
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
