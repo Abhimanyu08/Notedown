@@ -1,7 +1,9 @@
-export default interface Upvotes {
+import PostWithBlogger from "./PostWithBlogger"
+import { Database } from "./supabase"
 
-    id: number,
-    created_at: string,
-    upvoter: string
-    post_id: number
+type UpvoteWithPost = Database["public"]["Tables"]["upvotes"]["Row"] & {
+    posts: PostWithBlogger[] | PostWithBlogger
 }
+
+
+export default UpvoteWithPost

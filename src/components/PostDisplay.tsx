@@ -9,9 +9,11 @@ import {
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import PostComponent from "./PostComponent";
+import PostWithBlogger from "@/interfaces/PostWithBlogger";
+import UpvoteWithPost from "@/interfaces/Upvotes";
 
 interface PostDisplayProps {
-	posts: Partial<Database["public"]["Tables"]["posts"]["Row"]>[];
+	posts: PostWithBlogger[];
 }
 
 async function PostDisplay({ posts }: PostDisplayProps) {

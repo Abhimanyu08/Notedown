@@ -11,6 +11,8 @@ type PostWithBlogger = Partial<Database["public"]["Tables"]["posts"]["Row"]> & {
     upvoter?: any
     posts?: any
 };
+
+
 // type PostWithBlogger = typeof supabase.from(SUPABASE_POST_TABLE).select("*, bloggers(id,name")
 
 // type UpvoteWithPost = 

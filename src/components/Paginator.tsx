@@ -5,6 +5,7 @@ import { PostTypes } from "@/interfaces/PostTypes";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import { useState } from "react";
 import PostComponent from "./PostComponent";
+import UpvoteWithPost from "@/interfaces/Upvotes";
 
 function Paginator({
 	postType,
@@ -12,36 +13,24 @@ function Paginator({
 	cursorKey,
 }: {
 	postType: PostTypes;
-	lastPost: PostWithBlogger;
+	lastPost: PostWithBlogger | UpvoteWithPost;
 	cursorKey: keyof PostWithBlogger;
 }) {
 	const { supabase } = useSupabase();
 	const [newPosts, setNewPosts] = useState<PostWithBlogger[]>([]);
-	const [currentLastPost, setCurrentLastPost] =
-		useState<PostWithBlogger>(lastPost);
+	const [currentLastPost, setCurrentLastPost] = useState(lastPost);
 	const extraPostFetcher = postTypeToFetcher[postType];
 	const onLoadMore = () => {
 		if (!extraPostFetcher) return;
 		extraPostFetcher(currentLastPost, cursorKey, supabase).then((val) => {
 			if (!val) return;
-			let last = val?.at(val.length - 1);
+			let last = val?.at(-1);
 			if (last) setCurrentLastPost(last);
-			if (val?.at(0)?.upvoter) val = val.map((p) => p.posts);
+			if (postType === "upvoted") val = val.map((p) => p.posts);
 			setNewPosts((prev) => [...prev, ...val!]);
 		});
 	};
-	// async function onLoadMore() {
-	// 	"use server"
-	// 	const supabase = createServerComponentSupabaseClient({
-	// 		headers,
-	// 		cookies,
-	// 	});
-
-	// 	const extraPostFetcher = postTypeToFetcher["latest"];
-	// 	extraPostFetcher()
-
-	// }
-
+	
 	return (
 		<div className="flex flex-col gap-8 mt-8">
 			{newPosts?.map((post, idx) => (
