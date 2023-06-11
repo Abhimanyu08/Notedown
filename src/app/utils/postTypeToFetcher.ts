@@ -10,7 +10,7 @@ const postTypeToFetcher: { [k in PostTypes]?: (
     cursorKey: keyof PostWithBlogger,
     supabase: SupabaseClient
 
-) => Promise<PostWithBlogger[] | null | undefined> } = {}
+) => Promise<{ data: PostWithBlogger[], hasMore: boolean } | undefined> } = {}
 
 const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
@@ -22,14 +22,15 @@ const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, curs
         .match({ created_by: lastPost["created_by"], published: false })
         .lt("created_at", cursor)
         .order("created_at", { ascending: false })
-        .limit(LIMIT);
+        .limit(LIMIT + 1);
 
     if (error || !data) {
         alert("Failed to return more data");
         return;
     }
 
-    return data;
+
+    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
 };
 
 const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
@@ -45,12 +46,12 @@ const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, curso
         .order("published_on", { ascending: false })
         .limit(LIMIT);
 
-    // if (error || !data) {
+    if (error || !data) {
 
-    //     alert("Failed to return more data");
-    //     return
-    // }
-    return data
+        alert("Failed to return more data");
+        return
+    }
+    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
 };
 
 const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
@@ -70,7 +71,7 @@ const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cur
         alert("Failed to return more data");
         return;
     }
-    return data
+    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
 };
 
 const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey, supabase) => {
@@ -87,12 +88,11 @@ const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cu
         .order("created_at", { ascending: false })
         .limit(LIMIT);
 
-    console.log(error, data)
     if (error || !data) {
         alert("Failed to return more data");
         return;
     }
-    return data
+    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
 }
 
 postTypeToFetcher.private = fetchPrivatePosts
