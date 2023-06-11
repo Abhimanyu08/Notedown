@@ -2,7 +2,12 @@ import BlogContextProvider from "@/app/post/components/BlogState";
 import { getPost } from "@/app/utils/getData";
 import Blog from "@components/BlogPostComponents/Blog";
 import { supabase } from "@utils/supabaseClient";
-import { BackButton, ExpandButton } from "../../components/ModalButtons";
+import {
+	BackButton,
+	Edit,
+	ExpandButton,
+	Preview,
+} from "../../components/ModalButtons";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	const { post, content, imagesToUrls } = await getPost(

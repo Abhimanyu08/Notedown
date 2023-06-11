@@ -50,8 +50,10 @@ function PrivateToolbar(props: { language: BlogProps["language"] }) {
 					/>
 				</Link>
 			</ToolbarButton>
-			<ToolbarButton className="" onClick={() => {}} tip="Publish">
-				<TbNews className=" dark:text-white text-black" size={30} />
+			<ToolbarButton className="" tip="Publish">
+				<label htmlFor="private-publish">
+					<TbNews className=" dark:text-white text-black" size={30} />
+				</label>
 			</ToolbarButton>
 		</>
 	);
