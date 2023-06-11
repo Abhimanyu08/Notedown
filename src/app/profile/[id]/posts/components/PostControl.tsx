@@ -22,9 +22,9 @@ function PostControl() {
 					<Link
 						href={`/profile/${params!.id}/posts/${type}`}
 						className="flex items-center"
+						key={type}
 					>
 						<ProfileButton
-							key={type}
 							// onClick={() => setPostType(type)}
 							className="px-3 py-1 flex items-center justify-center hover:italic active:scale-95"
 							// className="text-sm bg-gray-800 hover:scale-105 ative:scale-95  px-3  border-black border-[1px] transition-[scale] duration-200 rounded-md"

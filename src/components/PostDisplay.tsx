@@ -19,14 +19,14 @@ interface PostDisplayProps {
 async function PostDisplay({ posts }: PostDisplayProps) {
 	const idArray = posts?.map((post) => post.id!);
 	let idToUpvotes: Record<number, number> = {};
-	// if (idArray) {
-	// 	const data = await getUpvotes(idArray);
-	// 	if (data) {
-	// 		data.forEach((post) => {
-	// 			idToUpvotes[post.id] = post.upvote_count;
-	// 		});
-	// 	}
-	// }
+	if (idArray) {
+		const data = await getUpvotes(idArray);
+		if (data) {
+			data.forEach((post) => {
+				idToUpvotes[post.id] = post.upvote_count;
+			});
+		}
+	}
 
 	async function publishPostAction(postId: number) {
 		"use server";
