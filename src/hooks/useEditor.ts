@@ -33,7 +33,8 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
             doc: code,
             extensions: [
                 langToCodeMirrorExtension(language!),
-                ...getExtensions()]
+                ...getExtensions()
+            ]
         })
         let view = new EditorView({
             state: startState,

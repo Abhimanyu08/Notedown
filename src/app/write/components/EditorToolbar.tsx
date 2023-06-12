@@ -59,7 +59,7 @@ function EditorToolbar() {
 				type: "set blog meta",
 				payload: { id: newPostId },
 			});
-			context?.setMessage("Changed Uploaded");
+			context?.setMessage("Changes Uploaded");
 		}
 	}, [uploadFinished]);
 

@@ -13,41 +13,53 @@ import {
 	onUnordererdList,
 } from "@/utils/editorToolFunctions";
 import { StateEffect } from "@codemirror/state";
-import { memo, useContext, useEffect } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import { FaBold, FaItalic } from "react-icons/fa";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
 
 import { EditorContext } from "@/app/write/components/EditorContext";
-import { vim } from "@replit/codemirror-vim";
+import { Compartment, Extension } from "@codemirror/state";
 import getExtensions from "@utils/getExtensions";
 import langToCodeMirrorExtension from "@utils/langToExtension";
 import { usePathname } from "next/navigation";
+import { vim } from "@replit/codemirror-vim";
+
+// const compartment = new Compartment();
 
 function EditorHelperComponent() {
-	const { editorState, dispatch } = useContext(EditorContext);
+	const { editorState } = useContext(EditorContext);
 	const { editorView } = editorState;
 	const pathname = usePathname();
+	const [vimCompartment, setVimCompartment] = useState<Compartment>();
+	const [vimEnabled, setVimEnabled] = useState(false);
+
+	useEffect(() => {
+		if (!vimCompartment) {
+			const compartment = new Compartment();
+			setVimCompartment(compartment);
+		}
+	}, []);
 
 	const onToggleVim = () => {
 		if (!editorState.editorView) return;
 
-		if (!editorState.enabledVimForMarkdown) {
+		if (!vimEnabled) {
 			editorState.editorView.dispatch({
-				effects: StateEffect.appendConfig.of([vim({ status: true })]),
+				effects: StateEffect.appendConfig.of(vimCompartment!.of(vim())),
+				// editorState.editorView.state.facet()
 			});
-			// editorState.editorView.state.facet()
 		}
 		// C
-		if (editorState.enabledVimForMarkdown) {
+		if (vimEnabled) {
 			editorState.editorView.dispatch({
-				effects: StateEffect.reconfigure.of([
-					...getExtensions(),
-					langToCodeMirrorExtension("markdown"),
-				]),
+				effects: vimCompartment?.reconfigure([]),
 			});
+			//we need to set a new compartment for next time someone enables vim
+			const compartment = new Compartment();
+			setVimCompartment(compartment);
 		}
-		dispatch({ type: "toggle vim", payload: null });
+		setVimEnabled((prev) => !prev);
 	};
 
 	return (
@@ -167,14 +179,11 @@ function EditorHelperComponent() {
 			<button className="btn btn-xs tool gap-2" onClick={onToggleVim}>
 				<SiVim
 					className={` ${
-						editorState.enabledVimForMarkdown
-							? "text-lime-400"
-							: "text-white"
+						vimEnabled ? "text-lime-400" : "text-white"
 					}`}
 				/>
 				<span className="normal-case">
-					{editorState.enabledVimForMarkdown ? "Disable" : "Enable"}{" "}
-					Vim
+					{vimEnabled ? "Disable" : "Enable"} Vim
 				</span>
 			</button>
 		</div>

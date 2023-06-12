@@ -148,10 +148,7 @@ function EditorLayout({
 						editorState.editingMarkdown ? "" : "invisible"
 					}`}
 				>
-					<BlogMarkdownEditor
-						initialMarkdown={initialMarkdown}
-						postId={post?.id}
-					/>
+					<BlogMarkdownEditor initialMarkdown={initialMarkdown} />
 				</div>
 
 				<div
