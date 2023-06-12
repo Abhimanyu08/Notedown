@@ -8,9 +8,9 @@ import { cookies, headers } from "next/headers";
 import BlogContextProvider from "../../components/BlogState";
 import PrivateToolbar from "../../components/PrivateToolbar";
 import { redirect } from "next/navigation";
-import PublishModal from "./components/PublishModal";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { revalidatePath } from "next/cache";
+import PublishModal from "@components/Modals/PublishModal";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;

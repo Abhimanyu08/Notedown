@@ -12,7 +12,7 @@ import {
 } from "../../../components/ModalButtons";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { revalidatePath } from "next/cache";
-import PublishModal from "@/app/post/private/[postId]/components/PublishModal";
+import PublishModal from "@components/Modals/PublishModal";
 
 async function PrivatePostModal({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
