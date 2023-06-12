@@ -27,7 +27,7 @@ export const getUserLatestPosts = async (id: string) => {
         .eq("created_by", id)
         .eq("published", true)
         .order("published_on", { ascending: false })
-        .limit(LIMIT);
+        .limit(LIMIT + 1);
 
     return data
 }
@@ -40,7 +40,7 @@ export const getUserPrivatePosts = cache(async (userId: string, supabase: Supaba
         )
         .match({ created_by: userId, published: false })
         .order("created_at", { ascending: false })
-        .limit(LIMIT);
+        .limit(LIMIT + 1);
     return data;
 })
 

@@ -16,7 +16,8 @@ async function GreatestPosts({ params }: { params: { id: string } }) {
 		)
 		.match({ created_by: id, published: true })
 		.order("upvote_count", { ascending: false })
-		.limit(LIMIT);
+		.limit(LIMIT + 1);
+	const hasMore = !!(data && data.length > LIMIT);
 
 	return (
 		<>
@@ -27,6 +28,7 @@ async function GreatestPosts({ params }: { params: { id: string } }) {
 				cursorKey="upvote_count"
 				postType="greatest"
 				lastPost={data!.at(data!.length - 1)!}
+				hasMore={hasMore}
 			/>
 		</>
 	);

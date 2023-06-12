@@ -11,15 +11,17 @@ function Paginator({
 	postType,
 	lastPost,
 	cursorKey,
+	hasMore,
 }: {
 	postType: PostTypes;
 	lastPost: PostWithBlogger | UpvoteWithPost;
 	cursorKey: keyof PostWithBlogger;
+	hasMore: boolean;
 }) {
 	const { supabase } = useSupabase();
 	const [newPosts, setNewPosts] = useState<PostWithBlogger[]>([]);
 	const [currentLastPost, setCurrentLastPost] = useState(lastPost);
-	const [hasMorePosts, setHasMorePosts] = useState(true);
+	const [hasMorePosts, setHasMorePosts] = useState(hasMore);
 	const extraPostFetcher = postTypeToFetcher[postType];
 	const onLoadMore = () => {
 		if (!extraPostFetcher) return;

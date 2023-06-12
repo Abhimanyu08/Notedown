@@ -269,7 +269,6 @@ function BlogContextProvider({
 		dispatch({ type: "toggle running request", payload: {} });
 
 		const firstLine = blockToEditor[block]?.state.doc.lineAt(0).text;
-		console.log(firstLine);
 		const fileName = checkFileName(firstLine || "");
 		let codeArray: string[] = [];
 
@@ -277,7 +276,6 @@ function BlogContextProvider({
 			if (document.getElementById(`codearea-${i}`)) {
 				let firstLineOfBlock =
 					blockToEditor[i].state.doc.lineAt(0).text;
-				console.log(firstLineOfBlock);
 				if (!fileName) {
 					if (!checkFileName(firstLineOfBlock)) {
 						codeArray.push(blockToEditor[i].state.sliceDoc());
@@ -298,7 +296,6 @@ function BlogContextProvider({
 
 		const code = codeArray.join("\n");
 		const run = typeof writingBlock !== "number";
-		console.log(code);
 		runCodeRequest({ code, run, containerId, fileName, language }).then(
 			(val) => {
 				// setBlockToOutput((prev) => ({ ...prev, [block]: val }));

@@ -3,6 +3,7 @@ import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { LIMIT } from "@utils/constants";
 import { cookies, headers } from "next/headers";
 
 // export const revalidate = 0;
@@ -16,6 +17,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 	if (userId === undefined || userId !== params.id) return <></>;
 	const data = await getUserPrivatePosts(userId, supabase);
 
+	const hasMore = !!(data && data.length > LIMIT);
 	if (!data) return <p>No posts lol</p>;
 	return (
 		<>
@@ -26,6 +28,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 				cursorKey="created_at"
 				postType="private"
 				lastPost={data!.at(data!.length - 1)!}
+				hasMore={hasMore}
 			/>
 		</>
 	);

@@ -15,7 +15,10 @@ async function UpvotedPosts({ params }: { params: { id: string } }) {
 		)
 		.match({ upvoter: params.id })
 		.order("created_at", { ascending: false })
-		.limit(LIMIT);
+		.limit(LIMIT + 1);
+
+	const hasMore = !!(data && data.length > LIMIT);
+	console.log(data);
 
 	if (!data) return <></>;
 
@@ -24,13 +27,16 @@ async function UpvotedPosts({ params }: { params: { id: string } }) {
 			{/* @ts-expect-error Async Server Component  */}
 			<PostDisplay
 				key={"upvoted_posts"}
-				posts={data.map((d) => d.posts as PostWithBlogger)}
+				posts={data
+					.filter((d) => d.posts !== null)
+					.map((d) => d.posts as PostWithBlogger)}
 			/>
 			<Paginator
 				key={"upvoted"}
 				postType="upvoted"
 				lastPost={data.at(-1)!}
 				cursorKey={"created_at"}
+				hasMore={hasMore}
 			/>
 		</>
 	);
