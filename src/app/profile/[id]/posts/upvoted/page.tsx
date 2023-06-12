@@ -1,8 +1,11 @@
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
+import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { LIMIT, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
+
+export const revalidate = 0;
 
 async function UpvotedPosts({ params }: { params: { id: string } }) {
 	const { data } = await supabase
@@ -12,7 +15,7 @@ async function UpvotedPosts({ params }: { params: { id: string } }) {
 		)
 		.match({ upvoter: params.id })
 		.order("created_at", { ascending: false })
-		.limit(1);
+		.limit(LIMIT);
 
 	if (!data) return <></>;
 
