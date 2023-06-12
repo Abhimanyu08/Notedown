@@ -23,6 +23,8 @@ function BlogMarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	// const [timestamp, setTimestamp] = useState("");
 	const [hideDocumentMetadata, setHideDocumentMetadata] = useState(false);
 	const [localStorageDraftKey, setLocalStorageDraftKey] = useState("");
+	const [eventHandlerCompartment, setEventHandlerCompartment] =
+		useState<Compartment>();
 	const searchParams = useSearchParams();
 
 	const eventHandler = (v: EditorView) => {
@@ -64,10 +66,32 @@ function BlogMarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 		if (editorState.editorView && localStorageDraftKey) {
 			let editorView = editorState.editorView;
 
+			if (!eventHandlerCompartment) {
+				let compartment = new Compartment();
+				editorView.dispatch({
+					effects: StateEffect.appendConfig.of(
+						compartment.of([
+							EditorView.domEventHandlers({
+								keyup: (_, v) => {
+									eventHandler(v);
+
+									localStorage.setItem(
+										localStorageDraftKey,
+										v.state.sliceDoc()
+									);
+								},
+								click: (_, v) => eventHandler(v),
+								focus: (_, v) => eventHandler(v),
+							}),
+						])
+					),
+				});
+
+				setEventHandlerCompartment(compartment);
+				return;
+			}
 			editorView.dispatch({
-				effects: StateEffect.reconfigure.of([
-					...getExtensions(),
-					langToCodeMirrorExtension("markdown"),
+				effects: eventHandlerCompartment.reconfigure([
 					EditorView.domEventHandlers({
 						keyup: (_, v) => {
 							eventHandler(v);
@@ -82,7 +106,7 @@ function BlogMarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 					}),
 				]),
 			});
-			editorView.focus();
+			setEventHandlerCompartment(undefined);
 		}
 	}, [editorState.editorView, localStorageDraftKey]);
 

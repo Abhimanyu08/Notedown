@@ -18,7 +18,6 @@ async function UpvotedPosts({ params }: { params: { id: string } }) {
 		.limit(LIMIT + 1);
 
 	const hasMore = !!(data && data.length > LIMIT);
-	console.log(data);
 
 	if (!data) return <></>;
 

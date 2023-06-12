@@ -50,7 +50,7 @@ function SearchModal() {
 			>
 				<label
 					htmlFor=""
-					className="w-1/2 h-4/5 flex flex-col gap-5 relative text-white"
+					className="w-1/2 flex-initial flex flex-col gap-5 relative text-white"
 				>
 					<input
 						type="text"
