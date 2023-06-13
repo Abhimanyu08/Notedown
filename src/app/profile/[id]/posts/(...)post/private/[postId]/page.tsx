@@ -58,7 +58,7 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 				<Preview />
 				<Edit postId={post.id} />
 				<BackButton id={post.created_by || ""} />
-				<ExpandButton postId={params.postId} privatePost={false} />
+				<ExpandButton postId={params.postId} privatePost={true} />
 			</div>
 		</div>
 	);

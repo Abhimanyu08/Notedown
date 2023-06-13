@@ -21,9 +21,7 @@ export function ExpandButton({
 		"//" +
 		window.location.hostname +
 		port +
-		privatePost
-			? `/post/private/${postId}`
-			: `/post/${postId}`;
+		(privatePost ? `/post/private/${postId}` : `/post/${postId}`);
 
 	useShortCut({
 		keys: ["e"],
