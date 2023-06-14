@@ -9,6 +9,7 @@ import useEditor from "../../hooks/useEditor";
 import Blog from "@components/BlogPostComponents/Blog";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
+import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 
 function MdToBlog({ markdown }: { markdown: string }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -158,6 +159,7 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 							"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
 						}
 						extraClasses="px-12"
+						AuthorComponent={BlogAuthorClient}
 					/>
 				</div>
 				<span className="self-center dark:text-white text-black font-semibold text-sm">
@@ -216,6 +218,7 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 								"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
 							}
 							extraClasses="px-12"
+							AuthorComponent={BlogAuthorClient}
 						/>
 					</div>
 				</div>

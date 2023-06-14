@@ -9,7 +9,7 @@ function ProfilePostsLayout({
 	params: { id: string };
 }) {
 	return (
-		<div className="w-full flex flex-col gap-4 h-full overflow-hidden relative pr-10">
+		<div className="w-full flex flex-col gap-4 h-full overflow-hidden relative ">
 			<div className="flex  justify-between gap-2">
 				<div className="flex justify-start gap-2 mr-4 self-end">
 					<PostControl />

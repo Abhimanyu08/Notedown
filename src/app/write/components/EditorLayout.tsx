@@ -1,19 +1,18 @@
 "use client";
 import { BlogContext } from "@/app/post/components/BlogState";
-import useShortCut from "@/hooks/useShortcut";
-import Blog from "@components/BlogPostComponents/Blog";
-import { useContext, useEffect, useState } from "react";
-import { EditorContext } from "./EditorContext";
-import EditorToolbar from "./EditorToolbar";
-import MarkdownEditor from "./MarkdownEditor";
 import { getPost } from "@/app/utils/getData";
-import { useSupabase } from "@/app/appContext";
+import useShortCut from "@/hooks/useShortcut";
+import { Text } from "@codemirror/state";
+import Blog from "@components/BlogPostComponents/Blog";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
-import { useSearchParams } from "next/navigation";
-import BlogMarkdownEditor from "./BlogMarkdownEditor";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
-import { Text } from "@codemirror/state";
+import { useSearchParams } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import BlogMarkdownEditor from "./BlogMarkdownEditor";
+import { EditorContext } from "./EditorContext";
+import EditorToolbar from "./EditorToolbar";
+import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 
 let initialMarkdownMeta =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
@@ -158,7 +157,10 @@ function EditorLayout({
 							: "overflow-y-auto w-full h-full"
 					}`}
 				>
-					<Blog {...blogState.blogMeta} />
+					<Blog
+						{...blogState.blogMeta}
+						AuthorComponent={BlogAuthorClient}
+					/>
 				</div>
 			</div>
 			<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">

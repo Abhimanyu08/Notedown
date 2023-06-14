@@ -1,12 +1,13 @@
 import { BlogProps } from "@/interfaces/BlogProps";
+import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import formatDate from "@utils/dateFormatter";
 import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
 import { memo } from "react";
 
-const Blog = memo(
-	function Blog({
+const BlogClient = memo(
+	function BlogClient({
 		title,
 		description,
 		content,
@@ -15,14 +16,7 @@ const Blog = memo(
 		published_on,
 		created_at,
 		extraClasses = "px-20",
-		AuthorComponent,
-	}: Partial<BlogProps> & {
-		AuthorComponent: ({
-			createdBy,
-		}: {
-			createdBy: string;
-		}) => JSX.Element | Promise<JSX.Element>;
-	}) {
+	}: Partial<BlogProps>) {
 		const tokens = tokenizer(content || "");
 		const parsedOutput = parser(tokens);
 
@@ -124,8 +118,7 @@ const Blog = memo(
 					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 						<span>by</span>
 						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-white">
-							{/* @ts-expect-error Async Server Component  */}
-							<AuthorComponent createdBy={created_by} />
+							<BlogAuthorClient />
 						</span>
 						<span>on</span>
 						<span className="">
@@ -153,4 +146,4 @@ const Blog = memo(
 	}
 );
 
-export default Blog;
+export default BlogClient;

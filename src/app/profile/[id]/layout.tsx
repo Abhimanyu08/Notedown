@@ -80,7 +80,7 @@ async function ProfileLayout({
 					<ProfileControl id={params.id} />
 				</div>
 
-				<div className="lg:col-span-5 overflow-auto relative">
+				<div className="lg:col-span-5 overflow-auto relative pr-10">
 					{children}
 				</div>
 			</div>

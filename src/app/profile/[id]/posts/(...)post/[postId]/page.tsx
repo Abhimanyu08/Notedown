@@ -8,6 +8,7 @@ import {
 	ExpandButton,
 	Preview,
 } from "../../components/ModalButtons";
+import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	const { post, content, imagesToUrls } = await getPost(
@@ -23,7 +24,12 @@ async function PostModal({ params }: { params: { postId: string } }) {
 					imageFolder: post.image_folder,
 				}}
 			>
-				<Blog {...{ ...post, content }} extraClasses="w-full px-4" />
+				<Blog
+					{...post}
+					content={content}
+					extraClasses="w-full px-4"
+					AuthorComponent={BlogAuthorServer}
+				/>
 			</BlogContextProvider>
 			<div className="flex absolute gap-3 top-2 right-3">
 				<BackButton id={post.created_by || ""} />

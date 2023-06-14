@@ -3,6 +3,7 @@ import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
 import Codesandbox from "@components/BlogPostComponents/Codesandbox";
 import DrawingOrImage from "@components/BlogPostComponents/DrawingOrImage";
+import HeadinglinkButton from "@components/BlogPostComponents/HeadinglinkButton";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import CodeWord from "@components/BlogPostComponents/LatexBlock";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
@@ -124,7 +125,13 @@ const tagToTransformer: TagToTransformer = {
 				return <p>Invalid JSON in your settings. </p>;
 			}
 		}
-		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
+		return (
+			<CodeWithoutLanguage
+				code={code}
+				language={blockLanguage}
+				key={blockLanguage}
+			/>
+		);
 	},
 
 	a: (node) => {
@@ -294,14 +301,17 @@ function headingsRenderer(
 		tag,
 		{
 			id: headingId,
-			className: "not-prose",
+			className: "not-prose group",
 		},
-		<a
-			href={`#${headingId}`}
-			className="hover:underline underline-offset-2"
-		>
-			{headingChildren.map((child) => transformer(child))}
-		</a>
+		<>
+			<a
+				href={`#${headingId}`}
+				className="hover:underline underline-offset-2"
+			>
+				{headingChildren.map((child) => transformer(child))}
+			</a>
+			<HeadinglinkButton headingId={headingId} />
+		</>
 	);
 }
 

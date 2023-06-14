@@ -32,7 +32,7 @@ function Code({ code, blockNumber }: CodeProps) {
 	const { language } = blogState.blogMeta;
 
 	const [mounted, setMounted] = useState(false);
-	const [openShell, setOpenShell] = useState(true);
+	const [openShell, setOpenShell] = useState(false);
 	const { editorView } = useEditor({
 		language: language!,
 		blockNumber,
@@ -89,6 +89,7 @@ function Code({ code, blockNumber }: CodeProps) {
 						{
 							key: "Shift-Enter",
 							run() {
+								setOpenShell(true);
 								dispatch({
 									type: "set running block",
 									payload: blockNumber,
@@ -112,6 +113,7 @@ function Code({ code, blockNumber }: CodeProps) {
 						<CodeAreaButton
 							onClick={() => {
 								// setRunningBlock(blockNumber);
+								setOpenShell(true);
 								dispatch({
 									type: "set running block",
 									payload: blockNumber,
@@ -170,7 +172,7 @@ function Code({ code, blockNumber }: CodeProps) {
 					/>
 				</CodeAreaButton>
 			</div>
-			{mounted && (
+			{mounted ? (
 				<div
 					className="w-full border-[1px] border-white/50 rounded-sm"
 					id={`codearea-${blockNumber}`}
@@ -182,6 +184,10 @@ function Code({ code, blockNumber }: CodeProps) {
 						});
 					}}
 				></div>
+			) : (
+				<pre>
+					<code>{code}</code>
+				</pre>
 			)}
 
 			{mounted && <Terminal {...{ blockNumber, openShell }} />}

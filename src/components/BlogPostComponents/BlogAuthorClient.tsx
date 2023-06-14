@@ -1,16 +1,14 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
 import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
-import { supabase } from "@utils/supabaseClient";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-function BlogAuthor({ createdBy }: { createdBy: string | null }) {
+function BlogAuthorClient() {
+	const { session, supabase } = useSupabase();
 	const [author, setAuthor] = useState("");
-	const { session } = useSupabase();
-
 	useEffect(() => {
-		const userId = createdBy || session?.user.id;
+		const userId = session?.user.id;
 		if (!userId) return;
 
 		supabase
@@ -23,9 +21,7 @@ function BlogAuthor({ createdBy }: { createdBy: string | null }) {
 			});
 	}, [session?.user.id]);
 
-	return (
-		<Link href={`/profile/${createdBy || session?.user.id}`}>{author}</Link>
-	);
+	return <Link href={`/profile/${session?.user.id}`}>{author}</Link>;
 }
 
-export default BlogAuthor;
+export default BlogAuthorClient;

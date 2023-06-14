@@ -52,22 +52,18 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				{title}{" "}
 			</Link>
 
-			<p className="text-sm md:text-base text-black dark:text-font-grey font-sans ">
+			<p className="text-sm md:text-base text-black dark:text-font-grey italic ">
 				{description}
 			</p>
 			<div
-				className="flex text-xs text-black/50 dark:text-font-grey mt-1  max-w-full divide-x-2 divide-black/30
+				className="flex text-xs text-black/50 dark:text-font-grey mt-1 gap-4  max-w-full divide-x-2 divide-black/30
 			dark:divide-white/40"
 			>
-				<Link
-					href={`/profile/${created_by}`}
-					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic underline"
-				>
-					{(post.bloggers as { id: string; name: string })?.name ||
-						post.author ||
-						""}
-				</Link>
-				<div className="px-1 w-24  flex justify-center ">
+				{/* <BlogAuthor
+					createdBy={created_by!}
+					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic flex-initialu"
+				/> */}
+				<div className="flex pr-2 justify-start">
 					{upvoted_on ? (
 						<span className="flex items-center">
 							<BiUpvote /> - {formatDate(upvoted_on)}
@@ -81,8 +77,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					)}
 				</div>
 				{published && (
-					<div className="flex justify-center w-16 ">
-						<span className="flex items-center gap-1">
+					<div className="flex justify-center pl-2 pr-0">
+						<span className="flex items-center gap-1 justify-center">
 							{upvotes
 								? formatter.format(upvotes)
 								: post.upvote_count
@@ -93,7 +89,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					</div>
 				)}
 				<div
-					className={` px-1 font-bold font-mono flex justify-center w-20`}
+					className={` px-1 font-bold font-mono flex justify-start w-20`}
 				>
 					<span>{language}</span>
 				</div>

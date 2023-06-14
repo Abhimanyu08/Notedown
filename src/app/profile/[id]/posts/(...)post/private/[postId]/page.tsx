@@ -13,6 +13,7 @@ import {
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import PublishModal from "@components/Modals/PublishModal";
+import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 
 async function PrivatePostModal({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -52,7 +53,12 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 				}}
 			>
 				<PublishModal publishPostAction={publishPostAction} />
-				<Blog {...{ ...post, content }} extraClasses="w-full px-4" />
+				<Blog
+					{...post}
+					content={content}
+					extraClasses="w-full px-4"
+					AuthorComponent={BlogAuthorServer}
+				/>
 			</BlogContextProvider>
 			<div className="flex absolute gap-3 top-2 right-3">
 				<Preview />
