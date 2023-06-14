@@ -90,7 +90,6 @@ async function loadSql() {
 		"react-syntax-highlighter/dist/cjs/languages/hljs/sql"
 	);
 	SyntaxHighlighter.registerLanguage("sql", lang.default);
-	return SyntaxHighlighter;
 }
 
 async function loadPython() {
@@ -98,69 +97,60 @@ async function loadPython() {
 		"react-syntax-highlighter/dist/cjs/languages/hljs/python"
 	);
 	SyntaxHighlighter.registerLanguage("python", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadRust() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/rust"
 	);
 	SyntaxHighlighter.registerLanguage("rust", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadJavascript() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/javascript"
 	);
 	SyntaxHighlighter.registerLanguage("javascript", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadTypeScript() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/typescript"
 	);
 	SyntaxHighlighter.registerLanguage("typescript", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadCSS() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/css"
 	);
 	SyntaxHighlighter.registerLanguage("css", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadC() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/c"
 	);
 	SyntaxHighlighter.registerLanguage("c", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadGo() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/go"
 	);
 	SyntaxHighlighter.registerLanguage("go", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadMarkdown() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/markdown"
 	);
 	SyntaxHighlighter.registerLanguage("markdown", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadBash() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/bash"
 	);
 	SyntaxHighlighter.registerLanguage("bash", lang.default);
-	return SyntaxHighlighter;
 }
 async function loadShell() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/shell"
 	);
 	SyntaxHighlighter.registerLanguage("shell", lang.default);
-	return SyntaxHighlighter;
 }
+
 export default CodeWithoutLanguage;
