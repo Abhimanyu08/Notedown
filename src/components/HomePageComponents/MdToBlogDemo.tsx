@@ -1,13 +1,15 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import {
 	BsFillArrowRightCircleFill,
 	BsArrowRightCircleFill,
 } from "react-icons/bs";
 import { SiConvertio } from "react-icons/si";
-import { ALLOWED_LANGUAGES } from "../../../utils/constants";
-import { getHtmlFromMarkdown } from "../../../utils/getResources";
 import useEditor from "../../hooks/useEditor";
-import { Blog } from "../BlogPostComponents/Blog";
+import Blog from "@components/BlogPostComponents/Blog";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
+import { getHtmlFromMarkdownFile } from "@utils/getResources";
+import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 
 function MdToBlog({ markdown }: { markdown: string }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -31,17 +33,17 @@ function MdToBlog({ markdown }: { markdown: string }) {
 	const [blogData, setBlogData] = useState<{
 		title?: string;
 		description?: string;
-		language?: typeof ALLOWED_LANGUAGES[number];
+		language?: (typeof ALLOWED_LANGUAGES)[number];
 		content?: string;
 	}>({});
 
 	const updateBlogData = (newMarkdown: string) => {
-		getHtmlFromMarkdown(newMarkdown)
+		getHtmlFromMarkdownFile(newMarkdown)
 			.then(({ data, content }) => {
 				setBlogData({
 					title: data.title,
 					description: data.description,
-					language: data.language,
+					language: data.language || undefined,
 					content,
 				});
 			})
@@ -149,11 +151,15 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 						title={blogData?.title}
 						language={blogData?.language}
 						description={blogData?.description}
-						bloggers={{ name: "You" }}
+						bloggers={{
+							name: "You",
+							id: "f2c61fc8-bcdb-46e9-aad2-99c0608cf485",
+						}}
 						image_folder={
 							"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
 						}
-						paddingClasses="px-12"
+						extraClasses="px-12"
+						AuthorComponent={BlogAuthorClient}
 					/>
 				</div>
 				<span className="self-center dark:text-white text-black font-semibold text-sm">
@@ -204,11 +210,15 @@ lg:scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700
 							title={blogData?.title}
 							language={blogData?.language}
 							description={blogData?.description}
-							bloggers={{ name: "You" }}
+							bloggers={{
+								name: "You",
+								id: "f2c61fc8-bcdb-46e9-aad2-99c0608cf485",
+							}}
 							image_folder={
 								"f2c61fc8-bcdb-46e9-aad2-99c0608cf485/608"
 							}
-							paddingClasses="px-12"
+							extraClasses="px-12"
+							AuthorComponent={BlogAuthorClient}
 						/>
 					</div>
 				</div>

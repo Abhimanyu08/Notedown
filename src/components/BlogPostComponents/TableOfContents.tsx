@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import parser, { HtmlNode } from "@utils/html2Jsx/parser";
+import tokenizer from "@utils/html2Jsx/tokenizer";
+import {
+	createHeadingIdFromHeadingText,
+	extractTextFromChildren,
+} from "@utils/html2Jsx/transformer";
+import { Dispatch, SetStateAction, memo } from "react";
 
 const headingToMargin: Record<string, string> = {
 	h2: "ml-0",
@@ -8,39 +14,60 @@ const headingToMargin: Record<string, string> = {
 	h6: "ml-16",
 };
 
-export function Toc({
+const Toc = memo(function Toc({
 	html,
 	setShowContents,
 }: {
-	html?: string;
-	setShowContents: Dispatch<SetStateAction<boolean>>;
+	html: string;
+	setShowContents?: Dispatch<SetStateAction<boolean>>;
 }) {
-	const [matches, setMatches] = useState<RegExpMatchArray[]>();
-	const [open, setOpen] = useState(true);
+	// const { blogState } = useContext(BlogContext);
+	// const html = blogState.blogMeta.content;
 
-	useEffect(() => {
-		if (!html) {
-			setMatches([]);
-			return;
-		}
-		const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
-		setMatches(Array.from(html.matchAll(re)));
-	}, [html]);
+	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
+	const matches = Array.from(html?.matchAll(re) || []);
+	const headings: string[] = [];
+	const headingIds: string[] = [];
+	const headingTypes: string[] = [];
+	matches.forEach((match) => {
+		const headingElem = parser(tokenizer(match.at(0)!))
+			.children[0] as HtmlNode;
+		const headingText = extractTextFromChildren(headingElem.children);
+		const headingId = createHeadingIdFromHeadingText(headingText);
+
+		headings.push(headingText);
+		headingIds.push(headingId);
+		headingTypes.push(headingElem.tagName);
+	});
+
+	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
+	// const [open, setOpen] = useState(true);
+
+	// useEffect(() => {
+	// 	if (!html) {
+	// 		setMatches([]);
+	// 		return;
+	// 	}
+	// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
+	// 	setMatches(Array.from(html.matchAll(re)));
+	// }, [html]);
 
 	return (
 		<div
 			className="flex ml-7 flex-col gap-2 text-xs font-jsx-prose tracking-wide  text-gray-700 dark:text-white/70 max-w-full pr-1"
-			onClick={() => setShowContents(false)}
+			// onClick={() => {
+			// 	if (setShowContents) setShowContents(false);
+			// }}
 		>
 			<h3
 				className=" flex flex-row items-center underline underline-offset-2 cursor-pointer font-bold"
-				onClick={() => setOpen((prev) => !prev)}
+				// onClick={() => setOpen((prev) => !prev)}
 			>
 				Table of Contents
 			</h3>
 			<ul
 				className={` flex flex-col gap-2     ${
-					open ? "" : "lg:invisible"
+					true ? "" : "lg:invisible"
 				}  pb-14 text-gray-700 dark:text-gray-100/75 tracking-wider font-base`}
 			>
 				<li>
@@ -51,23 +78,19 @@ export function Toc({
 						Title
 					</a>
 				</li>
-				{matches?.map((match) => {
+				{headings.map((heading, idx) => {
 					return (
 						<li
 							className={`
-							${headingToMargin[match.at(1)!]} 
+							${headingToMargin[headingTypes[idx]]} 
 							break-words`}
-							key={match.at(4)}
+							key={heading}
 						>
 							<a
-								href={`#${match
-									.at(4)
-									?.split(" ")
-									.map((w) => w.toLowerCase())
-									.join("-")}`}
+								href={`#${headingIds[idx]}`}
 								className={`hover:text-black hover:font-bold hover:dark:text-white`}
 							>
-								{match.at(4)}
+								{heading}
 							</a>
 						</li>
 					);
@@ -75,4 +98,6 @@ export function Toc({
 			</ul>
 		</div>
 	);
-}
+});
+
+export default Toc;

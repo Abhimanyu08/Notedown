@@ -1,5 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	async redirects() {
+		return [
+			{
+				source: "/profile/:id/posts",
+				destination: "/profile/:id/posts/latest",
+				permanent: true,
+			},
+		];
+	},
+	experimental: {
+		appDir: true,
+		serverActions: true,
+	},
 	reactStrictMode: process.env.NODE_ENV === "production",
 	swcMinify: true,
 	images: {

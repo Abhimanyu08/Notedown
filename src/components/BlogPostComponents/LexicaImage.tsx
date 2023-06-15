@@ -1,6 +1,7 @@
+"use client";
+import { getImages } from "@utils/sendRequest";
 import React, { useEffect, useState } from "react";
 import { BsArrowRepeat } from "react-icons/bs";
-import { getImages } from "../../../utils/sendRequest";
 
 function LexicaImage({ alt }: { alt: string }) {
 	const [lexicaLinks, setLexicaLinks] = useState<string[]>([]);

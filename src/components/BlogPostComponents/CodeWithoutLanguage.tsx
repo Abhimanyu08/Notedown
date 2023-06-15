@@ -1,19 +1,9 @@
-import dynamic from "next/dynamic";
+"use client";
 import { useEffect, useState } from "react";
+import { BiCheck } from "react-icons/bi";
+import { MdContentCopy } from "react-icons/md";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import js from "react-syntax-highlighter/dist/cjs/languages/hljs/javascript";
-import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python";
-import rust from "react-syntax-highlighter/dist/cjs/languages/hljs/rust";
-import sql from "react-syntax-highlighter/dist/cjs/languages/hljs/sql";
-import typescript from "react-syntax-highlighter/dist/cjs/languages/hljs/typescript";
-import theme from "react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-dark";
-
-SyntaxHighlighter.registerLanguage("javascript", js);
-SyntaxHighlighter.registerLanguage("python", python);
-SyntaxHighlighter.registerLanguage("rust", rust);
-SyntaxHighlighter.registerLanguage("sql", sql);
-SyntaxHighlighter.registerLanguage("sql", sql);
-SyntaxHighlighter.registerLanguage("typescript", typescript);
+import theme from "react-syntax-highlighter/dist/cjs/styles/hljs/an-old-hope";
 
 function CodeWithoutLanguage({
 	code,
@@ -22,25 +12,61 @@ function CodeWithoutLanguage({
 	code: string;
 	language?: string;
 }) {
-	const [_, setImported] = useState(false);
+	const [imported, setImported] = useState(false);
+	const [copied, setCopied] = useState(false);
+	// const [Highlighter, setHighlighter] = useState(SyntaxHighlighter);
+
+	useEffect(() => {
+		if (copied) {
+			setTimeout(() => setCopied(false), 2000);
+		}
+	}, [copied]);
+
 	useEffect(() => {
 		if (language) {
 			language = language.toLowerCase();
-
 			if (!Object.keys(languageToImporter).includes(language)) {
 				alert(`${language} not supported`);
 			}
-			languageToImporter[language as keyof typeof languageToImporter];
-
-			setImported(true);
+			languageToImporter[
+				language as keyof typeof languageToImporter
+			]().then(() => {
+				console.log(`Imported ${language}`);
+				setImported(true);
+			});
 		}
-	}, [language]);
+	}, []);
 
 	return (
-		<div className="not-prose">
-			<SyntaxHighlighter language={language || ""} style={theme}>
-				{code}
-			</SyntaxHighlighter>
+		<div className="not-prose relative group ">
+			<button
+				className="absolute top-2 right-2 p-1 rounded-md bg-black/70 opacity-0 group-hover:opacity-100"
+				onClick={() => {
+					navigator.clipboard
+						.writeText(code)
+						.then(() => setCopied(true));
+				}}
+			>
+				{" "}
+				{copied ? (
+					<BiCheck size={20} className="text-gray-100" />
+				) : (
+					<MdContentCopy size={20} className="text-gray-100" />
+				)}
+			</button>
+			{imported && (
+				<SyntaxHighlighter
+					language={language}
+					style={theme}
+					customStyle={{ paddingLeft: "8px" }}
+					showLineNumbers={true}
+					lineNumberStyle={{
+						color: "rgb(148 163 184)",
+					}}
+				>
+					{code.trim()}
+				</SyntaxHighlighter>
+			)}
 		</div>
 	);
 }
@@ -55,62 +81,76 @@ const languageToImporter = {
 	markdown: loadMarkdown,
 	go: loadGo,
 	c: loadC,
+	bash: loadBash,
+	shell: loadShell,
 };
 
 async function loadSql() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/sql"
 	);
-	SyntaxHighlighter.registerLanguage("sql", lang);
+	SyntaxHighlighter.registerLanguage("sql", lang.default);
 }
 
 async function loadPython() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/python"
 	);
-	SyntaxHighlighter.registerLanguage("python", lang);
+	SyntaxHighlighter.registerLanguage("python", lang.default);
 }
 async function loadRust() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/rust"
 	);
-	SyntaxHighlighter.registerLanguage("rust", lang);
+	SyntaxHighlighter.registerLanguage("rust", lang.default);
 }
 async function loadJavascript() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/javascript"
 	);
-	SyntaxHighlighter.registerLanguage("javascript", lang);
+	SyntaxHighlighter.registerLanguage("javascript", lang.default);
 }
 async function loadTypeScript() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/typescript"
 	);
-	SyntaxHighlighter.registerLanguage("typescript", lang);
+	SyntaxHighlighter.registerLanguage("typescript", lang.default);
 }
 async function loadCSS() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/css"
 	);
-	SyntaxHighlighter.registerLanguage("css", lang);
+	SyntaxHighlighter.registerLanguage("css", lang.default);
 }
 async function loadC() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/c"
 	);
-	SyntaxHighlighter.registerLanguage("c", lang);
+	SyntaxHighlighter.registerLanguage("c", lang.default);
 }
 async function loadGo() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/go"
 	);
-	SyntaxHighlighter.registerLanguage("go", lang);
+	SyntaxHighlighter.registerLanguage("go", lang.default);
 }
 async function loadMarkdown() {
 	const lang = await import(
 		"react-syntax-highlighter/dist/cjs/languages/hljs/markdown"
 	);
-	SyntaxHighlighter.registerLanguage("markdown", lang);
+	SyntaxHighlighter.registerLanguage("markdown", lang.default);
+}
+async function loadBash() {
+	const lang = await import(
+		"react-syntax-highlighter/dist/cjs/languages/hljs/bash"
+	);
+	SyntaxHighlighter.registerLanguage("bash", lang.default);
+}
+async function loadShell() {
+	const lang = await import(
+		"react-syntax-highlighter/dist/cjs/languages/hljs/shell"
+	);
+	SyntaxHighlighter.registerLanguage("shell", lang.default);
 }
 
 export default CodeWithoutLanguage;

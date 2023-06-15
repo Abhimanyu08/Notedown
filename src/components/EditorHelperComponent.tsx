@@ -1,60 +1,93 @@
-import React, { Dispatch, SetStateAction } from "react";
+import {
+	onBlockQuote,
+	onBold,
+	onCanvas,
+	onCodeBlock,
+	onCodeWord,
+	onImage,
+	onItalic,
+	onLatex,
+	onLink,
+	onOrdererdList,
+	onSelect,
+	onUnordererdList,
+} from "@/utils/editorToolFunctions";
+import { StateEffect } from "@codemirror/state";
+import { memo, useContext, useEffect, useState } from "react";
 import { FaBold, FaItalic } from "react-icons/fa";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
-import {
-	onBold,
-	onItalic,
-	onSelect,
-	onCodeWord,
-	onCodeBlock,
-	onImage,
-	onOrdererdList,
-	onUnordererdList,
-	onBlockQuote,
-	onLink,
-	onLatex,
-	onCanvas,
-} from "../../utils/editorToolFunctions";
 
-import { EditorView } from "codemirror";
+import { EditorContext } from "@/app/write/components/EditorContext";
+import { Compartment, Extension } from "@codemirror/state";
+import getExtensions from "@utils/getExtensions";
+import langToCodeMirrorExtension from "@utils/langToExtension";
+import { usePathname } from "next/navigation";
+import { vim } from "@replit/codemirror-vim";
 
-interface EditorHelperProps {
-	editorView: EditorView | null;
-	enabledVimForMarkdown: boolean;
-	setEnabledVimForMarkdown: Dispatch<SetStateAction<boolean>>;
-}
+// const compartment = new Compartment();
 
-function EditorHelperComponent({
-	editorView,
-	enabledVimForMarkdown,
-	setEnabledVimForMarkdown,
-}: EditorHelperProps) {
+function EditorHelperComponent() {
+	const { editorState } = useContext(EditorContext);
+	const { editorView } = editorState;
+	const pathname = usePathname();
+	const [vimCompartment, setVimCompartment] = useState<Compartment>();
+	const [vimEnabled, setVimEnabled] = useState(false);
+
+	useEffect(() => {
+		if (!vimCompartment) {
+			const compartment = new Compartment();
+			setVimCompartment(compartment);
+		}
+	}, []);
+
+	const onToggleVim = () => {
+		if (!editorState.editorView) return;
+
+		if (!vimEnabled) {
+			editorState.editorView.dispatch({
+				effects: StateEffect.appendConfig.of(vimCompartment!.of(vim())),
+				// editorState.editorView.state.facet()
+			});
+		}
+		// C
+		if (vimEnabled) {
+			editorState.editorView.dispatch({
+				effects: vimCompartment?.reconfigure([]),
+			});
+			//we need to set a new compartment for next time someone enables vim
+			const compartment = new Compartment();
+			setVimCompartment(compartment);
+		}
+		setVimEnabled((prev) => !prev);
+	};
+
 	return (
-		<div className="flex w-full justify-start md:justify-center gap-1 pb-1 flex-wrap ">
-			<div
-				className="btn btn-xs tool"
+		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
+			<button
+				className="tool"
 				onClick={() => {
 					if (editorView) onBold(editorView);
 				}}
 			>
 				<FaBold />
-			</div>
-			<div
+			</button>
+			<button
 				className="btn btn-xs tool"
 				onClick={() => {
 					if (editorView) onItalic(editorView);
 				}}
 			>
 				<FaItalic />
-			</div>
+			</button>
 			<select
+				value="Heading"
 				className="select select-xs tool focus:outline-none"
 				onChange={(e) => {
 					if (editorView) onSelect(editorView, e.target.value);
 				}}
 			>
-				<option disabled selected>
+				<option disabled value={"Heading"}>
 					Heading
 				</option>
 				<option value="heading2">heading 2</option>
@@ -63,31 +96,33 @@ function EditorHelperComponent({
 				<option value="heading5">heading 5</option>
 				<option value="heading6">heading 6</option>
 			</select>
-			<div
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onCodeWord(editorView);
 				}}
 			>
 				Code word
-			</div>
-			<div
+			</button>
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onCodeBlock(editorView);
 				}}
 			>
 				Code block
-			</div>
-			<div
-				className="btn btn-xs normal-case tool"
-				onClick={() => {
-					if (editorView) onImage(editorView);
-				}}
-			>
-				Image
-			</div>
-			<div
+			</button>
+			{!pathname?.startsWith("/profile") && (
+				<button
+					className="btn btn-xs normal-case tool"
+					onClick={() => {
+						if (editorView) onImage(editorView);
+					}}
+				>
+					Image
+				</button>
+			)}
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onOrdererdList(editorView);
@@ -96,8 +131,8 @@ function EditorHelperComponent({
 				{/* <AiOutlineOrderedList size={20} /> */}
 				<GoListOrdered size={20} />
 				{/* O.L */}
-			</div>
-			<div
+			</button>
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onUnordererdList(editorView);
@@ -106,54 +141,53 @@ function EditorHelperComponent({
 				{/* <AiOutlineUnorderedList size={20} /> */}
 				<GoListUnordered size={20} />
 				{/* U.L */}
-			</div>
-			<div
+			</button>
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onBlockQuote(editorView);
 				}}
 			>
 				BlockQuote
-			</div>
-			<div
+			</button>
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onLink(editorView);
 				}}
 			>
 				Link
-			</div>
-			<div
+			</button>
+			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
 					if (editorView) onLatex(editorView);
 				}}
 			>
 				LaTeX
-			</div>
-			<div
-				className="btn btn-xs normal-case tool"
-				onClick={() => {
-					if (editorView) onCanvas(editorView);
-				}}
-			>
-				Canvas
-			</div>
-			<div
-				className="btn btn-xs tool gap-2"
-				onClick={() => setEnabledVimForMarkdown((prev) => !prev)}
-			>
+			</button>
+			{!pathname?.startsWith("/profile") && (
+				<button
+					className="btn btn-xs normal-case tool"
+					onClick={() => {
+						if (editorView) onCanvas(editorView);
+					}}
+				>
+					Canvas
+				</button>
+			)}
+			<button className="btn btn-xs tool gap-2" onClick={onToggleVim}>
 				<SiVim
 					className={` ${
-						enabledVimForMarkdown ? "text-lime-400" : "text-white"
+						vimEnabled ? "text-lime-400" : "text-white"
 					}`}
 				/>
 				<span className="normal-case">
-					{enabledVimForMarkdown ? "Disable" : "Enable"} Vim
+					{vimEnabled ? "Disable" : "Enable"} Vim
 				</span>
-			</div>
+			</button>
 		</div>
 	);
 }
 
-export default EditorHelperComponent;
+export default memo(EditorHelperComponent);

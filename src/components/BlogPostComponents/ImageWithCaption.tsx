@@ -1,12 +1,30 @@
-import React from "react";
+"use client";
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
+import { BlogContext } from "@/app/post/components/BlogState";
 
-function ImageWithCaption({ src, alt }: { src: string; alt: string }) {
+function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
+	const { blogState, dispatch } = useContext(BlogContext);
+
+	useEffect(() => {
+		dispatch({ type: "add images to upload", payload: [name] });
+		return () => {
+			dispatch({ type: "remove image from upload", payload: [name] });
+		};
+	}, []);
+
 	return (
 		<div className="w-full mb-4">
 			<Image
 				// layout="fill"
-				{...{ src, alt }}
+				src={
+					blogState.imagesToFiles[name]
+						? window.URL.createObjectURL(
+								blogState.imagesToFiles[name]
+						  )
+						: blogState.uploadedImages[name]
+				}
+				alt={alt}
 				width={1440}
 				height={1080}
 			/>

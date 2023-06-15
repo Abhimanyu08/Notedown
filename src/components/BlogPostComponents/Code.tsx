@@ -1,59 +1,70 @@
+"use client";
 import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BsPencilFill, BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage, MdImage } from "react-icons/md";
 import { SiVim } from "react-icons/si";
-import { BlogContext } from "../../pages/_app";
 
 import useEditor from "../../hooks/useEditor";
-import { BlogProps } from "../../interfaces/BlogProps";
 
+import { BlogContext } from "@/app/post/components/BlogState";
 import { StateEffect } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
-import getExtensions from "../../../utils/getExtensions";
-import useTerminal from "../../hooks/useTerminal";
+import getExtensions from "@utils/getExtensions";
+import Terminal from "./Terminal";
+import { keymap } from "@codemirror/view";
+import langToCodeMirrorExtension from "@utils/langToExtension";
 interface CodeProps {
 	code: string;
-	language: BlogProps["language"];
 	blockNumber: number;
 }
 
-function Code({ code, language, blockNumber }: CodeProps) {
-	const {
-		containerId,
-		vimEnabled,
-		setVimEnabled,
-		setRunningBlock,
-		setBlockToEditor,
-		setWritingBlock,
-	} = useContext(BlogContext);
+function Code({ code, blockNumber }: CodeProps) {
+	// const {
+	// 	containerId,
+	// 	vimEnabled,
+	// 	setVimEnabled,
+	// 	setRunningBlock,
+	// 	setBlockToEditor,
+	// 	setWritingBlock,
+	// } = useContext(BlogContext);
+	const { blogState, dispatch } = useContext(BlogContext);
+	const { language } = blogState.blogMeta;
 
 	const [mounted, setMounted] = useState(false);
-	const [openShell, setOpenShell] = useState(true);
+	const [openShell, setOpenShell] = useState(false);
 	const { editorView } = useEditor({
-		language,
+		language: language!,
 		blockNumber,
 		code,
 		mounted,
 		editorParentId: `codearea-${blockNumber}`,
 	});
 
-	useTerminal({
-		containerId,
-		blockNumber,
-		mounted,
-	});
-
 	useEffect(() => {
 		if (!mounted) setMounted(true);
 	}, [mounted]);
 
+	// useTerminal({
+	// 	containerId: blogState.containerId,
+	// 	blockNumber,
+	// 	mounted,
+	// });
+
 	useEffect(() => {
-		if (setBlockToEditor && editorView)
-			setBlockToEditor((prev) => ({
-				...prev,
+		// if (setBlockToEditor && editorView)
+		// 	setBlockToEditor((prev) => ({
+		// 		...prev,
+		// 		[blockNumber]: editorView,
+		// 	}));
+		if (typeof window === "undefined") console.log("running on server");
+		if (!editorView) return;
+		dispatch({
+			type: "set editor",
+			payload: {
 				[blockNumber]: editorView,
-			}));
+			},
+		});
 	}, [blockNumber, editorView]);
 
 	const onUndo: MouseEventHandler = () => {
@@ -65,45 +76,51 @@ function Code({ code, language, blockNumber }: CodeProps) {
 	};
 
 	useEffect(() => {
-		if (!editorView) return;
-		if (vimEnabled) {
+		if (!editorView || !language) return;
+		if (blogState.vimEnabled) {
+			editorView.dispatch({
+				effects: StateEffect.appendConfig.of(vim()),
+			});
+		}
+		if (!blogState.vimEnabled) {
 			editorView.dispatch({
 				effects: StateEffect.reconfigure.of([
-					vim(),
-					...getExtensions({
-						language,
-						blockNumber,
-						setRunningBlock,
-					}),
+					keymap.of([
+						{
+							key: "Shift-Enter",
+							run() {
+								setOpenShell(true);
+								dispatch({
+									type: "set running block",
+									payload: blockNumber,
+								});
+								return true;
+							},
+						},
+					]),
+					langToCodeMirrorExtension(language!),
+					...getExtensions(),
 				]),
 			});
 		}
-		if (!vimEnabled) {
-			editorView.dispatch({
-				effects: StateEffect.reconfigure.of(
-					getExtensions({
-						language,
-						blockNumber,
-						setRunningBlock,
-					})
-				),
-			});
-		}
-	}, [vimEnabled]);
+	}, [blogState.vimEnabled, editorView]);
 
 	return (
-		<div className="flex relative flex-col w-full ">
-			<div className="flex flex-row  gap-5 w-fit self-end bg-black py-1 px-3 rounded-t-md">
+		<div className="flex flex-col w-full ">
+			<div className="flex flex-row  gap-5 w-fit self-end border-[1px] border-b-0 border-white/50 bg-[#15181c] py-1 px-3 rounded-t-md">
 				{mounted && (
 					<>
-						<button
+						<CodeAreaButton
 							onClick={() => {
-								if (setRunningBlock)
-									setRunningBlock(blockNumber);
+								// setRunningBlock(blockNumber);
+								setOpenShell(true);
+								dispatch({
+									type: "set running block",
+									payload: blockNumber,
+								});
 							}}
-							className="md:tooltip  md:tooltip-left"
-							data-tip="Run Code (Shift+Enter)"
-							id={`run-${blockNumber}`}
+							className="md:tooltip"
+							tip="Run Code (Shift+Enter)"
 						>
 							<BsPlayFill
 								className={`text-cyan-400 ${
@@ -111,74 +128,96 @@ function Code({ code, language, blockNumber }: CodeProps) {
 								}`}
 								size={16}
 							/>
-						</button>
-						<button
+						</CodeAreaButton>
+						<CodeAreaButton
 							onClick={() => {
-								if (setWritingBlock)
-									setWritingBlock(blockNumber);
+								dispatch({
+									type: "set writing block",
+									payload: blockNumber,
+								});
 							}}
-							className="md:tooltip  md:tooltip-left"
-							data-tip="Write code to file without running"
+							className="md:tooltip"
+							tip="Write code to file without running"
 						>
-							<BsPencilFill size={14} className="text-cyan-400" />
-						</button>
+							<BsPencilFill size={12} className="text-cyan-400" />
+						</CodeAreaButton>
 					</>
 				)}
-				<button
-					onClick={onUndo}
-					className="md:tooltip  md:tooltip-left"
-					data-tip="back to original code"
-				>
+				<CodeAreaButton onClick={onUndo} tip="back to original code">
 					<FcUndo className="text-cyan-400" />
-				</button>
-				<button
+				</CodeAreaButton>
+				<CodeAreaButton
 					onClick={() => setOpenShell((prev) => !prev)}
-					className="md:tooltip  md:tooltip-left"
-					data-tip={`${
-						openShell ? "Hide Terminal" : "Show Terminal"
-					}`}
+					tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
 				>
 					{openShell ? (
 						<MdImage className="text-cyan-400" />
 					) : (
 						<MdHideImage className="text-cyan-400" />
 					)}
-				</button>
-				<button
+				</CodeAreaButton>
+				<CodeAreaButton
 					className="md:tooltip hidden lg:block mr-1"
-					data-tip="Enable Vim"
+					tip="Enable Vim"
 					onClick={() => {
-						if (setVimEnabled) setVimEnabled((prev) => !prev);
+						// if (setVimEnabled) setVimEnabled((prev) => !prev);
+						dispatch({ type: "toggle vim", payload: {} });
 					}}
 				>
 					<SiVim
 						className={`${
-							vimEnabled ? "text-lime-400" : "text-cyan-400"
+							blogState.vimEnabled ? "text-lime-400" : ""
 						}`}
 						size={14}
 					/>
-				</button>
+				</CodeAreaButton>
 			</div>
-			{mounted && (
+			{mounted ? (
 				<div
-					className="w-full"
+					className="w-full border-[1px] border-white/50 rounded-sm"
 					id={`codearea-${blockNumber}`}
 					onDoubleClick={() => {
-						if (setRunningBlock) setRunningBlock(blockNumber);
+						// if (setRunningBlock) setRunningBlock(blockNumber);
+						dispatch({
+							type: "set running block",
+							payload: blockNumber,
+						});
 					}}
 				></div>
+			) : (
+				<pre>
+					<code>{code}</code>
+				</pre>
 			)}
 
-			{mounted && (
-				<div
-					className={`not-prose  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
-						openShell ? "" : "hidden"
-					}`}
-					id={`terminal-${blockNumber}`}
-				></div>
-			)}
+			{mounted && <Terminal {...{ blockNumber, openShell }} />}
 		</div>
 	);
 }
+
+const CodeAreaButton = ({
+	children,
+	tip,
+	className,
+	onClick,
+}: {
+	children: React.ReactNode;
+	tip?: string;
+	className?: string;
+	onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}) => {
+	return (
+		<button
+			className={
+				"tooltip tooltip-top text-cyan-400 hover:scale-110 active:scale-90 " +
+					className || ""
+			}
+			onClick={onClick}
+			data-tip={tip}
+		>
+			{children}
+		</button>
+	);
+};
 
 export default Code;
