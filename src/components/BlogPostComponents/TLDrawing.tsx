@@ -72,7 +72,7 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 									.download(
 										`${blogState.blogMeta.imageFolder}/${canvasImageName}.png`
 									)
-									.then((val) => {
+									.then((val: any) => {
 										if (!val.data) return;
 										const file = new File(
 											[val.data],
