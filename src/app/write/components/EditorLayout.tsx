@@ -94,78 +94,70 @@ function EditorLayout({
 		}
 	}, []);
 
-	useEffect(() => {
-		if (editorState.editingMarkdown) return;
-		getHtmlFromMarkdownFile(editorState.editorView?.state.sliceDoc() || "")
-			.then((val) => {
-				if (!val) return;
-				if (
-					blogState.blogMeta.language !== val.data.language &&
-					blogState.containerId
-				) {
-					blogStateDispatch({
-						type: "remove container",
-						payload: null,
-					});
-				}
-				blogStateDispatch({
-					type: "set blog meta",
-					payload: { ...val?.data, content: val?.content },
-				});
-			})
-			.catch((e) => {
-				alert((e as Error).message);
-				dispatch({ type: "toggle markdown editor", payload: null });
-				// This workaround is because keyup event is not fired in case of error
-				const altKeyUp = new KeyboardEvent("keyup", {
-					key: "Alt",
-					altKey: true,
-				});
-				const pKeyUp = new KeyboardEvent("keyup", {
-					key: "p",
-				});
-				document.dispatchEvent(altKeyUp);
-				document.dispatchEvent(pKeyUp);
-			});
-	}, [editorState.editingMarkdown]);
+	// useEffect(() => {
+	// 	if (editorState.editingMarkdown) return;
+	// 	getHtmlFromMarkdownFile(editorState.editorView?.state.sliceDoc() || "")
+	// 		.then((val) => {
+	// 			if (!val) return;
+	// 			if (
+	// 				blogState.blogMeta.language !== val.data.language &&
+	// 				blogState.containerId
+	// 			) {
+	// 				blogStateDispatch({
+	// 					type: "remove container",
+	// 					payload: null,
+	// 				});
+	// 			}
+	// 			blogStateDispatch({
+	// 				type: "set blog meta",
+	// 				payload: { ...val?.data, content: val?.content },
+	// 			});
+	// 		})
+	// 		.catch((e) => {
+	// 			alert((e as Error).message);
+	// 			dispatch({ type: "toggle markdown editor", payload: null });
+	// 			// This workaround is because keyup event is not fired in case of error
+	// 			const altKeyUp = new KeyboardEvent("keyup", {
+	// 				key: "Alt",
+	// 				altKey: true,
+	// 			});
+	// 			const pKeyUp = new KeyboardEvent("keyup", {
+	// 				key: "p",
+	// 			});
+	// 			document.dispatchEvent(altKeyUp);
+	// 			document.dispatchEvent(pKeyUp);
+	// 		});
+	// }, [editorState.editingMarkdown]);
 
 	return (
-		<div className="grow flex flex-row min-h-0 relative pt-10">
-			<div
+		<div className="grow flex flex-row min-h-0 relative pt-10 gap-2">
+			{/* <div
 				className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
 					`}
 			>
 				<Toc html={blogState.blogMeta.content || ""} />
-			</div>
-			<div
+			</div> */}
+			{/* <div
 				className={`lg:basis-3/5 relative 
 							hidden lg:block
 							overflow-y-hidden`}
+			> */}
+			<div
+				className={`flex flex-col basis-1/2  overflow-y-auto border-r-[1px] border-gray-500 pr-1`}
 			>
-				<div
-					className={`absolute flex flex-col top-0 left-0 w-full h-full overflow-y-auto ${
-						editorState.editingMarkdown ? "" : "invisible"
-					}`}
-				>
-					<BlogMarkdownEditor initialMarkdown={initialMarkdown} />
-				</div>
+				<BlogMarkdownEditor initialMarkdown={initialMarkdown} />
+			</div>
 
-				<div
-					className={`${
-						editorState.editingMarkdown
-							? "hidden"
-							: "overflow-y-auto w-full h-full"
-					}`}
-				>
-					<Blog
-						{...blogState.blogMeta}
-						AuthorComponent={BlogAuthorClient}
-					/>
-				</div>
+			<div className={`basis-1/2`}>
+				<Blog
+					{...blogState.blogMeta}
+					AuthorComponent={BlogAuthorClient}
+				/>
 			</div>
-			<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
+			{/* </div> */}
+			{/* <div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
 				<EditorToolbar />
-			</div>
+			</div> */}
 		</div>
 	);
 }

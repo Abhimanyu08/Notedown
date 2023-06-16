@@ -14,7 +14,7 @@ const Blog = memo(
 		published,
 		published_on,
 		created_at,
-		extraClasses = "px-20",
+		extraClasses,
 		AuthorComponent,
 	}: Partial<BlogProps> & {
 		AuthorComponent: ({
