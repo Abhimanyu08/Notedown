@@ -1,13 +1,20 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { BlogContext } from "@/app/post/components/BlogState";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	const { blogState, dispatch } = useContext(BlogContext);
+	const [validName, setValidName] = useState("");
 
 	useEffect(() => {
-		dispatch({ type: "add images to upload", payload: [name] });
+		if (
+			Object.hasOwn(blogState.imagesToFiles, name) ||
+			Object.hasOwn(blogState.uploadedImages, name)
+		) {
+			setValidName(name);
+			dispatch({ type: "add images to upload", payload: [name] });
+		}
 		return () => {
 			dispatch({ type: "remove image from upload", payload: [name] });
 		};
@@ -15,22 +22,26 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 
 	return (
 		<div className="w-full mb-4">
-			<Image
-				// layout="fill"
-				src={
-					blogState.imagesToFiles[name]
-						? window.URL.createObjectURL(
-								blogState.imagesToFiles[name]
-						  )
-						: blogState.uploadedImages[name]
-				}
-				alt={alt}
-				width={1440}
-				height={1080}
-			/>
-			<figcaption className="text-center italic text-font-grey">
-				{alt}
-			</figcaption>
+			{validName && (
+				<>
+					<Image
+						// layout="fill"
+						src={
+							blogState.imagesToFiles[name]
+								? window.URL.createObjectURL(
+										blogState.imagesToFiles[name]
+								  )
+								: blogState.uploadedImages[name]
+						}
+						alt={alt}
+						width={1440}
+						height={1080}
+					/>
+					<figcaption className="text-center italic text-font-grey">
+						{alt}
+					</figcaption>
+				</>
+			)}
 		</div>
 	);
 }

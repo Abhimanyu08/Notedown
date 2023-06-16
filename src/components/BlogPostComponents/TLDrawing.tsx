@@ -10,7 +10,6 @@ import { EditorContext } from "@/app/write/components/EditorContext";
 function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	const [changeNumber, setChangeNumber] = useState(0);
 	const { blogState, dispatch } = useContext(BlogContext);
-	const { editorState } = useContext(EditorContext);
 	const { supabase } = useSupabase();
 	useEffect(() => {
 		dispatch({

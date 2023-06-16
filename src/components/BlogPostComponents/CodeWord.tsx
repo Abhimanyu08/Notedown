@@ -1,4 +1,5 @@
 "use client";
+import { memo } from "react";
 import Latex from "react-latex";
 
 function CodeWord({ code }: { code: string }) {
@@ -17,4 +18,4 @@ function CodeWord({ code }: { code: string }) {
 	return <code>{modifiedCode}</code>;
 }
 
-export default CodeWord;
+export default memo(CodeWord);

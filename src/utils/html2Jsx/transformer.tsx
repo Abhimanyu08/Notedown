@@ -5,7 +5,7 @@ import Codesandbox from "@components/BlogPostComponents/Codesandbox";
 import DrawingOrImage from "@components/BlogPostComponents/DrawingOrImage";
 import HeadinglinkButton from "@components/BlogPostComponents/HeadinglinkButton";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
-import CodeWord from "@components/BlogPostComponents/LatexBlock";
+import CodeWord from "@components/BlogPostComponents/CodeWord";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import React, { Suspense } from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
@@ -88,7 +88,7 @@ const tagToTransformer: TagToTransformer = {
 
 	code: (node) => {
 		let code = (node.children[0] as TextNode).text;
-		return <CodeWord code={code} />;
+		return <CodeWord code={code} key={code} />;
 	},
 
 	pre: (node) => {

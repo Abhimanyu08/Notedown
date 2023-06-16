@@ -12,16 +12,25 @@ function Carousel({
 }) {
 	const [show, setShow] = useState(0);
 	const { blogState, dispatch } = useContext(BlogContext);
+	const [images, setImages] = useState<string[]>([]);
+	// const [imageToUrls, setImageToUrls] = useState<string[]>([])
 
 	useEffect(() => {
+		const validImages = imageNames.filter(
+			(i) =>
+				Object.hasOwn(blogState.uploadedImages, i) ||
+				Object.hasOwn(blogState.imagesToFiles, i)
+		);
+		setImages(validImages);
+
 		dispatch({
 			type: "add images to upload",
-			payload: imageNames,
+			payload: validImages,
 		});
 		return () => {
 			dispatch({
 				type: "remove image from upload",
-				payload: imageNames,
+				payload: validImages,
 			});
 		};
 	}, []);
@@ -51,7 +60,7 @@ function Carousel({
 				className={`relative flex w-[600%] h-auto not-prose`}
 				// style={{ transform: `translateX(-${100 * show}%)` }}
 			>
-				{imageNames.map((image, idx) => (
+				{images.map((image, idx) => (
 					<div
 						key={idx}
 						className="w-1/6 transition-transform duration-300 carousel"
