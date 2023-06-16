@@ -9,7 +9,6 @@ import { EditorContext } from "@/app/write/components/EditorContext";
 
 function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	const [changeNumber, setChangeNumber] = useState(0);
-	const [mounted, setMounted] = useState(false);
 	const { blogState, dispatch } = useContext(BlogContext);
 	const { editorState } = useContext(EditorContext);
 	const { supabase } = useSupabase();
@@ -31,9 +30,9 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (!editorState.editingMarkdown && !mounted) setMounted(true);
-	}, [editorState.editingMarkdown]);
+	// useEffect(() => {
+	// 	if (!editorState.editingMarkdown && !mounted) setMounted(true);
+	// }, [editorState.editingMarkdown]);
 
 	const runOnCommad = (app: any) => {
 		if (changeNumber === 0) {
@@ -51,44 +50,42 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	return (
 		<>
 			<div className="relative w-full aspect-[4/3] self-center not-prose">
-				{mounted && (
-					<Tldraw
-						key={canvasImageName}
-						showMenu={false}
-						showMultiplayerMenu={false}
-						showPages={false}
-						autofocus={false}
-						disableAssets={false}
-						darkMode={false}
-						onMount={(app) => {
-							if (
-								Object.hasOwn(
-									blogState.uploadedImages,
-									`${canvasImageName}.png`
+				<Tldraw
+					key={canvasImageName}
+					showMenu={false}
+					showMultiplayerMenu={false}
+					showPages={false}
+					autofocus={false}
+					disableAssets={false}
+					darkMode={false}
+					onMount={(app) => {
+						if (
+							Object.hasOwn(
+								blogState.uploadedImages,
+								`${canvasImageName}.png`
+							)
+						) {
+							supabase.storage
+								.from(SUPABASE_IMAGE_BUCKET)
+								.download(
+									`${blogState.blogMeta.imageFolder}/${canvasImageName}.png`
 								)
-							) {
-								supabase.storage
-									.from(SUPABASE_IMAGE_BUCKET)
-									.download(
-										`${blogState.blogMeta.imageFolder}/${canvasImageName}.png`
-									)
-									.then((val: any) => {
-										if (!val.data) return;
-										const file = new File(
-											[val.data],
-											`${canvasImageName}.png`
-										);
-										app.addMediaFromFiles([file]).then(
-											(app) => app.zoomToFit()
-										);
-									});
-							}
-						}}
-						onCommand={(app) => {
-							runOnCommad(app);
-						}}
-					/>
-				)}
+								.then((val: any) => {
+									if (!val.data) return;
+									const file = new File(
+										[val.data],
+										`${canvasImageName}.png`
+									);
+									app.addMediaFromFiles([file]).then((app) =>
+										app.zoomToFit()
+									);
+								});
+						}
+					}}
+					onCommand={(app) => {
+						runOnCommad(app);
+					}}
+				/>
 			</div>
 		</>
 	);

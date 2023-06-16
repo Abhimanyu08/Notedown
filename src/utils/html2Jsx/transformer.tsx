@@ -10,6 +10,7 @@ import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import React, { Suspense } from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
+import ImageUploader from "@components/EditorComponents/ImageUploader";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: HtmlNode }[] = [];
@@ -287,7 +288,7 @@ const tagToTransformer: TagToTransformer = {
 		if (alt && !src) {
 			return <LexicaImage alt={alt} />;
 		}
-		return <p>Invalid Image Elem</p>;
+		return <ImageUploader />;
 	},
 };
 
