@@ -189,21 +189,21 @@ const tagToTransformer: TagToTransformer = {
 	},
 
 	p: (node) => {
-		let firstWord = "";
+		// let firstWord = "";
 		if (node.children.length == 0) return <></>;
-		if (node.children[0].tagName === "text") {
-			firstWord = node.children[0].text;
-		}
-		if (node.children.length === 1 && /^canvas-\d+$/.test(firstWord)) {
-			return (
-				<Suspense fallback={<p>Loading...</p>}>
-					<DrawingOrImage
-						// imageFolder={blogMeta.imageFolder}
-						canvasImageName={firstWord}
-					/>
-				</Suspense>
-			);
-		}
+		// if (node.children[0].tagName === "text") {
+		// 	firstWord = node.children[0].text;
+		// }
+		// if (node.children.length === 1 && /^canvas-\d+$/.test(firstWord)) {
+		// 	return (
+		// 		<Suspense fallback={<p>Loading...</p>}>
+		// 			<DrawingOrImage
+		// 				// imageFolder={blogMeta.imageFolder}
+		// 				canvasImageName={firstWord}
+		// 			/>
+		// 		</Suspense>
+		// 	);
+		// }
 		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
 
 		if (

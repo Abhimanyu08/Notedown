@@ -1,22 +1,37 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 
-import { BlogContext } from "@/app/post/components/BlogState";
-import { Tldraw } from "@tldraw/tldraw";
 import { useSupabase } from "@/app/appContext";
+import { BlogContext } from "@/app/post/components/BlogState";
+import { Tldraw, TldrawApp } from "@tldraw/tldraw";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
-import { EditorContext } from "@/app/write/components/EditorContext";
 
 function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	const [changeNumber, setChangeNumber] = useState(0);
 	const { blogState, dispatch } = useContext(BlogContext);
 	const { supabase } = useSupabase();
+	const [app, setApp] = useState<TldrawApp>();
 	useEffect(() => {
+		if (!app) return;
+
+		const shapeString = sessionStorage.getItem(`${canvasImageName}`);
+		if (shapeString) {
+			const shapes = JSON.parse(shapeString);
+			sessionStorage.removeItem(`${canvasImageName}`);
+			if (shapes.length > 0) {
+				// app.createShapes(assets);
+				app.insertContent({ shapes });
+			}
+		}
 		dispatch({
 			type: "add images to upload",
 			payload: [`${canvasImageName}.png`],
 		});
 		return () => {
+			sessionStorage.setItem(
+				`${canvasImageName}`,
+				JSON.stringify(app!.getShapes())
+			);
 			dispatch({
 				type: "remove canvas app",
 				payload: canvasImageName,
@@ -27,7 +42,7 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 				payload: [`${canvasImageName}.png`],
 			});
 		};
-	}, []);
+	}, [app]);
 
 	// useEffect(() => {
 	// 	if (!editorState.editingMarkdown && !mounted) setMounted(true);
@@ -58,6 +73,8 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 					disableAssets={false}
 					darkMode={false}
 					onMount={(app) => {
+						setApp(app);
+
 						if (
 							Object.hasOwn(
 								blogState.uploadedImages,

@@ -1,6 +1,7 @@
 "use client";
-import { memo } from "react";
+import { Suspense, memo } from "react";
 import Latex from "react-latex";
+import DrawingOrImage from "./DrawingOrImage";
 
 function CodeWord({ code }: { code: string }) {
 	let modifiedCode = code;
@@ -14,6 +15,16 @@ function CodeWord({ code }: { code: string }) {
 	}
 	if (modifiedCode.startsWith("~~") && modifiedCode.endsWith("~~")) {
 		return <del>{modifiedCode.slice(2, modifiedCode.length - 2)}</del>;
+	}
+	if (/^canvas-\d+$/.test(modifiedCode)) {
+		return (
+			<Suspense fallback={<p>Loading...</p>}>
+				<DrawingOrImage
+					// imageFolder={blogMeta.imageFolder}
+					canvasImageName={modifiedCode}
+				/>
+			</Suspense>
+		);
 	}
 	return <code>{modifiedCode}</code>;
 }
