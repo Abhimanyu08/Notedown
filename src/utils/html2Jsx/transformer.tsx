@@ -91,6 +91,10 @@ const tagToTransformer: TagToTransformer = {
 		return <CodeWord code={code} key={code} />;
 	},
 
+	br: () => {
+		return <br />;
+	},
+
 	pre: (node) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
