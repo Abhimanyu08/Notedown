@@ -1,7 +1,7 @@
 "use client";
 import { BlogContext } from "@/app/post/components/BlogState";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 
 function Carousel({
 	imageNames,
@@ -115,4 +115,7 @@ function Carousel({
 	);
 }
 
-export default Carousel;
+export default memo(Carousel, (prevProps, newProps) => {
+	return prevProps.captions.every((c, i) => c === newProps.captions[i]);
+});
+// export default Carousel;

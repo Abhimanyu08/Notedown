@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { MdContentCopy } from "react-icons/md";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -25,15 +25,13 @@ function CodeWithoutLanguage({
 	useEffect(() => {
 		if (language) {
 			language = language.toLowerCase();
-			if (!Object.keys(languageToImporter).includes(language)) {
-				alert(`${language} not supported`);
+			if (Object.keys(languageToImporter).includes(language)) {
+				languageToImporter[
+					language as keyof typeof languageToImporter
+				]().then(() => {
+					setImported(true);
+				});
 			}
-			languageToImporter[
-				language as keyof typeof languageToImporter
-			]().then(() => {
-				console.log(`Imported ${language}`);
-				setImported(true);
-			});
 		}
 	}, []);
 
@@ -153,4 +151,4 @@ async function loadShell() {
 	SyntaxHighlighter.registerLanguage("shell", lang.default);
 }
 
-export default CodeWithoutLanguage;
+export default memo(CodeWithoutLanguage);

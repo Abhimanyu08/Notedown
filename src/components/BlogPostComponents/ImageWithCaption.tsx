@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { BlogContext } from "@/app/post/components/BlogState";
 
@@ -46,4 +46,4 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	);
 }
 
-export default ImageWithCaption;
+export default memo(ImageWithCaption);

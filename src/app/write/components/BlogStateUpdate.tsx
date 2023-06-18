@@ -5,11 +5,21 @@ import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { EditorView } from "codemirror";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { BiCheck } from "react-icons/bi";
 import { EditorContext } from "./EditorContext";
 
-function BlogStateUpdate() {
+function BlogStateUpdate({
+	setBlogHtml,
+}: {
+	setBlogHtml: Dispatch<SetStateAction<string>>;
+}) {
 	const [documentMeta, setDocumentMeta] = useState({
 		line: 0,
 		col: 0,
@@ -58,9 +68,9 @@ function BlogStateUpdate() {
 								type: "set blog meta",
 								payload: {
 									...val?.data,
-									content: val?.content,
 								},
 							});
+							setBlogHtml(val.content);
 						}
 					);
 				}
@@ -81,23 +91,13 @@ function BlogStateUpdate() {
 
 						getHtmlFromMarkdownFile(markdown || "").then((val) => {
 							if (!val) return;
-							if (
-								blogState.blogMeta.language !==
-									val.data.language &&
-								blogState.containerId
-							) {
-								blogStateDispatch({
-									type: "remove container",
-									payload: null,
-								});
-							}
 							blogStateDispatch({
 								type: "set blog meta",
 								payload: {
 									...val?.data,
-									content: val?.content,
 								},
 							});
+							setBlogHtml(val.content);
 						});
 					}
 				}

@@ -121,6 +121,14 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			};
 		}
 		case "set blog meta":
+			if (
+				!hasBlogMetaChanged(state.blogMeta, {
+					...state.blogMeta,
+					...(action.payload as BlogStateInterface["blogMeta"]),
+				})
+			) {
+				return state;
+			}
 			return {
 				...state,
 				blogMeta: {
@@ -358,4 +366,16 @@ async function runCodeRequest({
 	} catch {}
 
 	return output;
+}
+
+function hasBlogMetaChanged(
+	prevMeta: BlogStateInterface["blogMeta"],
+	newMeta: BlogStateInterface["blogMeta"]
+) {
+	return (
+		prevMeta.id !== newMeta.id ||
+		prevMeta.title !== newMeta.title ||
+		prevMeta.description !== newMeta.description ||
+		prevMeta.language !== newMeta.language
+	);
 }

@@ -1,5 +1,11 @@
 "use client";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import {
+	MouseEventHandler,
+	memo,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { BsPencilFill, BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage, MdImage } from "react-icons/md";
@@ -220,4 +226,4 @@ const CodeAreaButton = ({
 	);
 };
 
-export default Code;
+export default memo(Code);

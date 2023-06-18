@@ -27,6 +27,7 @@ function EditorLayout({
 	const [initialMarkdown, setInitialMarkdown] = useState(
 		markdown || initialMarkdownMeta
 	);
+	const [blogHtml, setBlogHtml] = useState("");
 
 	useShortCut({
 		keys: ["Alt", "p"],
@@ -99,12 +100,13 @@ function EditorLayout({
 				className={`flex flex-col basis-1/2  overflow-y-auto border-r-[1px] border-gray-500 pr-1`}
 			>
 				<MarkdownEditor initialMarkdown={initialMarkdown} />
-				<BlogStateUpdate />
+				<BlogStateUpdate setBlogHtml={setBlogHtml} />
 			</div>
 
 			<div className={`basis-1/2`}>
 				<Blog
 					{...blogState.blogMeta}
+					content={blogHtml}
 					AuthorComponent={BlogAuthorClient}
 				/>
 			</div>
