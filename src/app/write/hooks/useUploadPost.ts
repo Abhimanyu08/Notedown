@@ -7,6 +7,8 @@ import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { useRouter } from "next/navigation";
+import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
+import { ToastContext } from "@/contexts/ToastProvider";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
@@ -16,6 +18,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const { editorState } = useContext(EditorContext)
     const { blogState, dispatch } = useContext(BlogContext)
     const [newPostId, setNewPostId] = useState<number | null>(blogState.blogMeta.id || null)
+    const context = useContext(ToastContext);
 
     const { supabase, session } = useSupabase()
     const created_by = session?.user?.id
@@ -34,6 +37,17 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 setUploading(false)
                 afterUpload()
                 setUploadFinished(true)
+
+                const localStorageKey = makeLocalStorageDraftKey(
+                    editorState.timeStamp!,
+                    blogState.blogMeta.id
+                );
+                localStorage.removeItem(localStorageKey);
+                blogStateDispatch({
+                    type: "set blog meta",
+                    payload: { id: postId },
+                });
+                context?.setMessage("Changes Uploaded");
 
             }).catch((e) => {
                 alert((e as Error).message)
@@ -219,3 +233,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 }
 
 export default useUploadPost
+
+function blogStateDispatch(arg0: { type: string; payload: { id: number | null; }; }) {
+    throw new Error("Function not implemented.");
+}
