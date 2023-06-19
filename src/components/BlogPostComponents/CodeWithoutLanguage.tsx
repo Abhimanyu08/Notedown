@@ -25,15 +25,14 @@ function CodeWithoutLanguage({
 	useEffect(() => {
 		if (language) {
 			language = language.toLowerCase();
-			if (!Object.keys(languageToImporter).includes(language)) {
-				alert(`${language} not supported`);
+			if (Object.keys(languageToImporter).includes(language)) {
+				languageToImporter[
+					language as keyof typeof languageToImporter
+				]().then(() => {
+					console.log(`Imported ${language}`);
+					setImported(true);
+				});
 			}
-			languageToImporter[
-				language as keyof typeof languageToImporter
-			]().then(() => {
-				console.log(`Imported ${language}`);
-				setImported(true);
-			});
 		}
 	}, []);
 
