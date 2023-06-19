@@ -2,8 +2,6 @@ import { BlogContext } from "@/app/post/components/BlogState";
 import ToolbarButton from "@/app/post/components/ToolbarButton";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
-import { motion } from "framer-motion";
-import Link from "next/link";
 import { memo, useContext, useEffect, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
@@ -12,13 +10,10 @@ import { TfiGallery } from "react-icons/tfi";
 import { VscLoading, VscPreview } from "react-icons/vsc";
 import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
-import { ToastContext } from "@/contexts/ToastProvider";
-import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 
 function EditorToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
-	const context = useContext(ToastContext);
 	const { language } = blogState.blogMeta;
 	const [startUpload, setStartUpload] = useState(false);
 	const [changed, setChanged] = useState(false);
@@ -48,18 +43,6 @@ function EditorToolbar() {
 	useEffect(() => {
 		if (uploadFinished) {
 			setStartUpload(false);
-			const localStorageKey = makeLocalStorageDraftKey(
-				editorState.timeStamp!,
-				blogState.blogMeta.id
-			);
-			console.log(localStorageKey);
-			localStorage.removeItem(localStorageKey);
-
-			blogStateDispatch({
-				type: "set blog meta",
-				payload: { id: newPostId },
-			});
-			context?.setMessage("Changes Uploaded");
 		}
 	}, [uploadFinished]);
 
