@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { memo } from "react";
 import { BiLink } from "react-icons/bi";
 
 function HeadinglinkButton({ headingId }: { headingId: string }) {
@@ -16,4 +16,4 @@ function HeadinglinkButton({ headingId }: { headingId: string }) {
 	);
 }
 
-export default HeadinglinkButton;
+export default memo(HeadinglinkButton);

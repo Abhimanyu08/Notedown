@@ -21,7 +21,7 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	}, []);
 
 	return (
-		<div className="w-full mb-4">
+		<div className="w-4/5 mb-4 mx-auto">
 			{validName && (
 				<>
 					<Image

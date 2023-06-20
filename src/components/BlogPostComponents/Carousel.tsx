@@ -2,20 +2,23 @@
 import { BlogContext } from "@/app/post/components/BlogState";
 import Image from "next/image";
 import React, { memo, useContext, useEffect, useState } from "react";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 
 function Carousel({
-	imageNames,
-	captions,
+	imageNamesString,
+	captionString,
 }: {
-	imageNames: string[];
-	captions: string[];
+	imageNamesString: string;
+	captionString: string;
 }) {
 	const [show, setShow] = useState(0);
 	const { blogState, dispatch } = useContext(BlogContext);
 	const [images, setImages] = useState<string[]>([]);
 	// const [imageToUrls, setImageToUrls] = useState<string[]>([])
+	const [captions, setCaptions] = useState<string[]>([]);
 
 	useEffect(() => {
+		const imageNames = imageNamesString.split(",");
 		const validImages = imageNames.filter(
 			(i) =>
 				Object.hasOwn(blogState.uploadedImages, i) ||
@@ -35,17 +38,21 @@ function Carousel({
 		};
 	}, []);
 
+	useEffect(() => {
+		setCaptions(captionString.split(";"));
+	}, [captionString]);
+
 	//show -> The idx of the image to show out of all the images.
 	const onSlide: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
 		if ((e.target as any).id === "pre") {
 			if (show === 0) {
-				setShow(imageNames.length - 1);
+				setShow(images.length - 1);
 			} else {
 				setShow(show - 1);
 			}
 		} else {
-			if (show === imageNames.length - 1) {
+			if (show === images.length - 1) {
 				setShow(0);
 			} else {
 				setShow(show + 1);
@@ -55,7 +62,7 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<>
+		<div className="w-4/5 mx-auto">
 			<div
 				className={`relative flex w-[600%] h-auto not-prose`}
 				// style={{ transform: `translateX(-${100 * show}%)` }}
@@ -90,13 +97,13 @@ function Carousel({
 					</div>
 				))}
 			</div>
-			<div className="flex justify-between not-prose items-center mt-2 h-5">
+			<div className="flex justify-between not-prose items-center mt-2">
 				<button
-					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5  text-center cursor-pointer"
+					className="rounded-full flex p-2 hover:scale-105 active:scale-95  justify-start text-black dark:text-white dark:hover:bg-slate-800 cursor-pointer"
 					id="pre"
 					onClick={onSlide}
 				>
-					❮
+					<BsArrowLeft size={16} />
 				</button>
 				<figcaption
 					className={`text-center text-xs  dark:text-font-grey  text-black  italic`}
@@ -104,18 +111,16 @@ function Carousel({
 					{captions.at(show) || ""}
 				</figcaption>
 				<button
-					className="rounded-full text-white dark:text-black dark:bg-white text-sm bg-black w-5 text-center cursor-pointer"
+					className="rounded-full flex p-2 hover:scale-105 active:scale-95  justify-start text-black dark:text-white dark:hover:bg-slate-800 cursor-pointer"
 					id="post"
 					onClick={onSlide}
 				>
-					❯
+					<BsArrowRight size={16} />
 				</button>
 			</div>
-		</>
+		</div>
 	);
 }
 
-export default memo(Carousel, (prevProps, newProps) => {
-	return prevProps.captions.every((c, i) => c === newProps.captions[i]);
-});
+export default memo(Carousel);
 // export default Carousel;

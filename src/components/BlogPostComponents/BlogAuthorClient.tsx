@@ -2,7 +2,7 @@
 import { useSupabase } from "@/app/appContext";
 import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 function BlogAuthorClient() {
 	const { session, supabase } = useSupabase();
@@ -19,9 +19,9 @@ function BlogAuthorClient() {
 			.then((val) => {
 				setAuthor(val.data?.name || "");
 			});
-	}, [session?.user.id]);
+	}, [session]);
 
 	return <Link href={`/profile/${session?.user.id}`}>{author}</Link>;
 }
 
-export default BlogAuthorClient;
+export default memo(BlogAuthorClient);

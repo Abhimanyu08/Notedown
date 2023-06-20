@@ -196,6 +196,9 @@ button:active:not(.no-scale) {
 	scale: 0.95;
 }
 
+.tooltip {
+	position: relative;
+}
 .tooltip:hover::after {
 	display: block;
 	position: absolute;
@@ -262,14 +265,20 @@ button:active:not(.no-scale) {
 } */
 
 #footer-section {
-	margin-top: 10px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	margin-top: 20px;
+	padding-top: 8px;
+	padding-left: 4px;
+	padding-bottom: 8px;
 	border-top-width: 1px;
 	border-bottom-width: 1px;
-	border-color: rgb(156 163 175);
+	border-color: rgb(54, 55, 56);
+	border-style: dashed;
 }
 
 .toast {
 	box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.8);
+}
+
+sup {
+	padding-left: 3px;
 }

@@ -51,7 +51,6 @@ function BlogStateUpdate({
 		);
 
 		if (localStorageKey !== localStorageDraftKey) {
-			localStorage.removeItem(localStorageDraftKey);
 			setLocalStorageDraftKey(localStorageKey);
 		}
 	}, [blogState.blogMeta.id]);

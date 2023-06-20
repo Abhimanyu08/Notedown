@@ -1,16 +1,14 @@
 import Carousel from "@components/BlogPostComponents/Carousel";
 import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
-import Codesandbox from "@components/BlogPostComponents/Codesandbox";
-import DrawingOrImage from "@components/BlogPostComponents/DrawingOrImage";
+import CodeWord from "@components/BlogPostComponents/CodeWord";
+import Footers from "@components/BlogPostComponents/Footers";
 import HeadinglinkButton from "@components/BlogPostComponents/HeadinglinkButton";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
-import CodeWord from "@components/BlogPostComponents/CodeWord";
-import LexicaImage from "@components/BlogPostComponents/LexicaImage";
-import React, { Suspense } from "react";
+import ImageUploader from "@components/EditorComponents/ImageUploader";
+import React from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
-import ImageUploader from "@components/EditorComponents/ImageUploader";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: HtmlNode }[] = [];
@@ -41,25 +39,7 @@ export default function transformer(
 		<>
 			{defaultTagToJsx(node, parent)}
 			{node.tagName === "main" && footNotes.length > 0 && (
-				<div id="footer-section">
-					{footNotes
-						.sort((a, b) => (a.id < b.id ? -1 : 1))
-						.map((footNote) => {
-							return (
-								<li className="flex gap-2 " key={footNote.id}>
-									<span className="not-prose hover:underline text-gray-100 hover:text-white">
-										<a
-											href={`#footnote-referrer-${footNote.id}`}
-											className=""
-										>
-											{footNote.id}.
-										</a>
-									</span>
-									{transformer(footNote.node)}
-								</li>
-							);
-						})}
-				</div>
+				<Footers footNotes={footNotes} />
 			)}
 		</>
 	);
@@ -101,6 +81,7 @@ const tagToTransformer: TagToTransformer = {
 		let code =
 			((node.children[0] as HtmlNode).children[0] as TextNode)?.text ||
 			"";
+		code = code.trim();
 		if (typeof window !== "undefined") {
 			let tempElement = document.createElement("div");
 			tempElement.innerHTML = code;
@@ -121,15 +102,15 @@ const tagToTransformer: TagToTransformer = {
 				/>
 			);
 		}
-		if (blockLanguage.toLowerCase() === "sandpack") {
-			try {
-				const settings = JSON.parse(code);
-				return <Codesandbox settingsString={code} />;
-			} catch (e) {
-				alert((e as Error).message);
-				return <p>Invalid JSON in your settings. </p>;
-			}
-		}
+		// if (blockLanguage.toLowerCase() === "sandpack") {
+		// 	try {
+		// 		const settings = JSON.parse(code);
+		// 		return <Codesandbox settingsString={code} />;
+		// 	} catch (e) {
+		// 		alert((e as Error).message);
+		// 		return <p>Invalid JSON in your settings. </p>;
+		// 	}
+		// }
 		return (
 			<CodeWithoutLanguage
 				code={code}
@@ -175,7 +156,7 @@ const tagToTransformer: TagToTransformer = {
 			return (
 				<sup
 					id={`footnote-referrer-${footNoteId}`}
-					className="not-prose text-gray-100 pl-[3px]  hover:underline hover:text-white"
+					className=" text-blue-400 pl-[4px]  hover:underline"
 				>
 					{React.createElement("a", node.attributes, footNoteId)}
 				</sup>
@@ -275,12 +256,10 @@ const tagToTransformer: TagToTransformer = {
 		const { alt, src } = node.attributes as { alt: string; src: string };
 
 		if (src.split(",").length > 1) {
-			const captions = alt.split(";");
-
 			return (
 				<Carousel
-					imageNames={src.split(",")}
-					captions={captions}
+					imageNamesString={src}
+					captionString={alt}
 					key={src}
 				/>
 			);
@@ -289,9 +268,9 @@ const tagToTransformer: TagToTransformer = {
 		if (src) {
 			return <ImageWithCaption name={src} alt={alt} key={src} />;
 		}
-		if (alt && !src) {
-			return <LexicaImage alt={alt} />;
-		}
+		// if (alt && !src) {
+		// 	return <LexicaImage alt={alt} />;
+		// }
 		return <ImageUploader />;
 	},
 };
