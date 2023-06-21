@@ -63,7 +63,7 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 
 	return (
 		<>
-			<div className="relative w-full aspect-[4/3] self-center not-prose">
+			<div className="relative w-full aspect-[4/3] self-center not-prose my-4">
 				<Tldraw
 					key={canvasImageName}
 					showMenu={false}

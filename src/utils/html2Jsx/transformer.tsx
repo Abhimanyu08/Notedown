@@ -9,6 +9,7 @@ import ImageUploader from "@components/EditorComponents/ImageUploader";
 import React from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
+import Details from "@components/BlogPostComponents/Details";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: HtmlNode }[] = [];
@@ -66,8 +67,25 @@ const tagToTransformer: TagToTransformer = {
 		return headingToRenderers;
 	})(),
 
+	details: (node) => {
+		let detailsText = "";
+
+		node.children?.forEach((c) => {
+			if (c.tagName === "text") detailsText += c.text;
+		});
+		detailsText = detailsText.trim();
+
+		let summaryNode = node.children.find((c) => c.tagName === "summary");
+		let summaryText = extractTextFromChildren(
+			(summaryNode as HtmlNode)?.children || []
+		).trim();
+
+		return <Details detailsText={detailsText} summaryText={summaryText} />;
+	},
+
 	code: (node) => {
-		let code = (node.children[0] as TextNode).text;
+		let code = (node.children[0] as TextNode)?.text;
+		if (!code) return <code></code>;
 		return <CodeWord code={code} key={code} />;
 	},
 
@@ -78,9 +96,8 @@ const tagToTransformer: TagToTransformer = {
 	pre: (node) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
-		let code =
-			((node.children[0] as HtmlNode).children[0] as TextNode)?.text ||
-			"";
+		let codeNode = node.children[0] as HtmlNode;
+		let code = (codeNode.children[0] as TextNode)?.text || "";
 		code = code.trim();
 		if (typeof window !== "undefined") {
 			let tempElement = document.createElement("div");
@@ -88,9 +105,10 @@ const tagToTransformer: TagToTransformer = {
 			code = tempElement.innerText || tempElement.textContent || "";
 		}
 
-		const { language: blockLanguage } = node.attributes as {
-			language?: string;
+		const { class: className } = codeNode.attributes as {
+			class: string;
 		};
+		const blockLanguage = /language-(.*)/.exec(className)?.at(1);
 
 		if (!blockLanguage) {
 			BLOCK_NUMBER += 1;
@@ -102,15 +120,11 @@ const tagToTransformer: TagToTransformer = {
 				/>
 			);
 		}
-		// if (blockLanguage.toLowerCase() === "sandpack") {
-		// 	try {
-		// 		const settings = JSON.parse(code);
-		// 		return <Codesandbox settingsString={code} />;
-		// 	} catch (e) {
-		// 		alert((e as Error).message);
-		// 		return <p>Invalid JSON in your settings. </p>;
-		// 	}
+
+		// if (blockLanguage === "details") {
+		// 	console.log(node);
 		// }
+
 		return (
 			<CodeWithoutLanguage
 				code={code}
@@ -172,19 +186,7 @@ const tagToTransformer: TagToTransformer = {
 	p: (node) => {
 		// let firstWord = "";
 		if (node.children.length == 0) return <></>;
-		// if (node.children[0].tagName === "text") {
-		// 	firstWord = node.children[0].text;
-		// }
-		// if (node.children.length === 1 && /^canvas-\d+$/.test(firstWord)) {
-		// 	return (
-		// 		<Suspense fallback={<p>Loading...</p>}>
-		// 			<DrawingOrImage
-		// 				// imageFolder={blogMeta.imageFolder}
-		// 				canvasImageName={firstWord}
-		// 			/>
-		// 		</Suspense>
-		// 	);
-		// }
+
 		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
 
 		if (

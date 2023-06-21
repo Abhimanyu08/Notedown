@@ -36,6 +36,7 @@ export default function parser(tokens: ReturnType<typeof tokenizer>) {
     function addChildren(parent: HtmlNode) {
         current++
         let token = tokens[current]
+        if (!token) return
         while (!(token.type === "close tag" && token.name === parent.tagName)) {
             if (token.type === "text") {
                 parent.children.push({ tagName: "text", text: token.text } as TextNode)

@@ -3,41 +3,7 @@ import { ALLOWED_LANGUAGES, DESCRIPTION_LENGTH, SUPABASE_FILES_BUCKET, TITLE_LEN
 import mdToHtml from "./mdToHtml";
 import { supabase } from "./supabaseClient";
 
-function resetCodeblocks(markdown: string, html: string) {
 
-    let mdMatchedArray = Array.from(
-        markdown.matchAll(/```([^`]*?\r?\n)?((.|\n|\r)*?)(\r\n)?```/g)
-    )
-    // const mdMatched = mdMatchedArray.map((match) => match.at(3));
-    const contentMatchedArray = Array.from(
-        html.matchAll(/<pre><code>((.|\n|\r)*?)<\/code><\/pre>/g)
-    );
-
-    // const contentMatch = contentMatchedArray.map((m) => m?.at(2))
-
-    for (let i = 0; i < mdMatchedArray.length; i++) {
-
-        // if there's something like ```sql **some code** ``` then it should be converted to <pre language="sql"><code>**some code**</code></pre>
-        const lang = mdMatchedArray[i].at(1)?.trim()
-        const correspondingHtml = contentMatchedArray[i].at(0) as string
-        const htmlCode = contentMatchedArray[i].at(1) as string
-        if (lang) {
-
-            html = html.replace(correspondingHtml, `<pre language="${lang}"><code>${htmlCode}</code></pre>`)
-
-        }
-        //  else {
-        //     html = html.replace(wrongCode, originalCode)
-        // }
-    }
-
-    // 
-
-
-
-
-    return html;
-}
 
 export async function getHtmlFromMarkdownFile(file: File | Blob | string): Promise<{ data: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }, content: string }> {
 
@@ -68,7 +34,7 @@ export async function getHtmlFromMarkdownFile(file: File | Blob | string): Promi
         throw Error(`Either title or description is too large. Max title length - ${TITLE_LENGTH}, Max description length - ${DESCRIPTION_LENGTH}`)
     }
     let html = await mdToHtml(content);
-    html = resetCodeblocks(content, html)
+    // html = resetCodeblocks(content, html)
     return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content: html }
 
 }
