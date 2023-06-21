@@ -41,7 +41,7 @@ function Details({
 	}, [summaryText, detailsText]);
 
 	return (
-		<details className="marker:text-white p-4 rounded-sm border-[1px] border-gray-200">
+		<details className="marker:text-white py-3 px-4 rounded-sm border-[1px] border-gray-200">
 			<summary className="[&>p]:inline cursor-pointer text-lg ">
 				{summaryJsx}
 			</summary>

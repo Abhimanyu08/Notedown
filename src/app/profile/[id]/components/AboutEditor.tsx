@@ -40,7 +40,7 @@ function AboutEditor({
 	useEffect(() => {
 		if (!editorState.editingMarkdown && editorState.editorView) {
 			const markdown = editorState.editorView.state.sliceDoc();
-			mdToHtml(markdown).then((val) => setHtml(val));
+			setHtml(mdToHtml(markdown));
 		}
 	}, [editorState.editingMarkdown]);
 
