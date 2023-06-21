@@ -1,8 +1,9 @@
-import parser, { HtmlNode, TextNode } from "@utils/html2Jsx/parser";
+"use client";
+import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
 import mdToHtml from "@utils/mdToHtml";
-import React, { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 function Details({
 	summaryText,
@@ -40,11 +41,11 @@ function Details({
 	}, [summaryText, detailsText]);
 
 	return (
-		<details className="marker:text-white p-4 bg-slate-900">
+		<details className="marker:text-white p-4 rounded-sm border-[1px] border-gray-200">
 			<summary className="[&>p]:inline cursor-pointer text-lg ">
 				{summaryJsx}
 			</summary>
-			{detailsJsx}
+			<section className="px-4">{detailsJsx}</section>
 		</details>
 	);
 }

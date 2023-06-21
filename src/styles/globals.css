@@ -282,3 +282,11 @@ button:active:not(.no-scale) {
 sup {
 	padding-left: 3px;
 }
+
+thead th {
+	font-size: large;
+}
+
+tbody td {
+	color: rgb(209 213 219);
+}
