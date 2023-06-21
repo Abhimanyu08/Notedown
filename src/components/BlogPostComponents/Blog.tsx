@@ -17,11 +17,9 @@ const Blog = memo(
 		extraClasses,
 		AuthorComponent,
 	}: Partial<BlogProps> & {
-		AuthorComponent: ({
-			createdBy,
-		}: {
-			createdBy: string;
-		}) => JSX.Element | Promise<JSX.Element>;
+		AuthorComponent:
+			| React.MemoExoticComponent<() => JSX.Element>
+			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>);
 	}) {
 		const tokens = tokenizer(content || "");
 		const parsedOutput = parser(tokens);
