@@ -14,15 +14,17 @@ function ToastDisplay() {
 			setMessageToShow(message);
 			setTimeout(() => {
 				setMessage("");
-			}, 2000);
+			}, 3000);
 		}
 	}, [message]);
 
 	return (
 		<div
 			className={`toast font-mono fixed bottom-4 right-4 text-gray-200 border-[1px] border-gray-100 rounded-sm p-4 ${
-				message ? "opacity-100" : "opacity-0"
-			} transition-opacity duration-500`}
+				message
+					? "translate-x-0 opacity-100"
+					: "translate-x-full opacity-0"
+			} transition-all  duration-500 z-[100]`}
 		>
 			{messageToShow}
 		</div>

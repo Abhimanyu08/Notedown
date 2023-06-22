@@ -1,13 +1,14 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
 import { usePathname } from "next/navigation";
-import { useTransition } from "react";
+import { useContext, useEffect, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
 import Link from "next/link";
 import useOwner from "@/hooks/useOwner";
+import { ToastContext } from "@/contexts/ToastProvider";
 
 export function PostOptions({
 	published,
@@ -26,7 +27,17 @@ export function PostOptions({
 }) {
 	const pathname = usePathname();
 	const owner = useOwner();
+	const [takenAction, setTakenAction] = useState<
+		"published" | "deleted" | "unpublished" | ""
+	>("");
 	const [isPending, startTransition] = useTransition();
+	const context = useContext(ToastContext);
+
+	useEffect(() => {
+		if (!isPending && takenAction) {
+			context?.setMessage(`${postTitle} ${takenAction}`);
+		}
+	}, [isPending]);
 
 	return (
 		<>
@@ -37,6 +48,7 @@ export function PostOptions({
 				postId={postId}
 				onAction={() => {
 					startTransition(() => {
+						setTakenAction("deleted");
 						if (deletePostAction) deletePostAction(postId);
 					});
 				}}
@@ -48,6 +60,7 @@ export function PostOptions({
 				isActionPending={isPending}
 				onAction={() => {
 					startTransition(() => {
+						setTakenAction("published");
 						if (publishPostAction) publishPostAction(postId);
 					});
 				}}
@@ -59,6 +72,7 @@ export function PostOptions({
 				isActionPending={isPending}
 				onAction={() => {
 					startTransition(() => {
+						setTakenAction("unpublished");
 						if (unpublishPostAction) unpublishPostAction(postId);
 					});
 				}}

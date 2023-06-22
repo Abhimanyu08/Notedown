@@ -1,54 +1,69 @@
 "use client";
-import { SEARCH_PRIVATE, SEARCH_PUBLC } from "@utils/constants";
-import { supabase } from "@utils/supabaseClient";
-import React, { useContext, useState } from "react";
-import { PostTypeContext } from "./PostTypeContext";
-import { AiOutlineEnter } from "react-icons/ai";
+import useSearch from "@/hooks/useSearch";
+import { Database } from "@/interfaces/supabase";
+import PostComponent from "@components/PostComponent";
+import React, { useEffect, useState } from "react";
+import { VscLoading } from "react-icons/vsc";
+import { SinglePostLoading } from "./SinglePostLoading";
 
-function SearchComponent({ id }: { id: string }) {
-	const [query, setQuery] = useState("");
-	const { searchResults, setSearchResults } = useContext(PostTypeContext);
-	const search = async (query: string) => {
-		const { data, error } = await supabase.rpc(SEARCH_PRIVATE, {
-			user_id: id,
-			search_term: query,
-			cursor: 1,
-		});
-		if (!data || data.length === 0 || error) setSearchResults([]);
-		setSearchResults(data || []);
-	};
+function SearchComponent({
+	publishPostAction,
+	unpublishPostAction,
+	deletePostAction,
+}: {
+	publishPostAction?: (postId: number) => Promise<void>;
+	unpublishPostAction?: (postId: number) => Promise<void>;
+	deletePostAction?: (postId: number) => Promise<void>;
+}) {
+	const [searchQuery, setSearchQuery] = useState("");
+	const { searching, searchResults, searchError } = useSearch(searchQuery);
+
 	return (
-		<div className="relative hover:absolute top-0 left-0 w-full">
+		<div
+			className={` absolute flex flex-col gap-4 top-0 left-0 w-full px-2 ${
+				searchResults.length > 0 ? "h-full" : ""
+			}`}
+		>
 			<input
-				type="text"
-				name=""
-				id=""
-				value={query}
-				onChange={(e) => setQuery(e.currentTarget.value)}
+				className="rounded-md transition-all duration-500 w-44 self-end focus:w-56 focus:outline-none focus:border-gray-300 items-center px-3 py-1 border-[1px] border-gray-500 text-sm text-gray-100 bg-black"
+				placeholder="Search"
 				onKeyDown={(e) => {
 					if (e.key === "Enter") {
-						search(query.trim().split(" ").join(" | "));
-					}
-					if (e.key === "Escape") {
-						setQuery("");
-						setSearchResults([]);
+						if (!searching) setSearchQuery(e.currentTarget.value);
 					}
 				}}
-				className="w-full rounded-sm px-2 py-1 text-sm text-black"
-				placeholder="Search Posts"
+				onChange={(e) => {
+					if (e.target.value === "") setSearchQuery("");
+				}}
 			/>
-			<div className="absolute text-xs  right-1 top-[1.2px]">
-				{query && searchResults.length === 0 && (
-					<button className="px-3 py-1 hover:italic active:scale-95 bg-gray-800">
-						Press <AiOutlineEnter />
-					</button>
-				)}
-				{searchResults.length > 0 && (
-					<button className="px-3 py-1 hover:italic active:scale-95 bg-gray-800">
-						Press Esc to clear
-					</button>
-				)}
-			</div>
+			{searching && (
+				<div className="flex flex-col gap-10 bg-black z-50">
+					{Array.from({ length: 4 }).map((_, i) => (
+						<SinglePostLoading key={i} />
+					))}
+				</div>
+			)}
+
+			{searchError && (
+				<p className="text-white bg-black p-4 rounded-sm border-[1px] border-gray-500">
+					{searchError.message}
+				</p>
+			)}
+			{searchResults.length > 0 && (
+				<div className="flex flex-col gap-8 grow bg-black z-50">
+					{searchResults.map((post) => (
+						<PostComponent
+							key={post.id}
+							post={post}
+							{...{
+								publishPostAction,
+								unpublishPostAction,
+								deletePostAction,
+							}}
+						/>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }
