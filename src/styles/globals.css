@@ -196,6 +196,9 @@ button:active:not(.no-scale) {
 	scale: 0.95;
 }
 
+.tooltip:hover {
+	position: relative;
+}
 .tooltip:hover::after {
 	display: block;
 	position: absolute;
