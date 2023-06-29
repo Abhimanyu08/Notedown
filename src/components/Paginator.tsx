@@ -12,11 +12,17 @@ function Paginator({
 	lastPost,
 	cursorKey,
 	hasMore,
+	publishPostAction,
+	unpublishPostAction,
+	deletePostAction,
 }: {
 	postType: PostTypes;
 	lastPost: PostWithBlogger | UpvoteWithPost;
 	cursorKey: keyof PostWithBlogger;
 	hasMore: boolean;
+	publishPostAction?: (postId: number) => Promise<void>;
+	unpublishPostAction?: (postId: number) => Promise<void>;
+	deletePostAction?: (postId: number) => Promise<void>;
 }) {
 	const { supabase } = useSupabase();
 	const [newPosts, setNewPosts] = useState<PostWithBlogger[]>([]);
@@ -39,7 +45,15 @@ function Paginator({
 	return (
 		<div className="flex flex-col gap-8 mt-8">
 			{newPosts?.map((post, idx) => (
-				<PostComponent key={idx} post={post} />
+				<PostComponent
+					key={idx}
+					post={post}
+					{...{
+						publishPostAction,
+						unpublishPostAction,
+						deletePostAction,
+					}}
+				/>
 			))}
 			{hasMorePosts && (
 				<button

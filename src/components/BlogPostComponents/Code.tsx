@@ -163,7 +163,7 @@ function Code({ code, blockNumber }: CodeProps) {
 					)}
 				</CodeAreaButton>
 				<CodeAreaButton
-					className="md:tooltip hidden lg:block mr-1"
+					className=" hidden lg:block mr-1"
 					tip="Enable Vim"
 					onClick={() => {
 						// if (setVimEnabled) setVimEnabled((prev) => !prev);
@@ -215,7 +215,7 @@ const CodeAreaButton = ({
 	return (
 		<button
 			className={
-				"tooltip tooltip-top text-cyan-400 hover:scale-110 active:scale-90 " +
+				"tooltip tooltip-top tooltip-left text-cyan-400 hover:scale-110 active:scale-90 " +
 					className || ""
 			}
 			onClick={onClick}

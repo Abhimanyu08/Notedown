@@ -5,7 +5,6 @@ import React from "react";
 import ProfileControl from "./components/ProfileControl";
 import ProfileImageEditor from "./components/ProfileImageEditor";
 import { BsPersonCircle } from "react-icons/bs";
-import SearchModal from "./posts/components/SearchModal";
 import { Metadata } from "next";
 import { supabase } from "@utils/supabaseClient";
 import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
@@ -56,7 +55,6 @@ async function ProfileLayout({
 	}
 	return (
 		<>
-			<SearchModal />
 			<div className="lg:grid flex lg:w-4/6 mx-auto flex-col grow  h-full overflow-y-auto lg:overflow-y-clip lg:grid-cols-7 text-white gap-y-10 pt-10">
 				{/* <AboutEditorModal
 				about={userData?.about || ""}

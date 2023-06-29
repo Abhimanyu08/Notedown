@@ -10,7 +10,7 @@ function ProfileControl({ id }: { id: string }) {
 	return (
 		<div className="profile-control flex flex-col  gap-3 mt-10 text-sm">
 			<Link href={`/profile/${id}`}>
-				<ProfileButton className="px-3 py-1 hover:italic active:scale-95">
+				<ProfileButton className="px-3 py-1 hover:font-semibold active:scale-95">
 					About
 					{!pathname?.includes("posts") &&
 					!pathname?.startsWith("/post") ? (
@@ -27,7 +27,7 @@ function ProfileControl({ id }: { id: string }) {
 				</ProfileButton>
 			</Link>
 			<Link href={`/profile/${id}/posts`}>
-				<ProfileButton className="px-3 py-1 hover:italic active:scale-95">
+				<ProfileButton className="px-3 py-1 hover:font-semibold active:scale-95">
 					Posts
 					{pathname?.includes("posts") ||
 					pathname?.startsWith("/post") ? (

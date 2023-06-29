@@ -26,7 +26,7 @@ function PostControl() {
 					>
 						<ProfileButton
 							// onClick={() => setPostType(type)}
-							className="px-3 py-1 flex items-center justify-center hover:italic active:scale-95"
+							className="px-3 py-1 flex items-center justify-center hover:font-semibold active:scale-95"
 							// className="text-sm bg-gray-800 hover:scale-105 ative:scale-95  px-3  border-black border-[1px] transition-[scale] duration-200 rounded-md"
 						>
 							<span className="text-xs capitalize">{type}</span>
