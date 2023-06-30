@@ -5,7 +5,7 @@ import { BiLink } from "react-icons/bi";
 function HeadinglinkButton({ headingId }: { headingId: string }) {
 	return (
 		<button
-			className="rounded-full tooltip p-1 ml-3 text-white invisible group-hover:visible  hover:scale-105 active:scale-95"
+			className="rounded-full tooltip tooltip-top p-1 ml-3 text-white invisible group-hover:visible  hover:scale-105 active:scale-95"
 			onClick={() => {
 				navigator.clipboard.writeText(`#${headingId}`);
 			}}

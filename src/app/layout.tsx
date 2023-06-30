@@ -7,6 +7,31 @@ import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-next
 import { cookies, headers } from "next/headers";
 import ToastProvider from "@/contexts/ToastProvider";
 import ToastDisplay from "@components/ToastDisplay";
+import {
+	IBM_Plex_Serif,
+	Source_Code_Pro,
+	IBM_Plex_Sans,
+} from "next/font/google";
+
+const serif = IBM_Plex_Serif({
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-serif",
+	weight: ["400", "700"],
+});
+const mono = Source_Code_Pro({
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-mono",
+	weight: ["400", "700"],
+});
+const sans = IBM_Plex_Sans({
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-sans",
+	weight: ["400", "700"],
+});
+
 export const metadata: Metadata = {
 	title: "Rce-blog",
 	description:
@@ -47,7 +72,10 @@ export default async function RootLayout({
 	} = await supabase.auth.getSession();
 
 	return (
-		<html lang="en" className="dark">
+		<html
+			lang="en"
+			className={`dark ${serif.variable} ${sans.variable} ${mono.variable}`}
+		>
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<SupabaseProvider session={session}>
 					<ToastProvider>

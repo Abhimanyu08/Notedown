@@ -28,14 +28,13 @@ function ImageUploader() {
 			<input
 				type="file"
 				onChange={(e) => {
-					const imagesObj = getImagesObj(e);
-					setFileNames(Object.keys(imagesObj));
+					const [imagesObj, fileNamesToAdd] = getImagesObj(e);
+					setFileNames(fileNamesToAdd);
 					dispatch({
 						type: "set image to files",
 						payload: imagesObj,
 					});
 				}}
-				max={6}
 				// id="gallery-input"
 				accept="image/*"
 				className="file:my-2  file:px-4 file:text-white file:rounded-md file:bg-black file:border-[1px] file:border-white file:hover:bg-gray-800 file:active:scale-95"
@@ -46,14 +45,18 @@ function ImageUploader() {
 }
 
 const getImagesObj = (e: React.ChangeEvent<HTMLInputElement>) => {
-	if (!e.currentTarget.files) return {};
+	if (!e.currentTarget.files) return [];
 	const obj: Record<string, File> = {};
-	Array.from(e.currentTarget.files).map((file) => {
+	const fileNames: string[] = [];
+	for (let i = 0; i < e.currentTarget.files.length; i++) {
+		const file = e.currentTarget.files.item(i)!;
 		let fileName = file.name;
 		fileName = processImageName(fileName);
+		fileNames.push(fileName);
 
 		obj[fileName] = file;
-	});
-	return obj;
+	}
+	console.log(fileNames);
+	return [obj, fileNames] as const;
 };
 export default ImageUploader;

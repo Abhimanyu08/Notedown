@@ -31,50 +31,35 @@ const Blog = memo(
 				className={
 					`
 				scroll-smooth   
-				// max-w-none 
 				h-full 
 				overflow-x-hidden		
 				// --------overflow-y-auto
-				prose prose-sm
+				prose
 				//-------------prose-headings------------
 				prose-headings:text-black
 				dark:prose-headings:text-white
-				prose-headings:font-sans
-				prose-h2:text-[26px]
-				prose-h3:text-[24px]
-				prose-h4:text-[22px]
-				prose-h5:text-[20px]
-				prose-h6:text-[18px]
+				prose-headings:font-serif
+
 				// ---------prose-p--------------
-				prose-p:text-left
-				md:prose-p:text-[16px]	
-				prose-p: leading-7
-				prose-p:font-sans
-				prose-p:tracking-normal
 				prose-p:text-black/80
 				dark:prose-p:text-gray-300
 
 				// -------------prose-li--------
 				marker:prose-li:text-black
-				dark:marker:prose-li:text-white
+				dark:marker:prose-li:text-gray-500
 				prose-li:text-black/80
-				prose-li:font-sans
-				md:prose-li:text-[16px]	
-				prose-li:leading-7
 				dark:prose-li:text-gray-300
 
-				// -----------prose-string-----------
-				prose-strong:font-bold
+				// -----------prose-strong-----------
 				prose-strong:text-black
-				dark:prose-strong:text-gray-100
-				prose-strong:tracking-wide
+				dark:prose-strong:text-gray-200
 
 				//-----------------prose-a-------------
 				prose-a:text-black
-				dark:prose-a:text-blue-400
-				prose-a:font-semibold
+				dark:prose-a:text-blue-300
 				prose-a:no-underline
 				hover:prose-a:underline
+				prose-a:hover:text-blue-500
 				hover:prose-a:underline-offset-2
 
 				// ---------------prose-code---------------
@@ -82,14 +67,16 @@ const Blog = memo(
 				dark:prose-code:text-gray-300
 				prose-code:bg-white
 				prose-code:text-black
+				prose-code:font-mono
 				prose-code:px-1 
-				md:prose-code:text-sm 
 				prose-code:rounded-sm
 				prose-code:select-all
 
+				
+
 				// ---------------prose-em---------------
 				prose-em:text-black
-				dark:prose-em:text-gray-100
+				dark:prose-em:text-gray-300
 
 				//-----------------figcaption-------------
 
@@ -102,7 +89,7 @@ const Blog = memo(
 				dark:prose-blockquote:border-l-gray-300
 				dark:prose-blockquote:text-gray-300
 				prose-blockquote:text-black/80
-				  prose-h1:mb-6   
+
 				
 				pb-20 md:pb-10 
 				lg:scrollbar-thin 
@@ -119,7 +106,7 @@ const Blog = memo(
 					<blockquote className="text-left text-lg">
 						{description}
 					</blockquote>
-					<div className="dark:text-font-grey flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
+					<div className="dark:text-gray-400 flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 						<span>by</span>
 						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-white">
 							{/* @ts-expect-error Async Server Component  */}

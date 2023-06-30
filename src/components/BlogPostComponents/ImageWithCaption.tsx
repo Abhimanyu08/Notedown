@@ -21,7 +21,7 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	}, []);
 
 	return (
-		<div className="w-4/5 mb-4 mx-auto">
+		<figure className="w-4/5 mb-4 mx-auto">
 			{validName && (
 				<>
 					<Image
@@ -37,12 +37,10 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 						width={1440}
 						height={1080}
 					/>
-					<figcaption className="text-center italic text-font-grey">
-						{alt}
-					</figcaption>
+					<figcaption className="text-center">{alt}</figcaption>
 				</>
 			)}
-		</div>
+		</figure>
 	);
 }
 

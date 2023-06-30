@@ -9,12 +9,10 @@ module.exports = {
 	],
 	theme: {
 		extend: {
-			dropShadow: {
-				button: "3px 3px 2px #ffffff",
-			},
-			colors: {
-				"light-white": "rgb(239, 239, 239)",
-				"font-grey": "rgb(170,170,170)",
+			fontFamily: {
+				sans: ["var(--font-sans)"],
+				mono: ["var(--font-mono)"],
+				serif: ["var(--font-serif)"],
 			},
 		},
 	},

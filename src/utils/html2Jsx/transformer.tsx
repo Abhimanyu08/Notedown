@@ -92,7 +92,9 @@ const tagToTransformer: TagToTransformer = {
 	br: () => {
 		return <br />;
 	},
-
+	hr: () => {
+		return <hr />;
+	},
 	pre: (node) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
