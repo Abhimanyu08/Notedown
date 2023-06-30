@@ -13,7 +13,7 @@
 
 .prose {
 	font-size: 1.1rem;
-	max-width: 75ch;
+	max-width: 65ch;
 	font-kerning: auto;
 }
 
@@ -78,6 +78,9 @@
 	color: white;
 }
 
+.post-control {
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 .tool {
 	background-color: #21252b;
 	color: white;
@@ -296,4 +299,8 @@ thead th {
 
 tbody td {
 	color: rgb(209 213 219);
+}
+
+.prose :where(ul, ol):not(:where([class~="not-prose"] *)) {
+	padding-left: 1em;
 }

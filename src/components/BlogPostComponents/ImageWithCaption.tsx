@@ -37,7 +37,9 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 						width={1440}
 						height={1080}
 					/>
-					<figcaption className="text-center">{alt}</figcaption>
+					<figcaption className="text-center italic">
+						{alt}
+					</figcaption>
 				</>
 			)}
 		</figure>

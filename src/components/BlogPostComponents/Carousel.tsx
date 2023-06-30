@@ -114,7 +114,7 @@ function Carousel({
 						/>
 					</div>
 					<figcaption
-						className={`text-center  text-gray-400 text-[0.875em]`}
+						className={`text-center italic text-gray-400 text-[0.875em]`}
 					>
 						{captions.at(idx) || ""}
 					</figcaption>

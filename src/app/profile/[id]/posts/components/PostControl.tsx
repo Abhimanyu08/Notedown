@@ -21,7 +21,7 @@ function PostControl() {
 				return (
 					<Link
 						href={`/profile/${params!.id}/posts/${type}`}
-						className="flex items-center"
+						className="flex items-center post-control"
 						key={type}
 					>
 						<ProfileButton

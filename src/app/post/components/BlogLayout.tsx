@@ -42,7 +42,7 @@ function BlogLayout({
 					<Blog
 						content={content}
 						{...post}
-						extraClasses="px-20"
+						extraClasses="mx-auto"
 						AuthorComponent={BlogAuthorServer}
 					/>
 				</div>

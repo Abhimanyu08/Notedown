@@ -34,7 +34,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	} = post;
 
 	return (
-		<div className="relative flex flex-col">
+		<div className="relative flex flex-col gap-1">
 			<PostOptions
 				{...{
 					published: !!published,
@@ -47,16 +47,16 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			/>
 			<Link
 				href={published ? `/post/${id}` : `/post/private/${id}`}
-				className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
+				className="text-lg text-black font-semibold hover:italic font-serif hover:underline dark:text-gray-200 truncate w-3/4"
 			>
 				{title}{" "}
 			</Link>
 
-			<p className="text-sm md:text-base text-black dark:text-font-grey italic ">
+			<p className="text-sm md:text-base text-black dark:text-gray-400 ">
 				{description}
 			</p>
 			<div
-				className="flex text-xs text-black/50 dark:text-font-grey mt-1 gap-4  max-w-full divide-x-2 divide-black/30
+				className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-4  max-w-full divide-x-2 divide-black/30
 			dark:divide-white/40"
 			>
 				{/* <BlogAuthor

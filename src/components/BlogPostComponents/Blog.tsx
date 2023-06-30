@@ -50,6 +50,7 @@ const Blog = memo(
 				prose-li:text-black/80
 				dark:prose-li:text-gray-300
 
+
 				// -----------prose-strong-----------
 				prose-strong:text-black
 				dark:prose-strong:text-gray-200
@@ -59,7 +60,7 @@ const Blog = memo(
 				dark:prose-a:text-blue-300
 				prose-a:no-underline
 				hover:prose-a:underline
-				prose-a:hover:text-blue-500
+				hover:prose-a:text-blue-500
 				hover:prose-a:underline-offset-2
 
 				// ---------------prose-code---------------
