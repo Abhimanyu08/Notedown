@@ -5,14 +5,22 @@ import { BlogContext } from "@/app/post/components/BlogState";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	const { blogState, dispatch } = useContext(BlogContext);
-	const [validName, setValidName] = useState("");
+	const [imageSrc, setImageSrc] = useState("");
 
 	useEffect(() => {
+		if (name.startsWith("http")) {
+			setImageSrc(name);
+			return;
+		}
 		if (
 			Object.hasOwn(blogState.imagesToFiles, name) ||
 			Object.hasOwn(blogState.uploadedImages, name)
 		) {
-			setValidName(name);
+			setImageSrc(
+				blogState.imagesToFiles[name]
+					? window.URL.createObjectURL(blogState.imagesToFiles[name])
+					: blogState.uploadedImages[name]
+			);
 			dispatch({ type: "add images to upload", payload: [name] });
 		}
 		return () => {
@@ -22,17 +30,11 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 
 	return (
 		<figure className="w-4/5 mb-4 mx-auto">
-			{validName && (
+			{imageSrc && (
 				<>
 					<Image
 						// layout="fill"
-						src={
-							blogState.imagesToFiles[name]
-								? window.URL.createObjectURL(
-										blogState.imagesToFiles[name]
-								  )
-								: blogState.uploadedImages[name]
-						}
+						src={imageSrc}
 						alt={alt}
 						width={1440}
 						height={1080}

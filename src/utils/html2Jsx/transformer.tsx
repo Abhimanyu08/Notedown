@@ -10,6 +10,7 @@ import React from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import { HtmlNode, TextNode } from "./parser";
 import Details from "@components/BlogPostComponents/Details";
+import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: HtmlNode }[] = [];
@@ -272,9 +273,9 @@ const tagToTransformer: TagToTransformer = {
 		if (src) {
 			return <ImageWithCaption name={src} alt={alt} key={src} />;
 		}
-		// if (alt && !src) {
-		// 	return <LexicaImage alt={alt} />;
-		// }
+		if (alt && !src) {
+			return <LexicaImage alt={alt} key={alt} />;
+		}
 		return <ImageUploader />;
 	},
 };
