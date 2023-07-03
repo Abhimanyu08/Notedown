@@ -103,12 +103,7 @@ function EditorLayout({
 				<BlogStateUpdate setBlogHtml={setBlogHtml} />
 			</div>
 
-			<div
-				className={` basis-1/2 flex ${
-					blogHtml ? "justify-center" : "justify-start"
-				}`}
-				id="post-preview"
-			>
+			<div className={` basis-1/2 flex justify-center`} id="post-preview">
 				<Blog
 					{...blogState.blogMeta}
 					content={blogHtml}

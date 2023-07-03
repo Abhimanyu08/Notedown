@@ -13,7 +13,7 @@
 
 .prose {
 	font-size: 1.1rem;
-	max-width: 65ch;
+	width: 65ch;
 	font-kerning: auto;
 }
 
