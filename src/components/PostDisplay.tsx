@@ -1,16 +1,6 @@
 import { getUpvotes } from "@/app/utils/getData";
-import { Database } from "@/interfaces/supabase";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import {
-	SUPABASE_FILES_BUCKET,
-	SUPABASE_IMAGE_BUCKET,
-	SUPABASE_POST_TABLE,
-} from "@utils/constants";
-import { revalidatePath } from "next/cache";
-import { cookies, headers } from "next/headers";
-import PostComponent from "./PostComponent";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
-import UpvoteWithPost from "@/interfaces/Upvotes";
+import PostComponent from "./PostComponent";
 
 interface PostDisplayProps {
 	posts: PostWithBlogger[];
@@ -27,14 +17,14 @@ async function PostDisplay({
 }: PostDisplayProps) {
 	const idArray = posts?.map((post) => post.id!);
 	let idToUpvotes: Record<number, number> = {};
-	// if (idArray) {
-	// 	const data = await getUpvotes(idArray);
-	// 	if (data) {
-	// 		data.forEach((post) => {
-	// 			idToUpvotes[post.id] = post.upvote_count;
-	// 		});
-	// 	}
-	// }
+	if (idArray) {
+		const data = await getUpvotes(idArray);
+		if (data) {
+			data.forEach((post) => {
+				idToUpvotes[post.id] = post.upvote_count;
+			});
+		}
+	}
 
 	return (
 		<>

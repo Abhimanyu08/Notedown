@@ -1,9 +1,10 @@
 import 'server-only';
-import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
+import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { cache } from "react";
 import { getHtmlFromMarkdownFile } from '@utils/getResources';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@utils/supabaseClient';
+import { checkDataLength } from './postTypeToFetcher';
 
 export const getUser = cache(async (id: string) => {
 
@@ -29,7 +30,35 @@ export const getUserLatestPosts = async (id: string) => {
         .order("published_on", { ascending: false })
         .limit(LIMIT + 1);
 
-    return data
+    return checkDataLength(data || [])
+}
+
+export const getGreatestPosts = async (id: string) => {
+
+    const { data } = await supabase
+        .from(SUPABASE_POST_TABLE)
+        .select(
+            "id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at,upvote_count"
+        )
+        .match({ created_by: id, published: true })
+        .order("upvote_count", { ascending: false })
+        .limit(LIMIT + 1);
+
+    return checkDataLength(data || [])
+}
+
+export const getUpvotedPosts = async (id: string) => {
+    const { data } = await supabase
+        .from(SUPABASE_UPVOTES_TABLE)
+        .select(
+            "created_at, post_id, upvoter, posts(id,created_by,title,description,language,published,published_on,upvote_count,bloggers(id, name))"
+        )
+        .match({ upvoter: id })
+        .order("created_at", { ascending: false })
+        .limit(LIMIT + 1);
+
+
+    return checkDataLength(data || [])
 }
 
 export const getUserPrivatePosts = cache(async (userId: string, supabase: SupabaseClient) => {
@@ -41,7 +70,7 @@ export const getUserPrivatePosts = cache(async (userId: string, supabase: Supaba
         .match({ created_by: userId, published: false })
         .order("created_at", { ascending: false })
         .limit(LIMIT + 1);
-    return data;
+    return checkDataLength(data || [])
 })
 
 export const getUpvotes = cache(async (idArray: number[]) => {

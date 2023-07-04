@@ -21,10 +21,10 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 	});
 	const userId = (await supabase.auth.getUser()).data.user?.id;
 	if (userId === undefined || userId !== params.id) return <></>;
-	const data = await getUserPrivatePosts(userId, supabase);
+	const { data, hasMore } = await getUserPrivatePosts(userId, supabase);
 
-	const hasMore = !!(data && data.length > LIMIT);
 	if (!data) return <p>No posts lol</p>;
+
 	async function publishPostAction(postId: number) {
 		"use server";
 		const supabase = createServerComponentSupabaseClient({
@@ -60,6 +60,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 
 	async function deletePostAction(postId: number) {
 		"use server";
+
 		const supabase = createServerComponentSupabaseClient({
 			headers,
 			cookies,
@@ -95,6 +96,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 			}
 		}
 	}
+
 	return (
 		<>
 			{/* @ts-expect-error Async Server Component  */}
