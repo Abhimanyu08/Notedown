@@ -7,11 +7,7 @@ import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-next
 import { cookies, headers } from "next/headers";
 import ToastProvider from "@/contexts/ToastProvider";
 import ToastDisplay from "@components/ToastDisplay";
-import {
-	IBM_Plex_Serif,
-	Source_Code_Pro,
-	IBM_Plex_Sans,
-} from "next/font/google";
+import { IBM_Plex_Serif, Source_Code_Pro, Nunito_Sans } from "next/font/google";
 
 const serif = IBM_Plex_Serif({
 	subsets: ["latin"],
@@ -25,7 +21,7 @@ const mono = Source_Code_Pro({
 	variable: "--font-mono",
 	weight: ["400", "700"],
 });
-const sans = IBM_Plex_Sans({
+const sans = Nunito_Sans({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-sans",

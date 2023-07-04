@@ -37,7 +37,7 @@ function ImageUploader() {
 				}}
 				// id="gallery-input"
 				accept="image/*"
-				className="file:my-2  file:px-4 file:text-white file:rounded-md file:bg-black file:border-[1px] file:border-white file:hover:bg-gray-800 file:active:scale-95"
+				className="file:my-2  file:px-4 file:text-gray-100 file:bg-black file:border-[1px] file:border-gray-200 file:hover:bg-gray-800 file:active:scale-95"
 				multiple
 			/>
 		</div>

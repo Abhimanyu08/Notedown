@@ -1,6 +1,8 @@
 "use client";
 import { EditorContext } from "@/app/write/components/EditorContext";
+import ImageUploader from "@components/EditorComponents/ImageUploader";
 import { getImages } from "@utils/sendRequest";
+import { usePathname } from "next/navigation";
 import React, { memo, useContext, useEffect, useState } from "react";
 import { BsArrowRepeat } from "react-icons/bs";
 
@@ -9,6 +11,13 @@ function LexicaImage({ alt }: { alt: string }) {
 	const [generate, setGenerate] = useState(false);
 	const [lexicaLinkNumber, setLexicaLinkNumber] = useState(0);
 	const { editorState } = useContext(EditorContext);
+	const pathname = usePathname();
+
+	useEffect(() => {
+		if (!pathname?.startsWith("/write")) {
+			setGenerate(true);
+		}
+	}, [pathname]);
 
 	useEffect(() => {
 		if (!generate) return;
@@ -48,12 +57,13 @@ function LexicaImage({ alt }: { alt: string }) {
 						id={alt}
 					/>
 				</div>
-				<div className="flex justify-center mt-4 gap-4 not-prose">
-					<figcaption
-						className={`text-center italic text-gray-400 text-[0.875em]`}
-					>
-						{alt}
-					</figcaption>
+				<figcaption
+					className={`text-center italic text-gray-400 text-[0.875em]`}
+				>
+					{alt}
+				</figcaption>
+
+				<div className="flex gap-2 items-center justify-center mt-2">
 					<button
 						className=" text-white lexica-regen rounded-full hover:bg-gray-800 active:scale-95 p-1"
 						onClick={() => {
@@ -70,19 +80,28 @@ function LexicaImage({ alt }: { alt: string }) {
 					>
 						Select
 					</button>
+					<button
+						className="text-xs bg-black border-[1px] border-gray-100 hover:bg-gray-900 text-gray-100 no-scale active:scale-95  px-3 rounded-sm w-fit "
+						onClick={() => setGenerate(false)}
+					>
+						Cancel
+					</button>
 				</div>
 			</div>
 		);
-	} else {
-		return (
+	}
+	return (
+		<div className="flex flex-col items-center">
 			<button
 				className="bg-black hover:bg-gray-900 active:scale-95 text-gray-100 border-[1px] border-gray-200 px-3 my-5 py-1 rounded-sm w-fit mx-auto no-scale"
 				onClick={() => setGenerate(true)}
 			>
 				Generate Image for <span className="font-semibold">{alt}</span>
 			</button>
-		);
-	}
+			<div className="divider text-gray-200">Or</div>
+			<ImageUploader />
+		</div>
+	);
 }
 
 export default memo(LexicaImage);
