@@ -12,6 +12,16 @@ const postTypeToFetcher: { [k in PostTypes]?: (
 
 ) => Promise<{ data: PostWithBlogger[], hasMore: boolean } | undefined> } = {}
 
+
+export function checkDataLength<T>(data: T[]) {
+
+    if (data.length <= LIMIT) {
+        return { data, hasMore: false }
+    }
+    return { data: data.slice(0, -1), hasMore: true }
+}
+
+
 const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
     const { data, error } = await supabase
@@ -30,7 +40,7 @@ const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, curs
     }
 
 
-    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
+    return checkDataLength(data)
 };
 
 const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
@@ -51,7 +61,7 @@ const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, curso
         alert("Failed to return more data");
         return
     }
-    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
+    return checkDataLength(data)
 };
 
 const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
@@ -71,7 +81,7 @@ const fetchGreatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cur
         alert("Failed to return more data");
         return;
     }
-    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
+    return checkDataLength(data)
 };
 
 const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cursorKey, supabase) => {
@@ -92,7 +102,7 @@ const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cu
         alert("Failed to return more data");
         return;
     }
-    return { data: data.slice(0, -1), hasMore: data.length > LIMIT };
+    return checkDataLength(data)
 }
 
 postTypeToFetcher.private = fetchPrivatePosts

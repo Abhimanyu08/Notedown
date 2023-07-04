@@ -16,7 +16,7 @@ async function PostModal({ params }: { params: { postId: string } }) {
 		supabase
 	);
 	return (
-		<div className="flex flex-col items-center justify-center h-full w-full absolute top-0 left-0 bg-black">
+		<div className="flex flex-col items-center justify-center h-full w-full absolute top-0 left-0 bg-black z-50">
 			<BlogContextProvider
 				uploadedImages={imagesToUrls}
 				blogMeta={{

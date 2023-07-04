@@ -1,9 +1,7 @@
 "use client";
 import useSearch from "@/hooks/useSearch";
-import { Database } from "@/interfaces/supabase";
 import PostComponent from "@components/PostComponent";
-import React, { useEffect, useState } from "react";
-import { VscLoading } from "react-icons/vsc";
+import { useState } from "react";
 import { SinglePostLoading } from "./SinglePostLoading";
 
 function SearchComponent({
@@ -50,7 +48,7 @@ function SearchComponent({
 				</p>
 			)}
 			{searchResults.length > 0 && (
-				<div className="flex flex-col gap-8 grow bg-black z-50">
+				<div className="flex flex-col gap-8 grow bg-black z-20">
 					{searchResults.map((post) => (
 						<PostComponent
 							key={post.id}

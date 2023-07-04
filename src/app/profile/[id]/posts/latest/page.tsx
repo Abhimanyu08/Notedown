@@ -14,9 +14,7 @@ import { headers, cookies } from "next/headers";
 // export const revalidate = 60 * 60 * 24 * 365 * 10;
 
 async function LatestPosts({ params }: { params: { id: string } }) {
-	const data = await getUserLatestPosts(params.id);
-
-	const hasMore = !!(data && data.length > LIMIT);
+	const { data, hasMore } = await getUserLatestPosts(params.id);
 
 	async function publishPostAction(postId: number) {
 		"use server";
