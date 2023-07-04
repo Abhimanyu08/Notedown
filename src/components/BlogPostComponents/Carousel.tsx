@@ -1,4 +1,5 @@
 "use client";
+import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import React, { memo, useContext, useEffect, useState } from "react";
@@ -11,7 +12,8 @@ function Carousel({
 	imageNamesString: string;
 	captionString: string;
 }) {
-	const { blogState, dispatch } = useContext(BlogContext);
+	const { blogState } = useContext(BlogContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const [images, setImages] = useState<string[]>([]);
 	const [captions, setCaptions] = useState<string[]>([]);
 
@@ -20,7 +22,7 @@ function Carousel({
 		const validImages = imageNames.filter(
 			(i) =>
 				Object.hasOwn(blogState.uploadedImages, i) ||
-				Object.hasOwn(blogState.imagesToFiles, i)
+				Object.hasOwn(editorState?.imagesToFiles, i)
 		);
 		setImages(validImages);
 
@@ -102,9 +104,9 @@ function Carousel({
 					<div className="grow relative">
 						<Image
 							src={
-								blogState.imagesToFiles[image]
+								editorState.imagesToFiles[image]
 									? window.URL.createObjectURL(
-											blogState.imagesToFiles[image]
+											editorState.imagesToFiles[image]
 									  )
 									: blogState.uploadedImages[image]
 							}

@@ -46,10 +46,7 @@ function EditorToolbar() {
 		}
 	}, [uploadFinished]);
 
-	const onUpload = async (
-		currentEditorState: typeof editorState,
-		currentBlogState: typeof blogState
-	) => {
+	const onUpload = async (currentEditorState: typeof editorState) => {
 		//Just before starting to upload we need to convert markdown to content one last time in case user has pressed upload button without prevewing and his `imagesToUpload` and `imagesToDelete` are not in sync.
 		await getHtmlFromMarkdownFile(
 			currentEditorState.editorView?.state.sliceDoc() || ""
@@ -66,7 +63,7 @@ function EditorToolbar() {
 				alert((e as Error).message);
 			});
 
-		if (changed || Object.keys(currentBlogState.canvasApps).length > 0)
+		if (changed || Object.keys(currentEditorState.canvasApps).length > 0)
 			setStartUpload(true);
 		dispatch({
 			type: "set previous uploaded doc",
@@ -128,7 +125,7 @@ function EditorToolbar() {
 			</ToolbarButton>
 			<ToolbarButton
 				tip={uploading ? "" : "Upload Post/changes"}
-				onClick={() => onUpload(editorState, blogState)}
+				onClick={() => onUpload(editorState)}
 			>
 				{uploading ? (
 					<div className="flex gap-2 items-center">
@@ -138,7 +135,7 @@ function EditorToolbar() {
 				) : (
 					<div className="flex gap-2 items-center">
 						<FaFileUpload size={26} />
-						{(Object.keys(blogState.canvasApps).length > 0 ||
+						{(Object.keys(editorState.canvasApps).length > 0 ||
 							changed) && (
 							<sup className="text-lg text-white">*</sup>
 						)}

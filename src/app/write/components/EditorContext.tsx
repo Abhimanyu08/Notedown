@@ -10,10 +10,12 @@ interface EditorStateInterface {
 	imagesToFiles: Record<string, File>;
 	imagesToUpload: string[];
 	canvasApps: Record<string, any>;
+	editingMarkdown: boolean;
 }
 interface DispatchObj {
 	type:
 		| "set editorView"
+		| "toggle markdown editor"
 		| "set previous uploaded doc"
 		| "set time stamp"
 		| "set image to files"
@@ -33,6 +35,7 @@ const initialEditorState: EditorStateInterface = {
 	imagesToFiles: {},
 	imagesToUpload: [],
 	canvasApps: {},
+	editingMarkdown: false,
 };
 
 export const EditorContext = createContext<{
@@ -61,6 +64,8 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 				...state,
 				canvasApps: currentCanvasApps,
 			};
+		case "toggle markdown editor":
+			return { ...state, editingMarkdown: !state.editingMarkdown };
 		case "empty canvas apps":
 			return {
 				...state,

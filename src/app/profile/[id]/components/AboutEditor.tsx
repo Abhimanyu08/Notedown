@@ -1,23 +1,15 @@
 "use client";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import MarkdownEditor from "@/app/write/components/MarkdownEditor";
-import React, {
-	useContext,
-	useState,
-	useEffect,
-	useTransition,
-	useRef,
-} from "react";
-import AboutJsxWrapper from "./AboutJsxWrapper";
+import useOwner from "@/hooks/useOwner";
+import useShortCut from "@/hooks/useShortcut";
 import mdToHtml from "@utils/mdToHtml";
+import { useContext, useEffect, useState, useTransition } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCheck, BiShow } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
 import { VscLoading } from "react-icons/vsc";
-import { useSupabase } from "@/app/appContext";
-import { usePathname } from "next/navigation";
-import useShortCut from "@/hooks/useShortcut";
-import useOwner from "@/hooks/useOwner";
+import AboutJsxWrapper from "./AboutJsxWrapper";
 
 function AboutEditor({
 	name,
