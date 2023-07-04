@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { useContext } from "react";
 import TLDrawing from "./TLDrawing";
 

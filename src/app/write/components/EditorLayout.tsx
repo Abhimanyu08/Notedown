@@ -1,5 +1,5 @@
 "use client";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { getPost } from "@/app/utils/getData";
 import useShortCut from "@/hooks/useShortcut";
 import { Text } from "@codemirror/state";
@@ -29,12 +29,12 @@ function EditorLayout({
 	);
 	const [blogHtml, setBlogHtml] = useState("");
 
-	useShortCut({
-		keys: ["Alt", "p"],
-		callback: () => {
-			dispatch({ type: "toggle markdown editor", payload: null });
-		},
-	});
+	// useShortCut({
+	// 	keys: ["Alt", "p"],
+	// 	callback: () => {
+	// 		dispatch({ type: "toggle markdown editor", payload: null });
+	// 	},
+	// });
 
 	useEffect(() => {
 		let postMarkdown = markdown;

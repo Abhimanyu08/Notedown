@@ -5,7 +5,7 @@ import Toc from "@components/BlogPostComponents/TableOfContents";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { cookies, headers } from "next/headers";
-import BlogContextProvider from "../../components/BlogState";
+import BlogContextProvider from "../../../../components/BlogPostComponents/BlogState";
 import PrivateToolbar from "../../components/PrivateToolbar";
 import { redirect } from "next/navigation";
 import { SUPABASE_POST_TABLE } from "@utils/constants";

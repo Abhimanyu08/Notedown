@@ -8,7 +8,7 @@ import { MouseEventHandler, useContext, useEffect, useState } from "react";
 import { BiCodeAlt } from "react-icons/bi";
 import { FaHeart } from "react-icons/fa";
 import { IoMdShareAlt } from "react-icons/io";
-import { BlogContext } from "./BlogState";
+import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
 import ToolbarButton from "./ToolbarButton";
 import { useSupabase } from "@/app/appContext";
 

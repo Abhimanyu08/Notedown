@@ -1,10 +1,12 @@
 "use client";
 import React, { memo, useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import { EditorContext } from "@/app/write/components/EditorContext";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
-	const { blogState, dispatch } = useContext(BlogContext);
+	const { blogState } = useContext(BlogContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const [imageSrc, setImageSrc] = useState("");
 
 	useEffect(() => {
@@ -13,12 +15,14 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 			return;
 		}
 		if (
-			Object.hasOwn(blogState.imagesToFiles, name) ||
+			Object.hasOwn(editorState.imagesToFiles, name) ||
 			Object.hasOwn(blogState.uploadedImages, name)
 		) {
 			setImageSrc(
-				blogState.imagesToFiles[name]
-					? window.URL.createObjectURL(blogState.imagesToFiles[name])
+				editorState.imagesToFiles[name]
+					? window.URL.createObjectURL(
+							editorState.imagesToFiles[name]
+					  )
 					: blogState.uploadedImages[name]
 			);
 			dispatch({ type: "add images to upload", payload: [name] });

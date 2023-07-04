@@ -2,13 +2,15 @@
 import { useContext, useEffect, useState } from "react";
 
 import { useSupabase } from "@/app/appContext";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { Tldraw, TldrawApp } from "@tldraw/tldraw";
 import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
+import { EditorContext } from "@/app/write/components/EditorContext";
 
 function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 	const [changeNumber, setChangeNumber] = useState(0);
-	const { blogState, dispatch } = useContext(BlogContext);
+	const { blogState } = useContext(BlogContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const { supabase } = useSupabase();
 	const [app, setApp] = useState<TldrawApp>();
 	useEffect(() => {
@@ -53,7 +55,7 @@ function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
 			setChangeNumber((prev) => prev + 1);
 			return;
 		}
-		if (!Object.hasOwn(blogState.canvasApps, canvasImageName)) {
+		if (!Object.hasOwn(editorState.canvasApps, canvasImageName)) {
 			dispatch({
 				type: "set canvas apps",
 				payload: { [canvasImageName]: app },

@@ -1,12 +1,12 @@
 "use client";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { processImageName } from "@utils/makeFolderName";
 import React, { useContext, useEffect, useState } from "react";
 
 function ImageUploader() {
-	const { blogState, dispatch } = useContext(BlogContext);
-	const { editorState } = useContext(EditorContext);
+	// const { dispatch } = useContext(BlogContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const [fileNames, setFileNames] = useState<string[]>([]);
 	useEffect(() => {
 		if (!editorState.editorView) return;

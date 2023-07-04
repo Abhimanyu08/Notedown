@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BiCodeAlt } from "react-icons/bi";
 import { TbNews } from "react-icons/tb";
-import { BlogContext } from "./BlogState";
+import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
 import ToolbarButton from "./ToolbarButton";
 import Link from "next/link";
 

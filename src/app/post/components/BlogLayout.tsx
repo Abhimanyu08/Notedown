@@ -3,7 +3,7 @@ import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import React from "react";
-import BlogContextProvider from "./BlogState";
+import BlogContextProvider from "../../../components/BlogPostComponents/BlogState";
 import Toolbar from "./Toolbar";
 import PrivateToolbar from "./PrivateToolbar";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";

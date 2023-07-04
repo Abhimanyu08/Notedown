@@ -1,4 +1,4 @@
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import ToolbarButton from "@/app/post/components/ToolbarButton";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";

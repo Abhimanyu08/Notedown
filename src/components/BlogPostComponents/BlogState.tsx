@@ -28,10 +28,10 @@ interface BlogStateInterface {
 		imageFolder: string;
 		markdown: string;
 	}>;
-	canvasApps: Record<string, any>;
+	// canvasApps: Record<string, any>;
 	uploadedImages: Record<string, string>;
-	imagesToFiles: Record<string, File>;
-	imagesToUpload: string[];
+	// imagesToFiles: Record<string, File>;
+	// imagesToUpload: string[];
 }
 
 const blogInitialState: BlogStateInterface = {
@@ -43,10 +43,10 @@ const blogInitialState: BlogStateInterface = {
 	writingBlock: null,
 	containerId: null,
 	blogMeta: {},
-	canvasApps: {},
-	imagesToFiles: {},
+	// canvasApps: {},
+	// imagesToFiles: {},
 	uploadedImages: {},
-	imagesToUpload: [],
+	// imagesToUpload: [],
 };
 
 interface DispatchObj {
@@ -59,14 +59,11 @@ interface DispatchObj {
 		| "set running block"
 		| "toggle running request"
 		| "set blog meta"
-		| "set canvas apps"
-		| "set image to files"
-		| "add images to upload"
-		| "remove image from upload"
+		// | "set canvas apps"
 		| "remove container"
-		| "set uploaded images"
-		| "remove canvas app"
-		| "empty canvas apps";
+		| "set uploaded images";
+	// | "remove canvas app"
+	// | "empty canvas apps";
 	payload: BlogStateInterface[keyof BlogStateInterface];
 }
 
@@ -136,53 +133,7 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 					...(action.payload as BlogStateInterface["blogMeta"]),
 				},
 			};
-		case "set canvas apps":
-			return {
-				...state,
-				canvasApps: {
-					...state.canvasApps,
-					...(action.payload as Record<string, any>),
-				},
-			};
 
-		case "set image to files":
-			return {
-				...state,
-				imagesToFiles: {
-					...state.imagesToFiles,
-					...(action.payload as Record<string, File>),
-				},
-			};
-
-		case "add images to upload":
-			return {
-				...state,
-				imagesToUpload: [
-					...state.imagesToUpload,
-					...(action.payload as string[]),
-				],
-			};
-
-		case "remove image from upload":
-			const imagesToUpload = state.imagesToUpload;
-			const imagesToDelete = action.payload as string[];
-			for (let image of imagesToDelete) {
-				const index = imagesToUpload.findIndex((i) => i === image);
-				if (index !== -1) {
-					imagesToUpload.splice(index, 1);
-				}
-			}
-			return {
-				...state,
-				imagesToUpload: imagesToUpload,
-			};
-		case "remove canvas app":
-			const currentCanvasApps = { ...state.canvasApps };
-			delete currentCanvasApps[action.payload as string];
-			return {
-				...state,
-				canvasApps: currentCanvasApps,
-			};
 		case "remove container":
 			return {
 				...state,
@@ -193,11 +144,6 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				uploadedImages: action.payload as Record<string, string>,
-			};
-		case "empty canvas apps":
-			return {
-				...state,
-				canvasApps: {},
 			};
 	}
 };

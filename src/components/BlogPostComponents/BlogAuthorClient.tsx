@@ -6,7 +6,7 @@ import React, { memo, useEffect, useState } from "react";
 
 function BlogAuthorClient() {
 	const { session, supabase } = useSupabase();
-	const [author, setAuthor] = useState("");
+	const [author, setAuthor] = useState("Anon");
 	useEffect(() => {
 		const userId = session?.user.id;
 		if (!userId) return;

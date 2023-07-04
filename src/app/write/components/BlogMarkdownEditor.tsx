@@ -7,7 +7,7 @@ import { StateEffect } from "@codemirror/state";
 import MarkdownEditor from "./MarkdownEditor";
 import { BiCheck, BiSync } from "react-icons/bi";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import getExtensions from "@utils/getExtensions";
 import langToCodeMirrorExtension from "@utils/langToExtension";
 import { useSearchParams } from "next/navigation";

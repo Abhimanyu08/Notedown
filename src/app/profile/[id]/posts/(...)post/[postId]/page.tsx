@@ -1,4 +1,4 @@
-import BlogContextProvider from "@/app/post/components/BlogState";
+import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import { getPost } from "@/app/utils/getData";
 import Blog from "@components/BlogPostComponents/Blog";
 import { supabase } from "@utils/supabaseClient";

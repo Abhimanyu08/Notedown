@@ -1,4 +1,4 @@
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { Compartment, StateEffect } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";

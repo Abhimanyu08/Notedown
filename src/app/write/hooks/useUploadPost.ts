@@ -1,5 +1,5 @@
 import { useSupabase } from "@/app/appContext";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Post from "@/interfaces/Post";
 import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
@@ -15,7 +15,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const [uploading, setUploading] = useState(false)
     const [uploadFinished, setUploadFinished] = useState(false)
     const [uploadStatus, setUploadStatus] = useState("")
-    const { editorState } = useContext(EditorContext)
+    const { editorState, dispatch: editorStateDispatch } = useContext(EditorContext)
     const { blogState, dispatch } = useContext(BlogContext)
     const [newPostId, setNewPostId] = useState<number | null>(blogState.blogMeta.id || null)
     const context = useContext(ToastContext);
@@ -106,7 +106,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         const uploadedImages = Object.keys(blogState.uploadedImages)
 
-        const imagesToDelete = uploadedImages.filter(i => !(blogState.imagesToUpload.includes(i))).map(i => created_by + '/' + postId + "/" + i)
+        const imagesToDelete = uploadedImages.filter(i => !(editorState.imagesToUpload.includes(i))).map(i => created_by + '/' + postId + "/" + i)
 
         console.log(imagesToDelete)
         await supabase.storage.from(SUPABASE_IMAGE_BUCKET).remove(imagesToDelete)
@@ -115,13 +115,13 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const uploadPostImages = async ({ postId }: { postId: number }) => {
 
-        const imagesToUpload = Array.from(new Set(blogState.imagesToUpload)).filter(i => !(Object.hasOwn(blogState.uploadedImages, i)))
+        const imagesToUpload = Array.from(new Set(editorState.imagesToUpload)).filter(i => !(Object.hasOwn(blogState.uploadedImages, i)))
 
         for (const image of imagesToUpload) {
 
             setUploadStatus(`Uploading ${image}`)
             const folderName = created_by + "/" + postId + "/" + image
-            const imageFile = blogState.imagesToFiles[image]
+            const imageFile = editorState.imagesToFiles[image]
             await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, imageFile), 3)
         }
 
@@ -129,7 +129,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
 
     const uploadCanvasImages = async ({ postId }: { postId: number }) => {
-        const canvasApps = blogState.canvasApps
+        const canvasApps = editorState.canvasApps
 
 
         for (const [canvasImageName, canvasApp] of Object.entries(canvasApps)) {
@@ -210,13 +210,13 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const afterUpload = () => {
         const addedUploads: Record<string, string> = {}
-        for (let imageName of blogState.imagesToUpload) {
+        for (let imageName of editorState.imagesToUpload) {
             if (!Object.hasOwn(blogState.uploadedImages, imageName)) {
                 if (/^canvas-(\d+)\.png/.test(imageName)) {
                     addedUploads[imageName] = ""
                     continue
                 }
-                addedUploads[imageName] = URL.createObjectURL(blogState.imagesToFiles[imageName])
+                addedUploads[imageName] = URL.createObjectURL(editorState.imagesToFiles[imageName])
             }
             else {
                 addedUploads[imageName] = blogState.uploadedImages[imageName]
@@ -224,7 +224,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         }
         dispatch({ type: "set uploaded images", payload: addedUploads })
 
-        dispatch({ type: "empty canvas apps", payload: null })
+        editorStateDispatch({ type: "empty canvas apps", payload: null })
 
     }
 

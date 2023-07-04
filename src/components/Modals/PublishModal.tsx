@@ -1,5 +1,5 @@
 "use client";
-import { BlogContext } from "@/app/post/components/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { ToastContext } from "@/contexts/ToastProvider";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE } from "@utils/constants";

@@ -5,25 +5,34 @@ import { Dispatch, Reducer, createContext, useReducer } from "react";
 
 interface EditorStateInterface {
 	editorView: EditorView | null;
-	editingMarkdown: boolean;
 	previousUploadedDoc: EditorView["state"]["doc"] | null;
 	timeStamp: string | null;
+	imagesToFiles: Record<string, File>;
+	imagesToUpload: string[];
+	canvasApps: Record<string, any>;
 }
 interface DispatchObj {
 	type:
-		| "toggle markdown editor"
 		| "set editorView"
 		| "set previous uploaded doc"
-		| "set time stamp";
+		| "set time stamp"
+		| "set image to files"
+		| "remove image from upload"
+		| "add images to upload"
+		| "set canvas apps"
+		| "remove canvas app"
+		| "empty canvas apps";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
 
 const initialEditorState: EditorStateInterface = {
 	editorView: null,
-	editingMarkdown: true,
 	previousUploadedDoc: null,
 	timeStamp: null,
+	imagesToFiles: {},
+	imagesToUpload: [],
+	canvasApps: {},
 };
 
 export const EditorContext = createContext<{
@@ -36,13 +45,58 @@ export const EditorContext = createContext<{
 
 const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 	switch (action.type) {
-		// case "toggle vim":
-		// 	return {
-		// 		...state,
-		// 		enabledVimForMarkdown: !state.enabledVimForMarkdown,
-		// 	};
-		case "toggle markdown editor":
-			return { ...state, editingMarkdown: !state.editingMarkdown };
+		case "set canvas apps":
+			return {
+				...state,
+				canvasApps: {
+					...state.canvasApps,
+					...(action.payload as Record<string, any>),
+				},
+			};
+
+		case "remove canvas app":
+			const currentCanvasApps = { ...state.canvasApps };
+			delete currentCanvasApps[action.payload as string];
+			return {
+				...state,
+				canvasApps: currentCanvasApps,
+			};
+		case "empty canvas apps":
+			return {
+				...state,
+				canvasApps: {},
+			};
+		case "set image to files":
+			return {
+				...state,
+				imagesToFiles: {
+					...state.imagesToFiles,
+					...(action.payload as Record<string, File>),
+				},
+			};
+
+		case "add images to upload":
+			return {
+				...state,
+				imagesToUpload: [
+					...state.imagesToUpload,
+					...(action.payload as string[]),
+				],
+			};
+
+		case "remove image from upload":
+			const imagesToUpload = state.imagesToUpload;
+			const imagesToDelete = action.payload as string[];
+			for (let image of imagesToDelete) {
+				const index = imagesToUpload.findIndex((i) => i === image);
+				if (index !== -1) {
+					imagesToUpload.splice(index, 1);
+				}
+			}
+			return {
+				...state,
+				imagesToUpload: imagesToUpload,
+			};
 
 		case "set editorView":
 			return {

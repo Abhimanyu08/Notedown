@@ -3,7 +3,7 @@ import Blog from "@components/BlogPostComponents/Blog";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { supabase } from "@utils/supabaseClient";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import BlogContextProvider from "../components/BlogState";
+import BlogContextProvider from "../../../components/BlogPostComponents/BlogState";
 import Toolbar from "../components/Toolbar";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
