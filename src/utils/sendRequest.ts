@@ -34,6 +34,11 @@ export async function getImages({ caption }: { caption: string }) {
 
     const resp = await fetch(`/api/generateImage?q=${caption}`, { method: "GET" })
 
-    const { links } = await resp.json() as { links: string[] }
-    return links
+    const data = await resp.json()
+    console.log(data)
+
+    if (data.error) {
+        return data.error as string
+    }
+    return (data as { b64_json: string }[]).map(l => l.b64_json)
 }

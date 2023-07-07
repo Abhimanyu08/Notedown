@@ -37,7 +37,6 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 			{imageSrc && (
 				<>
 					<Image
-						// layout="fill"
 						src={imageSrc}
 						alt={alt}
 						width={1440}

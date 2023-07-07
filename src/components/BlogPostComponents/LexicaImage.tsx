@@ -5,12 +5,14 @@ import { getImages } from "@utils/sendRequest";
 import { usePathname } from "next/navigation";
 import React, { memo, useContext, useEffect, useState } from "react";
 import { BsArrowRepeat } from "react-icons/bs";
+import { VscLoading } from "react-icons/vsc";
 
 function LexicaImage({ alt }: { alt: string }) {
 	const [lexicaLinks, setLexicaLinks] = useState<string[]>([]);
 	const [generate, setGenerate] = useState(false);
+	const [generating, setGenerating] = useState(false);
 	const [lexicaLinkNumber, setLexicaLinkNumber] = useState(0);
-	const { editorState } = useContext(EditorContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -21,27 +23,40 @@ function LexicaImage({ alt }: { alt: string }) {
 
 	useEffect(() => {
 		if (!generate) return;
+		setGenerating(true);
 		getImages({ caption: alt }).then((imageLinks) => {
+			if (typeof imageLinks === "string") {
+				alert(imageLinks);
+				return;
+			}
 			setLexicaLinks(imageLinks);
 			setLexicaLinkNumber(0);
+			setGenerating(false);
 		});
 	}, [generate]);
 
 	useEffect(() => {
 		const lexicaImageElem = document.getElementById(alt);
 		if (!lexicaImageElem) return;
-		(lexicaImageElem as HTMLImageElement).src =
-			lexicaLinks[lexicaLinkNumber];
+		(
+			lexicaImageElem as HTMLImageElement
+		).src = `data:image/png;base64,${lexicaLinks[lexicaLinkNumber]}`;
 	}, [lexicaLinkNumber, lexicaLinks]);
 
 	const onSelect = (link: string) => {
 		const view = editorState.editorView;
 		if (!view) return;
 		const cursorPos = view.state.selection.ranges[0].from;
+		const file = b64ToFile(link);
+		const imageName = `${alt.split(" ").join("_")}.png`;
+		dispatch({
+			type: "set image to files",
+			payload: { [imageName]: file },
+		});
 		view.dispatch({
 			changes: {
-				from: cursorPos + 2,
-				insert: link,
+				from: cursorPos,
+				insert: imageName,
 			},
 		});
 	};
@@ -49,13 +64,17 @@ function LexicaImage({ alt }: { alt: string }) {
 	if (generate) {
 		return (
 			<div className="w-full mb-4">
-				<div className="w-full aspect-video">
-					<img
-						src=""
-						alt={alt}
-						style={{ height: "100%", margin: "auto" }}
-						id={alt}
-					/>
+				<div className="w-full aspect-video flex items-center justify-center">
+					{generating ? (
+						<VscLoading className="animate-spin" size={50} />
+					) : (
+						<img
+							src=""
+							alt={alt}
+							style={{ height: "100%", margin: "auto" }}
+							id={alt}
+						/>
+					)}
 				</div>
 				<figcaption
 					className={`text-center italic text-gray-400 text-[0.875em]`}
@@ -102,6 +121,18 @@ function LexicaImage({ alt }: { alt: string }) {
 			<ImageUploader />
 		</div>
 	);
+}
+
+function b64ToFile(b64: string) {
+	const byteCharacters = atob(b64);
+	const byteNumbers = new Uint8Array(byteCharacters.length);
+	for (let i = 0; i < byteCharacters.length; i++) {
+		byteNumbers[i] = byteCharacters.codePointAt(i) as number;
+	}
+	const byteArray = new Uint8Array(byteNumbers.buffer);
+	const blob = new Blob([byteArray], { type: "image/png" });
+	const file = new File([blob], "hello.png", { type: "image/png" });
+	return file;
 }
 
 export default memo(LexicaImage);
