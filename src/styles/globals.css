@@ -10,6 +10,10 @@
 	color: white;
 	text-transform: capitalize;
 } */
+body {
+	-webkit-font-smoothing: auto;
+	-moz-osx-font-smoothing: auto;
+}
 
 .prose {
 	font-size: 1.1rem;
@@ -303,4 +307,23 @@ tbody td {
 
 .prose :where(ul, ol):not(:where([class~="not-prose"] *)) {
 	padding-left: 1em;
+}
+
+#toolbar {
+	display: flex;
+	align-items: center;
+	justify-items: center;
+	padding: 8px;
+	left: 50%;
+	bottom: 90px;
+	transform: translateX(-60%);
+}
+
+#optionstoolbar {
+	display: flex;
+	align-items: center;
+	justify-items: center;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: 90px;
 }

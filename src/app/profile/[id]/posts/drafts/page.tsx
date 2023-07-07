@@ -80,20 +80,20 @@ function Drafts() {
 											? `/write/${draft.postId}?draft=${draft.timeStamp}`
 											: `/write?draft=${draft.timeStamp}`
 									}
-									className="text-lg text-black font-semibold hover:italic hover:underline dark:text-white truncate w-3/4"
+									className="text-lg text-black font-serif font-semibold hover:italic hover:underline dark:text-gray-100 truncate w-3/4"
 								>
 									{draft.draftData.data.title}
 								</Link>
-								<p className="text-sm md:text-base mt-1 text-black dark:text-font-grey font-sans ">
+								<p className="text-sm md:text-base mt-1 text-black dark:text-gray-400  font-sans ">
 									{draft.draftData.data.description}
 								</p>
-								<p className="text-sm text-font-grey mt-2">
+								<p className="text-sm text-gray-400 mt-2">
 									created on{" "}
-									<span className="text-gray-100 font-bold">
+									<span className="text-gray-200 font-bold">
 										{draft.date}
 									</span>{" "}
 									at{" "}
-									<span className="text-gray-100 font-bold">
+									<span className="text-gray-200 font-bold">
 										{draft.time}
 									</span>
 								</p>

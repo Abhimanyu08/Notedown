@@ -40,28 +40,22 @@ function EditorToolbar() {
 		};
 	}, [editorState.editorView, editorState.previousUploadedDoc]);
 
-	useEffect(() => {
-		if (uploadFinished) {
-			setStartUpload(false);
-		}
-	}, [uploadFinished]);
-
 	const onUpload = async (currentEditorState: typeof editorState) => {
 		//Just before starting to upload we need to convert markdown to content one last time in case user has pressed upload button without prevewing and his `imagesToUpload` and `imagesToDelete` are not in sync.
-		await getHtmlFromMarkdownFile(
-			currentEditorState.editorView?.state.sliceDoc() || ""
-		)
-			.then((val) => {
-				if (!val) return;
+		// await getHtmlFromMarkdownFile(
+		// 	currentEditorState.editorView?.state.sliceDoc() || ""
+		// )
+		// 	.then((val) => {
+		// 		if (!val) return;
 
-				blogStateDispatch({
-					type: "set blog meta",
-					payload: { ...val?.data, content: val?.content },
-				});
-			})
-			.catch((e) => {
-				alert((e as Error).message);
-			});
+		// 		blogStateDispatch({
+		// 			type: "set blog meta",
+		// 			payload: { ...val?.data, content: val?.content },
+		// 		});
+		// 	})
+		// 	.catch((e) => {
+		// 		alert((e as Error).message);
+		// 	});
 
 		if (changed || Object.keys(currentEditorState.canvasApps).length > 0)
 			setStartUpload(true);

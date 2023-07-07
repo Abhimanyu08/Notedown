@@ -1,5 +1,6 @@
 "use client";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import { motion, useMotionValue } from "framer-motion";
 import { getPost } from "@/app/utils/getData";
 import useShortCut from "@/hooks/useShortcut";
 import { Text } from "@codemirror/state";
@@ -12,6 +13,10 @@ import { useContext, useEffect, useState } from "react";
 import BlogStateUpdate from "./BlogStateUpdate";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
+import { SlOptions } from "react-icons/sl";
+import { BiCodeAlt } from "react-icons/bi";
+import { FaFileUpload } from "react-icons/fa";
+import OptionsToolbar from "./OptionsToolbar";
 
 let initialMarkdownMeta =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
@@ -28,13 +33,6 @@ function EditorLayout({
 		markdown || initialMarkdownMeta
 	);
 	const [blogHtml, setBlogHtml] = useState("");
-
-	// useShortCut({
-	// 	keys: ["Alt", "p"],
-	// 	callback: () => {
-	// 		dispatch({ type: "toggle markdown editor", payload: null });
-	// 	},
-	// });
 
 	useEffect(() => {
 		let postMarkdown = markdown;
@@ -102,6 +100,7 @@ function EditorLayout({
 				<MarkdownEditor initialMarkdown={initialMarkdown} />
 				<BlogStateUpdate setBlogHtml={setBlogHtml} />
 			</div>
+			<OptionsToolbar />
 
 			<div className={` basis-1/2 flex justify-center`} id="post-preview">
 				<Blog

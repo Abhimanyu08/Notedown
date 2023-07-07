@@ -56,7 +56,7 @@ function CodeWithoutLanguage({
 				<SyntaxHighlighter
 					language={language}
 					style={theme}
-					customStyle={{ paddingLeft: "8px" }}
+					customStyle={{ paddingLeft: "8px", fontSize: "16px" }}
 					showLineNumbers={true}
 					lineNumberStyle={{
 						color: "rgb(148 163 184)",

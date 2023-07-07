@@ -1,14 +1,13 @@
 import { useSupabase } from "@/app/appContext";
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Post from "@/interfaces/Post";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
 // import { supabase } from "@utils/supabaseClient";
+import { ToastContext } from "@/contexts/ToastProvider";
+import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
-import { useRouter } from "next/navigation";
-import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
-import { ToastContext } from "@/contexts/ToastProvider";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
@@ -43,7 +42,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                     blogState.blogMeta.id
                 );
                 localStorage.removeItem(localStorageKey);
-                blogStateDispatch({
+                dispatch({
                     type: "set blog meta",
                     payload: { id: postId },
                 });
@@ -234,6 +233,4 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
 export default useUploadPost
 
-function blogStateDispatch(arg0: { type: string; payload: { id: number | null; }; }) {
-    throw new Error("Function not implemented.");
-}
+

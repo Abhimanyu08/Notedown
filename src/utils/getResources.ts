@@ -21,18 +21,7 @@ export async function getHtmlFromMarkdownFile(file: File | Blob | string): Promi
 
     }
 
-    if (!data.title) {
-        throw Error("Give your post a title");
-    }
-    if (!data.description) {
-        throw Error("Give your post a description")
-    }
-    if (data.language !== undefined && !ALLOWED_LANGUAGES.some(val => val === data.language)) {
-        throw Error("Mind Your Language! Supported languages are 'rust','python' and 'javascript'");
-    }
-    if (data.title.length > TITLE_LENGTH || (data.description?.length || 0) > DESCRIPTION_LENGTH) {
-        throw Error(`Either title or description is too large. Max title length - ${TITLE_LENGTH}, Max description length - ${DESCRIPTION_LENGTH}`)
-    }
+
     let html = mdToHtml(content);
     // html = resetCodeblocks(content, html)
     return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content: html }
