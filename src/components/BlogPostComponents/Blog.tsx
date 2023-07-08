@@ -46,7 +46,7 @@ const Blog = memo(
 
 				// -------------prose-li--------
 				marker:prose-li:text-black
-				dark:marker:prose-li:text-gray-500
+				dark:marker:prose-li:text-gray-200
 				prose-li:text-black/80
 				dark:prose-li:text-gray-300
 

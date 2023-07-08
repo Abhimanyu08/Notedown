@@ -305,9 +305,9 @@ tbody td {
 	color: rgb(209 213 219);
 }
 
-.prose :where(ul, ol):not(:where([class~="not-prose"] *)) {
+/* .prose :where(ul, ol):not(:where([class~="not-prose"] *)) {
 	padding-left: 1em;
-}
+} */
 
 #toolbar {
 	display: flex;
