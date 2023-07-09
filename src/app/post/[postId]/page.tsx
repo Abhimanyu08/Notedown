@@ -1,14 +1,9 @@
 import { getPost } from "@/app/utils/getData";
-import Blog from "@components/BlogPostComponents/Blog";
-import Toc from "@components/BlogPostComponents/TableOfContents";
-import { supabase } from "@utils/supabaseClient";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import BlogContextProvider from "../../../components/BlogPostComponents/BlogState";
-import Toolbar from "../components/Toolbar";
-import { redirect } from "next/navigation";
-import { Metadata } from "next";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
-import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
+import { supabase } from "@utils/supabaseClient";
+import { Metadata } from "next";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import { redirect } from "next/navigation";
 import BlogLayout from "../components/BlogLayout";
 
 export const revalidate = 60 * 60 * 24 * 365 * 10;

@@ -4,6 +4,7 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import React, { memo, useContext, useEffect, useState } from "react";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import { ExpandedImageContext } from "./ExpandedImageProvider";
 
 function Carousel({
 	imageNamesString,
@@ -16,6 +17,7 @@ function Carousel({
 	const { editorState, dispatch } = useContext(EditorContext);
 	const [images, setImages] = useState<string[]>([]);
 	const [captions, setCaptions] = useState<string[]>([]);
+	const { setImageUrl } = useContext(ExpandedImageContext);
 
 	useEffect(() => {
 		const imageNames = imageNamesString.split(",");
@@ -24,7 +26,15 @@ function Carousel({
 				Object.hasOwn(blogState.uploadedImages, i) ||
 				Object.hasOwn(editorState?.imagesToFiles, i)
 		);
-		setImages(validImages);
+		setImages(
+			validImages.map((image) =>
+				editorState.imagesToFiles[image]
+					? window.URL.createObjectURL(
+							editorState.imagesToFiles[image]
+					  )
+					: blogState.uploadedImages[image]
+			)
+		);
 
 		dispatch({
 			type: "add images to upload",
@@ -103,16 +113,11 @@ function Carousel({
 				>
 					<div className="grow relative">
 						<Image
-							src={
-								editorState.imagesToFiles[image]
-									? window.URL.createObjectURL(
-											editorState.imagesToFiles[image]
-									  )
-									: blogState.uploadedImages[image]
-							}
+							src={image}
 							alt={captions[idx] || ""}
 							fill
 							style={{ objectFit: "contain" }}
+							onClick={() => setImageUrl && setImageUrl(image)}
 						/>
 					</div>
 					<figcaption

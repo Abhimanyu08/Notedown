@@ -8,6 +8,7 @@ import { cookies, headers } from "next/headers";
 import ToastProvider from "@/contexts/ToastProvider";
 import ToastDisplay from "@components/ToastDisplay";
 import { Noto_Serif, Source_Code_Pro, Nunito_Sans } from "next/font/google";
+import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImageProvider";
 
 const serif = Noto_Serif({
 	subsets: ["latin"],
@@ -76,10 +77,11 @@ export default async function RootLayout({
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<SupabaseProvider session={session}>
 					<ToastProvider>
-						<Navbar />
+						<ExpandedImageProvider>
+							<Navbar />
 
-						{children}
-						<ToastDisplay />
+							{children}
+						</ExpandedImageProvider>
 					</ToastProvider>
 				</SupabaseProvider>
 			</body>

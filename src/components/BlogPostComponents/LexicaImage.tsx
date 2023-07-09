@@ -21,19 +21,19 @@ function LexicaImage({ alt }: { alt: string }) {
 		}
 	}, [pathname]);
 
-	useEffect(() => {
-		if (!generate) return;
-		setGenerating(true);
-		getImages({ caption: alt }).then((imageLinks) => {
-			if (typeof imageLinks === "string") {
-				alert(imageLinks);
-				return;
-			}
-			setLexicaLinks(imageLinks);
-			setLexicaLinkNumber(0);
-			setGenerating(false);
-		});
-	}, [generate]);
+	// useEffect(() => {
+	// 	if (!generate) return;
+	// 	setGenerating(true);
+	// 	getImages({ caption: alt }).then((imageLinks) => {
+	// 		if (typeof imageLinks === "string") {
+	// 			alert(imageLinks);
+	// 			return;
+	// 		}
+	// 		setLexicaLinks(imageLinks);
+	// 		setLexicaLinkNumber(0);
+	// 		setGenerating(false);
+	// 	});
+	// }, [generate]);
 
 	useEffect(() => {
 		const lexicaImageElem = document.getElementById(alt);

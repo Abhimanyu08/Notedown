@@ -1,4 +1,5 @@
 "use client";
+import ToastDisplay from "@components/ToastDisplay";
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 
@@ -25,6 +26,7 @@ export default function ToastProvider({
 			}}
 		>
 			{children}
+			<ToastDisplay />
 		</ToastContext.Provider>
 	);
 }

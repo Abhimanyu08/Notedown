@@ -3,10 +3,12 @@ import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import { memo, useContext, useEffect, useState } from "react";
+import { ExpandedImageContext } from "./ExpandedImageProvider";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	const { blogState } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { setImageUrl } = useContext(ExpandedImageContext);
 	const [imageSrc, setImageSrc] = useState("");
 
 	useEffect(() => {
@@ -41,6 +43,7 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 						alt={alt}
 						width={1440}
 						height={1080}
+						onClick={() => setImageUrl && setImageUrl(imageSrc)}
 					/>
 					<figcaption className="text-center italic">
 						{alt}
