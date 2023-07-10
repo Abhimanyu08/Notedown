@@ -118,6 +118,7 @@ function Carousel({
 							fill
 							style={{ objectFit: "contain" }}
 							onClick={() => setImageUrl && setImageUrl(image)}
+							className="cursor-zoom-in"
 						/>
 					</div>
 					<figcaption

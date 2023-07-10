@@ -44,6 +44,7 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 						width={1440}
 						height={1080}
 						onClick={() => setImageUrl && setImageUrl(imageSrc)}
+						className="cursor-zoom-in"
 					/>
 					<figcaption className="text-center italic">
 						{alt}
