@@ -15,10 +15,10 @@ function ExpandedImageDisplay({
 				<motion.div
 					className="absolute w-screen flex items-center justify-center h-screen bg-black/40 z-50"
 					onClick={() => setImageUrl("")}
-					initial={{ scale: 0 }}
+					initial={{ scale: 0.5 }}
 					animate={{ scale: 1 }}
 					exit={{ scale: 0 }}
-					transition={{ duration: 0.2 }}
+					transition={{ type: "tween" }}
 				>
 					<div className="w-4/5 h-4/5 relative">
 						<Image

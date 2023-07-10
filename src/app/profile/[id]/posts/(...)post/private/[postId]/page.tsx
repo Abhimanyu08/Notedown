@@ -42,7 +42,7 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 		revalidatePath("/profile/[id]/posts/latest");
 	}
 	return (
-		<div className="flex flex-col items-center justify-center h-full w-full absolute top-0 left-0 bg-black z-50">
+		<div className="flex flex-col items-center justify-center h-full w-full absolute top-0 left-0 bg-black z-40">
 			<BlogContextProvider
 				uploadedImages={imagesToUrls}
 				blogMeta={{
