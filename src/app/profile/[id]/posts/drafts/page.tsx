@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import PostsLoading from "../loading";
 import { MdDelete } from "react-icons/md";
+import ActionModal from "@components/Modals/ActionModal";
 
 function Drafts() {
 	const [drafts, setDrafts] = useState<
@@ -51,60 +52,69 @@ function Drafts() {
 	}
 
 	return (
-		<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
-			{drafts ? (
-				<>
-					{drafts.map((draft) => {
-						return (
-							<div
-								className="flex flex-col relative"
-								key={draft.timeStamp}
-							>
-								<button
-									className="absolute top-2 right-2"
-									onClick={() => {
-										localStorage.removeItem(draft.key);
-										setDrafts((prev) => {
-											const newDrafts = prev!.filter(
-												(d) => d.key !== draft.key
-											);
-											return newDrafts;
-										});
-									}}
+		<>
+			<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
+				{drafts ? (
+					<>
+						{drafts.map((draft) => {
+							return (
+								<div
+									className="flex flex-col relative"
+									key={draft.timeStamp}
 								>
-									<MdDelete />
-								</button>
-								<Link
-									href={
-										draft.postId
-											? `/write/${draft.postId}?draft=${draft.timeStamp}`
-											: `/write?draft=${draft.timeStamp}`
-									}
-									className="text-lg text-black font-serif font-semibold hover:italic hover:underline dark:text-gray-100 truncate w-3/4"
-								>
-									{draft.draftData.data.title}
-								</Link>
-								<p className="text-sm md:text-base mt-1 text-black dark:text-gray-400  font-sans ">
-									{draft.draftData.data.description}
-								</p>
-								<p className="text-sm text-gray-400 mt-2">
-									created on{" "}
-									<span className="text-gray-200 font-bold">
-										{draft.date}
-									</span>{" "}
-									at{" "}
-									<span className="text-gray-200 font-bold">
-										{draft.time}
-									</span>
-								</p>
-							</div>
-						);
-					})}
-				</>
-			) : (
-				<PostsLoading />
-			)}
-		</div>
+									<ActionModal
+										action="delete"
+										postTitle={draft.draftData.data.title}
+										isActionPending={false}
+										postId={parseInt(draft.timeStamp)}
+										onAction={() => {
+											localStorage.removeItem(draft.key);
+											setDrafts((prev) => {
+												const newDrafts = prev!.filter(
+													(d) => d.key !== draft.key
+												);
+												return newDrafts;
+											});
+										}}
+									/>
+									<label
+										className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-700"
+										htmlFor={`delete-${draft.timeStamp}`}
+									>
+										<MdDelete />
+									</label>
+									<Link
+										href={
+											draft.postId
+												? `/write/${draft.postId}?draft=${draft.timeStamp}`
+												: `/write?draft=${draft.timeStamp}`
+										}
+										className="text-lg text-black font-serif font-semibold hover:italic hover:underline dark:text-gray-100 truncate w-3/4"
+									>
+										{draft.draftData.data.title}
+									</Link>
+									<p className="text-sm md:text-base mt-2 text-black dark:text-gray-400  font-sans ">
+										{draft.draftData.data.description}
+									</p>
+									<p className="text-sm text-gray-400 mt-2">
+										created on{" "}
+										<span className="text-gray-200 font-bold">
+											{draft.date}
+										</span>{" "}
+										at{" "}
+										<span className="text-gray-200 font-bold">
+											{draft.time}
+										</span>
+									</p>
+								</div>
+							);
+						})}
+					</>
+				) : (
+					<PostsLoading />
+				)}
+			</div>
+		</>
 	);
 }
 
