@@ -13,27 +13,20 @@ function LexicaImage({ alt }: { alt: string }) {
 	const [generating, setGenerating] = useState(false);
 	const [lexicaLinkNumber, setLexicaLinkNumber] = useState(0);
 	const { editorState, dispatch } = useContext(EditorContext);
-	const pathname = usePathname();
 
 	useEffect(() => {
-		if (!pathname?.startsWith("/write")) {
-			setGenerate(true);
-		}
-	}, [pathname]);
-
-	// useEffect(() => {
-	// 	if (!generate) return;
-	// 	setGenerating(true);
-	// 	getImages({ caption: alt }).then((imageLinks) => {
-	// 		if (typeof imageLinks === "string") {
-	// 			alert(imageLinks);
-	// 			return;
-	// 		}
-	// 		setLexicaLinks(imageLinks);
-	// 		setLexicaLinkNumber(0);
-	// 		setGenerating(false);
-	// 	});
-	// }, [generate]);
+		if (!generate) return;
+		setGenerating(true);
+		getImages({ caption: alt }).then((imageLinks) => {
+			if (typeof imageLinks === "string") {
+				alert(imageLinks);
+				return;
+			}
+			setLexicaLinks(imageLinks);
+			setLexicaLinkNumber(0);
+			setGenerating(false);
+		});
+	}, [generate]);
 
 	useEffect(() => {
 		const lexicaImageElem = document.getElementById(alt);

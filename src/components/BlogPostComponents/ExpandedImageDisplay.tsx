@@ -20,7 +20,11 @@ function ExpandedImageDisplay({
 					exit={{ opacity: 0 }}
 					transition={{ type: "tween" }}
 				>
-					<div className="w-4/5 h-4/5 relative">
+					<div
+						className={`w-4/5 h-4/5 relative ${
+							imageUrl.includes("canvas") ? "bg-white" : ""
+						}`}
+					>
 						<Image
 							alt="expanded image"
 							src={imageUrl}

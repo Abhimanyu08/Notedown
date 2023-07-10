@@ -25,7 +25,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 
     const data = await openAiResp.json()
-    console.log(data)
 
     if (!data) {
 
