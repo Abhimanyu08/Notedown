@@ -83,7 +83,7 @@ export const getUpvotes = cache(async (idArray: number[]) => {
 })
 
 
-export const getPost = async (postId: string, supabaseClient: SupabaseClient) => {
+export const getPost = cache(async (postId: string, supabaseClient: SupabaseClient) => {
     const { data: post, error } = await supabaseClient
         .from(SUPABASE_POST_TABLE)
         .select(
@@ -126,4 +126,4 @@ export const getPost = async (postId: string, supabaseClient: SupabaseClient) =>
     const markdown = await fileData.text()
 
     return { post, content, imagesToUrls, markdown }
-}
+})

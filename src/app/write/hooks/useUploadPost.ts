@@ -6,6 +6,7 @@ import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from
 // import { supabase } from "@utils/supabaseClient";
 import { ToastContext } from "@/contexts/ToastProvider";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
+import { revalidatePath } from "next/cache";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 
@@ -89,7 +90,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             title,
             description,
             language,
-        }).eq("id", postId).select("id,title,description,language"), 3);
+        }).eq("id", postId).select("id,title,description,language,published"), 3);
 
 
         return newPost
@@ -185,7 +186,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         setUploadStatus("updating post row")
         //update the post row in the table to have new title,description,language etc.
-        await updatePostRow({ postId, ...postMeta })
+        const { published } = await updatePostRow({ postId, ...postMeta })
         // upload new markdown file for the blog post
         setUploadStatus("updating markdown file")
         await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })
@@ -203,6 +204,9 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         await uploadCanvasImages({ postId })
 
         setUploadStatus("Finished updating!")
+        // if (published) {
+        //     revalidatePath("/profile/[id]/posts/(...)post/[postId]");
+        // }
         //done
         return postId
     }

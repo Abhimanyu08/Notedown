@@ -84,20 +84,15 @@ export function PostOptions({
 							<SlOptions size={12} />
 						</button>
 						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover:visible group-focus:visible transition-all duration-200">
-							{!published && (
-								<PostOptionButton>
-									<Link
-										href={`/write/${postId}`}
-										prefetch={false}
-									>
-										<AiFillEdit
-											className="inline"
-											size={15}
-										/>{" "}
-										<span>Edit</span>
-									</Link>
-								</PostOptionButton>
-							)}
+							<PostOptionButton>
+								<Link
+									href={`/write/${postId}`}
+									prefetch={false}
+								>
+									<AiFillEdit className="inline" size={15} />{" "}
+									<span>Edit</span>
+								</Link>
+							</PostOptionButton>
 							{published ? (
 								<PostOptionButton>
 									<label htmlFor={`unpublish-${postId}`}>
