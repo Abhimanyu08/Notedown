@@ -45,7 +45,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 localStorage.removeItem(localStorageKey);
                 dispatch({
                     type: "set blog meta",
-                    payload: { id: postId },
+                    payload: { id: postId, ...blogState.blogMeta },
                 });
                 context?.setMessage("Changes Uploaded");
 
@@ -186,7 +186,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         setUploadStatus("updating post row")
         //update the post row in the table to have new title,description,language etc.
-        const { published } = await updatePostRow({ postId, ...postMeta })
+        await updatePostRow({ postId, ...postMeta })
         // upload new markdown file for the blog post
         setUploadStatus("updating markdown file")
         await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })

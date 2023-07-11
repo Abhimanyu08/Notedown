@@ -65,9 +65,7 @@ function BlogStateUpdate({
 						(val) => {
 							blogStateDispatch({
 								type: "set blog meta",
-								payload: {
-									...val?.data,
-								},
+								payload: val?.data,
 							});
 							setBlogHtml(val.content);
 						}
@@ -90,10 +88,14 @@ function BlogStateUpdate({
 
 						getHtmlFromMarkdownFile(markdown || "").then((val) => {
 							if (!val) return;
+
 							blogStateDispatch({
 								type: "set blog meta",
 								payload: {
-									...val?.data,
+									title: val.data.title,
+									description:
+										val.data.description || undefined,
+									language: val.data.language || undefined,
 								},
 							});
 							setBlogHtml(val.content);

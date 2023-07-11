@@ -10,13 +10,12 @@ import langToCodeMirrorExtension from "@utils/langToExtension";
 
 
 interface useEditorProps {
-    language: typeof ALLOWED_LANGUAGES[number] | "markdown"
+    language: string
     code: string
     editorParentId: string
-    blockNumber?: number
     mounted?: boolean
 }
-function useEditor({ language, blockNumber, code, mounted, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
+function useEditor({ language, code, mounted, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     // const { setRunningBlock } = useContext(BlogContext)
 
@@ -25,6 +24,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
         if (mounted === false) return
         const editorParent = document.getElementById(editorParentId)
         if (!editorParent || !language) return
+        if (!Array.from([...ALLOWED_LANGUAGES, "markdown"]).includes(language)) return
 
         editorParent?.replaceChildren("")
 
@@ -32,7 +32,7 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
         let startState = EditorState.create({
             doc: code,
             extensions: [
-                langToCodeMirrorExtension(language!),
+                langToCodeMirrorExtension(language as typeof ALLOWED_LANGUAGES[number] || "markdown"),
                 ...getExtensions()
             ]
         })
@@ -43,9 +43,10 @@ function useEditor({ language, blockNumber, code, mounted, editorParentId }: use
 
         setEditorView(view);
         return () => {
+            console.log("destroying view")
             view.destroy()
         }
-    }, [code, blockNumber, mounted, language]);
+    }, [code, mounted, language]);
 
     return {
         editorView

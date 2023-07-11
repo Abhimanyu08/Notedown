@@ -26,7 +26,7 @@ function EditorLayout({
 	imagesToUrls,
 	markdown,
 }: Partial<Awaited<ReturnType<typeof getPost>>>) {
-	const { editorState, dispatch } = useContext(EditorContext);
+	const { dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const searchParams = useSearchParams();
 	const [initialMarkdown, setInitialMarkdown] = useState(
@@ -35,7 +35,7 @@ function EditorLayout({
 	const [blogHtml, setBlogHtml] = useState("");
 
 	useEffect(() => {
-		let postMarkdown = markdown;
+		let postMarkdown;
 		if (searchParams?.has("draft")) {
 			const key = makeLocalStorageDraftKey(
 				searchParams.get("draft")!,
@@ -58,7 +58,6 @@ function EditorLayout({
 					description: post.description,
 					author: (post.bloggers as { id: string; name: string })
 						.name,
-					markdown: postMarkdown,
 					imageFolder: post.image_folder,
 					language: post.language,
 				},
@@ -72,18 +71,18 @@ function EditorLayout({
 				type: "set uploaded images",
 				payload: imagesToUrls!,
 			});
-			getHtmlFromMarkdownFile(markdown || "")
-				.then((val) => {
-					if (!val) return;
+			// getHtmlFromMarkdownFile(markdown || "")
+			// 	.then((val) => {
+			// 		if (!val) return;
 
-					blogStateDispatch({
-						type: "set blog meta",
-						payload: { ...val?.data, content: val?.content },
-					});
-				})
-				.catch((e) => {
-					alert((e as Error).message);
-				});
+			// 		// blogStateDispatch({
+			// 		// 	type: "set blog meta",
+			// 		// 	payload: { ...val?.data, content: val?.content },
+			// 		// });
+			// 	})
+			// 	.catch((e) => {
+			// 		alert((e as Error).message);
+			// 	});
 		} else {
 			dispatch({
 				type: "set previous uploaded doc",

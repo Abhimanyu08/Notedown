@@ -24,9 +24,7 @@ interface BlogStateInterface {
 		author: string;
 		description: string;
 		language: (typeof ALLOWED_LANGUAGES)[number];
-		content: string;
 		imageFolder: string;
-		markdown: string;
 	}>;
 	// canvasApps: Record<string, any>;
 	uploadedImages: Record<string, string>;
