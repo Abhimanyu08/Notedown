@@ -227,11 +227,10 @@ function BlogContextProvider({
 
 			dispatch({ type: "set running block", payload: null });
 			dispatch({ type: "set writing block", payload: null });
-			dispatch({ type: "toggle running request", payload: null });
 			return;
 		}
 
-		dispatch({ type: "toggle running request", payload: {} });
+		dispatch({ type: "toggle running request", payload: null });
 
 		const firstLine = blockToEditor[block]?.state.doc.lineAt(0).text;
 		const fileName = checkFileName(firstLine || "");
