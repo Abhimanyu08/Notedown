@@ -173,6 +173,13 @@ function BlogContextProvider({
 		},
 		uploadedImages: uploadedImages || {},
 	});
+	useEffect(() => {
+		const { containerId } = blogState;
+		if (!containerId) return;
+		return () => {
+			sendRequestToRceServer("DELETE", { containerId });
+		};
+	}, [blogState.containerId]);
 
 	useEffect(() => {
 		let language = blogState.blogMeta.language;
@@ -217,6 +224,10 @@ function BlogContextProvider({
 					[block]: "Please enable remote code execution",
 				},
 			});
+
+			dispatch({ type: "set running block", payload: null });
+			dispatch({ type: "set writing block", payload: null });
+			dispatch({ type: "toggle running request", payload: null });
 			return;
 		}
 
@@ -257,7 +268,7 @@ function BlogContextProvider({
 
 				dispatch({ type: "set running block", payload: null });
 				dispatch({ type: "set writing block", payload: null });
-				dispatch({ type: "toggle running request", payload: {} });
+				dispatch({ type: "toggle running request", payload: null });
 			}
 		);
 	}, [blogState.runningBlock, blogState.writingBlock]);
