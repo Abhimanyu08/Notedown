@@ -16,7 +16,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const [uploadFinished, setUploadFinished] = useState(false)
     const [uploadStatus, setUploadStatus] = useState("")
     const { editorState } = useContext(EditorContext)
-    const { blogState, dispatch } = useContext(BlogContext)
+    const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext)
     const [newPostId, setNewPostId] = useState<number | null>(blogState.blogMeta.id || null)
     const context = useContext(ToastContext);
 
@@ -222,9 +222,9 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 addedUploads[imageName] = blogState.uploadedImages[imageName]
             }
         }
-        dispatch({ type: "set uploaded images", payload: addedUploads })
+        blogStateDispatch({ type: "set uploaded images", payload: addedUploads })
 
-        dispatch({ type: "empty canvas apps", payload: null })
+        blogStateDispatch({ type: "empty canvas apps", payload: null })
 
     }
 
@@ -234,6 +234,3 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
 export default useUploadPost
 
-function blogStateDispatch(arg0: { type: string; payload: { id: number | null; }; }) {
-    throw new Error("Function not implemented.");
-}
