@@ -41,7 +41,6 @@ function Code({ code, blockNumber }: CodeProps) {
 	const [openShell, setOpenShell] = useState(false);
 	const { editorView } = useEditor({
 		language: language!,
-		blockNumber,
 		code,
 		mounted,
 		editorParentId: `codearea-${blockNumber}`,
