@@ -37,7 +37,7 @@ function Paginator({
 			setHasMorePosts(hasMore);
 			let last = data?.at(-1);
 			if (last) setCurrentLastPost(last);
-			if (postType === "upvoted") data = data.map((p) => p.posts);
+			// if (postType === "upvoted") data = data.map((p) => p.posts);
 			setNewPosts((prev) => [...prev, ...data!]);
 		});
 	};

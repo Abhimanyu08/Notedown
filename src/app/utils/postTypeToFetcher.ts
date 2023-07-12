@@ -107,7 +107,7 @@ const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cu
 
 postTypeToFetcher.private = fetchPrivatePosts
 postTypeToFetcher.public = fetchPublicPosts
-postTypeToFetcher.greatest = fetchGreatestPosts
-postTypeToFetcher.upvoted = fetchUpvotedPosts
+// postTypeToFetcher.greatest = fetchGreatestPosts
+// postTypeToFetcher.upvoted = fetchUpvotedPosts
 
 export default postTypeToFetcher
