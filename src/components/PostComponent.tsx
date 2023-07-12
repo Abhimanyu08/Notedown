@@ -3,6 +3,7 @@ import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
 import { BiUpvote } from "react-icons/bi";
 import { PostOptions } from "./PostOptions";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
@@ -45,25 +46,29 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					deletePostAction,
 				}}
 			/>
-			<Link
-				href={published ? `/post/${id}` : `/post/private/${id}`}
-				className="text-lg text-black font-semibold hover:italic font-serif hover:underline dark:text-gray-200 truncate w-3/4"
-			>
-				{title}{" "}
-			</Link>
+			<HoverCard>
+				<HoverCardTrigger>
+					<Link
+						href={published ? `/post/${id}` : `/post/private/${id}`}
+						className="text-lg text-black font-semibold hover:italic font-serif hover:underline dark:text-gray-200 truncate w-3/4"
+					>
+						{title}{" "}
+					</Link>
+				</HoverCardTrigger>
+				<HoverCardContent className="bg-slate-800">
+					{description}
+				</HoverCardContent>
+			</HoverCard>
 
-			<p className="text-sm md:text-base text-black dark:text-gray-400 ">
+			{/* <p className="text-sm md:text-base text-black dark:text-gray-400 ">
 				{description}
-			</p>
-			<div
-				className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-4  max-w-full divide-x-2 divide-black/30
-			dark:divide-white/40"
-			>
+			</p> */}
+			<div className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-4  max-w-full ">
 				{/* <BlogAuthor
 					createdBy={created_by!}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic flex-initialu"
 				/> */}
-				<div className="flex pr-2 justify-start">
+				<div className="">
 					{upvoted_on ? (
 						<span className="flex items-center">
 							<BiUpvote /> - {formatDate(upvoted_on)}
@@ -76,7 +81,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						</span>
 					)}
 				</div>
-				{published && (
+				{/* {published && (
 					<div className="flex justify-center pl-2 pr-0">
 						<span className="flex items-center gap-1 justify-center">
 							{upvotes
@@ -92,7 +97,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					className={` px-1 font-bold font-mono flex justify-start w-20`}
 				>
 					<span>{language}</span>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

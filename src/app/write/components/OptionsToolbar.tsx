@@ -18,14 +18,9 @@ function OptionsToolbar() {
 	const [startUpload, setStartUpload] = useState(false);
 	const toastContext = useContext(ToastContext);
 
-	const { uploading, uploadStatus, newPostId, uploadFinished } =
-		useUploadPost({
-			startUpload,
-		});
-
-	useEffect(() => {
-		toastContext?.setMessage(uploadStatus);
-	}, [uploadStatus]);
+	const { uploadFinished } = useUploadPost({
+		startUpload,
+	});
 
 	const onUpload = async (currentEditorState: typeof editorState) => {
 		setStartUpload(true);

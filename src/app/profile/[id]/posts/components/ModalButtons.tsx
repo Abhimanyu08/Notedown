@@ -1,5 +1,11 @@
 "use client";
 import useShortCut from "@/hooks/useShortcut";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@components/ui/tooltip";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MouseEventHandler } from "react";
@@ -62,13 +68,23 @@ export function BackButton({ id }: { id: string }) {
 
 export function Preview() {
 	return (
-		<label
-			htmlFor="private-publish"
-			className="dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom hover:scale-105 active:scale-95"
-			data-tip="Publish"
-		>
-			<TbNews className=" dark:text-white text-black" size={14} />
-		</label>
+		<TooltipProvider>
+			<Tooltip>
+				<label
+					htmlFor="private-publish"
+					className="w-fit "
+					data-tip="Publish"
+				>
+					<TooltipTrigger className="p-2 bg-slate-800 rounded-full">
+						<TbNews
+							className=" dark:text-white text-black"
+							size={14}
+						/>
+					</TooltipTrigger>
+				</label>
+				<TooltipContent>publish</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 }
 export function Edit({ postId }: { postId: number }) {
@@ -93,15 +109,16 @@ function PostPreviewButton({
 	className?: string;
 }) {
 	return (
-		<button
-			data-tip={tip}
-			onClick={onClick}
-			className={
-				"dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom " +
-				` ${className}`
-			}
-		>
-			{children}
-		</button>
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger
+					onClick={onClick}
+					className="p-2 rounded-full bg-slate-800"
+				>
+					{children}
+				</TooltipTrigger>
+				<TooltipContent>{tip}</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 }

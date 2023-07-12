@@ -3,21 +3,17 @@ import Post from "@/interfaces/Post";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
-// import { supabase } from "@utils/supabaseClient";
 import { ToastContext } from "@/contexts/ToastProvider";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
-import { revalidatePath } from "next/cache";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
-    const [uploading, setUploading] = useState(false)
     const [uploadFinished, setUploadFinished] = useState(false)
-    const [uploadStatus, setUploadStatus] = useState("")
     const { editorState, dispatch: editorStateDispatch } = useContext(EditorContext)
     const { blogState, dispatch } = useContext(BlogContext)
-    const [newPostId, setNewPostId] = useState<number | null>(blogState.blogMeta.id || null)
+    const toastContext = useContext(ToastContext)
     const context = useContext(ToastContext);
 
     const { supabase, session } = useSupabase()
@@ -32,9 +28,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             if (blogState.blogMeta.id) process = update
 
             process().then((postId) => {
-                setUploadStatus("Finished!")
-                setNewPostId(postId)
-                setUploading(false)
+                toastContext?.setMessage("Finished!")
                 afterUpload()
                 setUploadFinished(true)
 
@@ -51,7 +45,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
             }).catch((e) => {
                 alert((e as Error).message)
-                setUploading(false)
                 setUploadFinished(true)
             })
 
@@ -119,7 +112,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         for (const image of imagesToUpload) {
 
-            setUploadStatus(`Uploading ${image}`)
+            toastContext?.setMessage(`Uploading ${image}`)
             const folderName = created_by + "/" + postId + "/" + image
             const imageFile = editorState.imagesToFiles[image]
             await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, imageFile), 3)
@@ -135,7 +128,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         for (const [canvasImageName, canvasApp] of Object.entries(canvasApps)) {
 
             if (canvasApp === null) return;
-            setUploadStatus(`Uploading ${canvasImageName}`)
+            toastContext?.setMessage(`Uploading ${canvasImageName}`)
             const newCanvasImage = await canvasApp.getImage("png");
             const folderName = created_by + "/" + postId + "/" + canvasImageName + ".png"
             await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, newCanvasImage, { upsert: true }), 3)
@@ -156,20 +149,19 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const upload = async () => {
 
-        setUploading(true)
 
 
-        setUploadStatus("preparing for upload")
+        toastContext?.setMessage("preparing for upload")
         const postMeta = prepareForUpload()
 
-        setUploadStatus("Uploading markdown file")
+        toastContext?.setMessage("Uploading markdown file")
         const post = await uploadPostRow(postMeta)
         await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
 
-        setUploadStatus("Uploading Images")
+        toastContext?.setMessage("Uploading Images")
         await uploadPostImages({ postId: post.id })
 
-        setUploadStatus("Uploading Canvas images")
+        toastContext?.setMessage("Uploading Canvas images")
         await uploadCanvasImages({ postId: post.id })
 
         await finalUpdateToPost({ postId: post.id, postMeta })
@@ -180,30 +172,29 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
     const update = async () => {
         const postId = blogState.blogMeta.id!
-        setUploading(true)
-        setUploadStatus("preparing for update")
+        toastContext?.setMessage("preparing for update")
         const postMeta = prepareForUpload()
 
-        setUploadStatus("updating post row")
+        toastContext?.setMessage("updating post row")
         //update the post row in the table to have new title,description,language etc.
         await updatePostRow({ postId, ...postMeta })
         // upload new markdown file for the blog post
-        setUploadStatus("updating markdown file")
+        toastContext?.setMessage("updating markdown file")
         await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })
 
         //delete the images that need to be deleted
-        setUploadStatus("deleting redundant images")
+        toastContext?.setMessage("deleting redundant images")
         await deleteRedundantImages({ postId })
 
         //upload image files that need to be uploaded
-        setUploadStatus("Uploading new images")
+        toastContext?.setMessage("Uploading new images")
         await uploadPostImages({ postId })
 
         //upload canvas files that need to be uploaded
-        setUploadStatus("Updating and uploading new canvas images")
+        toastContext?.setMessage("Updating and uploading new canvas images")
         await uploadCanvasImages({ postId })
 
-        setUploadStatus("Finished updating!")
+        toastContext?.setMessage("Finished updating!")
         // if (published) {
         //     revalidatePath("/profile/[id]/posts/(...)post/[postId]");
         // }
@@ -231,7 +222,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     }
 
-    return { uploading, uploadStatus, newPostId, uploadFinished }
+    return { uploadFinished }
 
 }
 

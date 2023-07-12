@@ -18,7 +18,7 @@ export const getUser = cache(async (id: string) => {
 })
 
 
-export const getUserLatestPosts = async (id: string) => {
+export const getUserPublicPosts = async (id: string) => {
 
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)

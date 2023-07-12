@@ -14,14 +14,14 @@ export const PostTypeContext = createContext<{
 	searchResults: SearchResult[];
 	setSearchResults: React.Dispatch<React.SetStateAction<SearchResult[]>>;
 }>({
-	postType: "latest",
-	setPostType: () => "latest",
+	postType: "public",
+	setPostType: () => "public",
 	searchResults: [],
 	setSearchResults: () => [],
 });
 
 function PostTypeContextProvider({ children }: { children: React.ReactNode }) {
-	const [postType, setPostType] = useState<PostTypes>("latest");
+	const [postType, setPostType] = useState<PostTypes>("public");
 	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 	return (
 		<PostTypeContext.Provider

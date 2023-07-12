@@ -31,7 +31,7 @@ function ProfilePostsLayout({
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	async function unpublishPostAction(postId: number) {
@@ -47,7 +47,7 @@ function ProfilePostsLayout({
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	async function deletePostAction(postId: number) {
@@ -81,7 +81,7 @@ function ProfilePostsLayout({
 					.remove(imageNames);
 			}
 			if (data.published) {
-				revalidatePath("/profile/[id]/posts/latest");
+				revalidatePath("/profile/[id]/posts/public");
 			} else {
 				revalidatePath("/profile/[id]/posts/private");
 			}

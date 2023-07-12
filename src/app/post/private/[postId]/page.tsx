@@ -32,7 +32,7 @@ async function PrivatePost({ params }: { params: PostParams }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	try {

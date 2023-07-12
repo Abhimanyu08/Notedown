@@ -1,4 +1,4 @@
-import { getUserLatestPosts } from "@/app/utils/getData";
+import { getUserPublicPosts } from "@/app/utils/getData";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
@@ -13,8 +13,8 @@ import { headers, cookies } from "next/headers";
 
 // export const revalidate = 60 * 60 * 24 * 365 * 10;
 
-async function LatestPosts({ params }: { params: { id: string } }) {
-	const { data, hasMore } = await getUserLatestPosts(params.id);
+async function PublicPosts({ params }: { params: { id: string } }) {
+	const { data, hasMore } = await getUserPublicPosts(params.id);
 
 	async function publishPostAction(postId: number) {
 		"use server";
@@ -30,7 +30,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	async function unpublishPostAction(postId: number) {
@@ -46,7 +46,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	async function deletePostAction(postId: number) {
@@ -80,7 +80,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 					.remove(imageNames);
 			}
 			if (data.published) {
-				revalidatePath("/profile/[id]/posts/latest");
+				revalidatePath("/profile/[id]/posts/public");
 			} else {
 				revalidatePath("/profile/[id]/posts/private");
 			}
@@ -90,7 +90,7 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 		<>
 			{/* @ts-expect-error Async Server Component  */}
 			<PostDisplay
-				key={"latest_posts"}
+				key={"public_posts"}
 				posts={data || []}
 				{...{
 					publishPostAction,
@@ -99,9 +99,9 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 				}}
 			/>
 			<Paginator
-				key="latest"
+				key="public"
 				cursorKey="published_on"
-				postType="latest"
+				postType="public"
 				lastPost={data!.at(data!.length - 1)!}
 				hasMore={hasMore}
 				{...{
@@ -114,4 +114,4 @@ async function LatestPosts({ params }: { params: { id: string } }) {
 	);
 }
 
-export default LatestPosts;
+export default PublicPosts;

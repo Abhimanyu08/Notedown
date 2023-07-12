@@ -43,7 +43,7 @@ const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, curs
     return checkDataLength(data)
 };
 
-const fetchLatestPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
+const fetchPublicPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
     const cursor = lastPost[cursorKey]
     const { data, error } = await supabase
         .from(SUPABASE_POST_TABLE)
@@ -106,7 +106,7 @@ const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cu
 }
 
 postTypeToFetcher.private = fetchPrivatePosts
-postTypeToFetcher.latest = fetchLatestPosts
+postTypeToFetcher.public = fetchPublicPosts
 postTypeToFetcher.greatest = fetchGreatestPosts
 postTypeToFetcher.upvoted = fetchUpvotedPosts
 

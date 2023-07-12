@@ -4,7 +4,7 @@ const nextConfig = {
 		return [
 			{
 				source: "/profile/:id/posts",
-				destination: "/profile/:id/posts/latest",
+				destination: "/profile/:id/posts/public",
 				permanent: true,
 			},
 		];

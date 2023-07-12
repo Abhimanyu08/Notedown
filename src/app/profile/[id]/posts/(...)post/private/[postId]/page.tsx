@@ -39,7 +39,7 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 	return (
 		<div className="flex flex-col items-center justify-center h-full w-full absolute top-0 left-0 bg-black z-40">

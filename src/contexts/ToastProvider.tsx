@@ -1,6 +1,12 @@
 "use client";
 import ToastDisplay from "@components/ToastDisplay";
-import { Dispatch, SetStateAction, createContext, useState } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	createContext,
+	useEffect,
+	useState,
+} from "react";
 import { VscLoading } from "react-icons/vsc";
 
 export const ToastContext = createContext<
@@ -17,6 +23,12 @@ export default function ToastProvider({
 	children: React.ReactNode;
 }) {
 	const [message, setMessage] = useState<string | JSX.Element>("");
+
+	useEffect(() => {
+		if (message) {
+			setTimeout(() => setMessage(""), 3000);
+		}
+	}, [message]);
 
 	return (
 		<ToastContext.Provider

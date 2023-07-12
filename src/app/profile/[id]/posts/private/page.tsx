@@ -39,7 +39,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	async function unpublishPostAction(postId: number) {
@@ -55,7 +55,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/latest");
+		revalidatePath("/profile/[id]/posts/public");
 	}
 
 	async function deletePostAction(postId: number) {
@@ -90,7 +90,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 					.remove(imageNames);
 			}
 			if (data.published) {
-				revalidatePath("/profile/[id]/posts/latest");
+				revalidatePath("/profile/[id]/posts/public");
 			} else {
 				revalidatePath("/profile/[id]/posts/private");
 			}
