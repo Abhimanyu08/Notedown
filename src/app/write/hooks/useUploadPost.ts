@@ -45,7 +45,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 localStorage.removeItem(localStorageKey);
                 dispatch({
                     type: "set blog meta",
-                    payload: { id: postId, ...blogState.blogMeta },
+                    payload: { id: postId },
                 });
                 context?.setMessage("Changes Uploaded");
 

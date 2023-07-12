@@ -35,7 +35,6 @@ function EditorLayout({
 	const [blogHtml, setBlogHtml] = useState("");
 
 	useEffect(() => {
-		let postMarkdown;
 		if (searchParams?.has("draft")) {
 			const key = makeLocalStorageDraftKey(
 				searchParams.get("draft")!,
@@ -44,8 +43,6 @@ function EditorLayout({
 
 			let draftText = localStorage.getItem(key);
 			if (draftText) {
-				postMarkdown = draftText;
-
 				setInitialMarkdown(draftText);
 			}
 		}
