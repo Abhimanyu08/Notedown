@@ -5,17 +5,15 @@ export const handleSignIn = async (supabaseClient: SupabaseClient, provider: "gi
     const hostname = window.location.hostname
     let redirectUrl
     if (hostname === "localhost") {
-        redirectUrl = `http://localhost:3000${redirectTo}`
+        redirectUrl = `http://localhost:3000/auth/callback`
     } else {
-        redirectUrl = `${window.location.protocol}//${window.location.hostname}${redirectTo}`
+        redirectUrl = `${window.location.protocol}//${window.location.hostname}/auth/callback`
     }
 
     const { error } = await supabaseClient.auth.signInWithOAuth(
         {
             provider,
-            options: {
-                redirectTo
-            }
+
         },
 
     );

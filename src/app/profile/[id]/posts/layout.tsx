@@ -9,6 +9,9 @@ import {
 } from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import { headers, cookies } from "next/headers";
+import { Sheet, SheetTrigger, SheetContent } from "@components/ui/sheet";
+import Link from "next/link";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 function ProfilePostsLayout({
 	children,
@@ -88,10 +91,29 @@ function ProfilePostsLayout({
 		}
 	}
 	return (
-		<>
+		<div className="relative">
 			{/* <SearchModal /> */}
-			<div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
-				{/* <div className="flex  justify-between gap-2"> */}
+			<Sheet>
+				<SheetTrigger className="absolute top-4 left-4">
+					<button>
+						<RxHamburgerMenu />
+					</button>
+				</SheetTrigger>
+				<SheetContent side={"left"} className="w-[200px]">
+					<div className="flex flex-col gap-4 ">
+						<Link href={`/profile/${params.id}/posts/public`}>
+							Public Notes
+						</Link>
+						<Link href={`/profile/${params.id}/posts/private`}>
+							Private Notes
+						</Link>
+						<Link href={`/profile/${params.id}/posts/drafts`}>
+							Drafts
+						</Link>
+					</div>
+				</SheetContent>
+			</Sheet>
+			{/* <div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
 				<SearchComponent
 					{...{
 						publishPostAction,
@@ -103,10 +125,9 @@ function ProfilePostsLayout({
 					<PostControl />
 				</div>
 
-				{/* </div> */}
 				<div className="overflow-y-auto grow">{children}</div>
-			</div>
-		</>
+			</div> */}
+		</div>
 	);
 }
 

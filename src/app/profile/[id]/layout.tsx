@@ -8,6 +8,9 @@ import { BsPersonCircle } from "react-icons/bs";
 import { Metadata } from "next";
 import { supabase } from "@utils/supabaseClient";
 import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
+import { Sheet, SheetTrigger, SheetContent } from "@components/ui/sheet";
+import { RxHamburgerMenu } from "react-icons/rx";
+import Link from "next/link";
 
 export async function generateMetadata({
 	params,
@@ -47,42 +50,24 @@ async function ProfileLayout({
 	params: { id: string };
 }) {
 	const userData = await getUser(params.id);
-	if (!userData) return <></>;
 
 	async function revalidateProfile() {
 		"use server";
 		revalidatePath("/profile/[id]");
 	}
 	return (
-		<>
-			<div className="lg:grid flex lg:w-4/6 mx-auto flex-col grow  h-full overflow-y-auto lg:overflow-y-clip lg:grid-cols-7 text-white gap-y-10 pt-10">
-				{/* <AboutEditorModal
-				about={userData?.about || ""}
-				avatarUrl={userData?.avatar_url || ""}
-				name={userData!.name!}
-			/> */}
-				<div className="lg:col-span-2 flex flex-col items-center max-h-full relative">
-					<div className="w-[140px] h-[140px] relative">
-						{userData.avatar_url ? (
-							<Image
-								src={userData?.avatar_url || ""}
-								fill={true}
-								alt={`Rce-blog profile picture of ${userData?.name}`}
-								className="rounded-full"
-							/>
-						) : (
-							<BsPersonCircle className="w-[140px] h-[140px] text-gray-500" />
-						)}
-					</div>
-					<ProfileImageEditor revalidateProfile={revalidateProfile} />
-					<ProfileControl id={params.id} />
-				</div>
-
-				<div className="lg:col-span-5 overflow-auto relative pr-10">
-					{children}
-				</div>
+		<div className="flex">
+			<div className="flex flex-col gap-4 h-full justify-start">
+				<Link href={`/profile/${params.id}/posts/public`}>
+					Public Notes
+				</Link>
+				<Link href={`/profile/${params.id}/posts/private`}>
+					Private Notes
+				</Link>
+				<Link href={`/profile/${params.id}/posts/drafts`}>Drafts</Link>
 			</div>
-		</>
+			{children}
+		</div>
 	);
 }
 

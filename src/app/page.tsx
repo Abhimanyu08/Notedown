@@ -1,12 +1,22 @@
 import DemoLabel from "@components/HomePageComponents/DemoLabel";
 import HeaderText from "@components/HomePageComponents/HeaderText";
 import LoomDemoModal from "@components/HomePageComponents/LoomDemoModal";
+import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
 import Link from "next/link";
 import { FaPencilAlt } from "react-icons/fa";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 async function Home() {
 	return (
 		<>
+			<Sheet>
+				<SheetTrigger className="absolute top-4 left-4">
+					<button>
+						<RxHamburgerMenu />
+					</button>
+				</SheetTrigger>
+				<SheetContent side={"left"}>hello</SheetContent>
+			</Sheet>
 			<LoomDemoModal />
 			<div
 				className="flex gap-10 lg:gap-20 md:gap-14 flex-col pb-20 grow overflow-y-auto

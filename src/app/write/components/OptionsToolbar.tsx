@@ -8,7 +8,6 @@ import { FaFileUpload } from "react-icons/fa";
 import { SlOptions } from "react-icons/sl";
 import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
-import { ToastContext } from "@/contexts/ToastProvider";
 
 function OptionsToolbar() {
 	const [openOptions, setOpenOptions] = useState(false);
@@ -16,7 +15,6 @@ function OptionsToolbar() {
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const [startUpload, setStartUpload] = useState(false);
-	const toastContext = useContext(ToastContext);
 
 	const { uploadFinished } = useUploadPost({
 		startUpload,

@@ -8,7 +8,7 @@ import langToCodeMirrorExtension from "@utils/langToExtension";
 // This component should be page diagnostic.
 
 function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
-	const { editorState, dispatch } = useContext(EditorContext);
+	const { dispatch } = useContext(EditorContext);
 	const [mounted, setMounted] = useState(false);
 
 	const { editorView } = useEditor({
@@ -27,11 +27,11 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	useEffect(() => {
 		if (!mounted) setMounted(true);
 	}, []);
-	useEffect(() => {
-		if (editorState.editingMarkdown) {
-			editorState.editorView?.focus();
-		}
-	}, [editorState.editingMarkdown]);
+	// useEffect(() => {
+	// 	if (editorState.editingMarkdown) {
+	// 		editorState.editorView?.focus();
+	// 	}
+	// }, [editorState.editingMarkdown]);
 	return (
 		<>
 			<EditorHelperComponent />

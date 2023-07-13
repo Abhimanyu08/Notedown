@@ -104,6 +104,7 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 			};
 
 		case "set editorView":
+			console.log(`Editorview being set as ${action.payload || "null"}`);
 			return {
 				...state,
 				editorView: action.payload as EditorView | null,

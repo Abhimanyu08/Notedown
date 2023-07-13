@@ -9,6 +9,8 @@ import ToastProvider from "@/contexts/ToastProvider";
 import ToastDisplay from "@components/ToastDisplay";
 import { Noto_Serif, Source_Code_Pro, Nunito_Sans } from "next/font/google";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImageProvider";
+import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 const serif = Noto_Serif({
 	subsets: ["latin"],
@@ -78,8 +80,6 @@ export default async function RootLayout({
 				<SupabaseProvider session={session}>
 					<ToastProvider>
 						<ExpandedImageProvider>
-							<Navbar />
-
 							{children}
 						</ExpandedImageProvider>
 					</ToastProvider>
