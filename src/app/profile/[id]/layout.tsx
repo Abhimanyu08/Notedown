@@ -55,20 +55,7 @@ async function ProfileLayout({
 		"use server";
 		revalidatePath("/profile/[id]");
 	}
-	return (
-		<div className="flex">
-			<div className="flex flex-col gap-4 h-full justify-start">
-				<Link href={`/profile/${params.id}/posts/public`}>
-					Public Notes
-				</Link>
-				<Link href={`/profile/${params.id}/posts/private`}>
-					Private Notes
-				</Link>
-				<Link href={`/profile/${params.id}/posts/drafts`}>Drafts</Link>
-			</div>
-			{children}
-		</div>
-	);
+	return <>{children}</>;
 }
 
 export default ProfileLayout;

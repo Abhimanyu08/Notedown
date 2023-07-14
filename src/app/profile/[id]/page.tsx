@@ -34,28 +34,13 @@ async function About({ params }: { params: { id: string } }) {
 	}
 
 	return (
-		<EditorContextProvider>
-			<div className="flex flex-col w-full relative h-full pl-1">
-				<h1 className="text-3xl tracking-normal mb-10">
-					{userData?.name}
-				</h1>
-				<AboutJsxWrapper html={aboutHtml} />
-
-				{/* <label
-					className="absolute top-2 right-2 dark:bg-gray-800 p-2 rounded-full tooltip tooltip-bottom"
-					data-tip="edit"
-					htmlFor="edit-about"
-				>
-					<AiFillEdit size={14} />
-				</label> */}
-				<AboutEditor
-					name={userData?.name || ""}
-					aboutHtml={aboutHtml}
-					aboutMarkdown={userData?.about || ""}
-					changeAbout={changeAbout}
-				/>
+		<div className="flex flex-col mx-auto w-[65ch]">
+			<div className="flex gap-6 ring-b-gray-600 mt-2 ring-b-[1px] w-fit px-4">
+				<div className="">Public</div>
+				<div className="border-b-[1px] border-gray-100">Private</div>
+				<div className="">Drafts</div>
 			</div>
-		</EditorContextProvider>
+		</div>
 	);
 }
 

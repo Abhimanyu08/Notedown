@@ -50,7 +50,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				<HoverCardTrigger>
 					<Link
 						href={published ? `/post/${id}` : `/post/private/${id}`}
-						className="text-lg text-black font-semibold hover:italic font-serif hover:underline dark:text-gray-200 truncate w-3/4"
+						className="text-lg text-black font-semibold hover:italic font-serif hover:underline dark:text-gray-200 break-words w-3/4"
 					>
 						{title}{" "}
 					</Link>

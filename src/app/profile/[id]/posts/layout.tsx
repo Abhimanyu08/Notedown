@@ -12,6 +12,7 @@ import { headers, cookies } from "next/headers";
 import { Sheet, SheetTrigger, SheetContent } from "@components/ui/sheet";
 import Link from "next/link";
 import { RxHamburgerMenu } from "react-icons/rx";
+import Tabs, { TabChildren } from "@components/ui/tabs";
 
 function ProfilePostsLayout({
 	children,
@@ -91,44 +92,36 @@ function ProfilePostsLayout({
 		}
 	}
 	return (
-		<div className="relative">
-			{/* <SearchModal /> */}
-			<Sheet>
-				<SheetTrigger className="absolute top-4 left-4">
-					<button>
-						<RxHamburgerMenu />
-					</button>
-				</SheetTrigger>
-				<SheetContent side={"left"} className="w-[200px]">
-					<div className="flex flex-col gap-4 ">
-						<Link href={`/profile/${params.id}/posts/public`}>
-							Public Notes
-						</Link>
-						<Link href={`/profile/${params.id}/posts/private`}>
-							Private Notes
-						</Link>
-						<Link href={`/profile/${params.id}/posts/drafts`}>
-							Drafts
-						</Link>
-					</div>
-				</SheetContent>
-			</Sheet>
-			{/* <div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
-				<SearchComponent
-					{...{
-						publishPostAction,
-						unpublishPostAction,
-						deletePostAction,
-					}}
-				/>
+		<div className="w-[700px] mx-auto py-10 h-full flex flex-col  relative gap-4">
+			<PostControl />
+			{/* <SearchComponent
+				{...{
+					publishPostAction,
+					unpublishPostAction,
+					deletePostAction,
+				}}
+			/> */}
+			<div
+				className="grow overflow-y-auto
+			lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
+			"
+			>
+				{children}
+			</div>
+		</div>
+	);
+}
+
+{
+	/* <div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
+				
 				<div className="flex justify-start gap-2 mr-4 ">
 					<PostControl />
 				</div>
 
 				<div className="overflow-y-auto grow">{children}</div>
-			</div> */}
-		</div>
-	);
+			</div> */
 }
-
 export default ProfilePostsLayout;

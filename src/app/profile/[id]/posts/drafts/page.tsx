@@ -93,9 +93,7 @@ function Drafts() {
 									>
 										{draft.draftData.data.title}
 									</Link>
-									<p className="text-sm md:text-base mt-2 text-black dark:text-gray-400  font-sans ">
-										{draft.draftData.data.description}
-									</p>
+
 									<p className="text-sm text-gray-400 mt-2">
 										created on{" "}
 										<span className="text-gray-200 font-bold">

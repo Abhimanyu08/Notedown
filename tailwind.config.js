@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	mode: "jit",
 	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
@@ -28,6 +27,8 @@ module.exports = {
 				ring: "hsl(var(--ring))",
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
+				button: "rgb(31 41 55);",
+				hover: "rgb(55 65 81)",
 				primary: {
 					DEFAULT: "hsl(var(--primary))",
 					foreground: "hsl(var(--primary-foreground))",
@@ -83,7 +84,4 @@ module.exports = {
 		require("@tailwindcss/typography"),
 		require("tailwind-scrollbar"),
 	],
-	corePlugins: {
-		preflight: true,
-	},
 };
