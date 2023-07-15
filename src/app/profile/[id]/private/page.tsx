@@ -2,6 +2,7 @@ import { getUserPrivatePosts } from "@/app/utils/getData";
 import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
+import Button from "@components/ui/button";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
 	LIMIT,
@@ -11,6 +12,8 @@ import {
 } from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
+import Link from "next/link";
+import { SlNote } from "react-icons/sl";
 
 // export const revalidate = 0;
 
@@ -97,31 +100,57 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 		}
 	}
 
+	if (data.length > 0) {
+		return (
+			<>
+				{/* @ts-expect-error Async Server Component  */}
+				<PostDisplay
+					key="private_posts"
+					posts={data || []}
+					{...{
+						publishPostAction,
+						unpublishPostAction,
+						deletePostAction,
+					}}
+				/>
+				<Paginator
+					key="private"
+					cursorKey="created_at"
+					postType="private"
+					lastPost={data!.at(data!.length - 1)!}
+					hasMore={hasMore}
+					{...{
+						publishPostAction,
+						unpublishPostAction,
+						deletePostAction,
+					}}
+				/>
+			</>
+		);
+	}
 	return (
-		<>
-			{/* @ts-expect-error Async Server Component  */}
-			<PostDisplay
-				key="private_posts"
-				posts={data || []}
-				{...{
-					publishPostAction,
-					unpublishPostAction,
-					deletePostAction,
-				}}
-			/>
-			<Paginator
-				key="private"
-				cursorKey="created_at"
-				postType="private"
-				lastPost={data!.at(data!.length - 1)!}
-				hasMore={hasMore}
-				{...{
-					publishPostAction,
-					unpublishPostAction,
-					deletePostAction,
-				}}
-			/>
-		</>
+		<div className="h-full w-full flex flex-col gap-10 items-center justify-center">
+			<div className="flex flex-col gap-2">
+				<p className="font-fancy text-3xl text-gray-400">
+					Write notes for yourself by default, disregarding audience
+				</p>
+				<span className="self-end font-fancy text-lg text-gray-400 italic underline">
+					-
+					<a
+						href="https://notes.andymatuschak.org/Evergreen_notes?stackedNotes=z8AfCaQJdp852orumhXPxHb3r278FHA9xZN8J"
+						target="_blank"
+					>
+						Andy Matuschak
+					</a>
+				</span>
+			</div>
+			<Link href={"/write"}>
+				<Button className="px-3 py-1 gap-2 ">
+					<SlNote />
+					<span>Start Writing</span>
+				</Button>
+			</Link>
+		</div>
 	);
 }
 

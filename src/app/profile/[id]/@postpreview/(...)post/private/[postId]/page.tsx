@@ -4,16 +4,16 @@ import { Database } from "@/interfaces/supabase";
 import Blog from "@components/BlogPostComponents/Blog";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
-import {
-	BackButton,
-	Edit,
-	ExpandButton,
-	Preview,
-} from "../../../components/ModalButtons";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import PublishModal from "@components/Modals/PublishModal";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
+import {
+	Preview,
+	BackButton,
+	ExpandButton,
+	Edit,
+} from "@/app/profile/[id]/components/ModalButtons";
 
 async function PrivatePostModal({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -39,10 +39,10 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/posts/public");
+		revalidatePath("/profile/[id]/public");
 	}
 	return (
-		<div className="flex flex-col items-center justify-center h-full w-full absolute top-0 left-0 bg-black z-40">
+		<div className="flex flex-col items-center justify-center h-full w-full  bg-black z-40">
 			<BlogContextProvider
 				uploadedImages={imagesToUrls}
 				blogMeta={{

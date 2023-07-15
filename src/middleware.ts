@@ -8,7 +8,7 @@ export async function middleware(req: NextRequest) {
     if (data.session?.user) {
         if (req.nextUrl.pathname === "/") {
             const url = req.nextUrl.clone()
-            url.pathname = `/profile/${data.session.user.id}/posts`
+            url.pathname = `/profile/${data.session.user.id}/public`
             return NextResponse.redirect(url)
         }
     }

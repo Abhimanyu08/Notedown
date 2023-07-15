@@ -1,16 +1,23 @@
-import Navbar from "@components/Navbar/Navbar";
+import ToastProvider from "@/contexts/ToastProvider";
 import "@/styles/globals.css";
 import "@/styles/xterm.css";
-import { Metadata } from "next";
-import SupabaseProvider from "./appContext";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { cookies, headers } from "next/headers";
-import ToastProvider from "@/contexts/ToastProvider";
-import ToastDisplay from "@components/ToastDisplay";
-import { Noto_Serif, Source_Code_Pro, Nunito_Sans } from "next/font/google";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImageProvider";
-import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
-import { RxHamburgerMenu } from "react-icons/rx";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { Metadata } from "next";
+import {
+	Kalam,
+	Noto_Serif,
+	Nunito_Sans,
+	Source_Code_Pro,
+} from "next/font/google";
+import { cookies, headers } from "next/headers";
+import SupabaseProvider from "./appContext";
+
+const blockquote = Kalam({
+	subsets: ["latin"],
+	variable: "--font-fancy",
+	weight: ["400", "700", "300"],
+});
 
 const serif = Noto_Serif({
 	subsets: ["latin"],
@@ -29,7 +36,7 @@ const sans = Nunito_Sans({
 	display: "swap",
 	variable: "--font-sans",
 	style: ["normal", "italic"],
-	weight: ["400", "700"],
+	weight: ["400", "700", "300"],
 });
 
 export const metadata: Metadata = {
@@ -74,7 +81,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`dark ${serif.variable} ${sans.variable} ${mono.variable}`}
+			className={`dark ${serif.variable} ${sans.variable} ${mono.variable} ${blockquote.variable}`}
 		>
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<SupabaseProvider session={session}>

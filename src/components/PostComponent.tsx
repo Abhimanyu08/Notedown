@@ -35,7 +35,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	} = post;
 
 	return (
-		<div className="relative flex flex-col gap-1">
+		<Link
+			href={published ? `/post/${id}` : `/post/private/${id}`}
+			className="relative flex flex-col gap-1 group p-2 rounded-md transition-colors duration-100"
+		>
 			<PostOptions
 				{...{
 					published: !!published,
@@ -47,15 +50,12 @@ const PostComponent: React.FC<PostComponentProps> = ({
 				}}
 			/>
 			<HoverCard>
-				<HoverCardTrigger>
-					<Link
-						href={published ? `/post/${id}` : `/post/private/${id}`}
-						className="text-lg text-black font-semibold hover:italic font-serif hover:underline dark:text-gray-200 break-words w-3/4"
-					>
+				<HoverCardTrigger className="w-fit">
+					<div className="text-xl text-black font-semibold group-hover:underline group-hover:underline-offset-2 tracking-wide font-serif group-hover:italic  dark:text-gray-200 break-words max-w-3/4">
 						{title}{" "}
-					</Link>
+					</div>
 				</HoverCardTrigger>
-				<HoverCardContent className="bg-slate-800">
+				<HoverCardContent className="bg-slate-800" align="start">
 					{description}
 				</HoverCardContent>
 			</HoverCard>
@@ -99,7 +99,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					<span>{language}</span>
 				</div> */}
 			</div>
-		</div>
+		</Link>
 	);
 };
 

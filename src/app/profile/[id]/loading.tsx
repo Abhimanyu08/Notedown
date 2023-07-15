@@ -1,12 +1,13 @@
-import React from "react";
+import { SinglePostLoading } from "./components/SinglePostLoading";
 
-function ProfileLoading() {
+function PostsLoading({ numPosts = 4 }: { numPosts?: number }) {
 	return (
-		<div className="w-full [&>*]:animate-pulse">
-			<div className="bg-gray-800 h-10 w-64 rounded-md"></div>
-			<div className="w-full h-[500px] bg-gray-800 mt-4 rounded-md"></div>
+		<div className="flex flex-col gap-10">
+			{Array.from({ length: numPosts }).map((_, i) => (
+				<SinglePostLoading key={i} />
+			))}
 		</div>
 	);
 }
 
-export default ProfileLoading;
+export default PostsLoading;

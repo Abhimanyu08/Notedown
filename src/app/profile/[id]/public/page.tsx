@@ -1,26 +1,25 @@
-import React from "react";
-import PostControl from "./components/PostControl";
-import SearchComponent from "./components/SearchComponent";
+import { getUserPublicPosts } from "@/app/utils/getData";
+import Paginator from "@components/Paginator";
+import PostDisplay from "@components/PostDisplay";
+import Button from "@components/ui/button";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
-	SUPABASE_POST_TABLE,
+	LIMIT,
 	SUPABASE_FILES_BUCKET,
 	SUPABASE_IMAGE_BUCKET,
+	SUPABASE_POST_TABLE,
 } from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import { headers, cookies } from "next/headers";
-import { Sheet, SheetTrigger, SheetContent } from "@components/ui/sheet";
 import Link from "next/link";
-import { RxHamburgerMenu } from "react-icons/rx";
-import Tabs, { TabChildren } from "@components/ui/tabs";
+import { SlNote } from "react-icons/sl";
+import { TbNotes } from "react-icons/tb";
 
-function ProfilePostsLayout({
-	children,
-	params,
-}: {
-	children: React.ReactNode;
-	params: { id: string };
-}) {
+// export const revalidate = 60 * 60 * 24 * 365 * 10;
+
+async function PublicPosts({ params }: { params: { id: string } }) {
+	const { data, hasMore } = await getUserPublicPosts(params.id);
+
 	async function publishPostAction(postId: number) {
 		"use server";
 		const supabase = createServerComponentSupabaseClient({
@@ -91,37 +90,62 @@ function ProfilePostsLayout({
 			}
 		}
 	}
+
+	if (data.length > 0) {
+		return (
+			<>
+				{/* @ts-expect-error Async Server Component  */}
+				<PostDisplay
+					key={"public_posts"}
+					posts={data || []}
+					{...{
+						publishPostAction,
+						unpublishPostAction,
+						deletePostAction,
+					}}
+				/>
+				<Paginator
+					key="public"
+					cursorKey="published_on"
+					postType="public"
+					lastPost={data!.at(data!.length - 1)!}
+					hasMore={hasMore}
+					{...{
+						publishPostAction,
+						unpublishPostAction,
+						deletePostAction,
+					}}
+				/>
+			</>
+		);
+	}
 	return (
-		<div className="w-[700px] mx-auto py-10 h-full flex flex-col  relative gap-4">
-			<PostControl />
-			{/* <SearchComponent
-				{...{
-					publishPostAction,
-					unpublishPostAction,
-					deletePostAction,
-				}}
-			/> */}
-			<div
-				className="grow overflow-y-auto
-			lg:scrollbar-thin 
-				scrollbar-track-black 
-				scrollbar-thumb-slate-700
-			"
-			>
-				{children}
+		<div className="h-full w-full flex gap-10 flex-col items-center justify-center">
+			<div className="flex flex-col w-full gap-1">
+				<blockquote className="font-fancy text-3xl font-bold text-gray-400">
+					I never wrote things down to remember; I always wrote things
+					down so I could forget.
+				</blockquote>
+				<a
+					className="self-end font-fancy text-lg text-gray-400 italic underline"
+					href="https://www.goodreads.com/quotes/10597502-i-never-wrote-things-down-to-remember-i-always-wrote"
+					target="_blank"
+				>
+					- Matthew McConaughey, Greenlights
+				</a>
 			</div>
+			<Link href={"/write"}>
+				<Button className="px-3 py-1 gap-2">
+					<SlNote />
+					<span className="flex gap-1">
+						<span>Start</span>
+						<del> forgetting </del>
+						<span>writing</span>
+					</span>
+				</Button>
+			</Link>
 		</div>
 	);
 }
 
-{
-	/* <div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
-				
-				<div className="flex justify-start gap-2 mr-4 ">
-					<PostControl />
-				</div>
-
-				<div className="overflow-y-auto grow">{children}</div>
-			</div> */
-}
-export default ProfilePostsLayout;
+export default PublicPosts;

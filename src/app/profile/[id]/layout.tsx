@@ -1,61 +1,128 @@
-import { getUser } from "@/app/utils/getData";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import {
+	SUPABASE_FILES_BUCKET,
+	SUPABASE_IMAGE_BUCKET,
+	SUPABASE_POST_TABLE,
+} from "@utils/constants";
 import { revalidatePath } from "next/cache";
-import Image from "next/image";
+import { cookies, headers } from "next/headers";
 import React from "react";
-import ProfileControl from "./components/ProfileControl";
-import ProfileImageEditor from "./components/ProfileImageEditor";
-import { BsPersonCircle } from "react-icons/bs";
-import { Metadata } from "next";
-import { supabase } from "@utils/supabaseClient";
-import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
-import { Sheet, SheetTrigger, SheetContent } from "@components/ui/sheet";
-import { RxHamburgerMenu } from "react-icons/rx";
+import PostControl from "./components/PostControl";
+import Button from "@components/ui/button";
+import { SlNote } from "react-icons/sl";
 import Link from "next/link";
+import LayoutChange from "./components/LayoutChange";
 
-export async function generateMetadata({
-	params,
-}: {
-	params: { id: string };
-}): Promise<Metadata | undefined> {
-	const { data } = await supabase
-		.from(SUPABASE_BLOGGER_TABLE)
-		.select("name, about")
-		.eq("id", params.id)
-		.single();
-	if (!data) return;
-
-	const { name: title, about: description } = data;
-	return {
-		title,
-		description,
-		openGraph: {
-			title: title!,
-			description: description!,
-			type: "profile",
-			url: `https://rce-blog.xyz/profile/${params.id}`,
-		},
-		twitter: {
-			card: "summary",
-			title: title!,
-			description: description!,
-		},
-	};
-}
-
-async function ProfileLayout({
+function ProfilePostsLayout({
 	children,
-	params,
+	postpreview,
 }: {
 	children: React.ReactNode;
-	params: { id: string };
+	postpreview: React.ReactNode;
 }) {
-	const userData = await getUser(params.id);
-
-	async function revalidateProfile() {
+	async function publishPostAction(postId: number) {
 		"use server";
-		revalidatePath("/profile/[id]");
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: true,
+				published_on: new Date().toISOString(),
+			})
+			.match({ id: postId });
+
+		revalidatePath("/profile/[id]/public");
 	}
-	return <>{children}</>;
+
+	async function unpublishPostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		await supabase
+			.from(SUPABASE_POST_TABLE)
+			.update({
+				published: false,
+			})
+			.match({ id: postId });
+
+		revalidatePath("/profile/[id]/public");
+	}
+
+	async function deletePostAction(postId: number) {
+		"use server";
+		const supabase = createServerComponentSupabaseClient({
+			headers,
+			cookies,
+		});
+		const { data } = await supabase
+			.from(SUPABASE_POST_TABLE)
+			.delete()
+			.match({ id: postId })
+			.select("filename, image_folder, published")
+			.single();
+
+		if (data) {
+			await supabase.storage
+				.from(SUPABASE_FILES_BUCKET)
+				.remove([data?.filename]);
+
+			const { data: imageFiles } = await supabase.storage
+				.from(SUPABASE_IMAGE_BUCKET)
+				.list(data.image_folder);
+
+			if (imageFiles) {
+				const imageNames = imageFiles.map(
+					(i) => `${data.image_folder}/${i.name}`
+				);
+				await supabase.storage
+					.from(SUPABASE_IMAGE_BUCKET)
+					.remove(imageNames);
+			}
+			if (data.published) {
+				revalidatePath("/profile/[id]/public");
+			} else {
+				revalidatePath("/profile/[id]/private");
+			}
+		}
+	}
+	return (
+		<LayoutChange>
+			<>
+				<PostControl />
+				{children}
+			</>
+			{/* <SearchComponent
+				{...{
+					publishPostAction,
+					unpublishPostAction,
+					deletePostAction,
+				}}
+			/> */}
+			{/* <aside className="absolute top-[400px] left-[-30%]">
+				<Link href={"/write"}>
+					<Button className="px-2 py-1 gap-2">
+						<SlNote /> New Note
+					</Button>
+				</Link>
+			</aside> */}
+			<>{postpreview}</>
+		</LayoutChange>
+	);
 }
 
-export default ProfileLayout;
+{
+	/* <div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
+				
+				<div className="flex justify-start gap-2 mr-4 ">
+					<PostControl />
+				</div>
+
+				<div className="overflow-y-auto grow">{children}</div>
+			</div> */
+}
+export default ProfilePostsLayout;

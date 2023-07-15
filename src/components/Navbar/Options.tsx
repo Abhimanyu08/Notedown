@@ -19,8 +19,7 @@ export function NotLoggedInOptions({
 				}}
 				className="p-2 justify-center gap-2"
 			>
-				<AiFillGithub size={20} className="w-4 md:w-6 text-white " />{" "}
-				GitHub
+				<AiFillGithub size={20} className="w-4 md:w-6 " /> GitHub
 			</Button>
 			<Divider>Or</Divider>
 			<Button
@@ -31,10 +30,7 @@ export function NotLoggedInOptions({
 				className="p-2 justify-center gap-2"
 				// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"
 			>
-				<AiFillGoogleCircle
-					size={20}
-					className="w-4 md:w-6 text-white "
-				/>
+				<AiFillGoogleCircle size={20} className="w-4 md:w-6" />
 				Google
 			</Button>
 		</div>
