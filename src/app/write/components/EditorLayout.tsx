@@ -1,21 +1,15 @@
 "use client";
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { motion, useMotionValue } from "framer-motion";
 import { getPost } from "@/app/utils/getData";
-import useShortCut from "@/hooks/useShortcut";
 import { Text } from "@codemirror/state";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
-import { getHtmlFromMarkdownFile } from "@utils/getResources";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import BlogStateUpdate from "./BlogStateUpdate";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
-import { SlOptions } from "react-icons/sl";
-import { BiCodeAlt } from "react-icons/bi";
-import { FaFileUpload } from "react-icons/fa";
 import OptionsToolbar from "./OptionsToolbar";
 
 let initialMarkdownMeta =
@@ -89,7 +83,7 @@ function EditorLayout({
 	}, []);
 
 	return (
-		<div className="grow flex flex-row min-h-0 relative pt-10 gap-2">
+		<div className="grow flex flex-row min-h-0 relative pt-10  gap-2 ">
 			<div
 				className={`flex flex-col basis-1/2 overflow-y-auto border-r-[1px] border-gray-500 pr-1`}
 			>

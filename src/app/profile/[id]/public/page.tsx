@@ -127,7 +127,7 @@ async function PublicPosts({ params }: { params: { id: string } }) {
 					down so I could forget.
 				</blockquote>
 				<a
-					className="self-end font-fancy text-lg text-gray-400 italic underline"
+					className="self-end font-serif text-lg text-gray-400 italic underline"
 					href="https://www.goodreads.com/quotes/10597502-i-never-wrote-things-down-to-remember-i-always-wrote"
 					target="_blank"
 				>

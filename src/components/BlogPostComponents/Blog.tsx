@@ -105,6 +105,7 @@ const Blog = memo(
 					<h1 className="text-left " id="title">
 						{title}
 					</h1>
+
 					<blockquote className="text-left text-lg text-gray-400">
 						{description}
 					</blockquote>

@@ -29,7 +29,7 @@ async function PostDisplay({
 	return (
 		<>
 			{(posts?.length || 0) > 0 ? (
-				<div className="flex flex-col gap-4">
+				<div className="flex flex-col gap-3">
 					{posts?.map((post) => (
 						<PostComponent
 							key={post.id}

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { BiUpvote } from "react-icons/bi";
 import { PostOptions } from "./PostOptions";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import PostTitle from "./PostTitle";
+import PostOnPreviewColor from "./PostOnPreviewColor";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
@@ -37,8 +39,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	return (
 		<Link
 			href={published ? `/post/${id}` : `/post/private/${id}`}
-			className="relative flex flex-col gap-1 group p-2 rounded-md transition-colors duration-100"
+			className="relative flex flex-col gap-1 group  p-2 rounded-md transition-colors duration-100"
 		>
+			<PostOnPreviewColor postId={id!} />
 			<PostOptions
 				{...{
 					published: !!published,
@@ -49,27 +52,21 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					deletePostAction,
 				}}
 			/>
-			<HoverCard>
-				<HoverCardTrigger className="w-fit">
-					<div className="text-xl text-black font-semibold group-hover:underline group-hover:underline-offset-2 tracking-wide font-serif group-hover:italic  dark:text-gray-200 break-words max-w-3/4">
-						{title}{" "}
-					</div>
-				</HoverCardTrigger>
-				{description && (
-					<HoverCardContent className="bg-slate-800" align="start">
-						{description}
-					</HoverCardContent>
-				)}
-			</HoverCard>
 
 			{/* <p className="text-sm md:text-base text-black dark:text-gray-400 ">
 				{description}
 			</p> */}
-			<div className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-4  max-w-full ">
+			<div className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-4  max-w-full flex-col">
 				{/* <BlogAuthor
 					createdBy={created_by!}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic flex-initialu"
 				/> */}
+				<PostTitle
+					{...{
+						title: title!,
+						description: description || undefined,
+					}}
+				/>
 				<div className="">
 					{upvoted_on ? (
 						<span className="flex items-center">

@@ -1,25 +1,25 @@
 "use client";
 import { cn } from "@/lib/utils";
 import {
+	useParams,
 	usePathname,
 	useSelectedLayoutSegment,
 	useSelectedLayoutSegments,
 } from "next/navigation";
 import React from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 function LayoutChange({ children }: { children: React.ReactNode[] }) {
 	// const pathname = usePathname();
 	// let className = "";
 	const parallelLayout = useSelectedLayoutSegment("postpreview");
-	const layout = useSelectedLayoutSegments();
-	console.log(parallelLayout, layout);
+	const pathname = usePathname();
 
 	return (
 		<motion.div
 			layout
 			className={cn(
-				"w-[640px] mx-auto grow flex flex-col mt-12  gap-4",
+				"w-[700px] mx-auto grow flex flex-col my-12  gap-4",
 				parallelLayout === "(...)post"
 					? "w-full grid grid-cols-2  grid-rows-1 "
 					: ""
@@ -44,16 +44,16 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 				{children[0]}
 			</div>
 			{parallelLayout === "(...)post" && (
-				<motion.div
-					layoutId="postpreview"
+				<div
+					key={pathname}
 					className={cn(
 						parallelLayout === "(...)post"
-							? "col-start-2 col-span-1 row-span-1 relative mt-6"
+							? "col-start-2 col-span-1 row-span-1 relative mt-[10px]"
 							: ""
 					)}
 				>
 					{children[1]}
-				</motion.div>
+				</div>
 			)}
 		</motion.div>
 	);

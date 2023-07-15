@@ -134,7 +134,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 				<p className="font-fancy text-3xl text-gray-400">
 					Write notes for yourself by default, disregarding audience
 				</p>
-				<span className="self-end font-fancy text-lg text-gray-400 italic underline">
+				<span className="self-end font-serif text-lg text-gray-400 italic underline">
 					-
 					<a
 						href="https://notes.andymatuschak.org/Evergreen_notes?stackedNotes=z8AfCaQJdp852orumhXPxHb3r278FHA9xZN8J"

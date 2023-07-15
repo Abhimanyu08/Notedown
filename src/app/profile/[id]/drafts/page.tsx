@@ -1,10 +1,10 @@
 "use client";
+import ActionModal from "@components/Modals/ActionModal";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import PostsLoading from "../loading";
+import { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import ActionModal from "@components/Modals/ActionModal";
+import PostsLoading from "../loading";
 
 type Draft = {
 	key: string;
@@ -63,7 +63,7 @@ function Drafts() {
 								{drafts.map((draft) => {
 									return (
 										<div
-											className="flex flex-col relative"
+											className="flex flex-col  relative"
 											key={draft.timeStamp}
 										>
 											<ActionModal
