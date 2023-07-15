@@ -130,7 +130,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 	}
 	return (
 		<div className="h-full w-full flex flex-col gap-10 items-center justify-center">
-			<div className="flex flex-col gap-2">
+			<div className="flex flex-col gap-1">
 				<p className="font-fancy text-3xl text-gray-400">
 					Write notes for yourself by default, disregarding audience
 				</p>

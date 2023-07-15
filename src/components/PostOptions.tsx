@@ -78,7 +78,7 @@ export function PostOptions({
 				}}
 			/>
 			<div className="absolute right-0 top-2 rounded-full p-2 hover:bg-gray-800 group/options">
-				{owner && pathname?.startsWith("/profile") && (
+				{owner && (
 					<>
 						<button className="flex justify-center items-center">
 							<SlOptions size={12} />
