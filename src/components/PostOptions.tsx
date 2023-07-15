@@ -83,7 +83,7 @@ export function PostOptions({
 						<button className="flex justify-center items-center">
 							<SlOptions size={12} />
 						</button>
-						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover/options:visible group-focus:visible transition-all duration-200">
+						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover/options:visible group-focus/options:visible transition-all duration-200">
 							<PostOptionButton>
 								<Link
 									href={`/write/${postId}`}

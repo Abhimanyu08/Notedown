@@ -113,7 +113,7 @@ function PostPreviewButton({
 			<Tooltip>
 				<TooltipTrigger
 					onClick={onClick}
-					className="p-2 rounded-full bg-slate-800"
+					className="p-2 rounded-full hover:bg-gray-800 active:scale-95"
 				>
 					{children}
 				</TooltipTrigger>

@@ -55,9 +55,11 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						{title}{" "}
 					</div>
 				</HoverCardTrigger>
-				<HoverCardContent className="bg-slate-800" align="start">
-					{description}
-				</HoverCardContent>
+				{description && (
+					<HoverCardContent className="bg-slate-800" align="start">
+						{description}
+					</HoverCardContent>
+				)}
 			</HoverCard>
 
 			{/* <p className="text-sm md:text-base text-black dark:text-gray-400 ">

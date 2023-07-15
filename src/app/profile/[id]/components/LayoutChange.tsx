@@ -44,7 +44,8 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 				{children[0]}
 			</div>
 			{parallelLayout === "(...)post" && (
-				<div
+				<motion.div
+					layoutId="postpreview"
 					className={cn(
 						parallelLayout === "(...)post"
 							? "col-start-2 col-span-1 row-span-1 relative mt-6"
@@ -52,7 +53,7 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 					)}
 				>
 					{children[1]}
-				</div>
+				</motion.div>
 			)}
 		</motion.div>
 	);
