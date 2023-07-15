@@ -28,6 +28,7 @@ function PostControl() {
 					<TabChildren
 						className="px-3 py-2 capitalize"
 						active={layout === type}
+						key={type}
 					>
 						<Link href={`/profile/${session?.user.id}/${type}`}>
 							{type}

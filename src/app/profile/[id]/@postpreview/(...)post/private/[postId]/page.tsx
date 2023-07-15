@@ -61,9 +61,8 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 				/>
 			</BlogContextProvider>
 			<div className="flex absolute gap-3 top-2 right-3">
-				<Preview />
-				<Edit postId={post.id} />
-				<BackButton id={post.created_by || ""} />
+				{/* <Edit postId={post.id} /> */}
+				{/* <BackButton id={post.created_by || ""} /> */}
 				<ExpandButton postId={params.postId} privatePost={true} />
 			</div>
 		</div>

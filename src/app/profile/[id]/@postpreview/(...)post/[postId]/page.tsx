@@ -2,16 +2,12 @@ import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import { getPost } from "@/app/utils/getData";
 import Blog from "@components/BlogPostComponents/Blog";
 import { supabase } from "@utils/supabaseClient";
-import {
-	BackButton,
-	Edit,
-	ExpandButton,
-	Preview,
-} from "../../components/ModalButtons";
+
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 import { Database } from "@/interfaces/supabase";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { headers, cookies } from "next/headers";
+import { ExpandButton } from "../../../components/ModalButtons";
 
 async function PostModal({ params }: { params: { postId: string } }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -40,8 +36,6 @@ async function PostModal({ params }: { params: { postId: string } }) {
 				/>
 			</BlogContextProvider>
 			<div className="flex absolute gap-3 top-2 right-3">
-				<BackButton id={post.created_by || ""} />
-				<Edit postId={post.id} />
 				<ExpandButton postId={params.postId} privatePost={false} />
 			</div>
 		</div>

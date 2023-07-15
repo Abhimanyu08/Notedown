@@ -31,10 +31,15 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 		>
 			<div
 				className={cn(
+					"grow flex flex-col gap-4",
 					parallelLayout === "(...)post"
-						? "col-start-1 col-span-1 row-span-1 border-r-[1px] border-gray-600"
-						: "grow flex flex-col"
+						? "col-start-1 col-span-1  row-span-1 border-r-[1px] border-gray-600"
+						: ""
 				)}
+				style={{
+					paddingLeft: "30px",
+					paddingRight: "30px",
+				}}
 			>
 				{children[0]}
 			</div>
@@ -42,7 +47,7 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 				<div
 					className={cn(
 						parallelLayout === "(...)post"
-							? "col-start-2 col-span-1 row-span-1 relative mt-8"
+							? "col-start-2 col-span-1 row-span-1 relative mt-6"
 							: ""
 					)}
 				>

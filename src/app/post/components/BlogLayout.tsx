@@ -27,7 +27,7 @@ function BlogLayout({
 			}}
 			uploadedImages={imagesToUrls}
 		>
-			<div className="grow flex flex-row min-h-0 relative pt-10">
+			<div className="grow flex flex-row min-h-0 relative pt-20">
 				<div
 					className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
 					`}

@@ -93,7 +93,16 @@ function ProfilePostsLayout({
 	return (
 		<LayoutChange>
 			<>
-				<PostControl />
+				<div className="flex w-full items-end justify-between">
+					<PostControl />
+					<input
+						type="text"
+						name=""
+						id=""
+						placeholder="Search"
+						className="h-6 p-4 bg-transparent border-[1px] border-gray-400 rounded-md w-32 focus:w-52 transition-all duration-200"
+					/>
+				</div>
 				{children}
 			</>
 			{/* <SearchComponent

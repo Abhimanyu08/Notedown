@@ -36,6 +36,7 @@ const Blog = memo(
 				// --------overflow-y-auto
 				prose
 				//-------------prose-headings------------
+				prose-h1:mb-6
 				prose-headings:text-black
 				dark:prose-headings:text-white
 				prose-headings:font-serif
@@ -104,12 +105,12 @@ const Blog = memo(
 					<h1 className="text-left " id="title">
 						{title}
 					</h1>
-					<blockquote className="text-left text-lg">
+					<blockquote className="text-left text-lg text-gray-400">
 						{description}
 					</blockquote>
 					<div className="dark:text-gray-400 flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12 mt-5">
 						<span>by</span>
-						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-white">
+						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-gray-400">
 							{/* @ts-expect-error Async Server Component  */}
 							<AuthorComponent createdBy={created_by} />
 						</span>
