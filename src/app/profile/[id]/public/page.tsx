@@ -120,7 +120,7 @@ async function PublicPosts({ params }: { params: { id: string } }) {
 		);
 	}
 	return (
-		<div className="grow w-full flex gap-10 flex-col items-center justify-center">
+		<div className="w-full h-full flex gap-10 flex-col items-center justify-center">
 			<div className="flex flex-col w-full gap-1">
 				<blockquote className="font-fancy text-3xl font-bold text-gray-400">
 					I never wrote things down to remember; I always wrote things

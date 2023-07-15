@@ -77,7 +77,7 @@ export function PostOptions({
 					});
 				}}
 			/>
-			<div className="absolute right-0 top-2 rounded-full p-2 hover:bg-gray-800 group/options">
+			<div className="absolute z-40 right-0 top-2 rounded-full p-2 hover:bg-gray-800 group/options">
 				{owner && (
 					<>
 						<button className="flex justify-center items-center">

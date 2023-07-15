@@ -103,7 +103,15 @@ function ProfilePostsLayout({
 						className="h-6 p-4 bg-transparent border-[1px] border-gray-400 rounded-md w-32 focus:w-52 transition-all duration-200"
 					/>
 				</div>
-				{children}
+				<div
+					className="grow overflow-y-auto
+				lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
+				"
+				>
+					{children}
+				</div>
 			</>
 			{/* <SearchComponent
 				{...{

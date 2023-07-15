@@ -19,7 +19,7 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 		<motion.div
 			layout
 			className={cn(
-				"w-[700px] mx-auto grow flex flex-col my-12  gap-4",
+				"w-[720px] mx-auto grow flex flex-col h-full py-12  gap-4",
 				parallelLayout === "(...)post"
 					? "w-full grid grid-cols-2  grid-rows-1 "
 					: ""
@@ -31,7 +31,7 @@ function LayoutChange({ children }: { children: React.ReactNode[] }) {
 		>
 			<div
 				className={cn(
-					"grow flex flex-col gap-4",
+					"grow flex flex-col gap-4 h-full",
 					parallelLayout === "(...)post"
 						? "col-start-1 col-span-1  row-span-1 border-r-[1px] border-gray-600"
 						: ""

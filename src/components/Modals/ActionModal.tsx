@@ -36,7 +36,7 @@ function ActionModal({
 				className="modal-input"
 			/>
 
-			<div className="modal-box bg-black/80 backdrop-blur-sm">
+			<div className="modal-box bg-black/80 backdrop-blur-sm z-50">
 				<div className="flex gap-2">
 					<span className="text-gray-300 capitalize">{action}</span>
 					<span className="font-bold text-gray-100">
