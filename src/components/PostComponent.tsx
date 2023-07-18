@@ -6,6 +6,7 @@ import { PostOptions } from "./PostOptions";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import PostTitle from "./PostTitle";
 import PostOnPreviewColor from "./PostOnPreviewColor";
+import { cn } from "@/lib/utils";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
@@ -65,19 +66,24 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						description: description || undefined,
 					}}
 				/>
-				<div className="">
-					{upvoted_on ? (
-						<span className="flex items-center">
-							<BiUpvote /> - {formatDate(upvoted_on)}
-						</span>
-					) : (
-						<span>
-							{published && published_on
-								? formatDate(published_on)
-								: formatDate(created_at!)}
-						</span>
-					)}
+				<div className="flex gap-2">
+					<span>
+						{published && published_on
+							? `published on ${formatDate(published_on)}`
+							: `created on ${formatDate(created_at!)}`}
+					</span>
+					<span
+						className={cn(
+							"rounded-lg px-1 text-xs underline underline-offset-2",
+							published
+								? "decoration-emerald-700"
+								: "decoration-rose-700"
+						)}
+					>
+						{published ? "public" : "private"}
+					</span>
 				</div>
+
 				{/* {published && (
 					<div className="flex justify-center pl-2 pr-0">
 						<span className="flex items-center gap-1 justify-center">

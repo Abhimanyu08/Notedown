@@ -15,7 +15,6 @@ async function ProfilePostsLayout({
 	params: { id: string };
 }) {
 	const user = await getUser(params.id);
-	console.log(user?.name);
 
 	return (
 		<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
