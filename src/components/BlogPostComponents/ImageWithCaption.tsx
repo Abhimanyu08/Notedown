@@ -21,7 +21,7 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 			return blogState.uploadedImages[name];
 		}
 
-		return "";
+		return "no image";
 	};
 
 	return (

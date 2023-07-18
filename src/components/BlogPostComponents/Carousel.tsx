@@ -34,7 +34,7 @@ function Carousel({
 			return blogState.uploadedImages[name];
 		}
 
-		return "";
+		return "no image";
 	};
 
 	//show -> The idx of the image to show out of all the images.
