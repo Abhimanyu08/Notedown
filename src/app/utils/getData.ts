@@ -17,8 +17,19 @@ export const getUser = cache(async (id: string) => {
     return userData
 })
 
+export const getUserAllPosts = cache(async (userId: string, supabase: SupabaseClient) => {
+    const { data } = await supabase
+        .from(SUPABASE_POST_TABLE)
+        .select(
+            "id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
+        )
+        .match({ created_by: userId })
+        .order("created_at", { ascending: false })
+        .limit(LIMIT + 1);
+    return checkDataLength(data || [])
+})
 
-export const getUserPublicPosts = async (id: string) => {
+export const getUserPublicPosts = cache(async (id: string) => {
 
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
@@ -31,7 +42,7 @@ export const getUserPublicPosts = async (id: string) => {
         .limit(LIMIT + 1);
 
     return checkDataLength(data || [])
-}
+})
 
 export const getGreatestPosts = async (id: string) => {
 

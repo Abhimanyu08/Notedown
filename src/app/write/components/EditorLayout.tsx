@@ -83,16 +83,19 @@ function EditorLayout({
 	}, []);
 
 	return (
-		<div className="grow flex flex-row min-h-0 relative pt-10  gap-2 ">
+		<div className="grow flex flex-row min-h-0 relative  gap-2 ">
 			<div
-				className={`flex flex-col basis-1/2 overflow-y-auto border-r-[1px] border-gray-500 pr-1`}
+				className={`flex flex-col basis-1/2 overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
 				<MarkdownEditor initialMarkdown={initialMarkdown} />
 				<BlogStateUpdate setBlogHtml={setBlogHtml} />
 			</div>
 			<OptionsToolbar />
 
-			<div className={` basis-1/2 flex justify-center`} id="post-preview">
+			<div
+				className={` basis-1/2 flex justify-center pt-10`}
+				id="post-preview"
+			>
 				<Blog
 					{...blogState.blogMeta}
 					content={blogHtml}

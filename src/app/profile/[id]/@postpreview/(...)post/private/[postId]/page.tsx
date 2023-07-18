@@ -56,7 +56,7 @@ async function PrivatePostModal({ params }: { params: { postId: string } }) {
 				<Blog
 					{...post}
 					content={content}
-					extraClasses="w-full px-4 "
+					extraClasses="w-full "
 					AuthorComponent={BlogAuthorServer}
 				/>
 			</BlogContextProvider>

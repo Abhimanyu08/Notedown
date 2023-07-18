@@ -5,18 +5,18 @@ import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImageP
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Metadata } from "next";
 import {
-	Kalam,
+	Edu_TAS_Beginner,
 	Noto_Serif,
 	Nunito_Sans,
-	Source_Code_Pro,
+	IBM_Plex_Mono,
 } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
 
-const blockquote = Kalam({
+const blockquote = Edu_TAS_Beginner({
 	subsets: ["latin"],
 	variable: "--font-fancy",
-	weight: ["400", "700", "300"],
+	weight: ["400"],
 });
 
 const serif = Noto_Serif({
@@ -25,7 +25,7 @@ const serif = Noto_Serif({
 	variable: "--font-serif",
 	weight: ["400", "700"],
 });
-const mono = Source_Code_Pro({
+const mono = IBM_Plex_Mono({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-mono",

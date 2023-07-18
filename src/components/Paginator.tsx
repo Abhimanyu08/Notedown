@@ -16,7 +16,7 @@ function Paginator({
 	unpublishPostAction,
 	deletePostAction,
 }: {
-	postType: PostTypes;
+	postType: "private" | "public" | "all";
 	lastPost: PostWithBlogger | UpvoteWithPost;
 	cursorKey: keyof PostWithBlogger;
 	hasMore: boolean;

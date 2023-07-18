@@ -17,7 +17,7 @@ function PostOnPreviewColor({ postId }: { postId: number }) {
 				stiffness: 350,
 				damping: 30,
 			}}
-			className={`absolute top-0 left-0 rounded-md w-full h-full -z-10 ${
+			className={`absolute top-0 left-0  rounded-md w-full h-full -z-10 ${
 				onPreview ? "bg-gray-900" : ""
 			}`}
 		></motion.div>

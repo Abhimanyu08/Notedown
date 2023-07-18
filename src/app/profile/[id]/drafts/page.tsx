@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import PostsLoading from "../loading";
+import formatDate from "@utils/dateFormatter";
 
 type Draft = {
 	key: string;
@@ -38,11 +39,19 @@ function Drafts() {
 				);
 				if (timeStamp) {
 					const formattedTimeStamp = new Date(parseInt(timeStamp));
+					const date = formatDate(
+						formattedTimeStamp.toLocaleDateString()
+					);
+					const longTime = formattedTimeStamp.toLocaleTimeString();
+
+					const amOrPm = longTime.match(/[AP]M/)?.at(0);
+					const shortTime = longTime.split(":").slice(0, 2).join(":");
+					const time = `${shortTime} ${amOrPm}`;
 					draftsToAdd.push({
 						key,
 						timeStamp,
-						date: formattedTimeStamp.toLocaleDateString(),
-						time: formattedTimeStamp.toLocaleTimeString(),
+						date,
+						time,
 						draftData: { data, content },
 						postId,
 					});
@@ -102,7 +111,21 @@ function Drafts() {
 								})}
 							</>
 						) : (
-							<p className="text-gray-500">No Drafts to show</p>
+							<div className="text-gray-500">
+								<p>
+									This is where all your notes which you
+									decide not to upload (or forget to hit the
+									upload button on) will be displayed.
+								</p>
+								<br />
+								<p>
+									Those notes are basically stored in your
+									browser's localStorage i.e they are on your
+									machine, sitting safely on **your**
+									computer's memory and can't be accessed on
+									any other device.
+								</p>
+							</div>
 						)}
 					</>
 				) : (

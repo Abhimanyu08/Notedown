@@ -1,6 +1,5 @@
 export const PostTypesList = [
-    "public",
-    "private",
+    "notes",
     "drafts"
 ] as const;
 

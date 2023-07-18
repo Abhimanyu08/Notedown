@@ -5,7 +5,7 @@ import { SUPABASE_POST_TABLE, LIMIT, SUPABASE_UPVOTES_TABLE } from "@utils/const
 
 type Value<T> = T[keyof T]
 
-const postTypeToFetcher: { [k in PostTypes]?: (
+const postTypeToFetcher: { [k in "private" | "public" | "all"]?: (
     lastPost: PostWithBlogger,
     cursorKey: keyof PostWithBlogger,
     supabase: SupabaseClient
@@ -20,6 +20,27 @@ export function checkDataLength<T>(data: T[]) {
     }
     return { data: data.slice(0, -1), hasMore: true }
 }
+
+const fetchAllPosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
+    const cursor = lastPost[cursorKey]
+    const { data, error } = await supabase
+        .from(SUPABASE_POST_TABLE)
+        .select(
+            "id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
+        )
+        .match({ created_by: lastPost["created_by"] })
+        .lt("created_at", cursor)
+        .order("created_at", { ascending: false })
+        .limit(LIMIT + 1);
+
+    if (error || !data) {
+        alert("Failed to return more data");
+        return;
+    }
+
+
+    return checkDataLength(data)
+};
 
 
 const fetchPrivatePosts: Value<typeof postTypeToFetcher> = async (lastPost, cursorKey, supabase) => {
@@ -107,6 +128,7 @@ const fetchUpvotedPosts: Value<typeof postTypeToFetcher> = async (lastUpvote, cu
 
 postTypeToFetcher.private = fetchPrivatePosts
 postTypeToFetcher.public = fetchPublicPosts
+postTypeToFetcher.all = fetchAllPosts
 // postTypeToFetcher.greatest = fetchGreatestPosts
 // postTypeToFetcher.upvoted = fetchUpvotedPosts
 

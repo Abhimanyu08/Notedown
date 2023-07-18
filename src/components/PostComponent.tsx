@@ -15,8 +15,6 @@ export interface PostComponentProps {
 	deletePostAction?: (postId: number) => Promise<void>;
 }
 
-const formatter = Intl.NumberFormat("en", { notation: "compact" });
-
 const PostComponent: React.FC<PostComponentProps> = ({
 	post,
 	upvotes,
@@ -39,7 +37,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	return (
 		<Link
 			href={published ? `/post/${id}` : `/post/private/${id}`}
-			className="relative flex flex-col gap-1 group  p-2 rounded-md transition-colors duration-100"
+			className="relative flex flex-col gap-1 group py-2 first:pt-0 px-2  rounded-md"
 		>
 			<PostOnPreviewColor postId={id!} />
 			<PostOptions
@@ -56,7 +54,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			{/* <p className="text-sm md:text-base text-black dark:text-gray-400 ">
 				{description}
 			</p> */}
-			<div className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-4  max-w-full flex-col">
+			<div className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-3  max-w-full flex-col">
 				{/* <BlogAuthor
 					createdBy={created_by!}
 					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic flex-initialu"
