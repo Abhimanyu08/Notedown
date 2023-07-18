@@ -39,3 +39,5 @@ yarn-error.log*
 .snaplet/structure.d.ts
 
 /utils/todo.txt
+
+/supabase

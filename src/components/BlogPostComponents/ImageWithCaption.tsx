@@ -13,17 +13,23 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 		};
 	}, []);
 
+	const getImageSrc = (name: string) => {
+		if (Object.hasOwn(blogState.imagesToFiles, name)) {
+			return window.URL.createObjectURL(blogState.imagesToFiles[name]);
+		}
+		if (Object.hasOwn(blogState.uploadedImages, name)) {
+			return blogState.uploadedImages[name];
+		}
+
+		return "";
+	};
+
 	return (
 		<div className="w-full mb-4">
 			<Image
 				// layout="fill"
-				src={
-					blogState.imagesToFiles[name]
-						? window.URL.createObjectURL(
-								blogState.imagesToFiles[name]
-						  )
-						: blogState.uploadedImages[name]
-				}
+
+				src={getImageSrc(name)}
 				alt={alt}
 				width={1440}
 				height={1080}

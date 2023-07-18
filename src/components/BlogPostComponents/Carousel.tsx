@@ -26,6 +26,17 @@ function Carousel({
 		};
 	}, []);
 
+	const getImageSrc = (name: string) => {
+		if (Object.hasOwn(blogState.imagesToFiles, name)) {
+			return window.URL.createObjectURL(blogState.imagesToFiles[name]);
+		}
+		if (Object.hasOwn(blogState.uploadedImages, name)) {
+			return blogState.uploadedImages[name];
+		}
+
+		return "";
+	};
+
 	//show -> The idx of the image to show out of all the images.
 	const onSlide: React.MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
@@ -64,13 +75,7 @@ function Carousel({
 							key={idx}
 						>
 							<Image
-								src={
-									blogState.imagesToFiles[image]
-										? window.URL.createObjectURL(
-												blogState.imagesToFiles[image]
-										  )
-										: blogState.uploadedImages[image]
-								}
+								src={getImageSrc(image)}
 								alt={captions[idx] || ""}
 								// width={1440}
 								// height={1080}
