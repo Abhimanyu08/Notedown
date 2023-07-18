@@ -12,14 +12,12 @@ function PostControl({ className }: { className?: string }) {
 	const { session } = useSupabase();
 	const layout = useSelectedLayoutSegment();
 	const params = useParams();
-	const owner = useOwner();
 
 	// console.log("Layout ->", layout);
 
 	return (
 		<Tabs className={cn("gap-8  w-fit", className)}>
 			{PostTypesList.map((type) => {
-				if (!owner && type === "drafts") return;
 				return (
 					<TabChildren
 						className="py-1 capitalize"

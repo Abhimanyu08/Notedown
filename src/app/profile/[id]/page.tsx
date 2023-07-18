@@ -5,6 +5,7 @@ import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-next
 import getPostActionFunctions from "@utils/postActionFunctions";
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
+import OwnerOnlyStuff from "./components/OwnerOnlyStuff";
 
 async function Notes({ params }: { params: { id: string } }) {
 	const supabase = createServerComponentSupabaseClient({
@@ -55,7 +56,11 @@ async function Notes({ params }: { params: { id: string } }) {
 					- The Joy Of Writing, Wislawa Szymborska
 				</span>
 			</div>
-			<p>All your notes (public and private) will be diplayed here.</p>
+			<OwnerOnlyStuff>
+				<p>
+					All your notes (public and private) will be diplayed here.
+				</p>
+			</OwnerOnlyStuff>
 		</div>
 	);
 }

@@ -1,10 +1,5 @@
-import DemoLabel from "@components/HomePageComponents/DemoLabel";
-import HeaderText from "@components/HomePageComponents/HeaderText";
-import LoomDemoModal from "@components/HomePageComponents/LoomDemoModal";
 import { NotLoggedInOptions } from "@components/Navbar/Options";
 import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
-import Link from "next/link";
-import { FaPencilAlt } from "react-icons/fa";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 async function Home() {

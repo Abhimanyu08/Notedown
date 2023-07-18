@@ -1,9 +1,13 @@
 import { getUser } from "@/app/utils/getData";
 import React from "react";
-import PostControl from "./components/PostControl";
-import NoteTypeToggle from "./components/NoteTypeToggle";
-import { cn } from "@/lib/utils";
 import PostPreviewLayout from "./components/LayoutChange";
+import NewNoteButton from "./components/NewPostButton";
+import NoteTypeToggle from "./components/NoteTypeToggle";
+import PostControl from "./components/PostControl";
+import { NotLoggedInOptions } from "@components/Navbar/Options";
+import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
+import { RxHamburgerMenu } from "react-icons/rx";
+import OwnerOnlyStuff from "./components/OwnerOnlyStuff";
 
 async function ProfilePostsLayout({
 	children,
@@ -14,31 +18,48 @@ async function ProfilePostsLayout({
 	postpreview: React.ReactNode;
 	params: { id: string };
 }) {
-	const user = await getUser(params.id);
+	const userName = (await getUser(params.id))?.name || "Anon";
 
 	return (
-		<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
-			<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-20 pt-20 ">
-				<p className="font-mono text-4xl px-2">
-					{`${user?.name}'`}s Notebook
-				</p>
-				<PostControl className="col-span-1 px-2  h-fit  font-mono text-gray-400" />
-				<NoteTypeToggle className="text-gray-400 mt-1 px-2" />
-				<div
-					className="grow overflow-y-auto
+		<>
+			<Sheet>
+				<SheetTrigger className="absolute top-6 right-8">
+					<button>
+						<RxHamburgerMenu size={26} />
+					</button>
+				</SheetTrigger>
+				<SheetContent side={"right"}>
+					<NotLoggedInOptions className="mt-2" />
+				</SheetContent>
+			</Sheet>
+			<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
+				<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-20 pt-20 ">
+					<p className="font-mono text-4xl px-2">
+						{`${userName}'`}s Notebook
+					</p>
+					<OwnerOnlyStuff>
+						<div className="flex justify-between col-span-1 px-2 mr-10">
+							<PostControl className="font-mono text-gray-400" />
+							<NewNoteButton />
+						</div>
+						<NoteTypeToggle className="text-gray-400 mt-1 px-2" />
+					</OwnerOnlyStuff>
+					<div
+						className="grow overflow-y-auto
 				lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
 				mr-10
 				"
-				>
-					{children}
+					>
+						{children}
+					</div>
 				</div>
+				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 relative pt-20 border-l-[1px] border-gray-600">
+					{postpreview}
+				</PostPreviewLayout>
 			</div>
-			<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 relative pt-20 border-l-[1px] border-gray-600">
-				{postpreview}
-			</PostPreviewLayout>
-		</div>
+		</>
 
 		// <LayoutChange>
 		// 	<>

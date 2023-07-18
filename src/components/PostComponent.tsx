@@ -66,7 +66,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						description: description || undefined,
 					}}
 				/>
-				<div className="flex gap-2">
+				<div className="flex gap-2 items-center">
 					<span>
 						{published && published_on
 							? `published on ${formatDate(published_on)}`

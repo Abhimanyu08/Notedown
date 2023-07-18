@@ -9,10 +9,7 @@ import { useSelectedLayoutSegment } from "next/navigation";
 
 function NoteTypeToggle({ className }: { className?: string }) {
 	const { session } = useSupabase();
-	const owner = useOwner();
 	const layout = useSelectedLayoutSegment();
-
-	if (!owner) return <></>;
 
 	return (
 		<>
