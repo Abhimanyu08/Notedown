@@ -21,7 +21,7 @@ async function ProfilePostsLayout({
 		<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
 			<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-20 pt-20 ">
 				<p className="font-mono text-4xl px-2">
-					{user?.name}'s Notebook
+					{`${user?.name}'`}s Notebook
 				</p>
 				<PostControl className="col-span-1 px-2  h-fit  font-mono text-gray-400" />
 				<NoteTypeToggle className="text-gray-400 mt-1 px-2" />

@@ -52,7 +52,7 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 		);
 	}
 	return (
-		<div className="flex text-gray-500 flex-col gap-1 px-2 mt-10 gap-10">
+		<div className="flex text-gray-500 flex-col  px-2 mt-10 gap-10">
 			<p className="font-serif italic">
 				Write notes for yourself by default, disregarding audience -
 				<a
@@ -64,8 +64,8 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 				</a>
 			</p>
 			<p>
-				All your notes will be private by default. They'll be diplayed
-				here in a chronological manner.
+				All your notes will be private by default. They{`'`}ll be
+				diplayed here in a chronological manner.
 			</p>
 		</div>
 	);

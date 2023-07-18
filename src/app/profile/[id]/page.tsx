@@ -49,7 +49,7 @@ async function Notes({ params }: { params: { id: string } }) {
 				<span>Lying in wait, set to pounce on the blank page,</span>
 				<span>are letters up to no good,</span>
 				<span>clutches of clauses so subordinate</span>
-				<span>they’ll never let her get away.</span>
+				<span>they{`'`}ll never let her get away.</span>
 
 				<span className="underline underline-offset-2 text-sm self-center">
 					- The Joy Of Writing, Wislawa Szymborska

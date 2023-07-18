@@ -54,8 +54,8 @@ async function PublicPosts({ params }: { params: { id: string } }) {
 	}
 	return (
 		<p className="px-2 text-gray-500">
-			The notes on which you decide to hit the "Publish" button will be
-			shown here. As of now, there are none.
+			The notes on which you decide to hit the {`"Publish"`} button will
+			be shown here. As of now, there are none.
 		</p>
 	);
 }

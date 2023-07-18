@@ -120,10 +120,10 @@ function Drafts() {
 								<br />
 								<p>
 									Those notes are basically stored in your
-									browser's localStorage i.e they are on your
-									machine, sitting safely on **your**
-									computer's memory and can't be accessed on
-									any other device.
+									browser{`'`}s localStorage i.e they are on
+									your machine, sitting safely on **your**
+									computer{`'`}s memory and can{`'`}t be
+									accessed on any other device.
 								</p>
 							</div>
 						)}
