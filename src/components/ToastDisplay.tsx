@@ -1,31 +1,25 @@
 "use client";
 import { ToastContext } from "@/contexts/ToastProvider";
+import { AnimatePresence, motion } from "framer-motion";
 import React, { useContext, useEffect, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 
-function ToastDisplay() {
-	const context = useContext(ToastContext);
-
-	const [show, setShow] = useState(false);
-	const { message } = context;
-
-	useEffect(() => {
-		setShow(true);
-		setTimeout(() => {
-			setShow(false);
-		}, 3000);
-	}, [message]);
-
+function ToastDisplay({ message }: { message: string }) {
 	return (
-		<div
-			className={`toast fixed bottom-4 bg-black right-4 text-gray-200 border-[1px] border-gray-100 rounded-sm p-4 ${
-				show
-					? "translate-x-0 opacity-100"
-					: "translate-x-full opacity-0"
-			} transition-all  duration-500 z-[100]`}
-		>
-			{message}
-		</div>
+		<AnimatePresence>
+			{message && (
+				<motion.div
+					className={`toast fixed bottom-4 bg-black right-4 text-gray-200 border-[1px] border-gray-100 rounded-sm p-4
+			}  z-[100]`}
+					initial={{ translateX: "100%" }}
+					animate={{ translateX: "0" }}
+					exit={{ translateX: "100%" }}
+					transition={{ duration: 0.5 }}
+				>
+					{message}
+				</motion.div>
+			)}
+		</AnimatePresence>
 	);
 }
 

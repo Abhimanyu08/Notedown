@@ -14,59 +14,11 @@ import {
 	ExpandButton,
 	Edit,
 } from "@/app/profile/[id]/components/ModalButtons";
+import PostPreview from "../../../components/PostPreview";
 
-async function PrivatePostModal({ params }: { params: { postId: string } }) {
-	const supabase = createServerComponentSupabaseClient<Database>({
-		headers,
-		cookies,
-	});
-
-	const { post, content, imagesToUrls } = await getPost(
-		params.postId,
-		supabase
-	);
-	async function publishPostAction(postId: number) {
-		"use server";
-		const supabase = createServerComponentSupabaseClient({
-			headers,
-			cookies,
-		});
-		await supabase
-			.from(SUPABASE_POST_TABLE)
-			.update({
-				published: true,
-				published_on: new Date().toISOString(),
-			})
-			.match({ id: postId });
-
-		revalidatePath("/profile/[id]/public");
-	}
-	return (
-		<div className="flex flex-col items-center justify-center h-full w-full z-40">
-			<BlogContextProvider
-				uploadedImages={imagesToUrls}
-				blogMeta={{
-					id: post.id,
-					title: post.title,
-					language: post.language,
-					imageFolder: post.image_folder,
-				}}
-			>
-				<PublishModal publishPostAction={publishPostAction} />
-				<Blog
-					{...post}
-					content={content}
-					extraClasses="w-full "
-					AuthorComponent={BlogAuthorServer}
-				/>
-			</BlogContextProvider>
-			<div className="flex absolute gap-3 top-2 right-3">
-				{/* <Edit postId={post.id} /> */}
-				{/* <BackButton id={post.created_by || ""} /> */}
-				<ExpandButton postId={params.postId} privatePost={true} />
-			</div>
-		</div>
-	);
+function PrivatePostModal({ params }: { params: { postId: string } }) {
+	/* @ts-expect-error Async Server Component  */
+	return <PostPreview postId={params.postId} privatePost={true} />;
 }
 
 export default PrivatePostModal;

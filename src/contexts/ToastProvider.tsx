@@ -10,8 +10,8 @@ import {
 import { VscLoading } from "react-icons/vsc";
 
 export const ToastContext = createContext<{
-	message: string | JSX.Element;
-	setMessage: Dispatch<SetStateAction<string | JSX.Element>>;
+	message: string;
+	setMessage: Dispatch<SetStateAction<string>>;
 }>({ message: "", setMessage: () => null });
 
 export default function ToastProvider({
@@ -19,7 +19,15 @@ export default function ToastProvider({
 }: {
 	children: React.ReactNode;
 }) {
-	const [message, setMessage] = useState<string | JSX.Element>("");
+	const [message, setMessage] = useState<string>("");
+
+	useEffect(() => {
+		if (message) {
+			setTimeout(() => {
+				setMessage("");
+			}, 2000);
+		}
+	}, [message]);
 
 	return (
 		<ToastContext.Provider
@@ -29,7 +37,7 @@ export default function ToastProvider({
 			}}
 		>
 			{children}
-			<ToastDisplay />
+			<ToastDisplay message={message} />
 		</ToastContext.Provider>
 	);
 }

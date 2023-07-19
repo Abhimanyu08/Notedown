@@ -59,7 +59,7 @@ async function ProfilePostsLayout({
 						{children}
 					</div>
 				</div>
-				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 relative pt-20 border-l-[1px] border-gray-600">
+				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 relative mt-20 border-l-[1px] border-gray-600">
 					{postpreview}
 				</PostPreviewLayout>
 			</div>
