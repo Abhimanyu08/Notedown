@@ -43,13 +43,13 @@ const Blog = memo(
 
 				// ---------prose-p--------------
 				prose-p:text-black/80
-				dark:prose-p:text-gray-300
+				dark:prose-p:text-gray-400
 
 				// -------------prose-li--------
 				marker:prose-li:text-black
 				dark:marker:prose-li:text-gray-200
 				prose-li:text-black/80
-				dark:prose-li:text-gray-300
+				dark:prose-li:text-gray-400
 
 
 				// -----------prose-strong-----------
@@ -58,15 +58,14 @@ const Blog = memo(
 
 				//-----------------prose-a-------------
 				prose-a:text-black
-				dark:prose-a:text-blue-300
+				dark:prose-a:text-blue-400
 				prose-a:no-underline
 				hover:prose-a:underline
-				hover:prose-a:text-blue-500
 				hover:prose-a:underline-offset-2
 
 				// ---------------prose-code---------------
 				dark:prose-code:bg-gray-800
-				dark:prose-code:text-gray-300
+				dark:prose-code:text-gray-400
 				prose-code:bg-white
 				prose-code:text-black
 				prose-code:font-mono
