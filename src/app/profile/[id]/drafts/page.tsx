@@ -19,6 +19,7 @@ type Draft = {
 function Drafts() {
 	const [drafts, setDrafts] = useState<Draft[]>([]);
 	const [loadingDrafts, setLoadingDrafts] = useState(false);
+	const [timeStampToDelete, setTimeStampToDelete] = useState("");
 
 	useEffect(() => {
 		// if (drafts && drafts.length > 0) return;
@@ -80,10 +81,14 @@ function Drafts() {
 												postTitle={
 													draft.draftData.data.title
 												}
-												isActionPending={false}
-												postId={parseInt(
+												visible={
+													timeStampToDelete ===
 													draft.timeStamp
-												)}
+												}
+												onClose={() =>
+													setTimeStampToDelete("")
+												}
+												isActionPending={false}
 												onAction={() => {
 													localStorage.removeItem(
 														draft.key
@@ -97,14 +102,19 @@ function Drafts() {
 															);
 														return newDrafts;
 													});
+													setTimeStampToDelete("");
 												}}
 											/>
-											<label
+											<button
 												className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-700"
-												htmlFor={`delete-${draft.timeStamp}`}
+												onClick={() =>
+													setTimeStampToDelete(
+														draft.timeStamp
+													)
+												}
 											>
 												<MdDelete />
-											</label>
+											</button>
 											<SingleDraft draft={draft} />
 										</div>
 									);
