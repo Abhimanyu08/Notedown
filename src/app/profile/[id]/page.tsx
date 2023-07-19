@@ -30,7 +30,7 @@ async function Notes({ params }: { params: { id: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/public");
+		revalidatePath("/profile/[id]");
 	}
 
 	async function unpublishPostAction(postId: number) {
@@ -46,7 +46,7 @@ async function Notes({ params }: { params: { id: string } }) {
 			})
 			.match({ id: postId });
 
-		revalidatePath("/profile/[id]/public");
+		revalidatePath("/profile/[id]");
 	}
 
 	async function deletePostAction(postId: number) {
@@ -79,11 +79,7 @@ async function Notes({ params }: { params: { id: string } }) {
 					.from(SUPABASE_IMAGE_BUCKET)
 					.remove(imageNames);
 			}
-			if (data.published) {
-				revalidatePath("/profile/[id]/public");
-			} else {
-				revalidatePath("/profile/[id]/private");
-			}
+			revalidatePath("/profile/[id]");
 		}
 	}
 	const { data, hasMore } = await getUserAllPosts(params.id, supabase);

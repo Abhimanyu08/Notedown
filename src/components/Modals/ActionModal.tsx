@@ -5,64 +5,51 @@ import { VscLoading } from "react-icons/vsc";
 
 function ActionModal({
 	action,
-	postId,
 	postTitle,
 	isActionPending,
 	onAction,
+	visible,
+	onClose,
 }: {
 	action: "publish" | "unpublish" | "delete";
-	postId: number;
 	postTitle: string;
 	isActionPending: boolean;
 	onAction: () => void;
+	visible: boolean;
+	onClose: () => void;
 }) {
-	const inputRef = useRef<HTMLInputElement | null>(null);
-	const [actionStarted, setActionStarted] = useState(false);
-
-	useEffect(() => {
-		if (actionStarted && !isActionPending && inputRef.current) {
-			inputRef.current.checked = false;
-			setActionStarted(false);
-		}
-	}, [isActionPending]);
-
 	return (
 		<>
-			<input
-				type="checkbox"
-				name=""
-				id={`${action}-${postId}`}
-				ref={inputRef}
-				className="modal-input"
-			/>
-
-			<div className="modal-box bg-black/80 backdrop-blur-sm z-50">
-				<div className="flex gap-2">
-					<span className="text-gray-300 capitalize">{action}</span>
-					<span className="font-bold text-gray-100">
-						{postTitle} ?
-					</span>
-					<button
-						className="p-1 rounded-full hover:bg-gray-700"
-						onClick={() => {
-							setActionStarted(true);
-							onAction();
-						}}
-					>
-						{isActionPending ? (
-							<VscLoading className="animate-spin" />
-						) : (
-							<BiCheck />
-						)}
-					</button>
-					<label
-						htmlFor={`${action}-${postId}`}
-						className="p-1 rounded-full hover:bg-gray-700"
-					>
-						<IoMdClose />
-					</label>
+			{visible && (
+				<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/20 backdrop-blur-sm z-50">
+					<div className="flex gap-2">
+						<span className="text-gray-300 capitalize">
+							{action}
+						</span>
+						<span className="font-bold text-gray-100">
+							{postTitle} ?
+						</span>
+						<button
+							className="p-1 rounded-full hover:bg-gray-700"
+							onClick={() => {
+								onAction();
+							}}
+						>
+							{isActionPending ? (
+								<VscLoading className="animate-spin" />
+							) : (
+								<BiCheck />
+							)}
+						</button>
+						<button
+							className="p-1 rounded-full hover:bg-gray-700"
+							onClick={() => onClose()}
+						>
+							<IoMdClose />
+						</button>
+					</div>
 				</div>
-			</div>
+			)}
 		</>
 	);
 }

@@ -36,11 +36,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 	} = post;
 
 	return (
-		<Link
-			href={published ? `/post/${id}` : `/post/private/${id}`}
-			className="relative flex flex-col gap-1 group py-2 first:pt-0 px-2  rounded-md"
-		>
-			<PostOnPreviewColor postId={id!} />
+		<div className="relative">
 			<PostOptions
 				{...{
 					published: !!published,
@@ -51,22 +47,19 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					deletePostAction,
 				}}
 			/>
+			<Link
+				href={published ? `/post/${id}` : `/post/private/${id}`}
+				className="flex flex-col gap-3 group py-2 first:pt-0 px-2  rounded-md "
+			>
+				<PostOnPreviewColor postId={id!} />
 
-			{/* <p className="text-sm md:text-base text-black dark:text-gray-400 ">
-				{description}
-			</p> */}
-			<div className="flex text-xs text-black/50 dark:text-gray-400 mt-1 gap-3  max-w-full flex-col">
-				{/* <BlogAuthor
-					createdBy={created_by!}
-					className=" underline-offset-2 w-1/3 md:w-1/5 truncate hover:italic flex-initialu"
-				/> */}
 				<PostTitle
 					{...{
 						title: title!,
 						description: description || undefined,
 					}}
 				/>
-				<div className="flex gap-2 items-center">
+				<div className="flex gap-2 items-center text-xs text-gray-400">
 					<span>
 						{published && published_on
 							? `published on ${formatDate(published_on)}`
@@ -83,26 +76,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
 						{published ? "public" : "private"}
 					</span>
 				</div>
-
-				{/* {published && (
-					<div className="flex justify-center pl-2 pr-0">
-						<span className="flex items-center gap-1 justify-center">
-							{upvotes
-								? formatter.format(upvotes)
-								: post.upvote_count
-								? post.upvote_count
-								: 0}{" "}
-							<BiUpvote />
-						</span>
-					</div>
-				)}
-				<div
-					className={` px-1 font-bold font-mono flex justify-start w-20`}
-				>
-					<span>{language}</span>
-				</div> */}
-			</div>
-		</Link>
+			</Link>
+		</div>
 	);
 };
 

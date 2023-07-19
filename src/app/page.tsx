@@ -1,21 +1,11 @@
 import { NotLoggedInOptions } from "@components/Navbar/Options";
-import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
-import { RxHamburgerMenu } from "react-icons/rx";
+import SideSheet from "@components/SideSheet";
 
 async function Home() {
 	return (
-		<>
-			<Sheet>
-				<SheetTrigger className="absolute top-4 left-4">
-					<button>
-						<RxHamburgerMenu />
-					</button>
-				</SheetTrigger>
-				<SheetContent side={"left"}>
-					<NotLoggedInOptions className="mt-2" />
-				</SheetContent>
-			</Sheet>
-		</>
+		<SideSheet>
+			<NotLoggedInOptions className="mt-2" />
+		</SideSheet>
 	);
 }
 

@@ -9,6 +9,15 @@ import ActionModal from "./Modals/ActionModal";
 import Link from "next/link";
 import useOwner from "@/hooks/useOwner";
 import { ToastContext } from "@/contexts/ToastProvider";
+import {
+	Menubar,
+	MenubarContent,
+	MenubarItem,
+	MenubarMenu,
+	MenubarSeparator,
+	MenubarShortcut,
+	MenubarTrigger,
+} from "@/components/ui/menubar";
 
 export function PostOptions({
 	published,
@@ -27,7 +36,7 @@ export function PostOptions({
 }) {
 	const owner = useOwner();
 	const [takenAction, setTakenAction] = useState<
-		"published" | "deleted" | "unpublished" | ""
+		"publish" | "delete" | "unpublish" | ""
 	>("");
 	const [isPending, startTransition] = useTransition();
 	const context = useContext(ToastContext);
@@ -44,85 +53,87 @@ export function PostOptions({
 				action="delete"
 				postTitle={postTitle}
 				isActionPending={isPending}
-				postId={postId}
 				onAction={() => {
 					startTransition(() => {
-						setTakenAction("deleted");
 						if (deletePostAction) deletePostAction(postId);
+						setTakenAction("");
 					});
 				}}
+				visible={takenAction === "delete"}
+				onClose={() => setTakenAction("")}
 			/>
 			<ActionModal
 				action="publish"
-				postId={postId}
 				postTitle={postTitle}
 				isActionPending={isPending}
 				onAction={() => {
 					startTransition(() => {
-						setTakenAction("published");
 						if (publishPostAction) publishPostAction(postId);
+						setTakenAction("");
 					});
 				}}
+				visible={takenAction === "publish"}
+				onClose={() => setTakenAction("")}
 			/>
 			<ActionModal
 				action="unpublish"
-				postId={postId}
 				postTitle={postTitle}
 				isActionPending={isPending}
 				onAction={() => {
 					startTransition(() => {
-						setTakenAction("unpublished");
 						if (unpublishPostAction) unpublishPostAction(postId);
+						setTakenAction("");
 					});
 				}}
+				visible={takenAction === "unpublish"}
+				onClose={() => setTakenAction("")}
 			/>
-			<div className="absolute z-40 right-0 top-2 rounded-full p-2 hover:bg-gray-800 group/options">
-				{owner && (
-					<>
-						<button className="flex justify-center items-center">
+			{owner && (
+				<Menubar
+					className="absolute top-3 right-3 w-fit h-fit border-none
+					rounded-full bg-transparent hover:bg-accent
+				"
+				>
+					<MenubarMenu>
+						<MenubarTrigger className="p-1">
 							<SlOptions size={12} />
-						</button>
-						<div className="flex z-50 absolute text-xs right-0 top-8 gap-3 flex-col bg-gray-800 p-3 w-max rounded-sm invisible group-hover/options:visible group-focus/options:visible transition-all duration-200">
-							<PostOptionButton>
+						</MenubarTrigger>
+						<MenubarContent className="min-w-0">
+							<MenubarItem className="">
 								<Link
 									href={`/write/${postId}`}
 									prefetch={false}
+									className="flex gap-2 items-center"
 								>
 									<AiFillEdit className="inline" size={15} />{" "}
 									<span>Edit</span>
 								</Link>
-							</PostOptionButton>
+							</MenubarItem>
 							{published ? (
-								<PostOptionButton>
-									<label htmlFor={`unpublish-${postId}`}>
-										<TbNewsOff
-											className="inline"
-											size={15}
-										/>{" "}
-										<span>Unpublish</span>
-									</label>
-								</PostOptionButton>
+								<MenubarItem
+									onClick={() => setTakenAction("unpublish")}
+								>
+									<TbNewsOff className="inline" size={15} />{" "}
+									<span>Unpublish</span>
+								</MenubarItem>
 							) : (
-								<PostOptionButton>
-									<label htmlFor={`publish-${postId}`}>
-										<TbNews className="inline" size={15} />
-										<span>Publish</span>
-									</label>
-								</PostOptionButton>
+								<MenubarItem
+									onClick={() => setTakenAction("publish")}
+								>
+									<TbNews className="inline" size={15} />
+									<span>Publish</span>
+								</MenubarItem>
 							)}
-							<PostOptionButton>
-								<label htmlFor={`delete-${postId}`}>
-									<AiFillDelete
-										className="inline"
-										size={15}
-									/>{" "}
-									Delete
-								</label>
-							</PostOptionButton>
-						</div>
-					</>
-				)}
-			</div>
+							<MenubarItem
+								onClick={() => setTakenAction("delete")}
+							>
+								<AiFillDelete className="inline" size={15} />{" "}
+								Delete
+							</MenubarItem>
+						</MenubarContent>
+					</MenubarMenu>
+				</Menubar>
+			)}
 		</>
 	);
 }
@@ -136,7 +147,7 @@ const PostOptionButton = ({
 }) => {
 	return (
 		<button
-			className="text-xs cursor-pointer  rounded-sm w-full [&>*]:flex [&>*]:justify-start [&>*]:gap-1"
+			className="text-xs cursor-pointer rounded-sm w-full [&>*]:flex [&>*]:justify-start [&>*]:gap-1"
 			onClick={onClick}
 		>
 			{children}
