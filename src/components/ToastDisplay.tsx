@@ -7,8 +7,7 @@ function ToastDisplay() {
 	const context = useContext(ToastContext);
 
 	const [show, setShow] = useState(false);
-	if (!context) return <></>;
-	const { message, setMessage } = context;
+	const { message } = context;
 
 	useEffect(() => {
 		setShow(true);

@@ -95,7 +95,7 @@ export interface Database {
           filename?: string | null
           id?: number
           image_folder?: string | null
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language?: typeof ALLOWED_LANGUAGES[number] | null
           published?: boolean
           published_on?: string | null
           search_index_col?: unknown | null
@@ -109,7 +109,7 @@ export interface Database {
           filename?: string | null
           id?: number
           image_folder?: string | null
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language?: typeof ALLOWED_LANGUAGES[number] | null
           published?: boolean
           published_on?: string | null
           search_index_col?: unknown | null

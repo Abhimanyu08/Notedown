@@ -1,7 +1,7 @@
 import { useSupabase } from "@/app/appContext";
 import Post from "@/interfaces/Post";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
+import { ALLOWED_LANGUAGES, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
 import { ToastContext } from "@/contexts/ToastProvider";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
@@ -57,17 +57,20 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         const markdown = editorState.editorView?.state.sliceDoc()
         if (!markdown) throw new Error("Couldn't read markdown")
         const markdownFile = new File([markdown], "file.md")
-
+        let { title, description, language } = blogState.blogMeta
+        if (!ALLOWED_LANGUAGES.includes(language as any)) {
+            language = undefined
+        }
         return {
             title: blogState.blogMeta.title || "",
             description: blogState.blogMeta.description || "",
-            language: blogState.blogMeta.language || "",
+            language: null,
             markdownFile
         }
     }
 
 
-    const uploadPostRow = async ({ title, description, language }: { title: string, description: string, language: string }) => {
+    const uploadPostRow = async ({ title, description, language }: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
         const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).insert({
             title,
             description,
@@ -78,7 +81,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         return newPost
     }
-    const updatePostRow = async ({ postId, title, description, language }: { postId: number, title: string, description: string, language: string }) => {
+    const updatePostRow = async ({ postId, title, description, language }: { postId: number, title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
         const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).update({
             title,
             description,

@@ -9,13 +9,10 @@ import {
 } from "react";
 import { VscLoading } from "react-icons/vsc";
 
-export const ToastContext = createContext<
-	| {
-			message: string | JSX.Element;
-			setMessage: Dispatch<SetStateAction<string | JSX.Element>>;
-	  }
-	| undefined
->(undefined);
+export const ToastContext = createContext<{
+	message: string | JSX.Element;
+	setMessage: Dispatch<SetStateAction<string | JSX.Element>>;
+}>({ message: "", setMessage: () => null });
 
 export default function ToastProvider({
 	children,
