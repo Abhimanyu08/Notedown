@@ -20,7 +20,6 @@ module.exports = {
 				sans: ["var(--font-sans)"],
 				mono: ["var(--font-mono)"],
 				serif: ["var(--font-serif)"],
-				fancy: ["var(--font-fancy)"],
 			},
 			colors: {
 				border: "hsl(var(--border))",

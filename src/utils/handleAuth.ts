@@ -3,16 +3,19 @@ import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/Supaba
 
 export const handleSignIn = async (supabaseClient: SupabaseClient, provider: "github" | "google", redirectTo: string) => {
     const hostname = window.location.hostname
-    let redirectUrl
-    if (hostname === "localhost") {
-        redirectUrl = `http://localhost:3000/auth/callback`
-    } else {
-        redirectUrl = `${window.location.protocol}//${window.location.hostname}/auth/callback`
-    }
+    // let redirectUrl
+    // if (hostname === "localhost") {
+    //     redirectUrl = `http://localhost:3000/auth/callback`
+    // } else {
+    //     redirectUrl = `${window.location.protocol}//${window.location.hostname}/auth/callback`
+    // }
 
     const { error } = await supabaseClient.auth.signInWithOAuth(
         {
             provider,
+            options: {
+                redirectTo: redirectTo
+            }
 
         },
 

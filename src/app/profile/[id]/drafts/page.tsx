@@ -64,7 +64,7 @@ function Drafts() {
 
 	return (
 		<>
-			<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
+			<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-2">
 				{!loadingDrafts ? (
 					<>
 						{drafts.length > 0 ? (
@@ -111,7 +111,7 @@ function Drafts() {
 								})}
 							</>
 						) : (
-							<div className="text-gray-500">
+							<div className="text-gray-500 ">
 								<p>
 									This is where all your notes which you
 									decide not to upload (or forget to hit the

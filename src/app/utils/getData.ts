@@ -10,7 +10,7 @@ export const getUser = cache(async (id: string) => {
 
     const { data: userData } = await supabase
         .from(SUPABASE_BLOGGER_TABLE)
-        .select("id,name,avatar_url,about")
+        .select("id,name,username,notebook_title")
         .eq("id", id)
         .single();
 

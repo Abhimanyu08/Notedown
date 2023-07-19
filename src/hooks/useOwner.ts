@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 function useOwner() {
     //hooks used to test if the profile page is being viewed by its owner or a different user
     const [owner, setOwner] = useState(false)
-    const { session } = useSupabase()
+    const { session, supabase } = useSupabase()
     const params = useParams()
 
     useEffect(() => {
@@ -15,7 +15,7 @@ function useOwner() {
 
         if (params.id === session.user.id) setOwner(true)
 
-    }, [session?.user.id])
+    }, [supabase])
 
     return owner
 }

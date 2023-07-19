@@ -25,7 +25,6 @@ export function PostOptions({
 	unpublishPostAction?: (postId: number) => Promise<void>;
 	deletePostAction?: (postId: number) => Promise<void>;
 }) {
-	const pathname = usePathname();
 	const owner = useOwner();
 	const [takenAction, setTakenAction] = useState<
 		"published" | "deleted" | "unpublished" | ""

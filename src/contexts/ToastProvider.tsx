@@ -24,12 +24,6 @@ export default function ToastProvider({
 }) {
 	const [message, setMessage] = useState<string | JSX.Element>("");
 
-	useEffect(() => {
-		if (message) {
-			setTimeout(() => setMessage(""), 3000);
-		}
-	}, [message]);
-
 	return (
 		<ToastContext.Provider
 			value={{

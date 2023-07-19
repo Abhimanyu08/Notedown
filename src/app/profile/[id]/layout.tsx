@@ -4,10 +4,14 @@ import PostPreviewLayout from "./components/LayoutChange";
 import NewNoteButton from "./components/NewPostButton";
 import NoteTypeToggle from "./components/NoteTypeToggle";
 import PostControl from "./components/PostControl";
-import { NotLoggedInOptions } from "@components/Navbar/Options";
+import {
+	LoggedInOptions,
+	NotLoggedInOptions,
+} from "@components/Navbar/Options";
 import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
 import { RxHamburgerMenu } from "react-icons/rx";
 import OwnerOnlyStuff from "./components/OwnerOnlyStuff";
+import SideSheet from "@components/SideSheet";
 
 async function ProfilePostsLayout({
 	children,
@@ -18,25 +22,25 @@ async function ProfilePostsLayout({
 	postpreview: React.ReactNode;
 	params: { id: string };
 }) {
-	const userName = (await getUser(params.id))?.name || "Anon";
+	const { name, notebook_title, username } = (await getUser(params.id))!;
+
+	let notebookTitle =
+		notebook_title !== null
+			? notebook_title
+			: name
+			? `${name}'s Notebook`
+			: "Anon's Notebook";
 
 	return (
 		<>
-			<Sheet>
-				<SheetTrigger className="absolute top-6 right-8">
-					<button>
-						<RxHamburgerMenu size={26} />
-					</button>
-				</SheetTrigger>
-				<SheetContent side={"right"}>
-					<NotLoggedInOptions className="mt-2" />
-				</SheetContent>
-			</Sheet>
+			<SideSheet>
+				<LoggedInOptions
+					{...{ name, notebook_title: notebookTitle, username }}
+				/>
+			</SideSheet>
 			<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
 				<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-20 pt-20 ">
-					<p className="font-mono text-4xl px-2">
-						{`${userName}'`}s Notebook
-					</p>
+					<p className="font-mono text-4xl px-2">{notebookTitle}</p>
 					<OwnerOnlyStuff>
 						<div className="flex justify-between col-span-1 px-2 mr-10">
 							<PostControl className="font-mono text-gray-400" />

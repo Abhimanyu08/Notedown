@@ -12,7 +12,6 @@ async function Home() {
 					</button>
 				</SheetTrigger>
 				<SheetContent side={"left"}>
-					Login using:
 					<NotLoggedInOptions className="mt-2" />
 				</SheetContent>
 			</Sheet>
