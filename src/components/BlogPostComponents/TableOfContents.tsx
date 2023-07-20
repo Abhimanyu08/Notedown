@@ -53,50 +53,35 @@ const Toc = memo(function Toc({
 	// }, [html]);
 
 	return (
-		<div
-			className="flex ml-7 flex-col gap-2 text-xs font-jsx-prose tracking-wide  text-gray-700 dark:text-white/70 max-w-full pr-1"
-			// onClick={() => {
-			// 	if (setShowContents) setShowContents(false);
-			// }}
+		<ul
+			className={` flex flex-col text-gray-700  dark:text-gray-400 tracking-wider gap-1 list-inside font-sans text-sm list-disc`}
 		>
-			<h3
-				className=" flex flex-row items-center underline underline-offset-2 cursor-pointer font-bold"
-				// onClick={() => setOpen((prev) => !prev)}
-			>
-				Table of Contents
-			</h3>
-			<ul
-				className={` flex flex-col gap-2     ${
-					true ? "" : "lg:invisible"
-				}  pb-14 text-gray-700 dark:text-gray-100/75 tracking-wider font-base`}
-			>
-				<li>
-					<a
-						href="#title"
-						className="hover:text-black hover:dark:text-white hover:font-bold"
-					>
-						Title
-					</a>
-				</li>
-				{headings.map((heading, idx) => {
-					return (
-						<li
-							className={`
+			<li className="">
+				<a
+					href="#title"
+					className="hover:text-black hover:dark:text-white"
+				>
+					Title
+				</a>
+			</li>
+			{headings.map((heading, idx) => {
+				return (
+					<li
+						className={`
 							${headingToMargin[headingTypes[idx]]} 
 							break-words`}
-							key={heading}
+						key={heading}
+					>
+						<a
+							href={`#${headingIds[idx]}`}
+							className={`hover:text-black  hover:dark:text-white`}
 						>
-							<a
-								href={`#${headingIds[idx]}`}
-								className={`hover:text-black hover:font-bold hover:dark:text-white`}
-							>
-								{heading}
-							</a>
-						</li>
-					);
-				})}
-			</ul>
-		</div>
+							{heading}
+						</a>
+					</li>
+				);
+			})}
+		</ul>
 	);
 });
 

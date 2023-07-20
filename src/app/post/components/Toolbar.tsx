@@ -14,7 +14,7 @@ import { useSupabase } from "@/app/appContext";
 
 const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
-function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
+function Toolbar(props: { id: number; language: BlogProps["language"] | "" }) {
 	const pathname = usePathname();
 	const { blogState, dispatch } = useContext(BlogContext);
 	const { session } = useSupabase();
@@ -69,7 +69,7 @@ function Toolbar(props: { id: string; language: BlogProps["language"] | "" }) {
 		setUpvotes((prev) => (prev || 0) + 1);
 		await supabase
 			.from(SUPABASE_UPVOTES_TABLE)
-			.insert({ upvoter: user.id, post_id: parseInt(props.id) });
+			.insert({ upvoter: user.id, post_id: props.id });
 	};
 
 	return (

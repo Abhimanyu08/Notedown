@@ -49,7 +49,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 			/>
 			<Link
 				href={published ? `/post/${id}` : `/post/private/${id}`}
-				className="flex flex-col gap-3 group py-2 first:pt-0 px-2  rounded-md "
+				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
 			>
 				<PostOnPreviewColor postId={id!} />
 

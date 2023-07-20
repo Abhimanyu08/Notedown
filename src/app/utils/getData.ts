@@ -5,6 +5,7 @@ import { getHtmlFromMarkdownFile } from '@utils/getResources';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@utils/supabaseClient';
 import { checkDataLength } from './postTypeToFetcher';
+import { Database } from '@/interfaces/supabase';
 
 export const getUser = cache(async (id: string) => {
 
@@ -96,9 +97,9 @@ export const getUpvotes = cache(async (idArray: number[]) => {
 
 export const getPost = cache(async (postId: string, supabaseClient: SupabaseClient) => {
     const { data: post, error } = await supabaseClient
-        .from(SUPABASE_POST_TABLE)
+        .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
         .select(
-            "id,created_by,title,description,language,published_on,published,filename,image_folder, bloggers(id,name)"
+            "id,created_by,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name)"
         )
         .match({ id: postId })
         .single();
@@ -121,14 +122,17 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
         throw new Error(fileError.message || "couldn't load file data")
     }
     const imagesToUrls: Record<string, string> = {}
-    const { data } = await supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).list(post.image_folder)
-    if (data) {
-        for (let file of data) {
+    if (post.image_folder) {
 
-            // if (/^canvas-(\d+)\.png$/.test(file.name)) continue
-            const { publicUrl } = supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).getPublicUrl(post.image_folder + "/" + file.name).data
+        const { data } = await supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).list(post.image_folder)
+        if (data) {
+            for (let file of data) {
 
-            imagesToUrls[file.name] = publicUrl
+                // if (/^canvas-(\d+)\.png$/.test(file.name)) continue
+                const { publicUrl } = supabaseClient.storage.from(SUPABASE_IMAGE_BUCKET).getPublicUrl(post.image_folder + "/" + file.name).data
+
+                imagesToUrls[file.name] = publicUrl
+            }
         }
     }
 

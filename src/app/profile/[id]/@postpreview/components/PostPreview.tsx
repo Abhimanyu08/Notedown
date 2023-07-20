@@ -7,14 +7,9 @@ import { headers, cookies } from "next/headers";
 import React from "react";
 import { ExpandButton } from "../../components/ModalButtons";
 import { Database } from "@/interfaces/supabase";
+import PostPreviewControls from "./PostPreviewControls";
 
-async function PostPreview({
-	postId,
-	privatePost,
-}: {
-	postId: string;
-	privatePost: boolean;
-}) {
+async function PostPreview({ postId }: { postId: string }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
 		headers,
 		cookies,
@@ -23,7 +18,7 @@ async function PostPreview({
 	const { post, content, imagesToUrls } = await getPost(postId, supabase);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full w-full">
+		<div className="flex flex-col items-center justify-center h-full w-full relative">
 			<BlogContextProvider
 				uploadedImages={imagesToUrls}
 				blogMeta={{
@@ -40,10 +35,8 @@ async function PostPreview({
 					extraClasses="w-full "
 					AuthorComponent={BlogAuthorServer}
 				/>
+				<PostPreviewControls {...{ post, content }} />
 			</BlogContextProvider>
-			<div className="flex absolute gap-3 top-2 right-20">
-				<ExpandButton postId={postId} privatePost={privatePost} />
-			</div>
 		</div>
 	);
 }

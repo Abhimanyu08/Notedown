@@ -19,7 +19,7 @@ function BlogLayout({
 	return (
 		<BlogContextProvider
 			blogMeta={{
-				id: parseInt(post.id),
+				id: post.id,
 				title: post.title,
 				description: post.description,
 				language: post.language,
@@ -29,7 +29,7 @@ function BlogLayout({
 		>
 			<div className="grow flex flex-row min-h-0 relative pt-20">
 				<div
-					className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
+					className={`lg:basis-1/5 flex-col overflow-y-auto justify-start flex px-4 border-r-[1px] border-border
 					`}
 				>
 					<Toc html={content} />

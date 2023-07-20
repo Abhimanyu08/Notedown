@@ -4,9 +4,21 @@ import "@/styles/xterm.css";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImageProvider";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Metadata } from "next";
-import { Noto_Serif, Nunito_Sans, IBM_Plex_Mono } from "next/font/google";
+import {
+	Noto_Serif,
+	Nunito_Sans,
+	IBM_Plex_Mono,
+	Roboto,
+} from "next/font/google";
 import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
+
+const toc = Roboto({
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-toc",
+	weight: ["400"],
+});
 
 const serif = Noto_Serif({
 	subsets: ["latin"],
@@ -70,7 +82,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`dark ${serif.variable} ${sans.variable} ${mono.variable} `}
+			className={`dark ${serif.variable} ${sans.variable} ${mono.variable} ${toc.variable}`}
 		>
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<SupabaseProvider session={session}>

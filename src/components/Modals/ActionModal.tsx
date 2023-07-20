@@ -21,7 +21,7 @@ function ActionModal({
 	return (
 		<>
 			{visible && (
-				<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/20 backdrop-blur-sm z-50">
+				<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
 					<div className="flex gap-2">
 						<span className="text-gray-300 capitalize">
 							{action}

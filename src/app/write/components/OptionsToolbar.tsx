@@ -8,6 +8,7 @@ import { FaFileUpload } from "react-icons/fa";
 import { SlOptions } from "react-icons/sl";
 import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
+import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 
 function OptionsToolbar() {
 	const [openOptions, setOpenOptions] = useState(false);
@@ -50,30 +51,7 @@ function OptionsToolbar() {
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 					>
-						<button
-							className="tooltip tooltip-top tooltip-left no-scale hover:text-gray-100"
-							data-tip="Enable Remote code execution"
-							onClick={() => {
-								console.log(`${blogState.containerId}`);
-								prepareContainer(
-									blogState.blogMeta.language,
-									blogState.containerId
-								).then((containerId) => {
-									if (!containerId) return;
-									blogStateDispatch({
-										type: "set containerId",
-										payload: containerId,
-									});
-								});
-							}}
-						>
-							<BiCodeAlt
-								size={30}
-								className={` ${
-									blogState.containerId ? "text-lime-400" : ""
-								}`}
-							/>
-						</button>
+						<EnableRceButton />
 						<button
 							className="tooltip tooltip-top tooltip-left hover:text-gray-100"
 							data-tip="Upload note"

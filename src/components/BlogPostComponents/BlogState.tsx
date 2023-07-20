@@ -22,9 +22,9 @@ interface BlogStateInterface {
 		id: number;
 		title: string;
 		author: string;
-		description: string;
-		language: (typeof ALLOWED_LANGUAGES)[number];
-		imageFolder: string;
+		description: string | null;
+		language: (typeof ALLOWED_LANGUAGES)[number] | null;
+		imageFolder: string | null;
 	}>;
 	// canvasApps: Record<string, any>;
 	uploadedImages: Record<string, string>;
