@@ -29,9 +29,7 @@ function PostPreviewControls({
 				/>
 				<Button
 					className="text-gray-400 hover:text-white active:scale-95"
-					// onClick={() => setShowToc((p) => !p)}
-					onMouseOver={() => setShowToc(true)}
-					onMouseLeave={() => setShowToc(false)}
+					onClick={() => setShowToc((p) => !p)}
 				>
 					<BiBookContent size={24} />
 				</Button>
@@ -39,11 +37,10 @@ function PostPreviewControls({
 			<AnimatePresence>
 				{showToc && (
 					<motion.div
-						className="h-fit absolute py-4 px-5 bg-black right-12 w-fit border-border border-[1px] shadow-md  shadow-gray-200 max-w-[400px] max-h-[500px] overflow-y-auto"
+						className="h-fit absolute py-4 px-5 bg-black right-12 w-fit border-border border-[1px]  max-w-[400px] max-h-[500px] overflow-y-auto ring-2 ring-gray-300"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
-						onMouseOver={() => setShowToc(true)}
 						onMouseLeave={() => setShowToc(false)}
 					>
 						<Toc html={content} />
