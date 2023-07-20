@@ -6,7 +6,7 @@ import { TfiPencilAlt } from "react-icons/tfi";
 function NewNoteButton() {
 	return (
 		<Link href={"/write"}>
-			<Button className="px-2 py-1 text-sm gap-2">
+			<Button className="px-3 py-1 text-sm gap-2 hover:bg-secondary">
 				<TfiPencilAlt />
 				<span>New Note</span>
 			</Button>

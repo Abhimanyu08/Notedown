@@ -1,17 +1,15 @@
 import { getUser } from "@/app/utils/getData";
 import React from "react";
-import PostPreviewLayout from "./components/LayoutChange";
 import NewNoteButton from "./components/NewPostButton";
 import NoteTypeToggle from "./components/NoteTypeToggle";
 import PostControl from "./components/PostControl";
-import {
-	LoggedInOptions,
-	NotLoggedInOptions,
-} from "@components/Navbar/Options";
-import { Sheet, SheetContent, SheetTrigger } from "@components/ui/sheet";
-import { RxHamburgerMenu } from "react-icons/rx";
+import { LoggedInOptions } from "@components/Navbar/Options";
 import OwnerOnlyStuff from "./components/OwnerOnlyStuff";
 import SideSheet from "@components/SideSheet";
+import SearchInput from "./components/SearchInput";
+import PostPreviewLayout from "./components/PostPreviewLayout";
+import NormalChildrenLayout from "./components/NormalChildrenLayout";
+import SearchProvider from "./components/SearchProvider";
 
 async function ProfilePostsLayout({
 	children,
@@ -30,9 +28,8 @@ async function ProfilePostsLayout({
 			: name
 			? `${name}'s Notebook`
 			: "Anon's Notebook";
-
 	return (
-		<>
+		<SearchProvider>
 			<SideSheet>
 				<LoggedInOptions
 					{...{ name, notebook_title: notebookTitle, username }}
@@ -46,7 +43,10 @@ async function ProfilePostsLayout({
 							<PostControl className="font-mono text-gray-400" />
 							<NewNoteButton />
 						</div>
-						<NoteTypeToggle className="text-gray-400 mt-1 px-2" />
+						<div className="flex justify-between px-2 col-span-1 mt-1 mr-10 relative">
+							<NoteTypeToggle className="text-gray-400 " />
+							<SearchInput className="basis-1/3" />
+						</div>
 					</OwnerOnlyStuff>
 					<div className="h-[2px] bg-border col-span-1 mr-10 mt-4"></div>
 					<div
@@ -57,14 +57,14 @@ async function ProfilePostsLayout({
 				mr-10
 				"
 					>
-						{children}
+						<NormalChildrenLayout>{children}</NormalChildrenLayout>
 					</div>
 				</div>
 				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 relative mt-20 border-l-[1px] border-gray-600">
 					{postpreview}
 				</PostPreviewLayout>
 			</div>
-		</>
+		</SearchProvider>
 
 		// <LayoutChange>
 		// 	<>

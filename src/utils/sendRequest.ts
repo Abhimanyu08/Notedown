@@ -22,9 +22,8 @@ export async function sendRequestToRceServer(method: "POST" | "DELETE", body: { 
 }
 
 export async function sendRevalidationRequest(pathToRevalidate: string) {
-    await fetch(`/api/revalidate?token=${process.env.NEXT_PUBLIC_REVALIDATE_TOKEN}`, {
-        method: "POST",
-        body: JSON.stringify({ pathToRevalidate })
+    await fetch(`/api/revalidate?path=${pathToRevalidate}`, {
+        method: "GET",
     });
 }
 

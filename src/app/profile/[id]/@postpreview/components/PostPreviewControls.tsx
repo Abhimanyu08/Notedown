@@ -23,10 +23,12 @@ function PostPreviewControls({
 					className="
 				text-gray-400 hover:text-white active:scale-95"
 				/>
-				<EnableRceButton
-					className="
+				{post.language && (
+					<EnableRceButton
+						className="
 				text-gray-400 hover:text-white active:scale-95"
-				/>
+					/>
+				)}
 				<Button
 					className="text-gray-400 hover:text-white active:scale-95"
 					onClick={() => setShowToc((p) => !p)}

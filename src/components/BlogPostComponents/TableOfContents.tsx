@@ -54,7 +54,7 @@ const Toc = memo(function Toc({
 
 	return (
 		<ul
-			className={` flex flex-col text-gray-700  dark:text-gray-400 tracking-wider gap-1 list-inside font-sans text-sm list-disc`}
+			className={` flex flex-col text-gray-700  dark:text-gray-400 tracking-wider gap-1 list-inside font-sans font-light text-sm list-disc`}
 		>
 			<li className="">
 				<a
