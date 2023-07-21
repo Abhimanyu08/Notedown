@@ -5,8 +5,9 @@ import { processImageName } from "@utils/makeFolderName";
 import React, { useContext, useEffect, useState } from "react";
 import { MdContentCopy } from "react-icons/md";
 import { BiCheck } from "react-icons/bi";
+import { cn } from "@/lib/utils";
 
-function ImageUploader() {
+function ImageUploader({ className }: { className?: string }) {
 	// const { dispatch } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const [fileNames, setFileNames] = useState<string[]>([]);
@@ -27,7 +28,12 @@ function ImageUploader() {
 	}, [fileNames]);
 
 	return (
-		<div className="flex w-full justify-center py-1 items-center">
+		<div
+			className={cn(
+				"flex w-full justify-center py-1 items-center my-10 border-t-[1px] border-b-[1px] border-border",
+				className
+			)}
+		>
 			<input
 				type="file"
 				onChange={(e) => {
@@ -40,7 +46,7 @@ function ImageUploader() {
 				}}
 				// id="gallery-input"
 				accept="image/*"
-				className="file:my-2  file:px-4 file:text-gray-100 file:bg-black file:border-[1px] file:border-gray-200 file:hover:bg-gray-800 file:active:scale-95"
+				className="file:my-2  file:px-4 file:text-gray-400 file:rounded-md file:bg-black file:border-[1px] file:border-gray-200 file:hover:bg-gray-800 file:active:scale-95"
 				multiple
 			/>
 			{fileNames.length > 0 && (

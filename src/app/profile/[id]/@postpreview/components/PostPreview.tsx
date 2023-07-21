@@ -8,6 +8,7 @@ import React from "react";
 import { ExpandButton } from "../../components/ModalButtons";
 import { Database } from "@/interfaces/supabase";
 import PostPreviewControls from "./PostPreviewControls";
+import ClosePostPreview from "./ClosePostPreview";
 
 async function PostPreview({ postId }: { postId: string }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -37,6 +38,7 @@ async function PostPreview({ postId }: { postId: string }) {
 				/>
 				<PostPreviewControls {...{ post, content }} />
 			</BlogContextProvider>
+			<ClosePostPreview />
 		</div>
 	);
 }

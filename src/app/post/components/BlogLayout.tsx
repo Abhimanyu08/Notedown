@@ -27,9 +27,9 @@ function BlogLayout({
 			}}
 			uploadedImages={imagesToUrls}
 		>
-			<div className="grow flex flex-row min-h-0 relative pt-20">
+			<div className="grow flex flex-row min-h-0 relative [&>*]:pt-20">
 				<div
-					className={`lg:basis-1/5 flex-col overflow-y-auto justify-start flex px-4 border-r-[1px] border-border
+					className={`lg:basis-1/5 flex-col overflow-y-auto justify-start flex px-4 
 					`}
 				>
 					<Toc html={content} />
@@ -37,7 +37,9 @@ function BlogLayout({
 				<div
 					className={`lg:basis-3/5 relative 
 							hidden lg:block
-							overflow-y-hidden`}
+							overflow-y-hidden
+
+							`}
 				>
 					<Blog
 						content={content}

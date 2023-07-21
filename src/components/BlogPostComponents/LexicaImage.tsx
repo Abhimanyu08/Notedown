@@ -2,8 +2,7 @@
 import { EditorContext } from "@/app/write/components/EditorContext";
 import ImageUploader from "@components/EditorComponents/ImageUploader";
 import { getImages } from "@utils/sendRequest";
-import { usePathname } from "next/navigation";
-import React, { memo, useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import { BsArrowRepeat } from "react-icons/bs";
 import { VscLoading } from "react-icons/vsc";
 
@@ -103,15 +102,16 @@ function LexicaImage({ alt }: { alt: string }) {
 		);
 	}
 	return (
-		<div className="flex flex-col items-center">
+		<div className="flex flex-col items-center my-4 border-border border-t-[1px] border-b-[1px]">
 			<button
-				className="bg-black hover:bg-gray-900 active:scale-95 text-gray-100 border-[1px] border-gray-200 px-3 my-5 py-1 rounded-sm w-fit mx-auto no-scale"
+				className="bg-black hover:bg-gray-900 active:scale-95 text-gray-400 border-[1px] border-gray-200 px-3 my-5 py-1 rounded-md w-fit mx-auto no-scale"
 				onClick={() => setGenerate(true)}
 			>
-				Generate Image for <span className="font-semibold">{alt}</span>
+				Generate Image for{" "}
+				<span className="font-semibold text-gray-200">{alt}</span>
 			</button>
 			<div className="divider text-gray-200">Or</div>
-			<ImageUploader />
+			<ImageUploader className="border-t-0 border-b-0 my-0" />
 		</div>
 	);
 }
