@@ -37,7 +37,9 @@ async function ProfilePostsLayout({
 			</SideSheet>
 			<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
 				<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-10 pt-20 ">
-					<h1 className="font-mono text-4xl px-2">{notebookTitle}</h1>
+					<h1 className="font-serif text-4xl px-2">
+						{notebookTitle}
+					</h1>
 					<OwnerOnlyStuff>
 						<div className="flex justify-between col-span-1 px-2 mr-10">
 							<PostControl className="font-mono text-gray-400" />

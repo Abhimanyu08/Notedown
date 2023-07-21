@@ -24,6 +24,7 @@ export default function useSearch(query: string) {
 
         if (!query) {
             setSearchResults([])
+            setSearchError(null)
             return
         }
         let searchQuery = query.trim().split(" ").join(" | ")

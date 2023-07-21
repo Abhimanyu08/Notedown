@@ -131,12 +131,6 @@ function BlogStateUpdate({
 			<span className="w-24">
 				<BiCheck className="inline" size={14} /> Synced locally
 			</span>
-			<span
-				className="rounded-sm hover:font-bold cursor-pointer"
-				// onClick={() => setHideDocumentMetadata(true)}
-			>
-				Hide
-			</span>
 		</div>
 	);
 }
