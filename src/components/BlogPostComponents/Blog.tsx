@@ -38,7 +38,7 @@ const Blog = memo(
 				//-------------prose-headings------------
 				prose-h1:mb-6
 				prose-headings:text-black
-				dark:prose-headings:text-white
+				dark:prose-headings:text-gray-200
 				prose-headings:font-serif
 
 				// ---------prose-p--------------
