@@ -6,11 +6,11 @@ import { ToolTipComponent } from "../../../../components/ToolTipComponent";
 
 export function ExpandButton({
 	postId,
-	privatePost,
+	published,
 	className,
 }: {
 	postId: number;
-	privatePost: boolean;
+	published: boolean;
 	className?: string;
 }) {
 	const port = process.env.NODE_ENV === "development" ? ":3000" : "";
@@ -19,7 +19,7 @@ export function ExpandButton({
 		"//" +
 		window.location.hostname +
 		port +
-		(privatePost ? `/post/private/${postId}` : `/post/${postId}`);
+		(published ? `/post/${postId}` : `/post/private/${postId}`);
 
 	useShortCut({
 		keys: ["e"],

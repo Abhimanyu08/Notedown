@@ -19,7 +19,7 @@ function PostPreviewControls({
 			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
 				<ExpandButton
 					postId={post.id!}
-					privatePost={post.published!}
+					published={post.published}
 					className="
 				text-gray-400 hover:text-white active:scale-95"
 				/>
