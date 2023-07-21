@@ -75,7 +75,6 @@ export function LoggedInOptions({
 		const newName = nameRef.current?.value;
 		const newTitle = titleRef.current?.value;
 		const newUserName = userNameRef.current?.value;
-		console.log(newName, newTitle, newUserName);
 		if (newName !== name || newTitle !== notebook_title) {
 			await supabase
 				.from("bloggers")
@@ -88,7 +87,7 @@ export function LoggedInOptions({
 				await fetch("/api/revalidate?path=profile/[id]");
 			}
 		}
-		if (newUserName !== username) {
+		if (typeof newUserName === "string" && newUserName !== username) {
 			const { error } = await supabase
 				.from("bloggers")
 				.update({

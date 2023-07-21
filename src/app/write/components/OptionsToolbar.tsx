@@ -9,6 +9,7 @@ import { SlOptions } from "react-icons/sl";
 import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
+import { ToolTipComponent } from "@components/ToolTipComponent";
 
 function OptionsToolbar() {
 	const [openOptions, setOpenOptions] = useState(false);
@@ -38,41 +39,38 @@ function OptionsToolbar() {
 			{openOptions ? (
 				<AnimatePresence>
 					<motion.div
-						className="px-4 py-2 z-40  flex gap-8 rounded-md bg-black absolute text-gray-400 border-[1px] border-gray-200
+						className="px-4 py-2 z-40  flex gap-8 rounded-md bg-black absolute text-gray-400 border-[1px] border-border
                         
                         [&>*]:active:scale-95
                         "
 						style={{
-							left: "calc(50% - 94px)",
+							left: "calc(50% - 60px)",
 							bottom: "90px",
 						}}
 						key={openOptions ? "open" : "close"}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
+						onMouseLeave={() => {
+							setOpenOptions(false);
+						}}
 					>
 						<EnableRceButton />
-						<button
-							className="tooltip tooltip-top tooltip-left hover:text-gray-100"
-							data-tip="Upload note"
-							onClick={() => onUpload(editorState)}
-						>
-							<FaFileUpload size={26} />
-						</button>
-						<button
-							className="tooltip tooltip-top  hover:text-gray-100"
-							data-tip="Close"
-							onClick={() => setOpenOptions(false)}
-						>
-							<AiFillCloseCircle size={30} />
-						</button>
+						<ToolTipComponent tip="Upload changes" side="right">
+							<button
+								className=" hover:text-gray-100"
+								onClick={() => onUpload(editorState)}
+							>
+								<FaFileUpload size={26} />
+							</button>
+						</ToolTipComponent>
 					</motion.div>
 				</AnimatePresence>
 			) : (
 				<AnimatePresence>
 					<motion.button
-						className="absolute flex items-center justify-center p-2 bg-gray-400  rounded-full opacity-20 hover:opacity-100 "
-						onClick={() => setOpenOptions(true)}
+						className="absolute flex items-center justify-center p-2 bg-primary-foreground border-border border-[1px] rounded-full opacity-20 hover:opacity-100 "
+						onMouseOver={() => setOpenOptions(true)}
 						key={openOptions ? "close" : "open"}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}

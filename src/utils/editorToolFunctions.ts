@@ -16,6 +16,7 @@ function insertAndChangeCursor({ editorView, toInsert, cursorOffest }: { editorV
             head: cursorPos + cursorOffest,
         },
     });
+    editorView.focus()
 
 }
 
@@ -31,7 +32,7 @@ export const onBold = (editorView: EditorView) => insertAndChangeCursor({ editor
 export const onItalic = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "__", cursorOffest: 1 })
 export const onCodeWord = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "``", cursorOffest: 1 })
 export const onCodeBlock = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "```\n \n```", cursorOffest: 4 })
-export const onImage = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\n![image caption](image-name)\n", cursorOffest: 4 })
+export const onImage = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\n![]()\n", cursorOffest: 6 })
 export const onSelect = (editorView: EditorView, headingType: string) => insertAndChangeCursor({
     editorView, toInsert: headingToInsert[headingType],
     cursorOffest: headingToInsert[headingType].length
@@ -43,4 +44,4 @@ export const onOrdererdList = (editorView: EditorView) => insertAndChangeCursor(
 export const onBlockQuote = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "> ", cursorOffest: 2 })
 export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "[text](link)", cursorOffest: 1 })
 export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
-export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\ncanvas-number\n\n", cursorOffest: 15 })
+export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\n`canvas-number`\n\n", cursorOffest: 10 })

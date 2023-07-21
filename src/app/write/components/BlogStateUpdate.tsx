@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import {
 	Dispatch,
 	SetStateAction,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -85,7 +86,6 @@ function BlogStateUpdate({
 						});
 
 						localStorage.setItem(localStorageDraftKey, markdown);
-
 						getHtmlFromMarkdownFile(markdown || "").then((val) => {
 							if (!val) return;
 
@@ -109,15 +109,15 @@ function BlogStateUpdate({
 
 			editorState.editorView.dispatch({
 				effects: StateEffect.appendConfig.of(
-					compartment.of([docSizePlugin.extension])
+					compartment.of(docSizePlugin.extension)
 				),
 			});
 			setEventHandlerCompartment(compartment);
 			return;
 		}
 		editorState.editorView.dispatch({
-			effects: StateEffect.reconfigure.of(
-				eventHandlerCompartment.of([docSizePlugin.extension])
+			effects: eventHandlerCompartment.reconfigure(
+				docSizePlugin.extension
 			),
 		});
 	}, [editorState.editorView, localStorageDraftKey]);

@@ -5,6 +5,7 @@ import { BlogContext } from "./BlogState";
 import prepareContainer from "@/app/utils/prepareContainer";
 import { BiCodeAlt } from "react-icons/bi";
 import { ToolTipComponent } from "@components/ToolTipComponent";
+import { cn } from "@/lib/utils";
 
 function EnableRceButton({ className }: { className?: string }) {
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
@@ -17,7 +18,7 @@ function EnableRceButton({ className }: { className?: string }) {
 			}
 		>
 			<Button
-				className={className}
+				className={cn(className, "text-gray-400 hover:text-white")}
 				onClick={() => {
 					console.log(`${blogState.containerId}`);
 					prepareContainer(

@@ -43,7 +43,6 @@ function useEditor({ language, code, mounted, editorParentId }: useEditorProps):
 
         setEditorView(view);
         return () => {
-            console.log("destroying view")
             view.destroy()
         }
     }, [code, mounted, language]);
