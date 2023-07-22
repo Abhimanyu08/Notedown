@@ -1,4 +1,4 @@
-const selfClosingTagNames = ["img", "br"]
+const selfClosingTagNames = ["img", "br", "hr"]
 
 export type NodeToken = {
     name: keyof HTMLElementTagNameMap,

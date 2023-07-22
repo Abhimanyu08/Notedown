@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@tldraw/tldraw/tldraw.css";
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;
@@ -382,25 +384,7 @@ tbody td {
 	color: rgb(209 213 219);
 }
 
-/* .prose :where(ul, ol):not(:where([class~="not-prose"] *)) {
-	padding-left: 1em;
-} */
-
-#toolbar {
-	display: flex;
-	align-items: center;
-	justify-items: center;
-	padding: 8px;
-	left: 50%;
-	bottom: 90px;
-	transform: translateX(-60%);
-}
-
-#optionstoolbar {
-	display: flex;
-	align-items: center;
-	justify-items: center;
-	left: 50%;
-	transform: translateX(-50%);
-	bottom: 90px;
+.tlui-debug-panel,
+.tlui-menu-zone__controls {
+	display: none;
 }

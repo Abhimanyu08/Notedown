@@ -22,6 +22,7 @@ interface BlogStateInterface {
 		id: number;
 		title: string;
 		author: string;
+		blogger: { id: string; name: string };
 		description: string | null;
 		language: (typeof ALLOWED_LANGUAGES)[number] | null;
 		imageFolder: string | null;
@@ -157,7 +158,7 @@ export const BlogContext = createContext<{
 function BlogContextProvider({
 	children,
 	blogMeta,
-	uploadedImages,
+	uploadedImages = {},
 }: {
 	children: React.ReactNode;
 	blogMeta?: BlogStateInterface["blogMeta"];
@@ -169,7 +170,7 @@ function BlogContextProvider({
 			...blogInitialState.blogMeta,
 			...blogMeta,
 		},
-		uploadedImages: uploadedImages || {},
+		uploadedImages,
 	});
 	useEffect(() => {
 		const { containerId } = blogState;

@@ -1,4 +1,5 @@
 import { EditorView } from "codemirror";
+import getUTCTimestamp from "./getUtcTimeStamp";
 
 function insertAndChangeCursor({ editorView, toInsert, cursorOffest }: { editorView: EditorView, toInsert: string, cursorOffest: number }) {
 
@@ -44,4 +45,4 @@ export const onOrdererdList = (editorView: EditorView) => insertAndChangeCursor(
 export const onBlockQuote = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "> ", cursorOffest: 2 })
 export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "[text](link)", cursorOffest: 1 })
 export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
-export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\n`canvas-number`\n\n", cursorOffest: 10 })
+export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: `\n\n\`<draw id=${getUTCTimestamp()}/>\`\n\n`, cursorOffest: 12 })

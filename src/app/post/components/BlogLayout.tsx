@@ -24,6 +24,7 @@ function BlogLayout({
 				description: post.description,
 				language: post.language,
 				imageFolder: post.image_folder,
+				blogger: post.bloggers as { id: string; name: string },
 			}}
 			uploadedImages={imagesToUrls}
 		>

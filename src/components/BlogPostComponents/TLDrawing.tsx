@@ -1,109 +1,29 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 
-import { useSupabase } from "@/app/appContext";
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { Tldraw, TldrawApp } from "@tldraw/tldraw";
-import { SUPABASE_IMAGE_BUCKET } from "@utils/constants";
 import { EditorContext } from "@/app/write/components/EditorContext";
 
-function TLDrawing({ canvasImageName }: { canvasImageName: string }) {
-	const [changeNumber, setChangeNumber] = useState(0);
-	const { blogState } = useContext(BlogContext);
-	const { editorState, dispatch } = useContext(EditorContext);
-	const { supabase } = useSupabase();
-	const [app, setApp] = useState<TldrawApp>();
-	useEffect(() => {
-		if (!app) return;
+import { Tldraw } from "@tldraw/tldraw";
 
-		const shapeString = sessionStorage.getItem(`${canvasImageName}`);
-		if (shapeString) {
-			const shapes = JSON.parse(shapeString);
-			sessionStorage.removeItem(`${canvasImageName}`);
-			if (shapes.length > 0) {
-				// app.createShapes(assets);
-				app.insertContent({ shapes });
-			}
-		}
-		dispatch({
-			type: "add images to upload",
-			payload: [`${canvasImageName}.png`],
-		});
-		return () => {
-			sessionStorage.setItem(
-				`${canvasImageName}`,
-				JSON.stringify(app!.getShapes())
-			);
-			dispatch({
-				type: "remove canvas app",
-				payload: canvasImageName,
-			});
-
-			dispatch({
-				type: "remove image from upload",
-				payload: [`${canvasImageName}.png`],
-			});
-		};
-	}, [app]);
-
-	// useEffect(() => {
-	// 	if (!editorState.editingMarkdown && !mounted) setMounted(true);
-	// }, [editorState.editingMarkdown]);
-
-	const runOnCommad = (app: any) => {
-		if (changeNumber === 0) {
-			setChangeNumber((prev) => prev + 1);
-			return;
-		}
-		if (!Object.hasOwn(editorState.canvasApps, canvasImageName)) {
-			dispatch({
-				type: "set canvas apps",
-				payload: { [canvasImageName]: app },
-			});
-		}
-	};
+function TLDrawing({ persistanceKey }: { persistanceKey: string }) {
+	const { dispatch: EditorStateDispatch } = useContext(EditorContext);
 
 	return (
 		<>
 			<div className="relative w-full aspect-[4/3] self-center not-prose my-4">
-				<Tldraw
-					key={canvasImageName}
-					showMenu={false}
-					showMultiplayerMenu={false}
-					showPages={false}
-					autofocus={false}
-					disableAssets={false}
-					darkMode={false}
-					onMount={(app) => {
-						setApp(app);
-
-						if (
-							Object.hasOwn(
-								blogState.uploadedImages,
-								`${canvasImageName}.png`
-							)
-						) {
-							supabase.storage
-								.from(SUPABASE_IMAGE_BUCKET)
-								.download(
-									`${blogState.blogMeta.imageFolder}/${canvasImageName}.png`
-								)
-								.then((val: any) => {
-									if (!val.data) return;
-									const file = new File(
-										[val.data],
-										`${canvasImageName}.png`
-									);
-									app.addMediaFromFiles([file]).then((app) =>
-										app.zoomToFit()
-									);
-								});
-						}
-					}}
-					onCommand={(app) => {
-						runOnCommad(app);
-					}}
-				/>
+				<div className="tldraw__editor w-full h-full">
+					<Tldraw
+						persistenceKey={persistanceKey}
+						onMount={(editor) => {
+							EditorStateDispatch({
+								type: "set canvas apps",
+								payload: {
+									[persistanceKey]: editor,
+								},
+							});
+						}}
+					/>
+				</div>
 			</div>
 		</>
 	);

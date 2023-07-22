@@ -7,6 +7,8 @@ import { ToastContext } from "@/contexts/ToastProvider";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
+import { Editor } from "@tldraw/tldraw";
+import editorToJsonFile from "@utils/processingTldrawings";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
@@ -125,16 +127,17 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
 
     const uploadCanvasImages = async ({ postId }: { postId: number }) => {
-        const canvasApps = editorState.canvasApps
+        const canvasApps = editorState.canvasApps as Record<string, Editor>
 
 
         for (const [canvasImageName, canvasApp] of Object.entries(canvasApps)) {
 
             if (canvasApp === null) return;
             toastContext?.setMessage(`Uploading ${canvasImageName}`)
-            const newCanvasImage = await canvasApp.getImage("png");
-            const folderName = created_by + "/" + postId + "/" + canvasImageName + ".png"
-            await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, newCanvasImage, { upsert: true }), 3)
+            const fileObject = await editorToJsonFile(canvasApp, canvasImageName)
+            if (!fileObject) continue
+            const folderName = created_by + "/" + postId + "/" + canvasImageName + ".json"
+            await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_FILES_BUCKET).upload(folderName, fileObject, { upsert: true }), 3)
         }
     }
 

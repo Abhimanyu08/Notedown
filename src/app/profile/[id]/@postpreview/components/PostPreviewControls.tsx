@@ -12,7 +12,7 @@ import Button from "@components/ui/button";
 function PostPreviewControls({
 	post,
 	content,
-}: Omit<Awaited<ReturnType<typeof getPost>>, "imagesToUrls" | "markdown">) {
+}: Pick<Awaited<ReturnType<typeof getPost>>, "post" | "content">) {
 	const [showToc, setShowToc] = useState(false);
 	return (
 		<>
