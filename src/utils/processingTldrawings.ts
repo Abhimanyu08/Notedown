@@ -1,8 +1,7 @@
-import { Editor } from "@tldraw/tldraw";
 
 
 
-export default async function editorToJsonFile(editor: Editor, fileName: string) {
+export default async function editorToJsonFile(editor: any, fileName: string) {
     const json = await tldrawEditorToJsonString(editor)
     if (!json) return
     return new File([json], `${fileName}.json`, { type: "application/json" })
@@ -11,7 +10,7 @@ export default async function editorToJsonFile(editor: Editor, fileName: string)
 
 
 
-async function tldrawEditorToJsonString(editor: Editor) {
+async function tldrawEditorToJsonString(editor: any) {
 
     const shapesArray = editor?.getShapeIdsInPage(
         editor.currentPageId

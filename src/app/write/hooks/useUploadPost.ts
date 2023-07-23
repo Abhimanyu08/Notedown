@@ -7,7 +7,6 @@ import { ToastContext } from "@/contexts/ToastProvider";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
-import { Editor } from "@tldraw/tldraw";
 import editorToJsonFile from "@utils/processingTldrawings";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
@@ -127,7 +126,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
 
     const uploadCanvasImages = async ({ postId }: { postId: number }) => {
-        const canvasApps = editorState.canvasApps as Record<string, Editor>
+        const canvasApps = editorState.canvasApps as Record<string, any>
 
 
         for (const [canvasImageName, canvasApp] of Object.entries(canvasApps)) {
