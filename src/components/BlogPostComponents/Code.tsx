@@ -50,14 +50,6 @@ function Code({ code, blockNumber }: CodeProps) {
 	useEffect(() => {
 		if (!mounted) setMounted(true);
 	}, [mounted]);
-
-	useEffect(() => {
-		console.log("code block mounted");
-		return () => {
-			console.log("code block unmounted");
-		};
-	}, []);
-
 	// useTerminal({
 	// 	containerId: blogState.containerId,
 	// 	blockNumber,
