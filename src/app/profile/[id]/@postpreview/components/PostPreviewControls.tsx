@@ -8,12 +8,17 @@ import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getPost } from "@/app/utils/getData";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "@components/ui/button";
+import { useParams, useRouter } from "next/navigation";
+import { AiFillCloseCircle } from "react-icons/ai";
 
 function PostPreviewControls({
 	post,
 	content,
 }: Pick<Awaited<ReturnType<typeof getPost>>, "post" | "content">) {
 	const [showToc, setShowToc] = useState(false);
+	const router = useRouter();
+	const params = useParams();
+
 	return (
 		<>
 			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
@@ -29,12 +34,23 @@ function PostPreviewControls({
 				text-gray-400 hover:text-white active:scale-95"
 					/>
 				)}
-				<Button
-					className="text-gray-400 hover:text-white active:scale-95"
-					onClick={() => setShowToc((p) => !p)}
+				<ToolTipComponent tip="Table of contents">
+					<Button
+						className="text-gray-400 hover:text-white active:scale-95"
+						onClick={() => setShowToc((p) => !p)}
+					>
+						<BiBookContent size={24} />
+					</Button>
+				</ToolTipComponent>
+				<ToolTipComponent
+					tip="Close preview (Esc)"
+					onClick={() => {
+						router.push(`/profile/${params?.id}`);
+					}}
+					className=" text-gray-400 hover:text-white active:scale-95"
 				>
-					<BiBookContent size={24} />
-				</Button>
+					<AiFillCloseCircle size={24} />
+				</ToolTipComponent>
 			</div>
 			<AnimatePresence>
 				{showToc && (
