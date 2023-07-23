@@ -39,7 +39,7 @@ function OptionsToolbar() {
 			{openOptions ? (
 				<AnimatePresence>
 					<motion.div
-						className="px-4 py-2 z-40  flex gap-8 rounded-md bg-black absolute text-gray-400 border-[1px] border-border
+						className="px-4 py-2 z-[500]  flex gap-8 rounded-md bg-black absolute text-gray-400 border-[1px] border-border
                         
                         [&>*]:active:scale-95
                         "

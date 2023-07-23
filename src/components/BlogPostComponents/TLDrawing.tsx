@@ -8,8 +8,17 @@ import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { ExpandedCanvasContext } from "./ExpandedCanvas/ExpandedCanvasProvider";
 import Button from "@components/ui/button";
+import { cn } from "@/lib/utils";
 
-function TLDrawing({ persistanceKey }: { persistanceKey: string }) {
+function TLDrawing({
+	persistanceKey,
+	caption,
+	dark = true,
+}: {
+	persistanceKey: string;
+	caption?: string;
+	dark?: boolean;
+}) {
 	const { dispatch: EditorStateDispatch } = useContext(EditorContext);
 	const { setPersistanceKey } = useContext(ExpandedCanvasContext);
 
@@ -26,7 +35,9 @@ function TLDrawing({ persistanceKey }: { persistanceKey: string }) {
 									[persistanceKey]: editor,
 								},
 							});
+							editor.setDarkMode(dark);
 						}}
+						key={persistanceKey}
 					/>
 				</div>
 				<ToolTipComponent
@@ -37,11 +48,20 @@ function TLDrawing({ persistanceKey }: { persistanceKey: string }) {
 							setPersistanceKey(persistanceKey);
 					}}
 				>
-					<Button className="p-2 rounded-full hover:bg-popover/80 text-black hover:text-white">
+					<Button
+						className={cn(
+							"p-2 rounded-full  hover:bg-popover/80",
+							true ? "text-white" : "text-black hover:text-white "
+						)}
+					>
 						<BsArrowsAngleExpand size={20} />
 					</Button>
 				</ToolTipComponent>
 			</div>
+
+			<figcaption className="text-center italic text-gray-400">
+				{caption}
+			</figcaption>
 		</>
 	);
 }

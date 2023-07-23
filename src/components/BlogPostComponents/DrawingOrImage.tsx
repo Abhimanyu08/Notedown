@@ -54,9 +54,7 @@ export default function DrawingSvg({
 			onClick={() => setExpand((p) => !p)}
 		>
 			<div
-				className={cn(
-					"flex w-full justify-center h-fit items-center gap-5"
-				)}
+				className={cn("flex w-full justify-center items-center gap-5")}
 				id="svgContainer"
 			>
 				<VscLoading className="animate-spin" size={24} />
