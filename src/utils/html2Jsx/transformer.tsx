@@ -87,7 +87,7 @@ const tagToTransformer: TagToTransformer = {
 	code: (node) => {
 		let code = (node.children[0] as TextNode)?.text;
 		if (!code) return <code></code>;
-		return <CodeWord code={code} key={code} />;
+		return <CodeWord code={code} />;
 	},
 
 	br: () => {
@@ -128,13 +128,7 @@ const tagToTransformer: TagToTransformer = {
 		// 	console.log(node);
 		// }
 
-		return (
-			<CodeWithoutLanguage
-				code={code}
-				language={blockLanguage}
-				key={blockLanguage}
-			/>
-		);
+		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
 	},
 
 	a: (node) => {

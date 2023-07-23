@@ -23,8 +23,9 @@ function useEditor({ language, code, mounted, editorParentId }: useEditorProps):
     useEffect(() => {
         if (mounted === false) return
         const editorParent = document.getElementById(editorParentId)
-        if (!editorParent || !language) return
-        if (!Array.from([...ALLOWED_LANGUAGES, "markdown"]).includes(language)) return
+        if (!editorParent) return
+        if (language && !Array.from([...ALLOWED_LANGUAGES, "markdown"]).includes(language)) code = `You specified ${language} as the language. Only supported languages are rust,python and javascript`
+        if (!language) code = "Please specify a language in the frontmatter"
 
         editorParent?.replaceChildren("")
 

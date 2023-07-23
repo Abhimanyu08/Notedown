@@ -1,5 +1,5 @@
 "use client";
-import { memo, useContext } from "react";
+import { memo, useContext, useEffect } from "react";
 
 import { EditorContext } from "@/app/write/components/EditorContext";
 

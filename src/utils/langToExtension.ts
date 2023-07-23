@@ -19,6 +19,8 @@ const langToCodeMirrorExtension = (lang: typeof ALLOWED_LANGUAGES[number] | "mar
             return languageCompartment.of(rust())
         case "markdown":
             return languageCompartment.of(markdown())
+        default:
+            return []
 
     }
 }

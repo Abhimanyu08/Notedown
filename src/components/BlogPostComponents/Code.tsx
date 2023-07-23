@@ -20,6 +20,7 @@ import getExtensions from "@utils/getExtensions";
 import Terminal from "./Terminal";
 import { keymap } from "@codemirror/view";
 import langToCodeMirrorExtension from "@utils/langToExtension";
+import CodeWithoutLanguage from "./CodeWithoutLanguage";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
@@ -50,6 +51,13 @@ function Code({ code, blockNumber }: CodeProps) {
 		if (!mounted) setMounted(true);
 	}, [mounted]);
 
+	useEffect(() => {
+		console.log("code block mounted");
+		return () => {
+			console.log("code block unmounted");
+		};
+	}, []);
+
 	// useTerminal({
 	// 	containerId: blogState.containerId,
 	// 	blockNumber,
@@ -62,7 +70,6 @@ function Code({ code, blockNumber }: CodeProps) {
 		// 		...prev,
 		// 		[blockNumber]: editorView,
 		// 	}));
-		if (typeof window === "undefined") console.log("running on server");
 		if (!editorView) return;
 		dispatch({
 			type: "set editor",
