@@ -46,15 +46,17 @@ export default function DrawingSvg({
 	return (
 		<div
 			className={cn(
-				"flex  flex-col w-full h-auto items-center",
+				"flex  flex-col w-full h-auto items-center justify-center",
 				expand
-					? "fixed top-20 left-0  bg-black/75 [&>*]:cursor-zoom-out"
+					? "fixed top-0 left-0 h-full  bg-black/75 [&>*]:cursor-zoom-out overflow-auto"
 					: " [&>*]:cursor-zoom-in"
 			)}
 			onClick={() => setExpand((p) => !p)}
 		>
 			<div
-				className="flex w-full justify-center gap-5 "
+				className={cn(
+					"flex w-full justify-center h-fit items-center gap-5"
+				)}
 				id="svgContainer"
 			>
 				<VscLoading className="animate-spin" size={24} />
