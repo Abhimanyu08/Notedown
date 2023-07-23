@@ -3,7 +3,7 @@ import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import { memo, useContext, useEffect, useState } from "react";
-import { ExpandedImageContext } from "./ExpandedImageProvider";
+import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
 
 function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	const { blogState } = useContext(BlogContext);

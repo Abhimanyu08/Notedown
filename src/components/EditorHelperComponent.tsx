@@ -173,7 +173,7 @@ function EditorHelperComponent() {
 						if (editorView) onCanvas(editorView);
 					}}
 				>
-					Canvas
+					Draw
 				</button>
 			)}
 			<button className="btn btn-xs tool gap-2" onClick={onToggleVim}>

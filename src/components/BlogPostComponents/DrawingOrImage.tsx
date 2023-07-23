@@ -1,23 +1,20 @@
 "use client";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
 
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { useContext, useEffect, useState } from "react";
-import TLDrawing from "./TLDrawing";
-import { ExpandedImageContext } from "./ExpandedImageProvider";
 import { useSupabase } from "@/app/appContext";
+import { cn } from "@/lib/utils";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { SUPABASE_FILES_BUCKET } from "@utils/constants";
+import { useContext, useEffect, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
+import TLDrawing from "./TLDrawing";
 
-export default function TldrawingOrSvg({
+export default function DrawingSvg({
 	persistanceKey,
 }: Parameters<typeof TLDrawing>[0]) {
-	const pathname = usePathname();
-
 	const { blogState } = useContext(BlogContext);
 	const { supabase } = useSupabase();
 	const [svgMounted, setSvgMounted] = useState(false);
+	const [expand, setExpand] = useState(false);
 
 	const getFileData = async (fileName: string) => {
 		const { imageFolder, blogger, id } = blogState.blogMeta;
@@ -45,12 +42,16 @@ export default function TldrawingOrSvg({
 		});
 	}, []);
 
-	if (pathname?.startsWith("/write")) {
-		return <TLDrawing persistanceKey={persistanceKey} />;
-	}
-
 	return (
-		<div className="w-full h-auto flex justify-center" id="svgContainer">
+		<div
+			className={cn(
+				expand
+					? "fixed w-full top-20 left-0 flex justify-center h-auto bg-black/75 [&>*]:cursor-zoom-out"
+					: "w-full h-auto flex justify-center [&>*]:cursor-zoom-in"
+			)}
+			id="svgContainer"
+			onClick={() => setExpand((p) => !p)}
+		>
 			<div className="flex flex-col w-full items-center gap-5 border-t-[1px] border-b-[1px] border-border p-5">
 				<VscLoading className="animate-spin" size={24} />
 				<span>Loading your canvas drawing</span>

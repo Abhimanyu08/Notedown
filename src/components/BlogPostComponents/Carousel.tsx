@@ -4,7 +4,7 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import React, { memo, useContext, useEffect, useState } from "react";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-import { ExpandedImageContext } from "./ExpandedImageProvider";
+import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
 
 function Carousel({
 	imageNamesString,

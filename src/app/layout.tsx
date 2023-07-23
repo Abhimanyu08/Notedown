@@ -1,7 +1,6 @@
 import ToastProvider from "@/contexts/ToastProvider";
 import "@/styles/globals.css";
 import "@/styles/xterm.css";
-import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImageProvider";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Metadata } from "next";
 import {
@@ -12,6 +11,8 @@ import {
 } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
+import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
+import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
 
 const toc = Roboto({
 	subsets: ["latin"],
@@ -88,7 +89,9 @@ export default async function RootLayout({
 				<SupabaseProvider session={session}>
 					<ToastProvider>
 						<ExpandedImageProvider>
-							{children}
+							<ExpandedCanvasProvider>
+								{children}
+							</ExpandedCanvasProvider>
 						</ExpandedImageProvider>
 					</ToastProvider>
 				</SupabaseProvider>

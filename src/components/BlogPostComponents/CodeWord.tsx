@@ -1,13 +1,15 @@
 "use client";
 import { Suspense, memo } from "react";
 import Latex from "react-latex";
-import TldrawingOrSvg from "./DrawingOrImage";
+import DrawingSvg from "./DrawingOrImage";
 import TLDrawing from "./TLDrawing";
+import { usePathname } from "next/navigation";
 
 let CANVAS_NUMBER = 0;
 
 function CodeWord({ code }: { code: string }) {
 	let modifiedCode = code;
+	const pathname = usePathname();
 	if (typeof window !== "undefined") {
 		let tempElement = document.createElement("div");
 		tempElement.innerHTML = modifiedCode;
@@ -32,8 +34,11 @@ function CodeWord({ code }: { code: string }) {
 	const drawRegex = /<draw id=(\d+)\/>/;
 	if (drawRegex.test(modifiedCode)) {
 		CANVAS_NUMBER += 1;
-		const drawId = drawRegex.exec(modifiedCode)?.at(1);
-		return <TldrawingOrSvg persistanceKey={drawId || ""} />;
+		const drawId = drawRegex.exec(modifiedCode)?.at(1)!;
+		if (pathname?.startsWith("/write")) {
+			return <TLDrawing persistanceKey={drawId} />;
+		}
+		return <DrawingSvg persistanceKey={drawId || ""} />;
 	}
 	return <code>{modifiedCode}</code>;
 }
