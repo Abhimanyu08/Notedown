@@ -51,7 +51,7 @@ function TLDrawing({
 					<Button
 						className={cn(
 							"p-2 rounded-full  hover:bg-popover/80",
-							true ? "text-white" : "text-black hover:text-white "
+							dark ? "text-white" : "text-black hover:text-white "
 						)}
 					>
 						<BsArrowsAngleExpand size={20} />
