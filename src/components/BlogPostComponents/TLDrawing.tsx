@@ -1,5 +1,5 @@
 "use client";
-import { useContext } from "react";
+import { memo, useContext } from "react";
 
 import { EditorContext } from "@/app/write/components/EditorContext";
 
@@ -46,4 +46,4 @@ function TLDrawing({ persistanceKey }: { persistanceKey: string }) {
 	);
 }
 
-export default TLDrawing;
+export default memo(TLDrawing);

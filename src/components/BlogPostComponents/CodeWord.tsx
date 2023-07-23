@@ -31,14 +31,16 @@ function CodeWord({ code }: { code: string }) {
 	// 		</Suspense>
 	// 	);
 	// }
-	const drawRegex = /<draw id=(\d+)\/>/;
+	const drawRegex = /<draw id=(\d+) caption="(.*?)"\/>/;
 	if (drawRegex.test(modifiedCode)) {
 		CANVAS_NUMBER += 1;
-		const drawId = drawRegex.exec(modifiedCode)?.at(1)!;
+		const regexArray = drawRegex.exec(modifiedCode)!;
+		const persistanceKey = regexArray.at(1)!;
+		const caption = regexArray.at(2) || "";
 		if (pathname?.startsWith("/write")) {
-			return <TLDrawing persistanceKey={drawId} />;
+			return <TLDrawing persistanceKey={persistanceKey} />;
 		}
-		return <DrawingSvg persistanceKey={drawId || ""} />;
+		return <DrawingSvg {...{ persistanceKey, caption }} />;
 	}
 	return <code>{modifiedCode}</code>;
 }

@@ -10,7 +10,8 @@ import TLDrawing from "./TLDrawing";
 
 export default function DrawingSvg({
 	persistanceKey,
-}: Parameters<typeof TLDrawing>[0]) {
+	caption,
+}: Parameters<typeof TLDrawing>[0] & { caption: string }) {
 	const { blogState } = useContext(BlogContext);
 	const { supabase } = useSupabase();
 	const [svgMounted, setSvgMounted] = useState(false);
@@ -45,17 +46,25 @@ export default function DrawingSvg({
 	return (
 		<div
 			className={cn(
+				"flex  flex-col w-full h-auto items-center",
 				expand
-					? "fixed w-full top-20 left-0 flex justify-center h-auto bg-black/75 [&>*]:cursor-zoom-out"
-					: "w-full h-auto flex justify-center [&>*]:cursor-zoom-in"
+					? "fixed top-20 left-0  bg-black/75 [&>*]:cursor-zoom-out"
+					: " [&>*]:cursor-zoom-in"
 			)}
-			id="svgContainer"
 			onClick={() => setExpand((p) => !p)}
 		>
-			<div className="flex flex-col w-full items-center gap-5 border-t-[1px] border-b-[1px] border-border p-5">
+			<div
+				className="flex w-full justify-center gap-5  p-5"
+				id="svgContainer"
+			>
 				<VscLoading className="animate-spin" size={24} />
 				<span>Loading your canvas drawing</span>
 			</div>
+			{svgMounted && caption && (
+				<figcaption className="text-center italic">
+					{caption}
+				</figcaption>
+			)}
 		</div>
 	);
 }
