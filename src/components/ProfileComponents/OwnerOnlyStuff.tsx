@@ -18,7 +18,7 @@ async function OwnerOnlyStuff({
 		data: { session },
 	} = await supabase.auth.getSession();
 
-	if (session?.user.id === id) {
+	if (session?.user.id && session.user.id === id) {
 		return <>{children}</>;
 	}
 

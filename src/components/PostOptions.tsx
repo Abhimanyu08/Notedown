@@ -143,20 +143,3 @@ export function PostOptions({
 		</>
 	);
 }
-
-const PostOptionButton = ({
-	children,
-	onClick,
-}: {
-	children: React.ReactNode;
-	onClick?: React.MouseEventHandler;
-}) => {
-	return (
-		<button
-			className="text-xs cursor-pointer rounded-sm w-full [&>*]:flex [&>*]:justify-start [&>*]:gap-1"
-			onClick={onClick}
-		>
-			{children}
-		</button>
-	);
-};
