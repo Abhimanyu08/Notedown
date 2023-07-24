@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ExpandButton } from "../../../../../components/ProfileComponents/ModalButtons";
+import { ExpandButton } from "../ProfileComponents/ModalButtons";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BiBookContent } from "react-icons/bi";
