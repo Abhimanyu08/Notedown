@@ -5,7 +5,7 @@ import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { headers, cookies } from "next/headers";
 import React from "react";
-import { ExpandButton } from "../../components/ModalButtons";
+import { ExpandButton } from "../../../../../components/ProfileComponents/ModalButtons";
 import { Database } from "@/interfaces/supabase";
 import PostPreviewControls from "./PostPreviewControls";
 import ClosePostPreview from "./ClosePostPreview";

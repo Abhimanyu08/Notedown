@@ -1,28 +1,16 @@
 import SearchResult from "@/interfaces/SearchResult";
+import { cn } from "@/lib/utils";
 import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
-import { BiUpvote } from "react-icons/bi";
-import { PostOptions } from "./PostOptions";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
-import PostTitle from "./PostTitle";
 import PostOnPreviewColor from "./PostOnPreviewColor";
-import { cn } from "@/lib/utils";
+import { PostOptions } from "./PostOptions";
+import PostTitle from "./PostTitle";
 
 export interface PostComponentProps {
 	post: Partial<SearchResult>;
-	upvotes?: number;
-	publishPostAction?: (postId: number) => Promise<void>;
-	unpublishPostAction?: (postId: number) => Promise<void>;
-	deletePostAction?: (postId: number) => Promise<void>;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({
-	post,
-	upvotes,
-	publishPostAction,
-	unpublishPostAction,
-	deletePostAction,
-}) => {
+const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 	const {
 		id,
 		title,
@@ -42,9 +30,6 @@ const PostComponent: React.FC<PostComponentProps> = ({
 					published: !!published,
 					postId: id!,
 					postTitle: title!,
-					publishPostAction,
-					unpublishPostAction,
-					deletePostAction,
 				}}
 			/>
 			<Link

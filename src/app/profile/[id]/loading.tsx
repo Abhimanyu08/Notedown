@@ -1,4 +1,4 @@
-import { SinglePostLoading } from "./components/SinglePostLoading";
+import { SinglePostLoading } from "../../../components/ProfileComponents/SinglePostLoading";
 
 function PostsLoading({ numPosts = 4 }: { numPosts?: number }) {
 	return (

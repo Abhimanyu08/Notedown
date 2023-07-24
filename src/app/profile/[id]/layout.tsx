@@ -1,15 +1,15 @@
 import { getUser } from "@/app/utils/getData";
 import React from "react";
-import NewNoteButton from "./components/NewPostButton";
-import NoteTypeToggle from "./components/NoteTypeToggle";
-import PostControl from "./components/PostControl";
+import NewNoteButton from "@components/ProfileComponents/NewPostButton";
+import NoteTypeToggle from "@components/ProfileComponents/NoteTypeToggle";
+import PostControl from "@components/ProfileComponents/PostControl";
 import { LoggedInOptions } from "@components/Navbar/Options";
-import OwnerOnlyStuff from "./components/OwnerOnlyStuff";
+import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
 import SideSheet from "@components/SideSheet";
-import SearchInput from "./components/SearchInput";
-import PostPreviewLayout from "./components/PostPreviewLayout";
-import NormalChildrenLayout from "./components/NormalChildrenLayout";
-import SearchProvider from "./components/SearchProvider";
+import SearchInput from "@components/ProfileComponents/SearchInput";
+import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
+import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
+import SearchProvider from "@components/ProfileComponents/SearchProvider";
 
 async function ProfilePostsLayout({
 	children,

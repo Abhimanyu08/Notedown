@@ -2,7 +2,7 @@
 import useShortCut from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 import { BsArrowsAngleExpand } from "react-icons/bs";
-import { ToolTipComponent } from "../../../../components/ToolTipComponent";
+import { ToolTipComponent } from "../ToolTipComponent";
 
 export function ExpandButton({
 	postId,

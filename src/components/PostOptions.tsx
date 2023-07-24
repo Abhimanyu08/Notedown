@@ -1,51 +1,40 @@
 "use client";
-import { useSupabase } from "@/app/appContext";
-import { usePathname } from "next/navigation";
-import { useContext, useEffect, useState, useTransition } from "react";
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { SlOptions } from "react-icons/sl";
-import { TbNews, TbNewsOff } from "react-icons/tb";
-import ActionModal from "./Modals/ActionModal";
-import Link from "next/link";
-import useOwner from "@/hooks/useOwner";
-import { ToastContext } from "@/contexts/ToastProvider";
+import {
+	deletePostAction,
+	publishPostAction,
+	unpublishPostAction,
+} from "@/app/actions";
 import {
 	Menubar,
 	MenubarContent,
 	MenubarItem,
 	MenubarMenu,
-	MenubarSeparator,
-	MenubarShortcut,
 	MenubarTrigger,
 } from "@/components/ui/menubar";
+import useOwner from "@/hooks/useOwner";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState, useTransition } from "react";
+import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { SlOptions } from "react-icons/sl";
+import { TbNews, TbNewsOff } from "react-icons/tb";
+import ActionModal from "./Modals/ActionModal";
 
 export function PostOptions({
 	published,
 	postId,
 	postTitle,
-	publishPostAction,
-	unpublishPostAction,
-	deletePostAction,
 }: {
 	published: boolean;
 	postId: number;
 	postTitle: string;
-	publishPostAction?: (postId: number) => Promise<void>;
-	unpublishPostAction?: (postId: number) => Promise<void>;
-	deletePostAction?: (postId: number) => Promise<void>;
 }) {
 	const owner = useOwner();
 	const [takenAction, setTakenAction] = useState<
 		"publish" | "delete" | "unpublish" | ""
 	>("");
 	const [isPending, startTransition] = useTransition();
-	const context = useContext(ToastContext);
-
-	useEffect(() => {
-		if (!isPending && takenAction) {
-			context?.setMessage(`${postTitle} ${takenAction}`);
-		}
-	}, [isPending]);
+	const pathname = usePathname();
 
 	return (
 		<>
@@ -109,27 +98,44 @@ export function PostOptions({
 									<span>Edit</span>
 								</Link>
 							</MenubarItem>
-							{published ? (
-								<MenubarItem
-									onClick={() => setTakenAction("unpublish")}
-								>
-									<TbNewsOff className="inline" size={15} />{" "}
-									<span>Unpublish</span>
-								</MenubarItem>
-							) : (
-								<MenubarItem
-									onClick={() => setTakenAction("publish")}
-								>
-									<TbNews className="inline" size={15} />
-									<span>Publish</span>
-								</MenubarItem>
+							{!pathname?.includes("post") && (
+								<>
+									{published ? (
+										<MenubarItem
+											onClick={() =>
+												setTakenAction("unpublish")
+											}
+										>
+											<TbNewsOff
+												className="inline"
+												size={15}
+											/>{" "}
+											<span>Unpublish</span>
+										</MenubarItem>
+									) : (
+										<MenubarItem
+											onClick={() =>
+												setTakenAction("publish")
+											}
+										>
+											<TbNews
+												className="inline"
+												size={15}
+											/>
+											<span>Publish</span>
+										</MenubarItem>
+									)}
+									<MenubarItem
+										onClick={() => setTakenAction("delete")}
+									>
+										<AiFillDelete
+											className="inline"
+											size={15}
+										/>{" "}
+										Delete
+									</MenubarItem>
+								</>
 							)}
-							<MenubarItem
-								onClick={() => setTakenAction("delete")}
-							>
-								<AiFillDelete className="inline" size={15} />{" "}
-								Delete
-							</MenubarItem>
 						</MenubarContent>
 					</MenubarMenu>
 				</Menubar>
