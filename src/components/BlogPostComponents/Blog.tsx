@@ -65,7 +65,7 @@ const Blog = memo(
 
 				// ---------------prose-code---------------
 				dark:prose-code:bg-gray-800
-				dark:prose-code:text-gray-400
+				dark:prose-code:text-gray-300
 				prose-code:bg-white
 				prose-code:text-black
 				prose-code:font-mono
@@ -77,7 +77,7 @@ const Blog = memo(
 
 				// ---------------prose-em---------------
 				prose-em:text-black
-				dark:prose-em:text-gray-300
+				dark:prose-em:text-gray-200
 
 				//-----------------figcaption-------------
 
