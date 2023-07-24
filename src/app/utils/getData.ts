@@ -73,7 +73,7 @@ export const getUpvotedPosts = async (id: string) => {
     return checkDataLength(data || [])
 }
 
-export const getUserPrivatePosts = cache(async (userId: string, supabase: SupabaseClient) => {
+export const getUserPrivatePosts = async (userId: string, supabase: SupabaseClient) => {
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
         .select(
@@ -83,7 +83,7 @@ export const getUserPrivatePosts = cache(async (userId: string, supabase: Supaba
         .order("created_at", { ascending: false })
         .limit(LIMIT + 1);
     return checkDataLength(data || [])
-})
+}
 
 export const getUpvotes = cache(async (idArray: number[]) => {
 
@@ -95,7 +95,7 @@ export const getUpvotes = cache(async (idArray: number[]) => {
 })
 
 
-export const getPost = cache(async (postId: string, supabaseClient: SupabaseClient) => {
+export const getPost = async (postId: string, supabaseClient: SupabaseClient) => {
     const { data: post, error } = await supabaseClient
         .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
         .select(
@@ -141,4 +141,4 @@ export const getPost = cache(async (postId: string, supabaseClient: SupabaseClie
     const markdown = await fileData.text()
 
     return { post, content, imagesToUrls, markdown }
-})
+}

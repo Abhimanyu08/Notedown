@@ -18,23 +18,6 @@ async function PrivatePost({ params }: { params: PostParams }) {
 		cookies,
 	});
 
-	async function publishPostAction(postId: number) {
-		"use server";
-		const supabase = createServerComponentSupabaseClient({
-			headers,
-			cookies,
-		});
-		await supabase
-			.from(SUPABASE_POST_TABLE)
-			.update({
-				published: true,
-				published_on: new Date().toISOString(),
-			})
-			.match({ id: postId });
-
-		revalidatePath("/profile/[id]/posts/public");
-	}
-
 	try {
 		const { post, content, imagesToUrls } = await getPost(
 			params.postId,
