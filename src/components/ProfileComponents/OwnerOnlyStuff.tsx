@@ -1,22 +1,28 @@
-"use client";
-import useOwner from "@/hooks/useOwner";
-import useShortCut from "@/hooks/useShortcut";
-import { useParams, useRouter } from "next/navigation";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cookies, headers } from "next/headers";
 import React from "react";
 
-function OwnerOnlyStuff({ children }: { children: React.ReactNode }) {
-	const owner = useOwner();
-
-	const router = useRouter();
-	const params = useParams();
-
-	useShortCut({
-		keys: ["Escape"],
-		callback: () => router.push(`/profile/${params?.id}`),
+async function OwnerOnlyStuff({
+	children,
+	id,
+}: {
+	children: React.ReactNode;
+	id: string;
+}) {
+	const supabase = createServerComponentSupabaseClient({
+		headers,
+		cookies,
 	});
 
-	if (!owner) return <></>;
-	return <>{children}</>;
+	const {
+		data: { session },
+	} = await supabase.auth.getSession();
+
+	if (session?.user.id === id) {
+		return <>{children}</>;
+	}
+
+	return <></>;
 }
 
 export default OwnerOnlyStuff;

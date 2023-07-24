@@ -40,7 +40,9 @@ async function ProfilePostsLayout({
 					<h1 className="font-serif text-4xl px-2">
 						{notebookTitle}
 					</h1>
-					<OwnerOnlyStuff>
+
+					{/* @ts-expect-error Async Server Component  */}
+					<OwnerOnlyStuff id={params.id}>
 						<div className="flex justify-between col-span-1 px-2 mr-10">
 							<PostControl className="font-mono text-gray-400" />
 							<NewNoteButton />

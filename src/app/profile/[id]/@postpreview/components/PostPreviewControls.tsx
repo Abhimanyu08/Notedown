@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Button from "@components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { AiFillCloseCircle } from "react-icons/ai";
+import useShortCut from "@/hooks/useShortcut";
 
 function PostPreviewControls({
 	post,
@@ -18,6 +19,10 @@ function PostPreviewControls({
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
+	useShortCut({
+		keys: ["Escape"],
+		callback: () => router.push(`/profile/${params?.id}`),
+	});
 
 	return (
 		<>
