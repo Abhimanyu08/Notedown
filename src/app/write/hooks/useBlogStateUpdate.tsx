@@ -1,31 +1,16 @@
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { Compartment, StateEffect } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { EditorView } from "codemirror";
 import { useSearchParams } from "next/navigation";
-import {
-	Dispatch,
-	SetStateAction,
-	useCallback,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
-import { BiCheck } from "react-icons/bi";
-import { EditorContext } from "./EditorContext";
+import { useContext, useEffect, useState } from "react";
+import { EditorContext } from "../components/EditorContext";
 
-function BlogStateUpdate({
-	setBlogHtml,
-}: {
-	setBlogHtml: Dispatch<SetStateAction<string>>;
-}) {
-	const [documentMeta, setDocumentMeta] = useState({
-		line: 0,
-		col: 0,
-		words: 0,
-	});
+function useBlogStateUpdate() {
+	//This hook takes care of updating the blog state on every keypress of user on the editor
+	const [blogHtml, setBlogHtml] = useState("");
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const [localStorageDraftKey, setLocalStorageDraftKey] = useState("");
@@ -75,15 +60,7 @@ function BlogStateUpdate({
 
 				update(update: ViewUpdate) {
 					if (update.docChanged) {
-						const cursorPos = update.state.selection.ranges[0].from;
-						const lineAt = update.state.doc.lineAt(cursorPos);
 						const markdown = update.state.sliceDoc();
-						const words = markdown.split(" ").length;
-						setDocumentMeta({
-							line: lineAt.number,
-							col: cursorPos - lineAt.from,
-							words,
-						});
 
 						localStorage.setItem(localStorageDraftKey, markdown);
 						getHtmlFromMarkdownFile(markdown || "").then((val) => {
@@ -121,18 +98,8 @@ function BlogStateUpdate({
 			),
 		});
 	}, [editorState.editorView, localStorageDraftKey]);
-	return (
-		<div className="flex bg-[#15181c] px-2 gap-4 justify-end text-xs text-gray-400 py-1 border-[1px] border-t-0 border-white/30">
-			<div className="">
-				<span>Ln {documentMeta.line}</span>,{" "}
-				<span>Col {documentMeta.col}</span>
-			</div>
-			<span>{documentMeta.words} words</span>
-			<span className="w-24">
-				<BiCheck className="inline" size={14} /> Synced locally
-			</span>
-		</div>
-	);
+
+	return blogHtml;
 }
 
-export default BlogStateUpdate;
+export default useBlogStateUpdate;

@@ -7,10 +7,10 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import BlogStateUpdate from "./BlogStateUpdate";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
 import OptionsToolbar from "./OptionsToolbar";
+import useBlogStateUpdate from "../hooks/useBlogStateUpdate";
 
 let initialMarkdownMeta =
 	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\n---\n\n';
@@ -26,7 +26,7 @@ function EditorLayout({
 	const [initialMarkdown, setInitialMarkdown] = useState(
 		markdown || initialMarkdownMeta
 	);
-	const [blogHtml, setBlogHtml] = useState("");
+	const blogHtml = useBlogStateUpdate();
 
 	useEffect(() => {
 		if (searchParams?.has("draft")) {
@@ -88,7 +88,6 @@ function EditorLayout({
 				className={`flex flex-col basis-1/2 overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
 				<MarkdownEditor initialMarkdown={initialMarkdown} />
-				<BlogStateUpdate setBlogHtml={setBlogHtml} />
 			</div>
 			<OptionsToolbar />
 

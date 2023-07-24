@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, memo } from "react";
 import Latex from "react-latex";
-import DrawingSvg from "./DrawingOrImage";
+import DrawingSvg from "./DrawingSvg";
 import TLDrawing from "./TLDrawing";
 import { usePathname } from "next/navigation";
 
