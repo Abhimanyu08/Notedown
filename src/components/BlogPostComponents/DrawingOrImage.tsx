@@ -36,26 +36,41 @@ export default function DrawingSvg({
 				return;
 			}
 			const svgElement = jsonToSvg(jsonString);
+			svgElement.style.width = "100%";
+			svgElement.style.height = "100%";
 
-			const containerElem = document.getElementById("svgContainer");
+			const containerElem = document.getElementById(
+				`svgContainer-${persistanceKey}`
+			);
 			containerElem?.replaceChildren(svgElement);
 			setSvgMounted(true);
 		});
 	}, []);
+	// useEffect(() => {
+	// 	if (expand) {
+	// 		const svgElem = document.getElementById(`svg-${persistanceKey}`);
+	// 		// svgEleim?.setAttribute("preserveAspectRatio", "xMinYMin slice");
+	// 		if (!svgElem) return;
+	// 		svgElem.style.width = "100%";
+	// 		svgElem.style.height = "100%";
+	// 	}
+	// }, [expand]);
 
 	return (
 		<div
 			className={cn(
-				"flex  flex-col w-full h-auto items-center justify-center",
-				expand
-					? "fixed top-0 left-0 h-full  bg-black/75 [&>*]:cursor-zoom-out overflow-auto"
-					: " [&>*]:cursor-zoom-in"
+				"flex  flex-col w-full h-auto items-center justify-center"
 			)}
 			onClick={() => setExpand((p) => !p)}
 		>
 			<div
-				className={cn("flex w-full justify-center items-center gap-5")}
-				id="svgContainer"
+				className={cn(
+					"flex w-full justify-center items-center gap-5",
+					expand
+						? "fixed top-0 left-0 h-full [&>*]:cursor-zoom-out overflow-auto z-[600]"
+						: " [&>*]:cursor-zoom-in"
+				)}
+				id={`svgContainer-${persistanceKey}`}
 			>
 				<VscLoading className="animate-spin" size={24} />
 				<span>Loading your canvas drawing</span>
@@ -70,10 +85,10 @@ export default function DrawingSvg({
 }
 
 function jsonToSvg(svgJson: string) {
-	const parsedJson = JSON.parse(svgJson);
-	const svgElement = document.createElementNS(
+	const parsedJson = JSON.parse(svgJson) as Record<string, string>;
+	const svgElement = document.createElementNS<"svg">(
 		"http://www.w3.org/2000/svg",
-		parsedJson.tagName
+		parsedJson.tagName as "svg"
 	);
 
 	// Set attributes and properties
@@ -84,6 +99,7 @@ function jsonToSvg(svgJson: string) {
 	}
 
 	// If you want to include the inner HTML of the SVG element:
+	// svgElement.preserveAspectRatio = "xMidYMid meet";
 	svgElement.innerHTML = parsedJson.innerHTML;
 
 	return svgElement;

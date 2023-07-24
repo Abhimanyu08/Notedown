@@ -18,7 +18,7 @@ export const getUser = cache(async (id: string) => {
     return userData
 })
 
-export const getUserAllPosts = cache(async (userId: string, supabase: SupabaseClient) => {
+export const getUserAllPosts = async (userId: string, supabase: SupabaseClient) => {
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
         .select(
@@ -28,7 +28,7 @@ export const getUserAllPosts = cache(async (userId: string, supabase: SupabaseCl
         .order("created_at", { ascending: false })
         .limit(LIMIT + 1);
     return checkDataLength(data || [])
-})
+}
 
 export const getUserPublicPosts = cache(async (id: string) => {
 
