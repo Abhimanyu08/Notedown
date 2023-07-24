@@ -14,13 +14,6 @@ import SupabaseProvider from "./appContext";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
 import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
 
-const toc = Roboto({
-	subsets: ["latin"],
-	display: "swap",
-	variable: "--font-toc",
-	weight: ["400"],
-});
-
 const serif = Noto_Serif({
 	subsets: ["latin"],
 	display: "swap",
@@ -83,7 +76,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`dark ${serif.variable} ${sans.variable} ${mono.variable} ${toc.variable}`}
+			className={`dark ${serif.variable} ${sans.variable} ${mono.variable}`}
 		>
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
 				<SupabaseProvider session={session}>

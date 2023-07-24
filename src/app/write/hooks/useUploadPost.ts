@@ -60,12 +60,12 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         const markdownFile = new File([markdown], "file.md")
         let { title, description, language } = blogState.blogMeta
         if (!ALLOWED_LANGUAGES.includes(language as any)) {
-            language = undefined
+            language = null
         }
         return {
             title: blogState.blogMeta.title || "",
             description: blogState.blogMeta.description || "",
-            language: null,
+            language: language || null,
             markdownFile
         }
     }
