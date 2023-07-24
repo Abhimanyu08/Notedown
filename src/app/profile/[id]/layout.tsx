@@ -36,7 +36,7 @@ async function ProfilePostsLayout({
 				/>
 			</SideSheet>
 			<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
-				<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-10 pt-20 ">
+				<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-10 pt-10 ">
 					<h1 className="font-serif text-4xl px-2">
 						{notebookTitle}
 					</h1>
@@ -62,7 +62,7 @@ async function ProfilePostsLayout({
 						<NormalChildrenLayout>{children}</NormalChildrenLayout>
 					</div>
 				</div>
-				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 relative mt-20 border-l-[1px] border-gray-600">
+				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 mt-10 relative border-l-[1px] border-gray-600">
 					{postpreview}
 				</PostPreviewLayout>
 			</div>
