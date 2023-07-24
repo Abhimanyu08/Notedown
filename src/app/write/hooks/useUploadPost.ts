@@ -58,7 +58,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         const markdown = editorState.editorView?.state.sliceDoc()
         if (!markdown) throw new Error("Couldn't read markdown")
         const markdownFile = new File([markdown], "file.md")
-        let { title, description, language } = blogState.blogMeta
+        let language = blogState.blogMeta.language
         if (!ALLOWED_LANGUAGES.includes(language as any)) {
             language = null
         }
