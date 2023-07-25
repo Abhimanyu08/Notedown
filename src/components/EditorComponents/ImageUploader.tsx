@@ -2,30 +2,49 @@
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { processImageName } from "@utils/makeFolderName";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+	ChangeEventHandler,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { MdContentCopy } from "react-icons/md";
 import { BiCheck } from "react-icons/bi";
 import { cn } from "@/lib/utils";
 
-function ImageUploader({ className }: { className?: string }) {
+function ImageUploader({
+	className,
+	end,
+}: {
+	end?: number;
+	className?: string;
+}) {
 	// const { dispatch } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const [fileNames, setFileNames] = useState<string[]>([]);
 	const [copied, setCopied] = useState(false);
-	useEffect(() => {
-		if (!editorState.editorView) return;
-		if (fileNames.length === 0) return;
-		const view = editorState.editorView;
-		const imageNames = fileNames.join(",");
-		const cursorPos = view.state.selection.ranges[0].from;
+	useEffect(() => {}, [fileNames]);
+
+	const onImageSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
+		const [imagesObj, fileNamesToAdd] = getImagesObj(e);
+		const { editorView, frontMatterLength } = editorState;
+		if (!editorView) return;
+		if (fileNamesToAdd.length === 0) return;
+		if (!end) return;
+		const imageNames = fileNamesToAdd.join(",");
 		// const transaction = view.state.update({changes: {from: cursorPos, to:imageNames.length, inser}})
 		editorState.editorView?.dispatch({
 			changes: {
-				from: cursorPos,
+				from: end + frontMatterLength - 1,
 				insert: imageNames,
 			},
 		});
-	}, [fileNames]);
+		setFileNames(fileNamesToAdd);
+		dispatch({
+			type: "set image to files",
+			payload: imagesObj,
+		});
+	};
 
 	return (
 		<div
@@ -36,14 +55,7 @@ function ImageUploader({ className }: { className?: string }) {
 		>
 			<input
 				type="file"
-				onChange={(e) => {
-					const [imagesObj, fileNamesToAdd] = getImagesObj(e);
-					setFileNames(fileNamesToAdd);
-					dispatch({
-						type: "set image to files",
-						payload: imagesObj,
-					});
-				}}
+				onChange={onImageSelect}
 				// id="gallery-input"
 				accept="image/*"
 				className="file:my-2  file:px-4 file:text-gray-400 file:rounded-md file:bg-black file:border-[1px] file:border-gray-200 file:hover:bg-gray-800 file:active:scale-95"

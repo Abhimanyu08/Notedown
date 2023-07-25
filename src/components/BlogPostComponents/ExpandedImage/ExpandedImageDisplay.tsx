@@ -13,7 +13,7 @@ function ExpandedImageDisplay({
 		<AnimatePresence>
 			{imageUrl && (
 				<motion.div
-					className="absolute w-screen flex items-center justify-center h-screen bg-black/40 cursor-zoom-out z-[400]"
+					className="absolute w-screen flex items-center justify-center h-screen bg-black/80 cursor-zoom-out z-[400]"
 					onClick={() => setImageUrl("")}
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}

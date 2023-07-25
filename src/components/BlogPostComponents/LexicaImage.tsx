@@ -6,7 +6,7 @@ import { memo, useContext, useEffect, useState } from "react";
 import { BsArrowRepeat } from "react-icons/bs";
 import { VscLoading } from "react-icons/vsc";
 
-function LexicaImage({ alt }: { alt: string }) {
+function LexicaImage({ alt, end }: { alt: string; end?: number }) {
 	const [lexicaLinks, setLexicaLinks] = useState<string[]>([]);
 	const [generate, setGenerate] = useState(false);
 	const [generating, setGenerating] = useState(false);
@@ -36,18 +36,19 @@ function LexicaImage({ alt }: { alt: string }) {
 	}, [lexicaLinkNumber, lexicaLinks]);
 
 	const onSelect = (link: string) => {
-		const view = editorState.editorView;
-		if (!view) return;
-		const cursorPos = view.state.selection.ranges[0].from;
+		if (!editorState) return;
+		const { editorView, frontMatterLength } = editorState;
+		if (!editorView) return;
 		const file = b64ToFile(link);
 		const imageName = `${alt.split(" ").join("_")}.png`;
 		dispatch({
 			type: "set image to files",
 			payload: { [imageName]: file },
 		});
-		view.dispatch({
+		if (!end) return;
+		editorView?.dispatch({
 			changes: {
-				from: cursorPos,
+				from: end + frontMatterLength - 1,
 				insert: imageName,
 			},
 		});

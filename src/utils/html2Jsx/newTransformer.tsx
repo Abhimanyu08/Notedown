@@ -171,16 +171,7 @@ const tagToTransformer: TagToTransformer = {
 			className &&
 			/language-(.*)/.exec((className as string[])[0])?.at(1);
 
-		let start, end;
-		if (codeNode.properties) {
-			const properties = codeNode.properties;
-			start = properties.dataStartoffset
-				? parseInt(properties.dataStartoffset as string)
-				: undefined;
-			end = properties.dataEndoffset
-				? parseInt(properties.dataEndoffset as string)
-				: undefined;
-		}
+		const { start, end } = getStartEndFromNode(codeNode);
 		if (!blockLanguage) {
 			BLOCK_NUMBER += 1;
 			return (
@@ -344,10 +335,11 @@ const tagToTransformer: TagToTransformer = {
 		if (src) {
 			return <ImageWithCaption name={src} alt={alt} key={src} />;
 		}
+		let { end } = getStartEndFromNode(node);
 		if (alt && !src) {
-			return <LexicaImage alt={alt} key={alt} />;
+			return <LexicaImage alt={alt} key={alt} end={end} />;
 		}
-		return <ImageUploader />;
+		return <ImageUploader {...{ end }} />;
 	},
 };
 
@@ -390,3 +382,17 @@ const extractTextFromChildren = (children: HtmlElement["children"]): string => {
 
 	return textArray.join("");
 };
+
+function getStartEndFromNode(node: HtmlElement) {
+	let start, end;
+	if (node.properties) {
+		const properties = node.properties;
+		start = properties.dataStartoffset
+			? parseInt(properties.dataStartoffset as string)
+			: undefined;
+		end = properties.dataEndoffset
+			? parseInt(properties.dataEndoffset as string)
+			: undefined;
+	}
+	return { start, end };
+}

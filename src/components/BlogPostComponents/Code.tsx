@@ -126,7 +126,7 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 		const { editorState } = markdownEditorContext;
 		const { editorView: markdownEditorView, frontMatterLength } =
 			editorState;
-		const newCode = editorView.state.sliceDoc();
+		const newCode = editorView.state.sliceDoc().trim();
 		if (!start || !end) {
 			console.log("no start or end");
 			return;
@@ -135,8 +135,8 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 			changes: [
 				{
 					from: start + frontMatterLength + 4,
-					to: end + frontMatterLength - 4,
-					insert: newCode,
+					to: end + frontMatterLength - 3,
+					insert: newCode + "\n",
 				},
 			],
 		});
