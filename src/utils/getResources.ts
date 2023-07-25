@@ -5,26 +5,18 @@ import { supabase } from "./supabaseClient";
 
 
 
-export async function getHtmlFromMarkdownFile(file: File | Blob | string): Promise<{ data: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }, content: string }> {
+export function parseFrontMatter(markdown: string): { data: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }, content: string, frontMatterLength: number } {
 
     let data: { [x: string]: any; language?: any; }, content;
-    if (typeof file === "string") {
 
-        let fileMatter = matter(file);
-        data = fileMatter.data
-        content = fileMatter.content
-    } else {
+    let fileMatter = matter(markdown);
+    data = fileMatter.data
+    content = fileMatter.content
 
-        let fileMatter = matter(await file.text());
-        data = fileMatter.data
-        content = fileMatter.content
+    const frontMatterLength = markdown.length - content.length
 
-    }
-
-
-    let html = mdToHtml(content);
     // html = resetCodeblocks(content, html)
-    return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content: html }
+    return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content, frontMatterLength }
 
 }
 

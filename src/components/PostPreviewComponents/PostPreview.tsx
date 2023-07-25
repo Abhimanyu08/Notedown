@@ -8,6 +8,7 @@ import React from "react";
 import { ExpandButton } from "../ProfileComponents/ModalButtons";
 import { Database } from "@/interfaces/supabase";
 import PostPreviewControls from "./PostPreviewControls";
+import { parseFrontMatter } from "@utils/getResources";
 
 async function PostPreview({ postId }: { postId: string }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -15,8 +16,9 @@ async function PostPreview({ postId }: { postId: string }) {
 		cookies,
 	});
 
-	const { post, content, imagesToUrls } = await getPost(postId, supabase);
+	const { post, markdown, imagesToUrls } = await getPost(postId, supabase);
 
+	const { content } = parseFrontMatter(markdown);
 	return (
 		<div className="flex flex-col items-center justify-center h-full w-full relative">
 			<BlogContextProvider

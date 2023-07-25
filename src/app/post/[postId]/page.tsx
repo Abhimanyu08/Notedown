@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { redirect } from "next/navigation";
 import BlogLayout from "../components/BlogLayout";
+import { parseFrontMatter } from "@utils/getResources";
 
 export const revalidate = 60 * 60 * 24 * 365 * 10;
 
@@ -45,14 +46,15 @@ interface PostParams extends NextParsedUrlQuery {
 
 async function Post({ params }: { params: PostParams }) {
 	try {
-		const { post, content, imagesToUrls } = await getPost(
+		const { post, markdown, imagesToUrls } = await getPost(
 			params.postId,
 			supabase
 		);
 
+		const { content } = parseFrontMatter(markdown);
 		return (
 			<BlogLayout
-				postMeta={{ post, content, imagesToUrls }}
+				postMeta={{ post, markdown, imagesToUrls }}
 				isPostPrivate={false}
 			/>
 			// <BlogContextProvider

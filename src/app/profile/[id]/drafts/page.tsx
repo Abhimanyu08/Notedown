@@ -1,18 +1,18 @@
 "use client";
 import ActionModal from "@components/Modals/ActionModal";
-import { getHtmlFromMarkdownFile } from "@utils/getResources";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import PostsLoading from "../loading";
 import formatDate from "@utils/dateFormatter";
+import { parseFrontMatter } from "@utils/getResources";
 
 type Draft = {
 	key: string;
 	timeStamp: string;
 	time: string;
 	date: string;
-	draftData: Awaited<ReturnType<typeof getHtmlFromMarkdownFile>>;
+	draftData: Awaited<ReturnType<typeof parseFrontMatter>>;
 	postId?: string;
 };
 
@@ -26,7 +26,7 @@ function Drafts() {
 		processDrafts();
 	}, []);
 
-	async function processDrafts() {
+	function processDrafts() {
 		setLoadingDrafts(true);
 		const draftsToAdd: typeof drafts = [];
 		for (let i = 0; i < localStorage.length; i++) {
@@ -35,9 +35,7 @@ function Drafts() {
 				const timeStamp = /draft-(\d+)$/.exec(key)?.at(1);
 				const postId = /post-(\d+);/.exec(key)?.at(1);
 				const draftText = localStorage.getItem(key);
-				const { data, content } = await getHtmlFromMarkdownFile(
-					draftText!
-				);
+				const draftData = parseFrontMatter(draftText!);
 				if (timeStamp) {
 					const formattedTimeStamp = new Date(parseInt(timeStamp));
 					const date = formatDate(
@@ -53,7 +51,7 @@ function Drafts() {
 						timeStamp,
 						date,
 						time,
-						draftData: { data, content },
+						draftData,
 						postId,
 					});
 				}

@@ -14,75 +14,73 @@ const headingToMargin: Record<string, string> = {
 	h6: "ml-16",
 };
 
-const Toc = memo(function Toc({
-	html,
-	setShowContents,
-}: {
-	html: string;
-	setShowContents?: Dispatch<SetStateAction<boolean>>;
-}) {
-	// const { blogState } = useContext(BlogContext);
-	// const html = blogState.blogMeta.content;
+// const Toc = memo(function Toc({
+// 	content
+// }: {
+// 	content: string
+// }) {
+// 	// const { blogState } = useContext(BlogContext);
+// 	// const html = blogState.blogMeta.content;
+// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
+// 	const matches = Array.from(html?.matchAll(re) || []);
+// 	const headings: string[] = [];
+// 	const headingIds: string[] = [];
+// 	const headingTypes: string[] = [];
+// 	matches.forEach((match) => {
+// 		const headingElem = parser(tokenizer(match.at(0)!))
+// 			.children[0] as HtmlNode;
+// 		const headingText = extractTextFromChildren(headingElem.children);
+// 		const headingId = createHeadingIdFromHeadingText(headingText);
 
-	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
-	const matches = Array.from(html?.matchAll(re) || []);
-	const headings: string[] = [];
-	const headingIds: string[] = [];
-	const headingTypes: string[] = [];
-	matches.forEach((match) => {
-		const headingElem = parser(tokenizer(match.at(0)!))
-			.children[0] as HtmlNode;
-		const headingText = extractTextFromChildren(headingElem.children);
-		const headingId = createHeadingIdFromHeadingText(headingText);
+// 		headings.push(headingText);
+// 		headingIds.push(headingId);
+// 		headingTypes.push(headingElem.tagName);
+// 	});
 
-		headings.push(headingText);
-		headingIds.push(headingId);
-		headingTypes.push(headingElem.tagName);
-	});
+// 	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
+// 	// const [open, setOpen] = useState(true);
 
-	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
-	// const [open, setOpen] = useState(true);
+// 	// useEffect(() => {
+// 	// 	if (!html) {
+// 	// 		setMatches([]);
+// 	// 		return;
+// 	// 	}
+// 	// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
+// 	// 	setMatches(Array.from(html.matchAll(re)));
+// 	// }, [html]);
 
-	// useEffect(() => {
-	// 	if (!html) {
-	// 		setMatches([]);
-	// 		return;
-	// 	}
-	// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
-	// 	setMatches(Array.from(html.matchAll(re)));
-	// }, [html]);
+// 	return (
+// 		<ul
+// 			className={` flex flex-col text-gray-700  dark:text-gray-400 tracking-wider gap-1 list-inside font-sans font-light text-sm list-disc text-left`}
+// 		>
+// 			<li className="">
+// 				<a
+// 					href="#title"
+// 					className="hover:text-black hover:dark:text-white"
+// 				>
+// 					Title
+// 				</a>
+// 			</li>
+// 			{headings.map((heading, idx) => {
+// 				return (
+// 					<li
+// 						className={`
+// 							${headingToMargin[headingTypes[idx]]}
+// 							break-words`}
+// 						key={heading}
+// 					>
+// 						<a
+// 							href={`#${headingIds[idx]}`}
+// 							className={`hover:text-black  hover:dark:text-white`}
+// 						>
+// 							{heading}
+// 						</a>
+// 					</li>
+// 				);
+// 			})}
+// 		</ul>
+// 	);
+// });
 
-	return (
-		<ul
-			className={` flex flex-col text-gray-700  dark:text-gray-400 tracking-wider gap-1 list-inside font-sans font-light text-sm list-disc text-left`}
-		>
-			<li className="">
-				<a
-					href="#title"
-					className="hover:text-black hover:dark:text-white"
-				>
-					Title
-				</a>
-			</li>
-			{headings.map((heading, idx) => {
-				return (
-					<li
-						className={`
-							${headingToMargin[headingTypes[idx]]} 
-							break-words`}
-						key={heading}
-					>
-						<a
-							href={`#${headingIds[idx]}`}
-							className={`hover:text-black  hover:dark:text-white`}
-						>
-							{heading}
-						</a>
-					</li>
-				);
-			})}
-		</ul>
-	);
-});
-
+const Toc = ({ html }: { html: string }) => <></>;
 export default Toc;

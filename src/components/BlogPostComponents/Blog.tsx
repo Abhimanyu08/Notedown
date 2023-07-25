@@ -1,5 +1,7 @@
 import { BlogProps } from "@/interfaces/BlogProps";
 import formatDate from "@utils/dateFormatter";
+import { parseFrontMatter } from "@utils/getResources";
+import { mdToHast, newTransformer } from "@utils/html2Jsx/newTransformer";
 import parser from "@utils/html2Jsx/parser";
 import tokenizer from "@utils/html2Jsx/tokenizer";
 import transformer from "@utils/html2Jsx/transformer";
@@ -21,10 +23,12 @@ const Blog = memo(
 			| React.MemoExoticComponent<() => JSX.Element>
 			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>);
 	}) {
-		const tokens = tokenizer(content || "");
-		const parsedOutput = parser(tokens);
+		// const tokens = tokenizer(content || "");
+		// const parsedOutput = parser(tokens);
 
-		const blogJsx = transformer(parsedOutput);
+		// const blogJsx = transformer(parsedOutput);
+		const hAst = mdToHast(content || "");
+		const blogJsx = newTransformer(hAst);
 
 		return (
 			<div

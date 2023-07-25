@@ -7,15 +7,17 @@ import BlogContextProvider from "../../../components/BlogPostComponents/BlogStat
 import Toolbar from "./Toolbar";
 import PrivateToolbar from "./PrivateToolbar";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
+import { parseFrontMatter } from "@utils/getResources";
 
 function BlogLayout({
 	postMeta,
 	isPostPrivate,
 }: {
-	postMeta: Omit<Awaited<ReturnType<typeof getPost>>, "markdown">;
+	postMeta: Awaited<ReturnType<typeof getPost>>;
 	isPostPrivate: boolean;
 }) {
-	const { post, content, imagesToUrls } = postMeta;
+	const { post, imagesToUrls, markdown } = postMeta;
+	const { content } = parseFrontMatter(markdown);
 	return (
 		<BlogContextProvider
 			blogMeta={{

@@ -7,6 +7,7 @@ import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import BlogLayout from "../../components/BlogLayout";
+import { parseFrontMatter } from "@utils/getResources";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
@@ -19,7 +20,7 @@ async function PrivatePost({ params }: { params: PostParams }) {
 	});
 
 	try {
-		const { post, content, imagesToUrls } = await getPost(
+		const { post, markdown, imagesToUrls } = await getPost(
 			params.postId,
 			supabase
 		);
@@ -29,43 +30,9 @@ async function PrivatePost({ params }: { params: PostParams }) {
 
 		return (
 			<BlogLayout
-				postMeta={{ post, content, imagesToUrls }}
+				postMeta={{ post, markdown, imagesToUrls }}
 				isPostPrivate={true}
 			/>
-			// <BlogContextProvider
-			// 	blogMeta={{
-			// 		id: parseInt(params.postId!),
-			// 		title: post.title,
-			// 		description: post.description,
-			// 		language: post.language,
-			// 		imageFolder: post.image_folder,
-			// 	}}
-			// 	uploadedImages={imagesToUrls}
-			// >
-			// 	<PublishModal publishPostAction={publishPostAction} />
-			// 	<div className="grow flex flex-row min-h-0 relative pt-10">
-			// 		<div
-			// 			className={`lg:basis-1/5 w-full flex-col max-w-full overflow-y-auto justify-start flex
-			// 		`}
-			// 		>
-			// 			<Toc html={content} />
-			// 		</div>
-			// 		<div
-			// 			className={`lg:basis-3/5 relative
-			// 				hidden lg:block
-			// 				overflow-y-hidden`}
-			// 		>
-			// 			<Blog
-			// 				content={content}
-			// 				{...post}
-			// 				extraClasses="px-20"
-			// 			/>
-			// 		</div>
-			// 		<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
-			// 			<PrivateToolbar language={post.language} />
-			// 		</div>
-			// 	</div>
-			// </BlogContextProvider>
 		);
 	} catch (e) {
 		redirect("/");

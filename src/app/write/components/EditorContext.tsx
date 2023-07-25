@@ -11,6 +11,7 @@ interface EditorStateInterface {
 	imagesToUpload: string[];
 	canvasApps: Record<string, any>;
 	editingMarkdown: boolean;
+	frontMatterLength: number;
 }
 interface DispatchObj {
 	type:
@@ -23,7 +24,8 @@ interface DispatchObj {
 		| "add images to upload"
 		| "set canvas apps"
 		| "remove canvas app"
-		| "empty canvas apps";
+		| "empty canvas apps"
+		| "set frontmatter length";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -36,6 +38,7 @@ const initialEditorState: EditorStateInterface = {
 	imagesToUpload: [],
 	canvasApps: {},
 	editingMarkdown: false,
+	frontMatterLength: 0,
 };
 
 export const EditorContext = createContext<{
@@ -55,6 +58,12 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 					...state.canvasApps,
 					...(action.payload as Record<string, any>),
 				},
+			};
+
+		case "set frontmatter length":
+			return {
+				...state,
+				frontMatterLength: action.payload as number,
 			};
 
 		case "remove canvas app":

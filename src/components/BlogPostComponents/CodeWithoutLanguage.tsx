@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { MdContentCopy } from "react-icons/md";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import theme from "react-syntax-highlighter/dist/cjs/styles/hljs/an-old-hope";
+import theme from "react-syntax-highlighter/dist/esm/styles/hljs/an-old-hope";
 
 function CodeWithoutLanguage({
 	code,
@@ -33,7 +33,7 @@ function CodeWithoutLanguage({
 				});
 			}
 		}
-	}, []);
+	}, [language]);
 
 	return (
 		<div className="not-prose relative group ">
@@ -85,68 +85,68 @@ const languageToImporter = {
 
 async function loadSql() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/sql"
+		"react-syntax-highlighter/dist/esm/languages/hljs/sql"
 	);
 	SyntaxHighlighter.registerLanguage("sql", lang.default);
 }
 
 async function loadPython() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/python"
+		"react-syntax-highlighter/dist/esm/languages/hljs/python"
 	);
 	SyntaxHighlighter.registerLanguage("python", lang.default);
 }
 async function loadRust() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/rust"
+		"react-syntax-highlighter/dist/esm/languages/hljs/rust"
 	);
 	SyntaxHighlighter.registerLanguage("rust", lang.default);
 }
 async function loadJavascript() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/javascript"
+		"react-syntax-highlighter/dist/esm/languages/hljs/javascript"
 	);
 	SyntaxHighlighter.registerLanguage("javascript", lang.default);
 }
 async function loadTypeScript() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/typescript"
+		"react-syntax-highlighter/dist/esm/languages/hljs/typescript"
 	);
 	SyntaxHighlighter.registerLanguage("typescript", lang.default);
 }
 async function loadCSS() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/css"
+		"react-syntax-highlighter/dist/esm/languages/hljs/css"
 	);
 	SyntaxHighlighter.registerLanguage("css", lang.default);
 }
 async function loadC() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/c"
+		"react-syntax-highlighter/dist/esm/languages/hljs/c"
 	);
 	SyntaxHighlighter.registerLanguage("c", lang.default);
 }
 async function loadGo() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/go"
+		"react-syntax-highlighter/dist/esm/languages/hljs/go"
 	);
 	SyntaxHighlighter.registerLanguage("go", lang.default);
 }
 async function loadMarkdown() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/markdown"
+		"react-syntax-highlighter/dist/esm/languages/hljs/markdown"
 	);
 	SyntaxHighlighter.registerLanguage("markdown", lang.default);
 }
 async function loadBash() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/bash"
+		"react-syntax-highlighter/dist/esm/languages/hljs/bash"
 	);
 	SyntaxHighlighter.registerLanguage("bash", lang.default);
 }
 async function loadShell() {
 	const lang = await import(
-		"react-syntax-highlighter/dist/cjs/languages/hljs/shell"
+		"react-syntax-highlighter/dist/esm/languages/hljs/shell"
 	);
 	SyntaxHighlighter.registerLanguage("shell", lang.default);
 }

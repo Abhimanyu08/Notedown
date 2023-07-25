@@ -10,12 +10,12 @@ async function EditPost({ params }: { params: { postId: string } }) {
 		cookies,
 	});
 
-	const { post, content, imagesToUrls, markdown } = await getPost(
+	const { post, imagesToUrls, markdown } = await getPost(
 		params.postId,
 		supabase
 	);
 
-	return <EditorLayout {...{ post, content, markdown, imagesToUrls }} />;
+	return <EditorLayout {...{ post, markdown, imagesToUrls }} />;
 }
 
 export default EditPost;

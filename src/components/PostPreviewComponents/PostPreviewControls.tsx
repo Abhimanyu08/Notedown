@@ -15,7 +15,7 @@ import useShortCut from "@/hooks/useShortcut";
 function PostPreviewControls({
 	post,
 	content,
-}: Pick<Awaited<ReturnType<typeof getPost>>, "post" | "content">) {
+}: Pick<Awaited<ReturnType<typeof getPost>>, "post"> & { content: string }) {
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
@@ -57,7 +57,7 @@ function PostPreviewControls({
 					<AiFillCloseCircle size={24} />
 				</ToolTipComponent>
 			</div>
-			<AnimatePresence>
+			{/* <AnimatePresence>
 				{showToc && (
 					<motion.div
 						className="h-fit absolute py-4 px-5 bg-black right-12 w-fit border-border border-[1px]  max-w-[400px] max-h-[500px] overflow-y-auto ring-2 ring-gray-300"
@@ -69,7 +69,7 @@ function PostPreviewControls({
 						<Toc html={content} />
 					</motion.div>
 				)}
-			</AnimatePresence>
+			</AnimatePresence> */}
 		</>
 	);
 }

@@ -1,7 +1,6 @@
 import 'server-only';
 import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { cache } from "react";
-import { getHtmlFromMarkdownFile } from '@utils/getResources';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@utils/supabaseClient';
 import { checkDataLength } from './postTypeToFetcher';
@@ -136,9 +135,8 @@ export const getPost = async (postId: string, supabaseClient: SupabaseClient) =>
         }
     }
 
-    const content = (await getHtmlFromMarkdownFile(fileData)).content;
 
     const markdown = await fileData.text()
 
-    return { post, content, imagesToUrls, markdown }
+    return { post, imagesToUrls, markdown }
 }

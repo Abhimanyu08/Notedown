@@ -19,11 +19,9 @@ import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
 
 import { EditorContext } from "@/app/write/components/EditorContext";
-import { Compartment, Extension } from "@codemirror/state";
-import getExtensions from "@utils/getExtensions";
-import langToCodeMirrorExtension from "@utils/langToExtension";
-import { usePathname } from "next/navigation";
+import { Compartment } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
+import { usePathname } from "next/navigation";
 
 // const compartment = new Compartment();
 

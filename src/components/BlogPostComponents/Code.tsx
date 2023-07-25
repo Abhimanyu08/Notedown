@@ -1,4 +1,5 @@
 "use client";
+import { Compartment } from "@codemirror/state";
 import {
 	MouseEventHandler,
 	memo,
@@ -13,20 +14,26 @@ import { SiVim } from "react-icons/si";
 
 import useEditor from "../../hooks/useEditor";
 
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import { EditorContext } from "@/app/write/components/EditorContext";
 import { StateEffect } from "@codemirror/state";
-import { vim } from "@replit/codemirror-vim";
-import getExtensions from "@utils/getExtensions";
-import Terminal from "./Terminal";
 import { keymap } from "@codemirror/view";
-import langToCodeMirrorExtension from "@utils/langToExtension";
-import CodeWithoutLanguage from "./CodeWithoutLanguage";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import { ToolTipComponent } from "@components/ToolTipComponent";
+import Button from "@components/ui/button";
+import { vim } from "@replit/codemirror-vim";
+import { usePathname } from "next/navigation";
+import path from "path";
+import Terminal from "./Terminal";
+import { AiOutlineSync } from "react-icons/ai";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
+	//These start and end number are the start and end positions of this code block in markdown
+	start?: number;
+	end?: number;
 }
 
-function Code({ code, blockNumber }: CodeProps) {
+function Code({ code, blockNumber, start, end }: CodeProps) {
 	// const {
 	// 	containerId,
 	// 	vimEnabled,
@@ -36,10 +43,14 @@ function Code({ code, blockNumber }: CodeProps) {
 	// 	setWritingBlock,
 	// } = useContext(BlogContext);
 	const { blogState, dispatch } = useContext(BlogContext);
+	const markdownEditorContext = useContext(EditorContext);
 	const { language } = blogState.blogMeta;
 
 	const [mounted, setMounted] = useState(false);
 	const [openShell, setOpenShell] = useState(false);
+	const pathname = usePathname();
+
+	const [vimCompartment, setVimCompartment] = useState<Compartment>();
 	const { editorView } = useEditor({
 		language: language!,
 		code,
@@ -57,12 +68,25 @@ function Code({ code, blockNumber }: CodeProps) {
 	// });
 
 	useEffect(() => {
-		// if (setBlockToEditor && editorView)
-		// 	setBlockToEditor((prev) => ({
-		// 		...prev,
-		// 		[blockNumber]: editorView,
-		// 	}));
 		if (!editorView) return;
+		editorView.dispatch({
+			effects: StateEffect.appendConfig.of([
+				keymap.of([
+					{
+						key: "Shift-Enter",
+						run() {
+							setOpenShell(true);
+							dispatch({
+								type: "set running block",
+								payload: blockNumber,
+							});
+							return true;
+						},
+					},
+				]),
+			]),
+		});
+
 		dispatch({
 			type: "set editor",
 			payload: {
@@ -82,32 +106,41 @@ function Code({ code, blockNumber }: CodeProps) {
 	useEffect(() => {
 		if (!editorView || !language) return;
 		if (blogState.vimEnabled) {
+			const compartment = new Compartment();
+			setVimCompartment(compartment);
 			editorView.dispatch({
-				effects: StateEffect.appendConfig.of(vim()),
+				effects: StateEffect.appendConfig.of(compartment!.of(vim())),
+				// editorState.editorView.state.facet()
 			});
 		}
 		if (!blogState.vimEnabled) {
+			if (!vimCompartment) return;
 			editorView.dispatch({
-				effects: StateEffect.reconfigure.of([
-					keymap.of([
-						{
-							key: "Shift-Enter",
-							run() {
-								setOpenShell(true);
-								dispatch({
-									type: "set running block",
-									payload: blockNumber,
-								});
-								return true;
-							},
-						},
-					]),
-					langToCodeMirrorExtension(language!),
-					...getExtensions(),
-				]),
+				effects: vimCompartment?.reconfigure([]),
 			});
 		}
 	}, [blogState.vimEnabled, editorView]);
+
+	const onSync = () => {
+		if (!markdownEditorContext || !editorView) return;
+		const { editorState } = markdownEditorContext;
+		const { editorView: markdownEditorView, frontMatterLength } =
+			editorState;
+		const newCode = editorView.state.sliceDoc();
+		if (!start || !end) {
+			console.log("no start or end");
+			return;
+		}
+		markdownEditorView?.dispatch({
+			changes: [
+				{
+					from: start + frontMatterLength + 4,
+					to: end + frontMatterLength - 4,
+					insert: newCode,
+				},
+			],
+		});
+	};
 
 	return (
 		<div className="flex flex-col w-full ">
@@ -123,28 +156,32 @@ function Code({ code, blockNumber }: CodeProps) {
 									payload: blockNumber,
 								});
 							}}
-							className="md:tooltip"
 							tip="Run Code (Shift+Enter)"
 						>
-							<BsPlayFill
-								className={`text-cyan-400 ${
-									false ? "animate-pulse" : ""
-								}`}
-								size={16}
-							/>
+							<BsPlayFill size={16} />
 						</CodeAreaButton>
 						<CodeAreaButton
 							onClick={() => {
+								// setRunningBlock(blockNumber);
+								setOpenShell(true);
 								dispatch({
 									type: "set writing block",
 									payload: blockNumber,
 								});
 							}}
-							className="md:tooltip"
 							tip="Write code to file without running"
 						>
-							<BsPencilFill size={12} className="text-cyan-400" />
+							<BsPencilFill size={11} />
 						</CodeAreaButton>
+						{pathname?.startsWith("/write") && (
+							<CodeAreaButton
+								onClick={() => onSync()}
+								className="md:tooltip"
+								tip="Sync code to markdown"
+							>
+								<AiOutlineSync size={14} />
+							</CodeAreaButton>
+						)}
 					</>
 				)}
 				<CodeAreaButton onClick={onUndo} tip="back to original code">
@@ -206,21 +243,23 @@ const CodeAreaButton = ({
 	onClick,
 }: {
 	children: React.ReactNode;
-	tip?: string;
+	tip: string;
 	className?: string;
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
 	return (
-		<button
-			className={
-				"tooltip tooltip-top tooltip-left text-cyan-400 hover:scale-110 active:scale-90 " +
-					className || ""
-			}
-			onClick={onClick}
-			data-tip={tip}
-		>
-			{children}
-		</button>
+		<ToolTipComponent tip={tip} side="top">
+			<Button
+				className={
+					"text-cyan-400 hover:scale-110 active:scale-90 " +
+						className || ""
+				}
+				onClick={onClick}
+				data-tip={tip}
+			>
+				{children}
+			</Button>
+		</ToolTipComponent>
 	);
 };
 
