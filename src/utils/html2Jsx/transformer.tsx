@@ -8,7 +8,7 @@ import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
 import CodeWord from "@components/BlogPostComponents/CodeWord";
 import Footers from "@components/BlogPostComponents/Footers";
-import HeadinglinkButton from "@components/BlogPostComponents/HeadinglinkButton";
+import HeadingButton from "@components/BlogPostComponents/HeadinglinkButton";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import ImageUploader from "@components/EditorComponents/ImageUploader";
 import React from "react";
@@ -19,26 +19,6 @@ import { Element, Root, Text } from "hast";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: any }[] = [];
-
-// type TextNode = {
-//     type: "text",
-//     value: string
-// }
-
-// type ElementNode = {
-//     type: "element"
-//     tagName: keyof HTMLElementTagNameMap,
-//     properties: Record<string,string>
-//     children: (TextNode|HtmlNode)[]
-// }
-
-// type RootNode = {
-//     type: "root",
-//     children: (TextNode|HtmlNode)[]
-// }
-
-// type NormalNode = TextNode |  ElementNode
-// type HtmlNode = TextNode | ElementNode | RootNode
 
 const attributes: (typeof defaultSchema)["attributes"] = {
 	"*": ["className", "dataStartoffset", "dataEndoffset"],
@@ -117,7 +97,7 @@ const tagToTransformer: TagToTransformer = {
 		> = {};
 		for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
 			headingToRenderers[heading as HeadTags] = (node) =>
-				headingsRenderer(heading as HeadTags, node.children);
+				headingsRenderer(node);
 		}
 		return headingToRenderers;
 	})(),
@@ -343,27 +323,21 @@ const tagToTransformer: TagToTransformer = {
 	},
 };
 
-function headingsRenderer(
-	tag: HeadTags,
-	headingChildren: HtmlAstElement["children"]
-) {
+function headingsRenderer(node: HtmlAstElement) {
+	const headingChildren = node.children;
 	const headingText = extractTextFromChildren(headingChildren);
 	const headingId = createHeadingIdFromHeadingText(headingText);
+	const { start } = getStartEndFromNode(node);
 	return React.createElement(
-		tag,
+		node.tagName,
 		{
 			id: headingId,
-			className: "not-prose group",
+			className: "group not-prose",
 		},
-		<>
-			<a
-				href={`#${headingId}`}
-				className="hover:underline underline-offset-2"
-			>
-				{headingChildren.map((child) => transformer(child))}
-			</a>
-			<HeadinglinkButton headingId={headingId} />
-		</>
+
+		<HeadingButton headingId={headingId} start={start}>
+			{headingChildren.map((child) => transformer(child))}
+		</HeadingButton>
 	);
 }
 

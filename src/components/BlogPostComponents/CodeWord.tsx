@@ -8,23 +8,18 @@ import { usePathname } from "next/navigation";
 let CANVAS_NUMBER = 0;
 
 function CodeWord({ code }: { code: string }) {
-	let modifiedCode = code;
 	const pathname = usePathname();
-	if (typeof window !== "undefined") {
-		let tempElement = document.createElement("div");
-		tempElement.innerHTML = modifiedCode;
-		modifiedCode = tempElement.innerText || tempElement.textContent || "";
+
+	if (code.startsWith("$") && code.endsWith("$")) {
+		return <Latex>{code}</Latex>;
 	}
-	if (modifiedCode.startsWith("$") && modifiedCode.endsWith("$")) {
-		return <Latex>{modifiedCode}</Latex>;
-	}
-	if (modifiedCode.startsWith("~~") && modifiedCode.endsWith("~~")) {
-		return <del>{modifiedCode.slice(2, modifiedCode.length - 2)}</del>;
+	if (code.startsWith("~~") && code.endsWith("~~")) {
+		return <del>{code.slice(2, code.length - 2)}</del>;
 	}
 	const drawRegex = /<draw id=(\d+) caption="(.*?)"( dark=(true|false))?\/>/;
-	if (drawRegex.test(modifiedCode)) {
+	if (drawRegex.test(code)) {
 		CANVAS_NUMBER += 1;
-		const regexArray = drawRegex.exec(modifiedCode)!;
+		const regexArray = drawRegex.exec(code)!;
 		const persistanceKey = regexArray.at(1)!;
 		const caption = regexArray.at(2) || "";
 		const dark = regexArray.at(4);
@@ -40,7 +35,7 @@ function CodeWord({ code }: { code: string }) {
 		}
 		return <DrawingSvg {...{ persistanceKey, caption }} />;
 	}
-	return <code>{modifiedCode}</code>;
+	return <code>{code}</code>;
 }
 
 export default memo(CodeWord);
