@@ -1,8 +1,5 @@
 "use client";
-import parser from "@utils/html2Jsx/parser";
-import tokenizer from "@utils/html2Jsx/tokenizer";
-import transformer from "@utils/html2Jsx/transformer";
-import mdToHtml from "@utils/mdToHtml";
+import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { memo, useEffect, useState } from "react";
 
 function Details({
@@ -19,24 +16,10 @@ function Details({
 		// setSummaryText(st)
 
 		if (summaryText) {
-			setSummaryJsx(
-				transformer(
-					parser(tokenizer(mdToHtml(summaryText))).children.at(0) || {
-						tagName: "text",
-						text: "",
-					}
-				)
-			);
+			setSummaryJsx(transformer(mdToHast(summaryText)));
 		}
 		if (detailsText) {
-			setDetailsJsx(
-				transformer(
-					parser(tokenizer(mdToHtml(detailsText))).children.at(0) || {
-						tagName: "text",
-						text: "",
-					}
-				)
-			);
+			setDetailsJsx(transformer(mdToHast(detailsText)));
 		}
 	}, [summaryText, detailsText]);
 

@@ -6,7 +6,6 @@ import React from "react";
 import BlogContextProvider from "../../../components/BlogPostComponents/BlogState";
 import Toolbar from "./Toolbar";
 import PrivateToolbar from "./PrivateToolbar";
-import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { parseFrontMatter } from "@utils/getResources";
 
 function BlogLayout({

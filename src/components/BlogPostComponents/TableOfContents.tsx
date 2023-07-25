@@ -1,11 +1,3 @@
-import parser, { HtmlNode } from "@utils/html2Jsx/parser";
-import tokenizer from "@utils/html2Jsx/tokenizer";
-import {
-	createHeadingIdFromHeadingText,
-	extractTextFromChildren,
-} from "@utils/html2Jsx/transformer";
-import { Dispatch, SetStateAction, memo } from "react";
-
 const headingToMargin: Record<string, string> = {
 	h2: "ml-0",
 	h3: "ml-4",

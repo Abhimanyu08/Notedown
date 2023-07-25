@@ -1,6 +1,5 @@
 import matter from "gray-matter";
 import { ALLOWED_LANGUAGES, DESCRIPTION_LENGTH, SUPABASE_FILES_BUCKET, TITLE_LENGTH } from "./constants";
-import mdToHtml from "./mdToHtml";
 import { supabase } from "./supabaseClient";
 
 

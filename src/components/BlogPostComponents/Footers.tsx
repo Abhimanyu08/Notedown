@@ -1,11 +1,10 @@
-import { HtmlNode } from "@utils/html2Jsx/parser";
-import transformer from "@utils/html2Jsx/transformer";
+import { HtmlAstElement, transformer } from "@utils/html2Jsx/transformer";
 import React from "react";
 
 function Footers({
 	footNotes,
 }: {
-	footNotes: { id: number; node: HtmlNode }[];
+	footNotes: { id: number; node: HtmlAstElement }[];
 }) {
 	return (
 		<div id="footer-section">

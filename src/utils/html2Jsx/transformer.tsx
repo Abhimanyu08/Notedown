@@ -1,3 +1,8 @@
+import { raw } from "hast-util-raw";
+import { defaultSchema, sanitize } from "hast-util-sanitize";
+import { fromMarkdown } from "mdast-util-from-markdown";
+import { toHast } from "mdast-util-to-hast";
+import { visit } from "unist-util-visit";
 import Carousel from "@components/BlogPostComponents/Carousel";
 import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
@@ -8,50 +13,99 @@ import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
 import ImageUploader from "@components/EditorComponents/ImageUploader";
 import React from "react";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
-import { HtmlNode, TextNode } from "./parser";
 import Details from "@components/BlogPostComponents/Details";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
+import { Element, Root, Text } from "hast";
 
 let BLOCK_NUMBER = 0;
-let footNotes: { id: number; node: HtmlNode }[] = [];
+let footNotes: { id: number; node: any }[] = [];
 
-function defaultTagToJsx(node: HtmlNode, parent?: HtmlNode) {
+// type TextNode = {
+//     type: "text",
+//     value: string
+// }
+
+// type ElementNode = {
+//     type: "element"
+//     tagName: keyof HTMLElementTagNameMap,
+//     properties: Record<string,string>
+//     children: (TextNode|HtmlNode)[]
+// }
+
+// type RootNode = {
+//     type: "root",
+//     children: (TextNode|HtmlNode)[]
+// }
+
+// type NormalNode = TextNode |  ElementNode
+// type HtmlNode = TextNode | ElementNode | RootNode
+
+const attributes: (typeof defaultSchema)["attributes"] = {
+	"*": ["className", "dataStartoffset", "dataEndoffset"],
+	img: ["alt", "src"],
+	a: ["href"],
+};
+
+export function mdToHast(markdown: string) {
+	const mdast = fromMarkdown(markdown);
+	visit(mdast, (node) => {
+		node.data = node.data || {};
+		node.data.hProperties = {
+			datastartoffset: node.position?.start.offset,
+			dataendoffset: node.position?.end.offset,
+		};
+	});
+	const hast = raw(toHast(mdast, { allowDangerousHtml: true })!);
+	const safeHast = sanitize(hast, { attributes });
+	return safeHast;
+	// return hast;
+}
+
+type HtmlTagName = keyof HTMLElementTagNameMap;
+export interface HtmlAstElement extends Element {
+	tagName: HtmlTagName;
+}
+
+function defaultTagToJsx(node: HtmlAstElement) {
 	return React.createElement(
 		node.tagName,
-		node.attributes,
+		node.properties,
 		node.children.map((child) => transformer(child))
 	);
 }
 
-export default function transformer(
-	node: HtmlNode | TextNode,
-	parent?: HtmlNode
+export function transformer(
+	node: ReturnType<typeof mdToHast>
+	// parent?: HtmlNode
 ): JSX.Element {
-	if (node.tagName === "text") {
-		return <>{(node as TextNode).text}</>;
-	}
-	if (tagToTransformer[node.tagName]) {
-		return tagToTransformer[node.tagName]!(node, parent);
-	}
-	if (node.tagName === "main") {
+	if (node.type === "root") {
 		BLOCK_NUMBER = 0;
 		footNotes = [];
+		return (
+			<main>
+				{node.children.map((child) => transformer(child))}
+
+				{footNotes.length > 0 && <Footers footNotes={footNotes} />}
+			</main>
+		);
 	}
-	return (
-		<>
-			{defaultTagToJsx(node, parent)}
-			{node.tagName === "main" && footNotes.length > 0 && (
-				<Footers footNotes={footNotes} />
-			)}
-		</>
-	);
+	if (node.type === "text") {
+		return <>{node.value}</>;
+	}
+	if (node.type === "element") {
+		if (tagToTransformer[node.tagName as HtmlTagName]) {
+			return tagToTransformer[node.tagName as HtmlTagName]!(
+				node as HtmlAstElement
+			);
+		}
+		return defaultTagToJsx(node as HtmlAstElement);
+	}
+
+	return <></>;
 }
 
 type TagToTransformer = {
-	[k in keyof HTMLElementTagNameMap]?: (
-		node: HtmlNode,
-		parent?: HtmlNode
-	) => JSX.Element;
+	[k in keyof HTMLElementTagNameMap]?: (node: HtmlAstElement) => JSX.Element;
 };
 
 type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -72,20 +126,24 @@ const tagToTransformer: TagToTransformer = {
 		let detailsText = "";
 
 		node.children?.forEach((c) => {
-			if (c.tagName === "text") detailsText += c.text;
+			if (c.type === "text") detailsText += c.value;
 		});
 		detailsText = detailsText.trim();
 
-		let summaryNode = node.children.find((c) => c.tagName === "summary");
+		let summaryNode = node.children.find(
+			(c) => c.type === "element" && c.tagName === "summary"
+		);
 		let summaryText = extractTextFromChildren(
-			(summaryNode as HtmlNode)?.children || []
+			(summaryNode as HtmlAstElement)?.children || []
 		).trim();
 
 		return <Details detailsText={detailsText} summaryText={summaryText} />;
 	},
 
 	code: (node) => {
-		let code = (node.children[0] as TextNode)?.text;
+		const child = node.children[0] as Text;
+		// we are constraining the code elements to only contain plain strings.
+		let code = child.value;
 		if (!code) return <code></code>;
 		return <CodeWord code={code} />;
 	},
@@ -99,8 +157,8 @@ const tagToTransformer: TagToTransformer = {
 	pre: (node) => {
 		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
 
-		let codeNode = node.children[0] as HtmlNode;
-		let code = (codeNode.children[0] as TextNode)?.text || "";
+		let codeNode = node.children[0] as HtmlAstElement;
+		let code = (codeNode.children[0] as Text)?.value || "";
 		code = code.trim();
 		if (typeof window !== "undefined") {
 			let tempElement = document.createElement("div");
@@ -108,11 +166,12 @@ const tagToTransformer: TagToTransformer = {
 			code = tempElement.innerText || tempElement.textContent || "";
 		}
 
-		const { class: className } = codeNode.attributes as {
-			class: string;
-		};
-		const blockLanguage = /language-(.*)/.exec(className)?.at(1);
+		const className = codeNode.properties?.className;
+		const blockLanguage =
+			className &&
+			/language-(.*)/.exec((className as string[])[0])?.at(1);
 
+		const { start, end } = getStartEndFromNode(codeNode);
 		if (!blockLanguage) {
 			BLOCK_NUMBER += 1;
 			return (
@@ -120,6 +179,7 @@ const tagToTransformer: TagToTransformer = {
 					key={BLOCK_NUMBER}
 					code={code}
 					blockNumber={BLOCK_NUMBER}
+					{...{ start, end }}
 				/>
 			);
 		}
@@ -132,7 +192,7 @@ const tagToTransformer: TagToTransformer = {
 	},
 
 	a: (node) => {
-		const { href } = node.attributes as { href: string };
+		const { href } = node.properties as { href: string };
 		const linkText = node.children;
 
 		if (
@@ -158,24 +218,24 @@ const tagToTransformer: TagToTransformer = {
 		const footNoteRegex = /\^(\d+)/;
 		if (
 			linkText.length === 1 &&
-			linkText[0].tagName === "text" &&
+			linkText[0].type === "text" &&
 			!href &&
-			footNoteRegex.test(linkText[0].text)
+			footNoteRegex.test(linkText[0].value)
 		) {
-			const footNoteId = linkText[0].text.match(footNoteRegex)?.at(1);
-			node.attributes["href"] = `#footnote-${footNoteId}`;
+			const footNoteId = linkText[0].value.match(footNoteRegex)?.at(1);
+			let properties = { href: `#footnote-${footNoteId}` };
 			return (
 				<sup
 					id={`footnote-referrer-${footNoteId}`}
 					className=" text-blue-400 pl-[4px]  hover:underline"
 				>
-					{React.createElement("a", node.attributes, footNoteId)}
+					{React.createElement("a", properties, footNoteId)}
 				</sup>
 			);
 		}
-		if (!node.attributes.href.startsWith("#")) {
+		if (!href.startsWith("#")) {
 			// newAttributes = { ...node.attributes, target: "_blank" };
-			node.attributes["target"] = "_blank";
+			node.properties!["target"] = "_blank";
 		}
 		return defaultTagToJsx(node);
 	},
@@ -187,24 +247,25 @@ const tagToTransformer: TagToTransformer = {
 		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
 
 		if (
-			node.children[0].tagName === "text" &&
-			/^\[(\d+)\]:/.test(node.children[0].text)
+			node.children[0].type === "text" &&
+			/^\[(\d+)\]:/.test(node.children[0].value)
 		) {
 			//This is a footnote
-			const firstChild = node.children[0].text;
+			const firstChild = node.children[0].value;
 			const footnoteId = firstChild.match(/^\[(\d+)\]/)?.at(1);
 			const remainingTextOfFirstChild = firstChild
 				.match(/^\[\d+\]:(.*)/)
 				?.at(1);
 
-			const newFirstChild: TextNode = {
-				tagName: "text",
-				text: remainingTextOfFirstChild || "",
+			const newFirstChild: Text = {
+				type: "text",
+				value: remainingTextOfFirstChild || "",
 			};
 
-			const newPNode: HtmlNode = {
+			const newPNode: HtmlAstElement = {
+				type: "element",
 				tagName: "span",
-				attributes: {
+				properties: {
 					id: `footnote-${footnoteId}`,
 					className: "footnote-reference",
 				},
@@ -217,26 +278,33 @@ const tagToTransformer: TagToTransformer = {
 		let nodesBeforeImage = [];
 		let i = 0;
 		let child = node.children[i];
-		while (i !== node.children.length && child?.tagName !== "img") {
+		while (
+			!(
+				i == node.children.length ||
+				(child.type === "element" && child.tagName === "img")
+			)
+		) {
 			nodesBeforeImage.push(child);
 			i++;
 			child = node.children[i];
 		}
 		let imgNode = undefined;
-		if (child?.tagName === "img") {
+		if ((child as HtmlAstElement)?.tagName === "img") {
 			imgNode = child;
 		}
 		let nodesAfterImage = node.children.slice(i + 1);
 
-		let beforeNode: HtmlNode = {
+		let beforeNode: HtmlAstElement = {
+			type: "element",
 			tagName: "p",
 			children: nodesBeforeImage,
-			attributes: node.attributes,
+			properties: node.properties,
 		};
-		let afterNode: HtmlNode = {
+		let afterNode: HtmlAstElement = {
+			type: "element",
 			tagName: "p",
 			children: nodesAfterImage,
-			attributes: node.attributes,
+			properties: node.properties,
 		};
 		if (imgNode !== undefined) {
 			return (
@@ -252,7 +320,7 @@ const tagToTransformer: TagToTransformer = {
 	},
 
 	img: (node) => {
-		const { alt, src } = node.attributes as { alt: string; src: string };
+		const { alt, src } = node.properties as { alt: string; src: string };
 
 		if (src.split(",").length > 1) {
 			return (
@@ -267,16 +335,17 @@ const tagToTransformer: TagToTransformer = {
 		if (src) {
 			return <ImageWithCaption name={src} alt={alt} key={src} />;
 		}
+		let { end } = getStartEndFromNode(node);
 		if (alt && !src) {
-			return <LexicaImage alt={alt} key={alt} />;
+			return <LexicaImage alt={alt} key={alt} end={end} />;
 		}
-		return <ImageUploader />;
+		return <ImageUploader {...{ end }} />;
 	},
 };
 
 function headingsRenderer(
 	tag: HeadTags,
-	headingChildren: HtmlNode["children"]
+	headingChildren: HtmlAstElement["children"]
 ) {
 	const headingText = extractTextFromChildren(headingChildren);
 	const headingId = createHeadingIdFromHeadingText(headingText);
@@ -298,20 +367,34 @@ function headingsRenderer(
 	);
 }
 
-export const createHeadingIdFromHeadingText = (headingText: string) => {
+const createHeadingIdFromHeadingText = (headingText: string) => {
 	return headingText
 		.split(" ")
 		.map((w) => w.toLowerCase())
 		.join("-");
 };
 
-export const extractTextFromChildren = (
-	children: HtmlNode["children"]
+const extractTextFromChildren = (
+	children: HtmlAstElement["children"]
 ): string => {
 	const textArray = children.map((c) => {
-		if (c.tagName === "text") return c.text;
-		return extractTextFromChildren(c.children);
+		if (c.type === "text") return c.value;
+		return extractTextFromChildren((c as HtmlAstElement).children);
 	});
 
 	return textArray.join("");
 };
+
+function getStartEndFromNode(node: HtmlAstElement) {
+	let start, end;
+	if (node.properties) {
+		const properties = node.properties;
+		start = properties.dataStartoffset
+			? parseInt(properties.dataStartoffset as string)
+			: undefined;
+		end = properties.dataEndoffset
+			? parseInt(properties.dataEndoffset as string)
+			: undefined;
+	}
+	return { start, end };
+}
