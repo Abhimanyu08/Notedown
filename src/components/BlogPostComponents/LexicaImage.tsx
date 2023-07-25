@@ -112,7 +112,7 @@ function LexicaImage({ alt, end }: { alt: string; end?: number }) {
 				<span className="font-semibold text-gray-200">{alt}</span>
 			</button>
 			<div className="divider text-gray-200">Or</div>
-			<ImageUploader className="border-t-0 border-b-0 my-0" />
+			<ImageUploader className="border-t-0 border-b-0 my-0" end={end} />
 		</div>
 	);
 }
