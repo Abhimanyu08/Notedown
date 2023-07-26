@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 
 
 import getExtensions from "@utils/getExtensions";
-import { BlogProps } from "../interfaces/BlogProps";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import langToCodeMirrorExtension from "@utils/langToExtension";
 
@@ -30,23 +29,31 @@ function useEditor({ language, code, mounted, editorParentId }: useEditorProps):
         editorParent?.replaceChildren("")
 
 
-        let startState = EditorState.create({
-            doc: code,
-            extensions: [
-                langToCodeMirrorExtension(language as typeof ALLOWED_LANGUAGES[number] || "markdown"),
-                ...getExtensions()
-            ]
-        })
-        let view = new EditorView({
-            state: startState,
-            parent: editorParent,
-        });
+        langToCodeMirrorExtension(language as typeof ALLOWED_LANGUAGES[number] || "markdown").then((languageExtension) => {
 
-        setEditorView(view);
-        return () => {
-            view.destroy()
-        }
+            let startState = EditorState.create({
+                doc: code,
+                extensions: [
+                    languageExtension,
+                    ...getExtensions()
+                ]
+            })
+            let view = new EditorView({
+                state: startState,
+                parent: editorParent,
+            });
+
+            setEditorView(view);
+        })
+
     }, [code, mounted, language]);
+    useEffect(() => {
+        if (!editorView) return
+        return () => {
+            editorView?.destroy()
+        }
+
+    }, [editorView])
 
     return {
         editorView
