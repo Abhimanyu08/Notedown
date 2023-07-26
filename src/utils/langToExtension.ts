@@ -2,7 +2,7 @@
 import { Compartment, Extension } from "@codemirror/state";
 
 import { ALLOWED_LANGUAGES } from "./constants";
-import { linter } from "@codemirror/lint"
+import { linter, lintGutter } from "@codemirror/lint"
 
 
 import * as eslint from "eslint-linter-browserify";
@@ -40,7 +40,7 @@ const langToCodeMirrorExtension = async (lang: typeof ALLOWED_LANGUAGES[number] 
 
         case "json":
             const { json, jsonParseLinter } = await import("@codemirror/lang-json")
-            return languageCompartment.of([json(), linter(jsonParseLinter())])
+            return languageCompartment.of([json(), linter(jsonParseLinter()), lintGutter()])
 
 
         default:

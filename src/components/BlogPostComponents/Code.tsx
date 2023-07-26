@@ -101,21 +101,7 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	};
 
 	useEffect(() => {
-		if (vimEnabledLocally && !blogState.vimEnabled) {
-			dispatch({ type: "toggle vim", payload: null });
-		}
-		if (!vimEnabledLocally && blogState.vimEnabled) {
-			dispatch({ type: "toggle vim", payload: null });
-		}
-	}, [vimEnabledLocally]);
-
-	useEffect(() => {
-		if (blogState.vimEnabled && !vimEnabledLocally) {
-			toggleVim();
-		}
-		if (!blogState.vimEnabled && vimEnabledLocally) {
-			toggleVim();
-		}
+		toggleVim();
 	}, [blogState.vimEnabled]);
 
 	const onSync = () => {
@@ -192,7 +178,9 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				</CodeBlockButton>
 				<CodeBlockButton
 					tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
-					onClick={() => toggleVim()}
+					onClick={() => {
+						dispatch({ type: "toggle vim", payload: null });
+					}}
 				>
 					<SiVim
 						className={`${

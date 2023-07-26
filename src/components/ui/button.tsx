@@ -9,7 +9,7 @@ function Button({
 	return (
 		<button
 			className={cn(
-				"flex rounded-md items-center justify-center  text-white active:scale-95 transition-all duration-75",
+				"flex rounded-md items-center justify-center px-2 py-1  text-gray-400 hover:text-gray-100 active:scale-95",
 				className
 			)}
 			{...props}

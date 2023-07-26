@@ -12,10 +12,6 @@ function insertAndChangeCursor({ editorView, toInsert, cursorOffest }: { editorV
             from: cursorPos,
             insert: toInsert,
         },
-        selection: {
-            anchor: cursorPos + cursorOffest,
-            head: cursorPos + cursorOffest,
-        },
     });
     editorView.focus()
 
@@ -46,3 +42,5 @@ export const onBlockQuote = (editorView: EditorView) => insertAndChangeCursor({ 
 export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "[text](link)", cursorOffest: 1 })
 export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
 export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: `\n\n\`<draw id=${getUTCTimestamp()} caption="" dark=true/>\`\n\n`, cursorOffest: 12 })
+
+export const onSandbox = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n```sandbox\n\n```", cursorOffest: 12 })

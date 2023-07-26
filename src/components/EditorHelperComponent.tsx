@@ -9,6 +9,7 @@ import {
 	onLatex,
 	onLink,
 	onOrdererdList,
+	onSandbox,
 	onSelect,
 	onUnordererdList,
 } from "@/utils/editorToolFunctions";
@@ -112,16 +113,14 @@ function EditorHelperComponent() {
 			>
 				Code block
 			</button>
-			{!pathname?.startsWith("/profile") && (
-				<button
-					className="btn btn-xs normal-case tool"
-					onClick={() => {
-						if (editorView) onImage(editorView);
-					}}
-				>
-					Image
-				</button>
-			)}
+			<button
+				className="btn btn-xs normal-case tool"
+				onClick={() => {
+					if (editorView) onImage(editorView);
+				}}
+			>
+				Image
+			</button>
 			<button
 				className="btn btn-xs normal-case tool"
 				onClick={() => {
@@ -166,16 +165,22 @@ function EditorHelperComponent() {
 			>
 				LaTeX
 			</button>
-			{!pathname?.startsWith("/profile") && (
-				<button
-					className="btn btn-xs normal-case tool"
-					onClick={() => {
-						if (editorView) onCanvas(editorView);
-					}}
-				>
-					Draw
-				</button>
-			)}
+			<button
+				className="btn btn-xs normal-case tool"
+				onClick={() => {
+					if (editorView) onCanvas(editorView);
+				}}
+			>
+				Draw
+			</button>
+			<button
+				className="btn btn-xs normal-case tool"
+				onClick={() => {
+					if (editorView) onSandbox(editorView);
+				}}
+			>
+				Sandbox
+			</button>
 			<button
 				className="btn btn-xs tool gap-2"
 				onClick={() => toggleVim()}

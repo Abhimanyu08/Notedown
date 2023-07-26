@@ -47,7 +47,6 @@ export const CodeBlockButton = ({
 						className || ""
 				}
 				onClick={onClick}
-				data-tip={tip}
 			>
 				{children}
 			</Button>

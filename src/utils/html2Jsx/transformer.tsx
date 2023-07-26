@@ -16,7 +16,7 @@ import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import Details from "@components/BlogPostComponents/Details";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import { Element, Root, Text } from "hast";
-import Codesandbox from "@components/BlogPostComponents/Codesandbox";
+import Codesandbox from "@components/BlogPostComponents/CodeSandbox/Codesandbox";
 
 let BLOCK_NUMBER = 0;
 let SANDBOX_NUMBER = 0;
@@ -141,11 +141,6 @@ const tagToTransformer: TagToTransformer = {
 		let codeNode = node.children[0] as HtmlAstElement;
 		let code = (codeNode.children[0] as Text)?.value || "";
 		code = code.trim();
-		if (typeof window !== "undefined") {
-			let tempElement = document.createElement("div");
-			tempElement.innerHTML = code;
-			code = tempElement.innerText || tempElement.textContent || "";
-		}
 
 		const className = codeNode.properties?.className;
 		const blockLanguage =
@@ -166,7 +161,13 @@ const tagToTransformer: TagToTransformer = {
 		}
 		if (blockLanguage === "sandbox") {
 			SANDBOX_NUMBER += 1;
-			return <Codesandbox SANDBOX_NUMBER={SANDBOX_NUMBER} />;
+			return (
+				<Codesandbox
+					SANDBOX_NUMBER={SANDBOX_NUMBER}
+					{...{ start, end }}
+					initialConfig={code}
+				/>
+			);
 		}
 		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
 	},
