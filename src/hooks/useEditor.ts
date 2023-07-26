@@ -14,22 +14,21 @@ interface useEditorProps {
     editorParentId: string
     mounted?: boolean
 }
-function useEditor({ language, code, mounted, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
+function useEditor({ language, code, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);
     // const { setRunningBlock } = useContext(BlogContext)
 
 
     useEffect(() => {
-        if (mounted === false) return
         const editorParent = document.getElementById(editorParentId)
         if (!editorParent) return
-        if (language && !Array.from([...ALLOWED_LANGUAGES, "markdown"]).includes(language)) code = `You specified ${language} as the language. Only supported languages are rust,python and javascript`
+        if (language && !Array.from([...ALLOWED_LANGUAGES, "markdown", "json"]).includes(language)) code = `You specified ${language} as the language. Only supported languages are rust,python and javascript`
         if (!language) code = "Please specify a language in the frontmatter"
 
         editorParent?.replaceChildren("")
 
 
-        langToCodeMirrorExtension(language as typeof ALLOWED_LANGUAGES[number] || "markdown").then((languageExtension) => {
+        langToCodeMirrorExtension(language as any).then((languageExtension) => {
 
             let startState = EditorState.create({
                 doc: code,
@@ -46,7 +45,7 @@ function useEditor({ language, code, mounted, editorParentId }: useEditorProps):
             setEditorView(view);
         })
 
-    }, [code, mounted, language]);
+    }, [code, language]);
     useEffect(() => {
         if (!editorView) return
         return () => {

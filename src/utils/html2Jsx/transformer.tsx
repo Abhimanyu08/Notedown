@@ -16,8 +16,10 @@ import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import Details from "@components/BlogPostComponents/Details";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import { Element, Root, Text } from "hast";
+import Codesandbox from "@components/BlogPostComponents/Codesandbox";
 
 let BLOCK_NUMBER = 0;
+let SANDBOX_NUMBER = 0;
 let footNotes: { id: number; node: any }[] = [];
 
 const attributes: (typeof defaultSchema)["attributes"] = {
@@ -60,6 +62,7 @@ export function transformer(
 ): JSX.Element {
 	if (node.type === "root") {
 		BLOCK_NUMBER = 0;
+		SANDBOX_NUMBER = 0;
 		footNotes = [];
 		return (
 			<main>
@@ -135,8 +138,6 @@ const tagToTransformer: TagToTransformer = {
 		return <hr />;
 	},
 	pre: (node) => {
-		//node = {tagName: "pre", attributes?: {language: 'sql'}, children: [{tagName: "code", chidlren: [{"tagName": "text", text: code}]}]}
-
 		let codeNode = node.children[0] as HtmlAstElement;
 		let code = (codeNode.children[0] as Text)?.value || "";
 		code = code.trim();
@@ -163,11 +164,10 @@ const tagToTransformer: TagToTransformer = {
 				/>
 			);
 		}
-
-		// if (blockLanguage === "details") {
-		// 	console.log(node);
-		// }
-
+		if (blockLanguage === "sandbox") {
+			SANDBOX_NUMBER += 1;
+			return <Codesandbox SANDBOX_NUMBER={SANDBOX_NUMBER} />;
+		}
 		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
 	},
 

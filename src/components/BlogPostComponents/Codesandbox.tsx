@@ -1,4 +1,5 @@
 "use client";
+import useEditor from "@/hooks/useEditor";
 import {
 	SandpackProvider,
 	SandpackCodeEditor,
@@ -6,29 +7,16 @@ import {
 } from "@codesandbox/sandpack-react";
 import React from "react";
 
-// const defaultSandpaockProps: SandpackProps = {
-
-// 	template: "react",
-// 	files: {
-// 		"/App.js": `export default function App() {
-//   return <h1>Hello Sandpack</h1>
-// }`},
-
-// 	options: {
-// 		layout: "console",
-// 		closableTabs: true,
-
-// 	}
-// }
-
-function Codesandbox({ settingsString }: { settingsString: string }) {
+function Codesandbox({ SANDBOX_NUMBER }: { SANDBOX_NUMBER: number }) {
+	const { editorView: jsonEditorView } = useEditor({
+		code: "",
+		editorParentId: `sandbox-${SANDBOX_NUMBER}`,
+		language: "json",
+	});
 	return (
-		<SandpackProvider {...JSON.parse(settingsString)}>
-			<div className="flex flex-col gap-2">
-				<SandpackCodeEditor style={{ height: 400 }} showTabs={true} />
-				<SandpackPreview style={{ aspectRatio: 4 / 2 }} />
-			</div>
-		</SandpackProvider>
+		<div className="w-full">
+			<div className="" id={`sandbox-${SANDBOX_NUMBER}`}></div>
+		</div>
 	);
 }
 
