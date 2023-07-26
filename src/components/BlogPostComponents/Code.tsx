@@ -25,6 +25,12 @@ import { usePathname } from "next/navigation";
 import path from "path";
 import Terminal from "./Terminal";
 import { AiOutlineSync } from "react-icons/ai";
+import {
+	CodeBlock,
+	CodeBlockButton,
+	CodeBlockButtons,
+} from "@components/EditorComponents/GenericCodeBlock";
+import useToggleVim from "@/hooks/useToggleVim";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
@@ -46,26 +52,17 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	const markdownEditorContext = useContext(EditorContext);
 	const { language } = blogState.blogMeta;
 
-	const [mounted, setMounted] = useState(false);
 	const [openShell, setOpenShell] = useState(false);
 	const pathname = usePathname();
 
-	const [vimCompartment, setVimCompartment] = useState<Compartment>();
 	const { editorView } = useEditor({
 		language: language!,
 		code,
-		mounted,
 		editorParentId: `codearea-${blockNumber}`,
 	});
-
-	useEffect(() => {
-		if (!mounted) setMounted(true);
-	}, [mounted]);
-	// useTerminal({
-	// 	containerId: blogState.containerId,
-	// 	blockNumber,
-	// 	mounted,
-	// });
+	const { toggleVim, vimEnabled: vimEnabledLocally } = useToggleVim({
+		editorView,
+	});
 
 	useEffect(() => {
 		if (!editorView) return;
@@ -104,22 +101,22 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	};
 
 	useEffect(() => {
-		if (!editorView || !language) return;
-		if (blogState.vimEnabled) {
-			const compartment = new Compartment();
-			setVimCompartment(compartment);
-			editorView.dispatch({
-				effects: StateEffect.appendConfig.of(compartment!.of(vim())),
-				// editorState.editorView.state.facet()
-			});
+		if (vimEnabledLocally && !blogState.vimEnabled) {
+			dispatch({ type: "toggle vim", payload: null });
 		}
-		if (!blogState.vimEnabled) {
-			if (!vimCompartment) return;
-			editorView.dispatch({
-				effects: vimCompartment?.reconfigure([]),
-			});
+		if (!vimEnabledLocally && blogState.vimEnabled) {
+			dispatch({ type: "toggle vim", payload: null });
 		}
-	}, [blogState.vimEnabled, editorView]);
+	}, [vimEnabledLocally]);
+
+	useEffect(() => {
+		if (blogState.vimEnabled && !vimEnabledLocally) {
+			toggleVim();
+		}
+		if (!blogState.vimEnabled && vimEnabledLocally) {
+			toggleVim();
+		}
+	}, [blogState.vimEnabled]);
 
 	const onSync = () => {
 		if (!markdownEditorContext || !editorView) return;
@@ -143,51 +140,47 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	};
 
 	return (
-		<div className="flex flex-col w-full ">
-			<div className="flex flex-row  gap-5 w-fit self-end border-[1px] border-b-0 border-white/50 bg-[#15181c] py-1 px-3 rounded-t-md">
-				{mounted && (
-					<>
-						<CodeAreaButton
-							onClick={() => {
-								// setRunningBlock(blockNumber);
-								setOpenShell(true);
-								dispatch({
-									type: "set running block",
-									payload: blockNumber,
-								});
-							}}
-							tip="Run Code (Shift+Enter)"
-						>
-							<BsPlayFill size={16} />
-						</CodeAreaButton>
-						<CodeAreaButton
-							onClick={() => {
-								// setRunningBlock(blockNumber);
-								setOpenShell(true);
-								dispatch({
-									type: "set writing block",
-									payload: blockNumber,
-								});
-							}}
-							tip="Write code to file without running"
-						>
-							<BsPencilFill size={11} />
-						</CodeAreaButton>
-						{pathname?.startsWith("/write") && (
-							<CodeAreaButton
-								onClick={() => onSync()}
-								className="md:tooltip"
-								tip="Sync code to markdown"
-							>
-								<AiOutlineSync size={14} />
-							</CodeAreaButton>
-						)}
-					</>
+		<CodeBlock>
+			<CodeBlockButtons>
+				<CodeBlockButton
+					onClick={() => {
+						// setRunningBlock(blockNumber);
+						setOpenShell(true);
+						dispatch({
+							type: "set running block",
+							payload: blockNumber,
+						});
+					}}
+					tip="Run Code (Shift+Enter)"
+				>
+					<BsPlayFill size={16} />
+				</CodeBlockButton>
+				<CodeBlockButton
+					onClick={() => {
+						// setRunningBlock(blockNumber);
+						setOpenShell(true);
+						dispatch({
+							type: "set writing block",
+							payload: blockNumber,
+						});
+					}}
+					tip="Write code to file without running"
+				>
+					<BsPencilFill size={11} />
+				</CodeBlockButton>
+				{pathname?.startsWith("/write") && (
+					<CodeBlockButton
+						onClick={() => onSync()}
+						className="md:tooltip"
+						tip="Sync code to markdown"
+					>
+						<AiOutlineSync size={14} />
+					</CodeBlockButton>
 				)}
-				<CodeAreaButton onClick={onUndo} tip="back to original code">
+				<CodeBlockButton onClick={onUndo} tip="back to original code">
 					<FcUndo className="text-cyan-400" />
-				</CodeAreaButton>
-				<CodeAreaButton
+				</CodeBlockButton>
+				<CodeBlockButton
 					onClick={() => setOpenShell((prev) => !prev)}
 					tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
 				>
@@ -196,14 +189,10 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 					) : (
 						<MdHideImage className="text-cyan-400" />
 					)}
-				</CodeAreaButton>
-				<CodeAreaButton
-					className=" hidden lg:block mr-1"
-					tip="Enable Vim"
-					onClick={() => {
-						// if (setVimEnabled) setVimEnabled((prev) => !prev);
-						dispatch({ type: "toggle vim", payload: {} });
-					}}
+				</CodeBlockButton>
+				<CodeBlockButton
+					tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
+					onClick={() => toggleVim()}
 				>
 					<SiVim
 						className={`${
@@ -211,56 +200,23 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 						}`}
 						size={14}
 					/>
-				</CodeAreaButton>
-			</div>
-			{mounted ? (
-				<div
-					className="w-full border-[1px] border-white/50 rounded-sm"
-					id={`codearea-${blockNumber}`}
-					onDoubleClick={() => {
-						// if (setRunningBlock) setRunningBlock(blockNumber);
-						dispatch({
-							type: "set running block",
-							payload: blockNumber,
-						});
-					}}
-				></div>
-			) : (
-				<pre>
-					<code>{code}</code>
-				</pre>
-			)}
+				</CodeBlockButton>
+			</CodeBlockButtons>
+			<div
+				className="w-full border-[1px] border-white/50 rounded-sm"
+				id={`codearea-${blockNumber}`}
+				onDoubleClick={() => {
+					// if (setRunningBlock) setRunningBlock(blockNumber);
+					dispatch({
+						type: "set running block",
+						payload: blockNumber,
+					});
+				}}
+			></div>
 
-			{mounted && <Terminal {...{ blockNumber, openShell }} />}
-		</div>
+			<Terminal {...{ blockNumber, openShell }} />
+		</CodeBlock>
 	);
 }
-
-const CodeAreaButton = ({
-	children,
-	tip,
-	className,
-	onClick,
-}: {
-	children: React.ReactNode;
-	tip: string;
-	className?: string;
-	onClick?: React.MouseEventHandler<HTMLButtonElement>;
-}) => {
-	return (
-		<ToolTipComponent tip={tip} side="top">
-			<Button
-				className={
-					"text-cyan-400 hover:scale-110 active:scale-90 " +
-						className || ""
-				}
-				onClick={onClick}
-				data-tip={tip}
-			>
-				{children}
-			</Button>
-		</ToolTipComponent>
-	);
-};
 
 export default memo(Code);

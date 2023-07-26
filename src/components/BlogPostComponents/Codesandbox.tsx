@@ -5,7 +5,13 @@ import {
 	SandpackCodeEditor,
 	SandpackPreview,
 } from "@codesandbox/sandpack-react";
+import {
+	CodeBlock,
+	CodeBlockButton,
+	CodeBlockButtons,
+} from "@components/EditorComponents/GenericCodeBlock";
 import React from "react";
+import { SiVim } from "react-icons/si";
 
 function Codesandbox({ SANDBOX_NUMBER }: { SANDBOX_NUMBER: number }) {
 	const { editorView: jsonEditorView } = useEditor({
@@ -14,9 +20,17 @@ function Codesandbox({ SANDBOX_NUMBER }: { SANDBOX_NUMBER: number }) {
 		language: "json",
 	});
 	return (
-		<div className="w-full">
-			<div className="" id={`sandbox-${SANDBOX_NUMBER}`}></div>
-		</div>
+		<CodeBlock>
+			<CodeBlockButtons>
+				<CodeBlockButton tip="Enable Vim">
+					<SiVim size={14} />
+				</CodeBlockButton>
+			</CodeBlockButtons>
+			<div
+				className="w-full border-[1px] border-white/50 rounded-sm"
+				id={`sandbox-${SANDBOX_NUMBER}`}
+			></div>
+		</CodeBlock>
 	);
 }
 

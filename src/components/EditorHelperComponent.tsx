@@ -22,6 +22,7 @@ import { EditorContext } from "@/app/write/components/EditorContext";
 import { Compartment } from "@codemirror/state";
 import { vim } from "@replit/codemirror-vim";
 import { usePathname } from "next/navigation";
+import useToggleVim from "@/hooks/useToggleVim";
 
 // const compartment = new Compartment();
 
@@ -29,36 +30,37 @@ function EditorHelperComponent() {
 	const { editorState } = useContext(EditorContext);
 	const { editorView } = editorState;
 	const pathname = usePathname();
-	const [vimCompartment, setVimCompartment] = useState<Compartment>();
-	const [vimEnabled, setVimEnabled] = useState(false);
+	const { toggleVim, vimEnabled } = useToggleVim({ editorView });
+	// const [vimCompartment, setVimCompartment] = useState<Compartment>();
+	// const [vimEnabled, setVimEnabled] = useState(false);
 
-	useEffect(() => {
-		if (!vimCompartment) {
-			const compartment = new Compartment();
-			setVimCompartment(compartment);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	if (!vimCompartment) {
+	// 		const compartment = new Compartment();
+	// 		setVimCompartment(compartment);
+	// 	}
+	// }, []);
 
-	const onToggleVim = () => {
-		if (!editorState.editorView) return;
+	// const onToggleVim = () => {
+	// 	if (!editorState.editorView) return;
 
-		if (!vimEnabled) {
-			editorState.editorView.dispatch({
-				effects: StateEffect.appendConfig.of(vimCompartment!.of(vim())),
-				// editorState.editorView.state.facet()
-			});
-		}
-		// C
-		if (vimEnabled) {
-			editorState.editorView.dispatch({
-				effects: vimCompartment?.reconfigure([]),
-			});
-			//we need to set a new compartment for next time someone enables vim
-			const compartment = new Compartment();
-			setVimCompartment(compartment);
-		}
-		setVimEnabled((prev) => !prev);
-	};
+	// 	if (!vimEnabled) {
+	// 		editorState.editorView.dispatch({
+	// 			effects: StateEffect.appendConfig.of(vimCompartment!.of(vim())),
+	// 			// editorState.editorView.state.facet()
+	// 		});
+	// 	}
+	// 	// C
+	// 	if (vimEnabled) {
+	// 		editorState.editorView.dispatch({
+	// 			effects: vimCompartment?.reconfigure([]),
+	// 		});
+	// 		//we need to set a new compartment for next time someone enables vim
+	// 		const compartment = new Compartment();
+	// 		setVimCompartment(compartment);
+	// 	}
+	// 	setVimEnabled((prev) => !prev);
+	// };
 
 	return (
 		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
@@ -174,7 +176,10 @@ function EditorHelperComponent() {
 					Draw
 				</button>
 			)}
-			<button className="btn btn-xs tool gap-2" onClick={onToggleVim}>
+			<button
+				className="btn btn-xs tool gap-2"
+				onClick={() => toggleVim()}
+			>
 				<SiVim
 					className={` ${
 						vimEnabled ? "text-lime-400" : "text-white"
