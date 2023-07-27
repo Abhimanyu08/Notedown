@@ -9,19 +9,18 @@ function SandboxRouter({
 	SANDBOX_NUMBER,
 	start,
 	end,
-	configString,
-}: ComponentProps<typeof CodesandboxWithEditor> & { configString: string }) {
+	initialConfig,
+}: ComponentProps<typeof CodesandboxWithEditor>) {
 	const pathname = usePathname();
 	if (pathname?.startsWith("/write")) {
 		return (
 			<CodesandboxWithEditor
-				{...{ SANDBOX_NUMBER, start, end, initialConfig: configString }}
+				{...{ SANDBOX_NUMBER, start, end, initialConfig }}
 			/>
 		);
 	}
 
-	const config: SandpackConfigType = JSON.parse(configString);
-	console.log(config);
+	const config: SandpackConfigType = JSON.parse(initialConfig);
 
 	return <CustomSandpack {...config} />;
 }

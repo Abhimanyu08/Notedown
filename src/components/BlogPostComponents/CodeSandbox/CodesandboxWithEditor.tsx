@@ -34,10 +34,12 @@ export const JsonEditorContext = createContext<{
 
 function CodesandboxWithEditor({
 	SANDBOX_NUMBER,
+	initialConfig,
 	start,
 	end,
 }: {
 	SANDBOX_NUMBER: number;
+	initialConfig: string;
 	start: number;
 	end: number;
 }) {
@@ -47,7 +49,7 @@ function CodesandboxWithEditor({
 	const [sandpackProps, setSandPackProps] = useState<SandpackConfigType>();
 
 	const { editorView: jsonEditorView } = useEditor({
-		code: JSON.stringify(defaultSandpackProps, null, 2),
+		code: initialConfig || JSON.stringify(defaultSandpackProps, null, 2),
 		editorParentId: `sandbox-${SANDBOX_NUMBER}`,
 		language: "json",
 	});
@@ -68,6 +70,17 @@ function CodesandboxWithEditor({
 			]),
 		});
 	}, [jsonEditorView]);
+	useEffect(() => {
+		if (!jsonEditorView) return;
+		if (
+			initialConfig.trim().replace(/\n/g, "") !==
+			jsonEditorView?.state.sliceDoc().trim().replace(/\n/g, "")
+		) {
+			setError("Please update json using the above editor");
+		} else {
+			setError("");
+		}
+	}, [initialConfig, jsonEditorView]);
 
 	useSyncHook({
 		editorView: jsonEditorView,
@@ -87,6 +100,7 @@ function CodesandboxWithEditor({
 
 			setSandPackProps(configObject);
 			setEditConfig(false);
+			setError("");
 		} catch (e) {
 			try {
 				setError(fromZodError(e as ZodError).toString());

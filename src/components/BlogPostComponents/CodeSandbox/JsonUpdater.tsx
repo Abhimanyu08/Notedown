@@ -24,7 +24,7 @@ function JsonUpdater() {
 					{
 						from: 0,
 						to: jsonEditorView.state.doc.length,
-						insert: JSON.stringify(propsCopy, null, 2),
+						insert: JSON.stringify(propsCopy, null, 2) + "\n",
 					},
 				],
 			});

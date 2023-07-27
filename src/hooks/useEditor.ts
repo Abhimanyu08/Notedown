@@ -48,7 +48,7 @@ function useEditor({ language, code, editorParentId }: useEditorProps): { editor
     }, [language]);
 
     useEffect(() => {
-        if (!editorView) return
+        if (!editorView || language === "json") return
 
         // if code is changing in the markdown, then update this to reflect that. Earlier we were creating a new editorView on every code change which wasn't ideal.
         editorView.dispatch({

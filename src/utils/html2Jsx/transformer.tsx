@@ -162,7 +162,7 @@ const tagToTransformer: TagToTransformer = {
 			SANDBOX_NUMBER += 1;
 			return (
 				<SandboxRouter
-					configString={code}
+					initialConfig={code}
 					SANDBOX_NUMBER={SANDBOX_NUMBER}
 					{...{ start, end }}
 				/>
