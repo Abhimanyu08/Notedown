@@ -11,14 +11,6 @@ import CustomSandpack from "./CustomSandpack";
 import JsonConfigEditor from "./JsonConfigEditor";
 import { SandpackConfigType, sandboxConfigSchema } from "./types";
 
-const defaultSandboxProps: SandpackConfigType = {
-	template: "static",
-	options: {
-		editorHeight: 500,
-	},
-	theme: "dark",
-};
-
 export const JsonEditorContext = createContext<{
 	jsonEditorView: EditorView | null;
 	sandpackProps: SandpackConfigType | null;
@@ -37,6 +29,14 @@ function CodesandboxWithEditor({
 	start?: number;
 	end?: number;
 }) {
+	const defaultSandboxProps: SandpackConfigType = {
+		template: "static",
+		options: {
+			editorHeight: 500,
+			showConsole: true,
+		},
+		theme: "dark",
+	};
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
 	const editorStateContext = useContext(EditorContext);

@@ -55,6 +55,7 @@ export const sandboxConfigSchema = z.object({
             previewHeight: z.number().optional(),
             editorWidthPercentage: z.number().optional(), // default - 50
             autorun: z.boolean().optional(),
+            showConsole: z.boolean().optional()
         })
 });
 

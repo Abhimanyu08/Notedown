@@ -16,7 +16,6 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import JsonUpdater from "./JsonUpdater";
 import { SandpackConfigType } from "./types";
-// import {  } from "@codesandbox/sandpack-themes";
 
 function CustomSandpack(props: SandpackConfigType) {
 	const [previewOrConsole, setPreviewOrConsole] = useState<
@@ -86,9 +85,13 @@ function CustomSandpack(props: SandpackConfigType) {
 					style={{
 						height: expand
 							? "100%"
-							: props.options?.editorHeight || 300,
+							: props.options?.editorHeight !== undefined
+							? props.options.editorHeight
+							: 300,
 					}}
 					className={cn(expand && "basis-5/12")}
+					// extensions={[autocompletion()]}
+					// extensionsKeymap={[completionKeymap]}
 				/>
 				<JsonUpdater />
 				<div
@@ -98,26 +101,36 @@ function CustomSandpack(props: SandpackConfigType) {
 						expand && "basis-5/12 border-r-2 border-b-2"
 					)}
 				>
-					<Tabs
-						className={cn(
-							"[&>*]:py-1 border-b-2 border-border gap-3"
-						)}
-					>
-						<TabChildren active={previewOrConsole === "preview"}>
-							<Button
-								onClick={() => setPreviewOrConsole("preview")}
+					{props.options.showConsole && (
+						<Tabs
+							className={cn(
+								"[&>*]:py-1 border-b-2 border-border gap-3"
+							)}
+						>
+							<TabChildren
+								active={previewOrConsole === "preview"}
 							>
-								Preview
-							</Button>
-						</TabChildren>
-						<TabChildren active={previewOrConsole === "console"}>
-							<Button
-								onClick={() => setPreviewOrConsole("console")}
+								<Button
+									onClick={() =>
+										setPreviewOrConsole("preview")
+									}
+								>
+									Preview
+								</Button>
+							</TabChildren>
+							<TabChildren
+								active={previewOrConsole === "console"}
 							>
-								Console
-							</Button>
-						</TabChildren>
-					</Tabs>
+								<Button
+									onClick={() =>
+										setPreviewOrConsole("console")
+									}
+								>
+									Console
+								</Button>
+							</TabChildren>
+						</Tabs>
+					)}
 					<div className={cn("border-border p-4 grow")}>
 						<SandpackPreview
 							className={cn(
@@ -133,20 +146,22 @@ function CustomSandpack(props: SandpackConfigType) {
 									: "100%",
 							}}
 						/>
-						<SandpackConsole
-							className={cn(
-								"relative top-0 left-0 w-full hidden",
-								previewOrConsole === "console"
-									? "flex"
-									: "!hidden"
-							)}
-							style={{
-								height: !expand
-									? props.options.previewHeight || 200
-									: "100%",
-							}}
-							// standalone={true}
-						/>
+						{props.options.showConsole && (
+							<SandpackConsole
+								className={cn(
+									"relative top-0 left-0 w-full hidden",
+									previewOrConsole === "console"
+										? "flex"
+										: "!hidden"
+								)}
+								style={{
+									height: !expand
+										? props.options.previewHeight || 200
+										: "100%",
+								}}
+								// standalone={true}
+							/>
+						)}
 					</div>
 				</div>
 			</div>
