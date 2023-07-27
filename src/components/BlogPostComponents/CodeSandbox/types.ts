@@ -60,3 +60,12 @@ export const sandboxConfigSchema = z.object({
 });
 
 export type SandpackConfigType = z.infer<typeof sandboxConfigSchema>;
+
+export const defaultSandpackProps = {
+    template: "static",
+    options: {
+        editorHeight: 500,
+        showConsole: true,
+    },
+    theme: "dark",
+};

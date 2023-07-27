@@ -69,9 +69,11 @@ function useBlogStateUpdate() {
 
 				update(update: ViewUpdate) {
 					if (update.docChanged) {
+						console.log("updating blog state");
 						const markdown = update.state.sliceDoc();
 
 						localStorage.setItem(localStorageDraftKey, markdown);
+						if (!update.view.hasFocus) return;
 						const { data, content, frontMatterLength } =
 							parseFrontMatter(markdown);
 						blogStateDispatch({

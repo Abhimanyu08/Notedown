@@ -1,31 +1,33 @@
 import { EditorContext } from "@/app/write/components/EditorContext";
+import { StateEffect } from "@codemirror/state";
 import { EditorView } from "codemirror";
-import { useContext, useCallback, useEffect } from "react";
+import { useContext, useCallback, useEffect, useState } from "react";
+import { Compartment } from "@codemirror/state";
+import { ViewPlugin, ViewUpdate } from "@codemirror/view";
 
-export default function useSyncHook({ editorView, startOffset, endOffset, id }: { editorView: EditorView | null, startOffset: number, endOffset: number, id: string }) {
+export default function useSyncHook({ editorView, startOffset, endOffset, sandbox = false }: { editorView: EditorView | null, startOffset: number, endOffset: number, sandbox?: boolean }) {
 
 
     const markdownEditorContext = useContext(EditorContext)
+    const [syncCompartment, setSyncCompartment] = useState<Compartment>()
 
-    const syncFunction = useCallback(() => {
+    const syncFunction = useCallback((start?: number, end?: number, code?: string) => {
         // this function syncs the codeblocks code to the markdown editor
         if (!markdownEditorContext || !editorView) return;
         const { editorState } = markdownEditorContext;
         const { editorView: markdownEditorView, frontMatterLength } =
             editorState;
-        const newCode = editorView.state.sliceDoc().trim();
-        if (!startOffset || !endOffset) {
-            console.log("no start or end");
-            return;
-        }
+        const newCode = code || editorView.state.sliceDoc()
         markdownEditorView?.dispatch({
             changes: [
                 {
-                    from: frontMatterLength + startOffset,
-                    to: frontMatterLength + endOffset,
-                    insert: newCode + "\n",
-                },
+                    from: frontMatterLength + (start || startOffset),
+                    to: frontMatterLength + (end || endOffset),
+                    insert: newCode,
+
+                }
             ],
+
         });
     }, [
         startOffset,
@@ -35,32 +37,34 @@ export default function useSyncHook({ editorView, startOffset, endOffset, id }: 
     ]);
 
     useEffect(() => {
-        if (!markdownEditorContext) return;
-        const { dispatch } = markdownEditorContext;
-        dispatch({
-            type: "set sync state",
-            payload: { [id]: false },
-        });
 
-        return () => {
-            dispatch({
-                type: "remove sync state",
-                payload: id,
-            });
-        };
-    }, []);
+        if (!editorView) return
+        const syncPlugin = ViewPlugin.fromClass(
+            class {
+                update(update: ViewUpdate) {
+                    if (update.docChanged && (update.view.hasFocus || sandbox)) {
+                        const code = update.state.sliceDoc()
+                        const previousCode = update.startState.sliceDoc()
+                        syncFunction(startOffset, startOffset + previousCode.length, code)
+                    }
+                }
+            })
 
-    useEffect(() => {
-        if (
-            markdownEditorContext.editorState.syncingCodeBlock ===
-            id
-        ) {
-            syncFunction();
-            markdownEditorContext.dispatch({
-                type: "set sync state",
-                payload: { [id]: true },
-            });
+        if (!syncCompartment) {
+            const compartment = new Compartment()
+            editorView?.dispatch({
+                effects: StateEffect.appendConfig.of(compartment.of(syncPlugin.extension))
+            })
+            setSyncCompartment(compartment)
+            return
         }
-    }, [markdownEditorContext?.editorState.syncingCodeBlock]);
-    return syncFunction
+        editorView?.dispatch({
+            effects: syncCompartment.reconfigure(syncPlugin.extension)
+        })
+
+
+    }, [editorView, startOffset, endOffset])
+
+
+
 }

@@ -43,7 +43,7 @@ export const CodeBlockButton = ({
 		<ToolTipComponent tip={tip} side="top">
 			<Button
 				className={
-					"text-cyan-400 hover:scale-110 active:scale-90 " +
+					"text-cyan-400 hover:scale-110 py-0 active:scale-90 " +
 						className || ""
 				}
 				onClick={onClick}

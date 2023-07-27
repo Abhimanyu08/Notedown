@@ -43,11 +43,9 @@ interface CodeProps {
 
 function Code({ code, blockNumber, start, end }: CodeProps) {
 	const { blogState, dispatch } = useContext(BlogContext);
-	const markdownEditorContext = useContext(EditorContext);
 	const { language } = blogState.blogMeta;
 
 	const [openShell, setOpenShell] = useState(false);
-	const pathname = usePathname();
 
 	const { editorView } = useEditor({
 		language: language!,
@@ -57,11 +55,10 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	const { toggleVim, vimEnabled: vimEnabledLocally } = useToggleVim({
 		editorView,
 	});
-	const syncFunction = useSyncHook({
+	useSyncHook({
 		editorView,
 		startOffset: start + 4,
 		endOffset: end - 3,
-		id: `CODE_${blockNumber}`,
 	});
 
 	useEffect(() => {
@@ -98,7 +95,6 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 		editorView?.dispatch({
 			changes: { from: 0, to: docLength, insert: code },
 		});
-		syncFunction();
 	};
 
 	useEffect(() => {
@@ -111,7 +107,6 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				<CodeBlockButton
 					onClick={() => {
 						// setRunningBlock(blockNumber);
-						syncFunction();
 						setOpenShell(true);
 						dispatch({
 							type: "set running block",
@@ -125,7 +120,6 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				<CodeBlockButton
 					onClick={() => {
 						// setRunningBlock(blockNumber);
-						syncFunction();
 						setOpenShell(true);
 						dispatch({
 							type: "set writing block",

@@ -1,11 +1,13 @@
 import { EditorView } from "codemirror";
 import getUTCTimestamp from "./getUtcTimeStamp";
+import { defaultSandpackProps } from "@components/BlogPostComponents/CodeSandbox/types";
 
 function insertAndChangeCursor({ editorView, toInsert, cursorOffest }: { editorView: EditorView, toInsert: string, cursorOffest: number }) {
 
     // const docLength =
     //     editorView?.state.doc.length;
     // if (!docLength) return;
+    editorView.focus()
     const cursorPos = editorView.state.selection.ranges[0].from
     editorView?.dispatch({
         changes: {
@@ -13,7 +15,6 @@ function insertAndChangeCursor({ editorView, toInsert, cursorOffest }: { editorV
             insert: toInsert,
         },
     });
-    editorView.focus()
 
 }
 
@@ -43,4 +44,13 @@ export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editor
 export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
 export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: `\n\n\`<draw id=${getUTCTimestamp()} caption="" dark=true/>\`\n\n`, cursorOffest: 12 })
 
-export const onSandbox = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n```sandbox\n\n```", cursorOffest: 12 })
+const configString = JSON.stringify(
+    defaultSandpackProps
+    , null, 2)
+export const onSandbox = (editorView: EditorView) => insertAndChangeCursor(
+    {
+        editorView,
+        toInsert: `\n\`\`\`sandbox\n${configString} \n\`\`\``, cursorOffest: 12
+    })
+
+

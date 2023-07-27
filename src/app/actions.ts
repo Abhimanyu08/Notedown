@@ -52,21 +52,31 @@ export async function deletePostAction(postId: number) {
         .from(SUPABASE_POST_TABLE)
         .delete()
         .match({ id: postId })
-        .select("filename, image_folder, published")
+        .select("filename, image_folder, published,created_by")
         .single();
 
     if (data) {
-        await supabase.storage
+        const imageFolder = data.image_folder || `${data.created_by}/${postId}`
+        const { data: files } = await supabase.storage
             .from(SUPABASE_FILES_BUCKET)
-            .remove([data?.filename]);
+            .list(imageFolder);
+
+        if (files) {
+            const fileNames = files.map(
+                (i) => `${imageFolder}/${i.name}`
+            );
+            await supabase.storage
+                .from(SUPABASE_IMAGE_BUCKET)
+                .remove(fileNames);
+        }
 
         const { data: imageFiles } = await supabase.storage
             .from(SUPABASE_IMAGE_BUCKET)
-            .list(data.image_folder);
+            .list(imageFolder);
 
         if (imageFiles) {
             const imageNames = imageFiles.map(
-                (i) => `${data.image_folder}/${i.name}`
+                (i) => `${imageFolder}/${i.name}`
             );
             await supabase.storage
                 .from(SUPABASE_IMAGE_BUCKET)

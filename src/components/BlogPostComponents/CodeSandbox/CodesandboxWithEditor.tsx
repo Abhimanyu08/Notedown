@@ -16,7 +16,11 @@ import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import CustomSandpack from "./CustomSandpack";
 import JsonConfigEditor from "./JsonConfigEditor";
-import { SandpackConfigType, sandboxConfigSchema } from "./types";
+import {
+	SandpackConfigType,
+	defaultSandpackProps,
+	sandboxConfigSchema,
+} from "./types";
 import { keymap } from "@codemirror/view";
 import useSyncHook from "@/hooks/useSyncHook";
 
@@ -30,33 +34,20 @@ export const JsonEditorContext = createContext<{
 
 function CodesandboxWithEditor({
 	SANDBOX_NUMBER,
-	initialConfig,
 	start,
 	end,
 }: {
 	SANDBOX_NUMBER: number;
-	initialConfig?: string;
 	start: number;
 	end: number;
 }) {
-	const defaultSandboxProps: SandpackConfigType = initialConfig
-		? JSON.parse(initialConfig)
-		: {
-				template: "static",
-				options: {
-					editorHeight: 500,
-					showConsole: true,
-				},
-				theme: "dark",
-		  };
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
 	const markdownEditorContext = useContext(EditorContext);
-	const [sandpackProps, setSandPackProps] =
-		useState<SandpackConfigType>(defaultSandboxProps);
+	const [sandpackProps, setSandPackProps] = useState<SandpackConfigType>();
 
 	const { editorView: jsonEditorView } = useEditor({
-		code: JSON.stringify(sandpackProps || defaultSandboxProps, null, 2),
+		code: JSON.stringify(defaultSandpackProps, null, 2),
 		editorParentId: `sandbox-${SANDBOX_NUMBER}`,
 		language: "json",
 	});
@@ -78,11 +69,11 @@ function CodesandboxWithEditor({
 		});
 	}, [jsonEditorView]);
 
-	const syncFunction = useSyncHook({
+	useSyncHook({
 		editorView: jsonEditorView,
 		startOffset: start + 11,
 		endOffset: end - 3,
-		id: `SANDBOX_${SANDBOX_NUMBER}`,
+		sandbox: true,
 	});
 
 	const onSandboxGenerate = () => {
@@ -96,8 +87,6 @@ function CodesandboxWithEditor({
 
 			setSandPackProps(configObject);
 			setEditConfig(false);
-
-			syncFunction();
 		} catch (e) {
 			try {
 				setError(fromZodError(e as ZodError).toString());
@@ -108,7 +97,9 @@ function CodesandboxWithEditor({
 	};
 
 	return (
-		<JsonEditorContext.Provider value={{ jsonEditorView, sandpackProps }}>
+		<JsonEditorContext.Provider
+			value={{ jsonEditorView, sandpackProps: sandpackProps || null }}
+		>
 			<div className="w-full">
 				<div
 					className={cn(

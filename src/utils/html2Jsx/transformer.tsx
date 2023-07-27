@@ -141,7 +141,6 @@ const tagToTransformer: TagToTransformer = {
 	pre: (node) => {
 		let codeNode = node.children[0] as HtmlAstElement;
 		let code = (codeNode.children[0] as Text)?.value || "";
-		code = code.trim();
 
 		const className = codeNode.properties?.className;
 		const blockLanguage =
@@ -153,7 +152,6 @@ const tagToTransformer: TagToTransformer = {
 			BLOCK_NUMBER += 1;
 			return (
 				<Code
-					key={BLOCK_NUMBER}
 					code={code}
 					blockNumber={BLOCK_NUMBER}
 					{...{ start, end }}
