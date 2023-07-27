@@ -17,6 +17,7 @@ import Details from "@components/BlogPostComponents/Details";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import { Element, Root, Text } from "hast";
 import CodesandboxWithEditor from "@components/BlogPostComponents/CodeSandbox/CodesandboxWithEditor";
+import SandboxRouter from "@components/BlogPostComponents/CodeSandbox/SandboxRouters";
 
 let BLOCK_NUMBER = 0;
 let SANDBOX_NUMBER = 0;
@@ -162,10 +163,10 @@ const tagToTransformer: TagToTransformer = {
 		if (blockLanguage === "sandbox") {
 			SANDBOX_NUMBER += 1;
 			return (
-				<CodesandboxWithEditor
+				<SandboxRouter
+					configString={code}
 					SANDBOX_NUMBER={SANDBOX_NUMBER}
 					{...{ start, end }}
-					initialConfig={code}
 				/>
 			);
 		}

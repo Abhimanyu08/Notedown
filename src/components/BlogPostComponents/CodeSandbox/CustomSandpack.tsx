@@ -16,6 +16,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import JsonUpdater from "./JsonUpdater";
 import { SandpackConfigType } from "./types";
+import { usePathname } from "next/navigation";
 
 function CustomSandpack(props: SandpackConfigType) {
 	const [previewOrConsole, setPreviewOrConsole] = useState<
@@ -25,6 +26,7 @@ function CustomSandpack(props: SandpackConfigType) {
 	const [theme, setTheme] = useState<
 		SandpackTheme | "auto" | "light" | "dark"
 	>();
+	const pathname = usePathname();
 
 	useEffect(() => {
 		if (!props.theme) return;
@@ -48,6 +50,7 @@ function CustomSandpack(props: SandpackConfigType) {
 			files={props.files}
 			theme={theme}
 		>
+			{pathname?.includes("/write") && <JsonUpdater />}
 			<div
 				className={cn(
 					"flex flex-col relative w-full border-border border-2",
@@ -93,7 +96,6 @@ function CustomSandpack(props: SandpackConfigType) {
 					// extensions={[autocompletion()]}
 					// extensionsKeymap={[completionKeymap]}
 				/>
-				<JsonUpdater />
 				<div
 					className={cn(
 						"flex flex-col bg-black h-full",

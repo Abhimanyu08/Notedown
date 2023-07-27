@@ -21,6 +21,7 @@ export const JsonEditorContext = createContext<{
 
 function CodesandboxWithEditor({
 	SANDBOX_NUMBER,
+	initialConfig,
 	start,
 	end,
 }: {
@@ -29,14 +30,16 @@ function CodesandboxWithEditor({
 	start?: number;
 	end?: number;
 }) {
-	const defaultSandboxProps: SandpackConfigType = {
-		template: "static",
-		options: {
-			editorHeight: 500,
-			showConsole: true,
-		},
-		theme: "dark",
-	};
+	const defaultSandboxProps: SandpackConfigType = initialConfig
+		? JSON.parse(initialConfig)
+		: {
+				template: "static",
+				options: {
+					editorHeight: 500,
+					showConsole: true,
+				},
+				theme: "dark",
+		  };
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
 	const editorStateContext = useContext(EditorContext);
