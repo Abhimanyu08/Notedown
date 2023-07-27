@@ -3,12 +3,7 @@ import "@/styles/globals.css";
 import "@/styles/xterm.css";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Metadata } from "next";
-import {
-	Noto_Serif,
-	Nunito_Sans,
-	IBM_Plex_Mono,
-	Roboto,
-} from "next/font/google";
+import { Noto_Serif, Nunito, IBM_Plex_Mono, Roboto } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
@@ -26,7 +21,7 @@ const mono = IBM_Plex_Mono({
 	variable: "--font-mono",
 	weight: ["400", "700"],
 });
-const sans = Nunito_Sans({
+const sans = Nunito({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-sans",

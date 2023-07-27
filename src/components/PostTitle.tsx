@@ -10,14 +10,14 @@ function PostTitle({
 }) {
 	return (
 		<HoverCard>
-			<HoverCardTrigger className="w-fit">
+			<HoverCardTrigger className="w-max">
 				<div className="text-xl text-black underline decoration-transparent group-hover:decoration-gray-300 transition-all duration-100 underline-offset-2 dark:text-gray-200 break-words max-w-3/4">
 					{title}{" "}
 				</div>
 			</HoverCardTrigger>
 			{description && (
-				<HoverCardContent className="" align="start">
-					{description}
+				<HoverCardContent className="w-max" side="right">
+					<span>{description}</span>
 				</HoverCardContent>
 			)}
 		</HoverCard>
