@@ -35,26 +35,34 @@ function Drafts() {
 				const timeStamp = /draft-(\d+)$/.exec(key)?.at(1);
 				const postId = /post-(\d+);/.exec(key)?.at(1);
 				const draftText = localStorage.getItem(key);
-				const draftData = parseFrontMatter(draftText!);
-				if (timeStamp) {
-					const formattedTimeStamp = new Date(parseInt(timeStamp));
-					const date = formatDate(
-						formattedTimeStamp.toLocaleDateString()
-					);
-					const longTime = formattedTimeStamp.toLocaleTimeString();
+				try {
+					const draftData = parseFrontMatter(draftText!);
+					if (timeStamp) {
+						const formattedTimeStamp = new Date(
+							parseInt(timeStamp)
+						);
+						const date = formatDate(
+							formattedTimeStamp.toLocaleDateString()
+						);
+						const longTime =
+							formattedTimeStamp.toLocaleTimeString();
 
-					const amOrPm = longTime.match(/[AP]M/)?.at(0);
-					const shortTime = longTime.split(":").slice(0, 2).join(":");
-					const time = `${shortTime} ${amOrPm}`;
-					draftsToAdd.push({
-						key,
-						timeStamp,
-						date,
-						time,
-						draftData,
-						postId,
-					});
-				}
+						const amOrPm = longTime.match(/[AP]M/)?.at(0);
+						const shortTime = longTime
+							.split(":")
+							.slice(0, 2)
+							.join(":");
+						const time = `${shortTime} ${amOrPm}`;
+						draftsToAdd.push({
+							key,
+							timeStamp,
+							date,
+							time,
+							draftData,
+							postId,
+						});
+					}
+				} catch (_) {}
 			}
 		}
 		setDrafts(draftsToAdd);
