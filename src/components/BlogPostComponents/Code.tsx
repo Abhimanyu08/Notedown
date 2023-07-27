@@ -98,8 +98,9 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	};
 
 	useEffect(() => {
-		toggleVim();
-	}, [blogState.vimEnabled]);
+		if (!editorView) return;
+		if (blogState.vimEnabled !== vimEnabledLocally) toggleVim();
+	}, [blogState.vimEnabled, editorView]);
 
 	return (
 		<CodeBlock>
