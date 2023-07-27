@@ -18,22 +18,51 @@ function OptionsToolbar() {
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const [startUpload, setStartUpload] = useState(false);
 
-	const { uploadFinished } = useUploadPost({
-		startUpload,
-	});
+	// const { uploadFinished } = useUploadPost({
+	// 	startUpload,
+	// });
 
-	const onUpload = async (currentEditorState: typeof editorState) => {
-		setStartUpload(true);
-		dispatch({
-			type: "set previous uploaded doc",
-			payload: currentEditorState.editorView!.state.doc,
-		});
-	};
 	useEffect(() => {
-		if (uploadFinished) {
+		if (!startUpload) return;
+
+		const { codeBlockToSyncState } = editorState;
+		let allInSync = true;
+		for (let [k, v] of Object.entries(codeBlockToSyncState)) {
+			if (!v) {
+				dispatch({
+					type: "set syncing code block",
+					payload: k,
+				});
+				allInSync = false;
+				break;
+			}
+		}
+		if (allInSync) {
 			setStartUpload(false);
 		}
-	}, [uploadFinished]);
+	}, [startUpload, editorState.codeBlockToSyncState]);
+
+	const onUpload = async (currentEditorState: typeof editorState) => {
+		// const { syncFunctions } = editorState;
+		// for (let f of Object.values(syncFunctions)) {
+		// 	f();
+		// }
+		dispatch({
+			type: "set all syncing states to false",
+			payload: null,
+		});
+
+		setStartUpload(true);
+		// dispatch({
+		// 	type: "set previous uploaded doc",
+		// 	payload: currentEditorState.editorView!.state.doc,
+		// });
+	};
+	// useEffect(() => {
+	// 	if (uploadFinished) {
+	// 		setStartUpload(false);
+	// 	}
+	// }, [uploadFinished]);
 	return (
 		<>
 			{openOptions ? (

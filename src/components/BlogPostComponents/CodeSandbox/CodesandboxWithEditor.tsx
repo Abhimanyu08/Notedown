@@ -1,15 +1,24 @@
 "use client";
+import { StateEffect } from "@codemirror/state";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import useEditor from "@/hooks/useEditor";
 import { cn } from "@/lib/utils";
 import Button from "@components/ui/button";
 import { EditorView } from "codemirror";
-import { createContext, useContext, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import CustomSandpack from "./CustomSandpack";
 import JsonConfigEditor from "./JsonConfigEditor";
 import { SandpackConfigType, sandboxConfigSchema } from "./types";
+import { keymap } from "@codemirror/view";
+import useSyncHook from "@/hooks/useSyncHook";
 
 export const JsonEditorContext = createContext<{
 	jsonEditorView: EditorView | null;
@@ -27,8 +36,8 @@ function CodesandboxWithEditor({
 }: {
 	SANDBOX_NUMBER: number;
 	initialConfig?: string;
-	start?: number;
-	end?: number;
+	start: number;
+	end: number;
 }) {
 	const defaultSandboxProps: SandpackConfigType = initialConfig
 		? JSON.parse(initialConfig)
@@ -42,7 +51,7 @@ function CodesandboxWithEditor({
 		  };
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
-	const editorStateContext = useContext(EditorContext);
+	const markdownEditorContext = useContext(EditorContext);
 	const [sandpackProps, setSandPackProps] =
 		useState<SandpackConfigType>(defaultSandboxProps);
 
@@ -52,8 +61,32 @@ function CodesandboxWithEditor({
 		language: "json",
 	});
 
+	useEffect(() => {
+		if (!jsonEditorView) return;
+		jsonEditorView.dispatch({
+			effects: StateEffect.appendConfig.of([
+				keymap.of([
+					{
+						key: "Shift-Enter",
+						run() {
+							onSandboxGenerate();
+							return true;
+						},
+					},
+				]),
+			]),
+		});
+	}, [jsonEditorView]);
+
+	const syncFunction = useSyncHook({
+		editorView: jsonEditorView,
+		startOffset: start + 11,
+		endOffset: end - 3,
+		id: `SANDBOX_${SANDBOX_NUMBER}`,
+	});
+
 	const onSandboxGenerate = () => {
-		if (!editorStateContext) return;
+		if (!markdownEditorContext) return;
 		const configJsonString = jsonEditorView?.state.sliceDoc();
 		if (!configJsonString) return;
 
@@ -63,24 +96,8 @@ function CodesandboxWithEditor({
 
 			setSandPackProps(configObject);
 			setEditConfig(false);
-			const { editorState } = editorStateContext;
-			const { editorView, frontMatterLength } = editorState;
 
-			if (start && end) {
-				editorView?.dispatch({
-					changes: [
-						{
-							from:
-								start +
-								frontMatterLength +
-								4 +
-								"sandbox".length,
-							to: end + frontMatterLength - 3,
-							insert: configJsonString + "\n",
-						},
-					],
-				});
-			}
+			syncFunction();
 		} catch (e) {
 			try {
 				setError(fromZodError(e as ZodError).toString());

@@ -12,6 +12,8 @@ interface EditorStateInterface {
 	canvasApps: Record<string, any>;
 	editingMarkdown: boolean;
 	frontMatterLength: number;
+	codeBlockToSyncState: Record<string, boolean>;
+	syncingCodeBlock: string | null;
 }
 interface DispatchObj {
 	type:
@@ -25,7 +27,11 @@ interface DispatchObj {
 		| "set canvas apps"
 		| "remove canvas app"
 		| "empty canvas apps"
-		| "set frontmatter length";
+		| "set frontmatter length"
+		| "set sync state"
+		| "set syncing code block"
+		| "remove sync state"
+		| "set all syncing states to false";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -39,6 +45,8 @@ const initialEditorState: EditorStateInterface = {
 	canvasApps: {},
 	editingMarkdown: false,
 	frontMatterLength: 0,
+	codeBlockToSyncState: {},
+	syncingCodeBlock: null,
 };
 
 export const EditorContext = createContext<{
@@ -60,6 +68,37 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 				},
 			};
 
+		case "set sync state":
+			return {
+				...state,
+				codeBlockToSyncState: {
+					...state.codeBlockToSyncState,
+					...(action.payload as EditorStateInterface["codeBlockToSyncState"]),
+				},
+			};
+		case "set all syncing states to false":
+			const newSyncingStates: EditorStateInterface["codeBlockToSyncState"] =
+				{};
+			for (let k of Object.keys(state.codeBlockToSyncState)) {
+				newSyncingStates[k] = false;
+			}
+			return {
+				...state,
+				codeBlockToSyncState: newSyncingStates,
+			};
+		case "remove sync state":
+			const previous = state.codeBlockToSyncState;
+			delete previous[action.payload as string];
+			return {
+				...state,
+				codeBlockToSyncState: previous,
+			};
+
+		case "set syncing code block":
+			return {
+				...state,
+				syncingCodeBlock: action.payload as string,
+			};
 		case "set frontmatter length":
 			return {
 				...state,

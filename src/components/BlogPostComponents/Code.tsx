@@ -3,6 +3,7 @@ import { Compartment } from "@codemirror/state";
 import {
 	MouseEventHandler,
 	memo,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -31,23 +32,16 @@ import {
 	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
 import useToggleVim from "@/hooks/useToggleVim";
+import useSyncHook from "@/hooks/useSyncHook";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
 	//These start and end number are the start and end positions of this code block in markdown
-	start?: number;
-	end?: number;
+	start: number;
+	end: number;
 }
 
 function Code({ code, blockNumber, start, end }: CodeProps) {
-	// const {
-	// 	containerId,
-	// 	vimEnabled,
-	// 	setVimEnabled,
-	// 	setRunningBlock,
-	// 	setBlockToEditor,
-	// 	setWritingBlock,
-	// } = useContext(BlogContext);
 	const { blogState, dispatch } = useContext(BlogContext);
 	const markdownEditorContext = useContext(EditorContext);
 	const { language } = blogState.blogMeta;
@@ -62,6 +56,12 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	});
 	const { toggleVim, vimEnabled: vimEnabledLocally } = useToggleVim({
 		editorView,
+	});
+	const syncFunction = useSyncHook({
+		editorView,
+		startOffset: start + 4,
+		endOffset: end - 3,
+		id: `CODE_${blockNumber}`,
 	});
 
 	useEffect(() => {
@@ -98,32 +98,12 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 		editorView?.dispatch({
 			changes: { from: 0, to: docLength, insert: code },
 		});
+		syncFunction();
 	};
 
 	useEffect(() => {
 		toggleVim();
 	}, [blogState.vimEnabled]);
-
-	const onSync = () => {
-		if (!markdownEditorContext || !editorView) return;
-		const { editorState } = markdownEditorContext;
-		const { editorView: markdownEditorView, frontMatterLength } =
-			editorState;
-		const newCode = editorView.state.sliceDoc().trim();
-		if (!start || !end) {
-			console.log("no start or end");
-			return;
-		}
-		markdownEditorView?.dispatch({
-			changes: [
-				{
-					from: start + frontMatterLength + 4,
-					to: end + frontMatterLength - 3,
-					insert: newCode + "\n",
-				},
-			],
-		});
-	};
 
 	return (
 		<CodeBlock>
@@ -131,6 +111,7 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				<CodeBlockButton
 					onClick={() => {
 						// setRunningBlock(blockNumber);
+						syncFunction();
 						setOpenShell(true);
 						dispatch({
 							type: "set running block",
@@ -144,6 +125,7 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				<CodeBlockButton
 					onClick={() => {
 						// setRunningBlock(blockNumber);
+						syncFunction();
 						setOpenShell(true);
 						dispatch({
 							type: "set writing block",
@@ -154,15 +136,6 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				>
 					<BsPencilFill size={11} />
 				</CodeBlockButton>
-				{pathname?.startsWith("/write") && (
-					<CodeBlockButton
-						onClick={() => onSync()}
-						className="md:tooltip"
-						tip="Sync code to markdown"
-					>
-						<AiOutlineSync size={14} />
-					</CodeBlockButton>
-				)}
 				<CodeBlockButton onClick={onUndo} tip="back to original code">
 					<FcUndo className="text-cyan-400" />
 				</CodeBlockButton>

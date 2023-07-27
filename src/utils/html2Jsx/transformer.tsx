@@ -362,15 +362,16 @@ const extractTextFromChildren = (
 };
 
 function getStartEndFromNode(node: HtmlAstElement) {
-	let start, end;
+	let start = 0;
+	let end = 0;
 	if (node.properties) {
 		const properties = node.properties;
 		start = properties.dataStartoffset
 			? parseInt(properties.dataStartoffset as string)
-			: undefined;
+			: 0;
 		end = properties.dataEndoffset
 			? parseInt(properties.dataEndoffset as string)
-			: undefined;
+			: 0;
 	}
 	return { start, end };
 }
