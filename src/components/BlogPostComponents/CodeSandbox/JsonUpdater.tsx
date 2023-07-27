@@ -1,6 +1,6 @@
 import { useActiveCode, useSandpack } from "@codesandbox/sandpack-react";
 import React, { useContext, useEffect } from "react";
-import { JsonEditorContext } from "./Codesandbox";
+import { JsonEditorContext } from "./CodesandboxWithEditor";
 import { SandpackConfigType } from "./types";
 
 function JsonUpdater() {

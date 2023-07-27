@@ -24,22 +24,22 @@ export const sandboxConfigSchema = z.object({
             "auto",
             "dark",
             "light",
-            // "amethyst",
-            // "aquaBlue",
-            // "atomDark",
-            // "cobalt2",
-            // "cyberpunk",
-            // "dracula",
-            // "ecoLight",
-            // "freeCodeCampDark",
-            // "githubLight",
-            // "gruvboxDark",
-            // "gruvboxLight",
-            // "levelUp",
-            // "monokaiPro",
-            // "neoCyan",
-            // "nightOwl",
-            // "sandpackDark",
+            "amethyst",
+            "aquaBlue",
+            "atomDark",
+            "cobalt2",
+            "cyberpunk",
+            "dracula",
+            "ecoLight",
+            "freeCodeCampDark",
+            "githubLight",
+            "gruvboxDark",
+            "gruvboxLight",
+            "levelUp",
+            "monokaiPro",
+            "neoCyan",
+            "nightOwl",
+            "sandpackDark",
         ])
         .default("dark")
         .optional(),
@@ -52,6 +52,7 @@ export const sandboxConfigSchema = z.object({
             showInlineErrors: z.boolean().optional(), // default - false
             wrapContent: z.boolean().optional(), // default - false
             editorHeight: z.number().optional(), // default - 300
+            previewHeight: z.number().optional(),
             editorWidthPercentage: z.number().optional(), // default - 50
             autorun: z.boolean().optional(),
         })

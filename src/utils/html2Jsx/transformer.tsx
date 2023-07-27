@@ -16,7 +16,7 @@ import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import Details from "@components/BlogPostComponents/Details";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
 import { Element, Root, Text } from "hast";
-import Codesandbox from "@components/BlogPostComponents/CodeSandbox/Codesandbox";
+import CodesandboxWithEditor from "@components/BlogPostComponents/CodeSandbox/CodesandboxWithEditor";
 
 let BLOCK_NUMBER = 0;
 let SANDBOX_NUMBER = 0;
@@ -162,7 +162,7 @@ const tagToTransformer: TagToTransformer = {
 		if (blockLanguage === "sandbox") {
 			SANDBOX_NUMBER += 1;
 			return (
-				<Codesandbox
+				<CodesandboxWithEditor
 					SANDBOX_NUMBER={SANDBOX_NUMBER}
 					{...{ start, end }}
 					initialConfig={code}

@@ -1,21 +1,14 @@
 "use client";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import useEditor from "@/hooks/useEditor";
-import useToggleVim from "@/hooks/useToggleVim";
 import { cn } from "@/lib/utils";
-import {
-	CodeBlock,
-	CodeBlockButton,
-	CodeBlockButtons,
-} from "@components/EditorComponents/GenericCodeBlock";
 import Button from "@components/ui/button";
 import { EditorView } from "codemirror";
 import { createContext, useContext, useState } from "react";
-import { AiOutlineCodeSandbox } from "react-icons/ai";
-import { SiVim } from "react-icons/si";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import CustomSandpack from "./CustomSandpack";
+import JsonConfigEditor from "./JsonConfigEditor";
 import { SandpackConfigType, sandboxConfigSchema } from "./types";
 
 const defaultSandboxProps: SandpackConfigType = {
@@ -34,7 +27,7 @@ export const JsonEditorContext = createContext<{
 	sandpackProps: null,
 });
 
-function Codesandbox({
+function CodesandboxWithEditor({
 	SANDBOX_NUMBER,
 	start,
 	end,
@@ -54,9 +47,6 @@ function Codesandbox({
 		code: JSON.stringify(sandpackProps || defaultSandboxProps, null, 2),
 		editorParentId: `sandbox-${SANDBOX_NUMBER}`,
 		language: "json",
-	});
-	const { toggleVim, vimEnabled } = useToggleVim({
-		editorView: jsonEditorView,
 	});
 
 	const onSandboxGenerate = () => {
@@ -114,43 +104,18 @@ function Codesandbox({
 					</Button>
 					{sandpackProps && <CustomSandpack {...sandpackProps} />}
 				</div>
-				<CodeBlock className={cn("w-full", !editConfig && "hidden")}>
-					<CodeBlockButtons>
-						<CodeBlockButton
-							tip={
-								error
-									? "Please remove the error"
-									: "Generate code sandbox"
-							}
-							onClick={() => onSandboxGenerate()}
-						>
-							<AiOutlineCodeSandbox />
-						</CodeBlockButton>
-						<CodeBlockButton
-							onClick={() => toggleVim()}
-							tip={vimEnabled ? "Disable Vim" : "Enable Vim"}
-						>
-							<SiVim
-								size={14}
-								className={`${
-									vimEnabled ? "text-lime-400" : ""
-								}`}
-							/>
-						</CodeBlockButton>
-					</CodeBlockButtons>
-					<div
-						className="w-full border-[1px] border-white/50 rounded-sm"
-						id={`sandbox-${SANDBOX_NUMBER}`}
-					></div>
-					{error && (
-						<span className="text-xs self-end border-red-500 border-[1px] bg-[hsl(0,40%,70%)] font-semibold py-1 px-2 mt-2 w-fit rounded-md">
-							Error: {error}
-						</span>
-					)}
-				</CodeBlock>
+				<JsonConfigEditor
+					className={`${!editConfig ? "hidden" : ""}`}
+					{...{
+						SANDBOX_NUMBER,
+						jsonEditorView,
+						onSandboxGenerate,
+						error,
+					}}
+				/>
 			</div>
 		</JsonEditorContext.Provider>
 	);
 }
 
-export default Codesandbox;
+export default CodesandboxWithEditor;
