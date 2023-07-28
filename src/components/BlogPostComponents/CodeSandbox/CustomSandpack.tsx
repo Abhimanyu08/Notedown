@@ -83,7 +83,11 @@ function CustomSandpack(props: SandpackConfigType) {
 					<SandpackFileExplorer className="basis-2/12 border-border" />
 				)}
 
-				<div className={cn(expand ? "grow" : "w-full")}>
+				<div
+					className={cn(
+						expand ? "w-1/2 shrink overflow-x-scroll" : "w-full"
+					)}
+				>
 					<SandpackCodeEditor
 						{...props.options}
 						style={{
@@ -102,7 +106,7 @@ function CustomSandpack(props: SandpackConfigType) {
 					className={cn(
 						"flex flex-col bg-black h-full",
 
-						expand ? "!grow border-r-2 border-b-2" : "w-full"
+						expand ? "w-1/2 shrink border-r-2 border-b-2" : "w-full"
 					)}
 				>
 					{props.options.showConsole && (
@@ -137,7 +141,7 @@ function CustomSandpack(props: SandpackConfigType) {
 					)}
 					<div
 						className={cn(
-							"border-border grow w-full flex flex-col "
+							"border-border grow w-full p-2 flex flex-col "
 						)}
 					>
 						<SandpackPreview

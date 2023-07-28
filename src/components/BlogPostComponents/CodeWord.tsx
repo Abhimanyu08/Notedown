@@ -4,8 +4,8 @@ import Latex from "react-latex";
 import DrawingSvg from "./DrawingSvg";
 import TLDrawing from "./TLDrawing";
 import { usePathname } from "next/navigation";
-
-let CANVAS_NUMBER = 0;
+import { Codesandbox } from "lucide-react";
+import CodesandboxWithEditor from "./CodeSandbox/CodesandboxWithEditor";
 
 function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
@@ -18,7 +18,6 @@ function CodeWord({ code }: { code: string }) {
 	}
 	const drawRegex = /<draw id=(\d+) caption="(.*?)"( dark=(true|false))?\/>/;
 	if (drawRegex.test(code)) {
-		CANVAS_NUMBER += 1;
 		const regexArray = drawRegex.exec(code)!;
 		const persistanceKey = regexArray.at(1)!;
 		const caption = regexArray.at(2) || "";
@@ -35,6 +34,20 @@ function CodeWord({ code }: { code: string }) {
 		}
 		return <DrawingSvg {...{ persistanceKey, caption }} />;
 	}
+
+	const sandboxRegex = /<sandbox id=(\d+)\/>/;
+	if (sandboxRegex.test(code)) {
+		const regexArray = sandboxRegex.exec(code)!;
+		const persistanceKey = regexArray.at(1)!;
+
+		return (
+			<CodesandboxWithEditor
+				persistanceKey={persistanceKey}
+				key={persistanceKey}
+			/>
+		);
+	}
+
 	return <code>{code}</code>;
 }
 

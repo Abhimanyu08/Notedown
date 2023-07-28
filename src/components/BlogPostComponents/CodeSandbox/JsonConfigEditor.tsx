@@ -12,13 +12,13 @@ import { AiOutlineCodeSandbox } from "react-icons/ai";
 import { SiVim } from "react-icons/si";
 
 function JsonConfigEditor({
-	SANDBOX_NUMBER,
+	persistanceKey,
 	jsonEditorView,
 	onSandboxGenerate,
 	className,
 	error,
 }: {
-	SANDBOX_NUMBER: number;
+	persistanceKey: string;
 	jsonEditorView: EditorView | null;
 	onSandboxGenerate: () => void;
 	className?: string;
@@ -53,7 +53,7 @@ function JsonConfigEditor({
 			</CodeBlockButtons>
 			<div
 				className="w-full border-[1px] border-white/50 rounded-sm"
-				id={`sandbox-${SANDBOX_NUMBER}`}
+				id={`sandbox_${persistanceKey}`}
 			></div>
 			{error && (
 				<span className="text-xs self-end border-red-500 border-[1px] bg-[hsl(0,40%,70%)] font-semibold py-1 px-2 mt-2 w-fit rounded-md">

@@ -69,7 +69,7 @@ export const defaultSandpackProps: SandpackConfigType = {
         previewHeight: 200,
         showLineNumbers: true,
         showNavigator: false,
-        showFilesInExpandedMode: true
+        showFilesInExpandedMode: true,
 
     },
     theme: "dark",

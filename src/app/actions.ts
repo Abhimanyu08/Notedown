@@ -55,8 +55,10 @@ export async function deletePostAction(postId: number) {
         .select("filename, image_folder, published,created_by")
         .single();
 
+    const userId = (await supabase.auth.getSession()).data.session?.user.id
+
     if (data) {
-        const imageFolder = data.image_folder || `${data.created_by}/${postId}`
+        const imageFolder = data.image_folder || `${userId}/${postId}`
         const { data: files } = await supabase.storage
             .from(SUPABASE_FILES_BUCKET)
             .list(imageFolder);
@@ -65,8 +67,8 @@ export async function deletePostAction(postId: number) {
             const fileNames = files.map(
                 (i) => `${imageFolder}/${i.name}`
             );
-            await supabase.storage
-                .from(SUPABASE_IMAGE_BUCKET)
+            const { data, error } = await supabase.storage
+                .from(SUPABASE_FILES_BUCKET)
                 .remove(fileNames);
         }
 

@@ -106,23 +106,23 @@ const tagToTransformer: TagToTransformer = {
 		return headingToRenderers;
 	})(),
 
-	details: (node) => {
-		let detailsText = "";
+	// details: (node) => {
+	// 	let detailsText = "";
 
-		node.children?.forEach((c) => {
-			if (c.type === "text") detailsText += c.value;
-		});
-		detailsText = detailsText.trim();
+	// 	node.children?.forEach((c) => {
+	// 		if (c.type === "text") detailsText += c.value;
+	// 	});
+	// 	detailsText = detailsText.trim();
 
-		let summaryNode = node.children.find(
-			(c) => c.type === "element" && c.tagName === "summary"
-		);
-		let summaryText = extractTextFromChildren(
-			(summaryNode as HtmlAstElement)?.children || []
-		).trim();
+	// 	let summaryNode = node.children.find(
+	// 		(c) => c.type === "element" && c.tagName === "summary"
+	// 	);
+	// 	let summaryText = extractTextFromChildren(
+	// 		(summaryNode as HtmlAstElement)?.children || []
+	// 	).trim();
 
-		return <Details detailsText={detailsText} summaryText={summaryText} />;
-	},
+	// 	return <Details detailsText={detailsText} summaryText={summaryText} />;
+	// },
 
 	code: (node) => {
 		const child = node.children[0] as Text;
@@ -155,16 +155,6 @@ const tagToTransformer: TagToTransformer = {
 					code={code}
 					key={BLOCK_NUMBER}
 					blockNumber={BLOCK_NUMBER}
-					{...{ start, end }}
-				/>
-			);
-		}
-		if (blockLanguage === "sandbox") {
-			SANDBOX_NUMBER += 1;
-			return (
-				<SandboxRouter
-					initialConfig={code}
-					SANDBOX_NUMBER={SANDBOX_NUMBER}
 					{...{ start, end }}
 				/>
 			);

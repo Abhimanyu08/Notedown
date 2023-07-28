@@ -12,6 +12,7 @@ interface EditorStateInterface {
 	canvasApps: Record<string, any>;
 	editingMarkdown: boolean;
 	frontMatterLength: number;
+	sandboxEditors: Record<string, EditorView>;
 }
 interface DispatchObj {
 	type:
@@ -25,7 +26,9 @@ interface DispatchObj {
 		| "set canvas apps"
 		| "remove canvas app"
 		| "empty canvas apps"
-		| "set frontmatter length";
+		| "set frontmatter length"
+		| "set sandbox editor"
+		| "remove sandbox editor";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -39,6 +42,7 @@ const initialEditorState: EditorStateInterface = {
 	canvasApps: {},
 	editingMarkdown: false,
 	frontMatterLength: 0,
+	sandboxEditors: {},
 };
 
 export const EditorContext = createContext<{
@@ -58,6 +62,23 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 					...state.canvasApps,
 					...(action.payload as Record<string, any>),
 				},
+			};
+
+		case "set sandbox editor":
+			return {
+				...state,
+				sandboxEditors: {
+					...state.sandboxEditors,
+					...(action.payload as EditorStateInterface["sandboxEditors"]),
+				},
+			};
+
+		case "remove sandbox editor":
+			const previousSandboxEditors = state.sandboxEditors;
+			delete previousSandboxEditors[action.payload as string];
+			return {
+				...state,
+				sandboxEditors: previousSandboxEditors,
 			};
 
 		case "set frontmatter length":

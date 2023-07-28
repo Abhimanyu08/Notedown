@@ -33,24 +33,23 @@ export const JsonEditorContext = createContext<{
 });
 
 function CodesandboxWithEditor({
-	SANDBOX_NUMBER,
-	initialConfig,
-	start,
-	end,
-}: {
-	SANDBOX_NUMBER: number;
-	initialConfig: string;
-	start: number;
-	end: number;
+	persistanceKey,
+}: // start,
+// end,
+{
+	persistanceKey: string;
+	// start: number;
+	// end: number;
 }) {
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
-	const markdownEditorContext = useContext(EditorContext);
+	// const markdownEditorContext = useContext(EditorContext);
+	const { editorState, dispatch } = useContext(EditorContext);
 	const [sandpackProps, setSandPackProps] = useState<SandpackConfigType>();
 
 	const { editorView: jsonEditorView } = useEditor({
-		code: initialConfig || JSON.stringify(defaultSandpackProps, null, 2),
-		editorParentId: `sandbox-${SANDBOX_NUMBER}`,
+		code: JSON.stringify(defaultSandpackProps, null, 2),
+		editorParentId: `sandbox_${persistanceKey}`,
 		language: "json",
 	});
 
@@ -69,29 +68,39 @@ function CodesandboxWithEditor({
 				]),
 			]),
 		});
-	}, [jsonEditorView]);
-	useEffect(() => {
-		if (!jsonEditorView) return;
-		if (
-			initialConfig.trim().replace(/\n/g, "") !==
-			jsonEditorView?.state.sliceDoc().trim().replace(/\n/g, "")
-		) {
-			setEditConfig(true);
-			setError("Please update json using the above editor");
-		} else {
-			setError("");
-		}
-	}, [initialConfig, jsonEditorView]);
+		dispatch({
+			type: "set sandbox editor",
+			payload: { [persistanceKey]: jsonEditorView },
+		});
 
-	useSyncHook({
-		editorView: jsonEditorView,
-		startOffset: start + 11,
-		endOffset: end - 3,
-		sandbox: true,
-	});
+		return () => {
+			dispatch({
+				type: "remove sandbox editor",
+				payload: persistanceKey,
+			});
+		};
+	}, [jsonEditorView]);
+	// useEffect(() => {
+	// 	if (!jsonEditorView) return;
+	// 	if (
+	// 		initialConfig.trim().replace(/\n/g, "") !==
+	// 		jsonEditorView?.state.sliceDoc().trim().replace(/\n/g, "")
+	// 	) {
+	// 		setEditConfig(true);
+	// 		setError("Please update json using the above editor");
+	// 	} else {
+	// 		setError("");
+	// 	}
+	// }, [initialConfig, jsonEditorView]);
+
+	// useSyncHook({
+	// 	editorView: jsonEditorView,
+	// 	startOffset: start + 11,
+	// 	endOffset: end - 3,
+	// 	sandbox: true,
+	// });
 
 	const onSandboxGenerate = () => {
-		if (!markdownEditorContext) return;
 		const configJsonString = jsonEditorView?.state.sliceDoc();
 		if (!configJsonString) return;
 
@@ -133,7 +142,7 @@ function CodesandboxWithEditor({
 				<JsonConfigEditor
 					className={`${!editConfig ? "hidden" : ""}`}
 					{...{
-						SANDBOX_NUMBER,
+						persistanceKey,
 						jsonEditorView,
 						onSandboxGenerate,
 						error,

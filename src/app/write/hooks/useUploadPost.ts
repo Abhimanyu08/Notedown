@@ -125,6 +125,22 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     }
 
+    const uploadSandboxes = async ({ postId }: { postId: number }) => {
+        const sandboxEditors = editorState.sandboxEditors
+
+
+        for (const [sandboxKey, sandboxEditor] of Object.entries(sandboxEditors)) {
+
+            if (sandboxEditor === null) return;
+            toastContext?.setMessage(`Uploading sandbox-${sandboxKey}`)
+            const jsonString = sandboxEditor.state.sliceDoc().trim()
+            const fileObject = new File([jsonString], `${sandboxKey}.json`, { type: "application/json" })
+            if (!fileObject) continue
+            const folderName = created_by + "/" + postId + "/" + sandboxKey + ".json"
+            await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_FILES_BUCKET).upload(folderName, fileObject, { upsert: true }), 3)
+        }
+    }
+
     const uploadCanvasImages = async ({ postId }: { postId: number }) => {
         const canvasApps = editorState.canvasApps as Record<string, any>
 
@@ -168,6 +184,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         toastContext?.setMessage("Uploading Canvas images")
         await uploadCanvasImages({ postId: post.id })
+        await uploadSandboxes({ postId: post.id })
 
         await finalUpdateToPost({ postId: post.id, postMeta })
 
@@ -198,6 +215,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         //upload canvas files that need to be uploaded
         toastContext?.setMessage("Updating and uploading new canvas images")
         await uploadCanvasImages({ postId })
+        await uploadSandboxes({ postId: postId })
 
         toastContext?.setMessage("Finished updating!")
         // if (published) {
