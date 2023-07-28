@@ -1,9 +1,7 @@
 "use client";
-import { Compartment } from "@codemirror/state";
 import {
 	MouseEventHandler,
 	memo,
-	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -15,24 +13,17 @@ import { SiVim } from "react-icons/si";
 
 import useEditor from "../../hooks/useEditor";
 
-import { EditorContext } from "@/app/write/components/EditorContext";
+import useSyncHook from "@/hooks/useSyncHook";
+import useToggleVim from "@/hooks/useToggleVim";
 import { StateEffect } from "@codemirror/state";
 import { keymap } from "@codemirror/view";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { ToolTipComponent } from "@components/ToolTipComponent";
-import Button from "@components/ui/button";
-import { vim } from "@replit/codemirror-vim";
-import { usePathname } from "next/navigation";
-import path from "path";
-import Terminal from "./Terminal";
-import { AiOutlineSync } from "react-icons/ai";
 import {
 	CodeBlock,
 	CodeBlockButton,
 	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
-import useToggleVim from "@/hooks/useToggleVim";
-import useSyncHook from "@/hooks/useSyncHook";
+import Terminal from "./Terminal";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
@@ -58,7 +49,7 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	useSyncHook({
 		editorView,
 		startOffset: start + 4,
-		endOffset: end - 3,
+		endOffset: end - 4,
 	});
 
 	useEffect(() => {

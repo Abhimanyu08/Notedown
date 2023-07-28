@@ -29,7 +29,7 @@ const headingToInsert: Record<string, string> = {
 export const onBold = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "****", cursorOffest: 2 })
 export const onItalic = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "__", cursorOffest: 1 })
 export const onCodeWord = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "``", cursorOffest: 1 })
-export const onCodeBlock = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "```\n \n```", cursorOffest: 4 })
+export const onCodeBlock = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "```\n```", cursorOffest: 4 })
 export const onImage = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "\n\n![]()\n", cursorOffest: 6 })
 export const onSelect = (editorView: EditorView, headingType: string) => insertAndChangeCursor({
     editorView, toInsert: headingToInsert[headingType],

@@ -4,18 +4,23 @@ import { supabase } from "./supabaseClient";
 
 
 
-export function parseFrontMatter(markdown: string): { data: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }, content: string, frontMatterLength: number } {
+export function parseFrontMatter(markdown: string): { data?: { title?: string, description?: string, language?: typeof ALLOWED_LANGUAGES[number] | null }, content: string, frontMatterLength: number } {
 
-    let data: { [x: string]: any; language?: any; }, content;
+    try {
 
-    let fileMatter = matter(markdown);
-    data = fileMatter.data
-    content = fileMatter.content
+        let data: { [x: string]: any; language?: any; }, content;
 
-    const frontMatterLength = markdown.length - content.length
+        let fileMatter = matter(markdown);
+        data = fileMatter.data
+        content = fileMatter.content
 
-    // html = resetCodeblocks(content, html)
-    return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content, frontMatterLength }
+        const frontMatterLength = markdown.length - content.length
+
+        // html = resetCodeblocks(content, html)
+        return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content, frontMatterLength }
+    } catch (_) {
+        return { content: markdown, frontMatterLength: 0 }
+    }
 
 }
 

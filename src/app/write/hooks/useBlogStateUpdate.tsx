@@ -55,9 +55,9 @@ function useBlogStateUpdate() {
 					blogStateDispatch({
 						type: "set blog meta",
 						payload: {
-							title: data.title,
-							description: data.description || undefined,
-							language: data.language || undefined,
+							title: data?.title,
+							description: data?.description || undefined,
+							language: data?.language || undefined,
 						},
 					});
 					editorStateDispatch({
@@ -79,9 +79,9 @@ function useBlogStateUpdate() {
 						blogStateDispatch({
 							type: "set blog meta",
 							payload: {
-								title: data.title,
-								description: data.description || undefined,
-								language: data.language || undefined,
+								title: data?.title,
+								description: data?.description || undefined,
+								language: data?.language || undefined,
 							},
 						});
 

@@ -4,12 +4,14 @@ import { EditorView } from "codemirror";
 import { useContext, useCallback, useEffect, useState } from "react";
 import { Compartment } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { usePathname } from "next/navigation";
 
 export default function useSyncHook({ editorView, startOffset, endOffset, sandbox = false }: { editorView: EditorView | null, startOffset: number, endOffset: number, sandbox?: boolean }) {
 
 
     const markdownEditorContext = useContext(EditorContext)
     const [syncCompartment, setSyncCompartment] = useState<Compartment>()
+    const pathname = usePathname()
 
     const syncFunction = useCallback((start?: number, end?: number, code?: string) => {
         // this function syncs the codeblocks code to the markdown editor
@@ -30,22 +32,33 @@ export default function useSyncHook({ editorView, startOffset, endOffset, sandbo
 
         });
     }, [
-        startOffset,
-        endOffset,
+        // startOffset,
+        // endOffset,
         editorView,
         markdownEditorContext?.editorState?.frontMatterLength,
     ]);
 
     useEffect(() => {
 
+        if (!pathname?.startsWith("/write")) return
         if (!editorView) return
         const syncPlugin = ViewPlugin.fromClass(
             class {
+                insertedNewLine: boolean
+                constructor() {
+                    this.insertedNewLine = false
+                }
                 update(update: ViewUpdate) {
                     if (update.docChanged && (update.view.hasFocus || sandbox)) {
-                        const code = update.state.sliceDoc()
-                        const previousCode = update.startState.sliceDoc()
-                        syncFunction(startOffset, startOffset + previousCode.length, code)
+                        let code = update.state.sliceDoc()
+
+                        let previousCodeLength = update.startState.doc.length
+                        if (!this.insertedNewLine) {
+                            // previousCodeLength += 1
+                            code += "\n"
+                        }
+                        syncFunction(startOffset, startOffset + previousCodeLength, code)
+                        this.insertedNewLine = true
                     }
                 }
             })
