@@ -33,6 +33,7 @@ function ImageUploader({
 		if (!end) return;
 		const imageNames = fileNamesToAdd.join(",");
 		// const transaction = view.state.update({changes: {from: cursorPos, to:imageNames.length, inser}})
+		editorState.editorView?.focus();
 		editorState.editorView?.dispatch({
 			changes: {
 				from: end + frontMatterLength - 1,

@@ -46,6 +46,8 @@ function LexicaImage({ alt, end }: { alt: string; end?: number }) {
 			payload: { [imageName]: file },
 		});
 		if (!end) return;
+
+		editorView?.focus();
 		editorView?.dispatch({
 			changes: {
 				from: end + frontMatterLength - 1,
