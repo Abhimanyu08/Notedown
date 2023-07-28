@@ -85,7 +85,8 @@ function Drafts() {
 											<ActionModal
 												action="delete"
 												postTitle={
-													draft.draftData.data.title
+													draft.draftData.data
+														?.title || ""
 												}
 												visible={
 													timeStampToDelete ===
@@ -163,7 +164,7 @@ function SingleDraft({ draft }: { draft: Draft }) {
 				}
 				className="text-lg text-black font-serif font-semibold hover:italic hover:underline dark:text-gray-100 truncate w-3/4"
 			>
-				{draft.draftData.data.title}
+				{draft.draftData.data?.title || "Couldn't parse front matter"}
 			</Link>
 
 			<p className="text-sm text-gray-400 mt-2">

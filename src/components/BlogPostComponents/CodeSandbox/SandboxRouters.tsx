@@ -20,9 +20,13 @@ function SandboxRouter({
 		);
 	}
 
-	const config: SandpackConfigType = JSON.parse(initialConfig);
+	try {
+		const config: SandpackConfigType = JSON.parse(initialConfig);
 
-	return <CustomSandpack {...config} />;
+		return <CustomSandpack {...config} />;
+	} catch (_) {
+		return <p>Error while parsing your config json</p>;
+	}
 }
 
 export default SandboxRouter;

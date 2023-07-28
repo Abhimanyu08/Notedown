@@ -45,7 +45,6 @@ export const sandboxConfigSchema = z.object({
         .optional(),
     options: z
         .object({
-            layout: z.enum(["preview", "tests", "console"]).optional(),
             showNavigator: z.boolean().optional(),
             showTabs: z.boolean().optional(),
             showLineNumbers: z.boolean().optional(), // default - true
@@ -55,17 +54,24 @@ export const sandboxConfigSchema = z.object({
             previewHeight: z.number().optional(),
             editorWidthPercentage: z.number().optional(), // default - 50
             autorun: z.boolean().optional(),
-            showConsole: z.boolean().optional()
+            showConsole: z.boolean().optional(),
+            showFilesInExpandedMode: z.boolean().optional(),
         })
 });
 
 export type SandpackConfigType = z.infer<typeof sandboxConfigSchema>;
 
-export const defaultSandpackProps = {
+export const defaultSandpackProps: SandpackConfigType = {
     template: "static",
     options: {
-        editorHeight: 500,
+        editorHeight: 300,
         showConsole: true,
+        previewHeight: 200,
+        showLineNumbers: true,
+        showNavigator: false,
+        showFilesInExpandedMode: true
+
     },
     theme: "dark",
+    files: {}
 };

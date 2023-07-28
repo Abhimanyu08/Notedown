@@ -76,6 +76,7 @@ function CodesandboxWithEditor({
 			initialConfig.trim().replace(/\n/g, "") !==
 			jsonEditorView?.state.sliceDoc().trim().replace(/\n/g, "")
 		) {
+			setEditConfig(true);
 			setError("Please update json using the above editor");
 		} else {
 			setError("");

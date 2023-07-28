@@ -79,28 +79,30 @@ function CustomSandpack(props: SandpackConfigType) {
 						)}
 					</Button>
 				</ToolTipComponent>
-				{expand && (
+				{expand && props.options.showFilesInExpandedMode && (
 					<SandpackFileExplorer className="basis-2/12 border-border" />
 				)}
 
-				<SandpackCodeEditor
-					{...props.options}
-					style={{
-						height: expand
-							? "100%"
-							: props.options?.editorHeight !== undefined
-							? props.options.editorHeight
-							: 300,
-					}}
-					className={cn(expand && "basis-5/12")}
-					// extensions={[autocompletion()]}
-					// extensionsKeymap={[completionKeymap]}
-				/>
+				<div className={cn(expand ? "grow" : "w-full")}>
+					<SandpackCodeEditor
+						{...props.options}
+						style={{
+							height: expand
+								? "100%"
+								: props.options?.editorHeight !== undefined
+								? props.options.editorHeight
+								: 300,
+						}}
+						className={cn(expand && "max-w-full")}
+						// extensions={[autocompletion()]}
+						// extensionsKeymap={[completionKeymap]}
+					/>
+				</div>
 				<div
 					className={cn(
 						"flex flex-col bg-black h-full",
 
-						expand && "basis-5/12 border-r-2 border-b-2"
+						expand ? "!grow border-r-2 border-b-2" : "w-full"
 					)}
 				>
 					{props.options.showConsole && (
@@ -133,10 +135,14 @@ function CustomSandpack(props: SandpackConfigType) {
 							</TabChildren>
 						</Tabs>
 					)}
-					<div className={cn("border-border p-4 grow")}>
+					<div
+						className={cn(
+							"border-border grow w-full flex flex-col "
+						)}
+					>
 						<SandpackPreview
 							className={cn(
-								"relative top-0 left-0 w-full ",
+								"!relative top-0 left-0 ",
 								previewOrConsole === "preview"
 									? "flex"
 									: "!hidden"
@@ -151,11 +157,12 @@ function CustomSandpack(props: SandpackConfigType) {
 						{props.options.showConsole && (
 							<SandpackConsole
 								className={cn(
-									"relative top-0 left-0 w-full hidden",
+									"!relative top-0 left-0",
 									previewOrConsole === "console"
 										? "flex"
 										: "!hidden"
 								)}
+								{...props.options}
 								style={{
 									height: !expand
 										? props.options.previewHeight || 200

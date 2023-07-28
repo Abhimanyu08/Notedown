@@ -5,6 +5,7 @@ import { useContext, useCallback, useEffect, useState } from "react";
 import { Compartment } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { usePathname } from "next/navigation";
+import { SlControlStart } from "react-icons/sl";
 
 export default function useSyncHook({ editorView, startOffset, endOffset, sandbox = false }: { editorView: EditorView | null, startOffset: number, endOffset: number, sandbox?: boolean }) {
 
@@ -76,7 +77,7 @@ export default function useSyncHook({ editorView, startOffset, endOffset, sandbo
         })
 
 
-    }, [editorView, startOffset, endOffset])
+    }, [editorView, startOffset])
 
 
 
