@@ -78,6 +78,10 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				[blockNumber]: editorView,
 			},
 		});
+
+		return () => {
+			dispatch({ type: "remove editor", payload: blockNumber });
+		};
 	}, [blockNumber, editorView]);
 
 	const onUndo: MouseEventHandler = () => {

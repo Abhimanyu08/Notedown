@@ -51,7 +51,6 @@ async function Post({ params }: { params: PostParams }) {
 			supabase
 		);
 
-		const { content } = parseFrontMatter(markdown);
 		return (
 			<BlogLayout
 				postMeta={{ post, markdown, imagesToUrls }}

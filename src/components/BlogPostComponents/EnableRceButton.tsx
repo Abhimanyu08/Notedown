@@ -1,45 +1,34 @@
 "use client";
-import Button from "@components/ui/button";
-import React, { useContext } from "react";
-import { BlogContext } from "./BlogState";
-import prepareContainer from "@/app/utils/prepareContainer";
-import { BiCodeAlt } from "react-icons/bi";
+import useSetContainer from "@/hooks/useSetContainer";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import { cn } from "@/lib/utils";
+import { useContext } from "react";
+import { BiCodeAlt } from "react-icons/bi";
+import { VscLoading } from "react-icons/vsc";
+import { BlogContext } from "./BlogState";
 
 function EnableRceButton({ className }: { className?: string }) {
-	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
+	const { blogState } = useContext(BlogContext);
+	const { startPreparingContainer, preparingContainer } = useSetContainer();
 	return (
 		<ToolTipComponent
-			tip={
-				blogState.containerId
-					? "RCE Enabled"
-					: "Enable remote code execution"
-			}
-		>
-			<Button
-				className={cn(className, "text-gray-400 hover:text-white")}
-				onClick={() => {
-					console.log(`${blogState.containerId}`);
-					prepareContainer(
-						blogState.blogMeta.language,
+			tip={` 
+					${
 						blogState.containerId
-					).then((containerId) => {
-						if (!containerId) return;
-						blogStateDispatch({
-							type: "set containerId",
-							payload: containerId,
-						});
-					});
-				}}
-			>
+							? "Remote code execution enabled"
+							: "Enable remote code execution"
+					}
+					 `}
+			onClick={startPreparingContainer}
+			className={`text-gray-400 hover:text-white active:scale-95`}
+		>
+			{preparingContainer ? (
+				<VscLoading size={30} className="animate-spin" />
+			) : (
 				<BiCodeAlt
 					size={30}
-					className={` ${
-						blogState.containerId ? "text-lime-400" : ""
-					}`}
+					className={` ${blogState.containerId && "text-lime-400"}`}
 				/>
-			</Button>
+			)}
 		</ToolTipComponent>
 	);
 }

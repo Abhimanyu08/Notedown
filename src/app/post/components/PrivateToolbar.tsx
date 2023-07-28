@@ -1,60 +1,24 @@
 "use client";
-import prepareContainer from "@/app/utils/prepareContainer";
-import { BlogProps } from "@/interfaces/BlogProps";
+import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
+import { ToolTipComponent } from "@components/ToolTipComponent";
+import Link from "next/link";
 import { useContext } from "react";
 import { AiFillEdit } from "react-icons/ai";
-import { BiCodeAlt } from "react-icons/bi";
-import { TbNews } from "react-icons/tb";
 import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
-import ToolbarButton from "./ToolbarButton";
-import Link from "next/link";
 
-function PrivateToolbar(props: { language: BlogProps["language"] }) {
-	const { blogState, dispatch } = useContext(BlogContext);
-	// const { session } = useSupabase();
-	// const user = session?.user;
+function PrivateToolbar() {
+	const { blogState } = useContext(BlogContext);
 	return (
 		<>
-			{props.language && (
-				<ToolbarButton
-					tip="Enable remote code execution"
-					className={``}
-					onClick={() =>
-						prepareContainer(
-							blogState.blogMeta.language,
-							blogState.containerId
-						).then((containerId) => {
-							if (!containerId) return;
-							dispatch({
-								type: "set containerId",
-								payload: containerId,
-							});
-						})
-					}
-				>
-					<BiCodeAlt
-						size={30}
-						className={` ${
-							blogState.containerId
-								? "text-lime-400"
-								: "text-black dark:text-white"
-						} `}
-					/>
-				</ToolbarButton>
-			)}
-			<ToolbarButton className="" tip="Edit markdown">
+			{blogState.blogMeta.language && <EnableRceButton />}
+			<ToolTipComponent
+				tip="Edit markdown"
+				className={`text-gray-400 hover:text-white active:scale-95`}
+			>
 				<Link href={`/write/${blogState.blogMeta.id}`}>
-					<AiFillEdit
-						size={28}
-						className="dark:text-white  text-black"
-					/>
+					<AiFillEdit size={28} />
 				</Link>
-			</ToolbarButton>
-			<ToolbarButton className="" tip="Publish">
-				<label htmlFor="private-publish">
-					<TbNews className=" dark:text-white text-black" size={30} />
-				</label>
-			</ToolbarButton>
+			</ToolTipComponent>
 		</>
 	);
 }

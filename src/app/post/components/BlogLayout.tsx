@@ -51,11 +51,7 @@ function BlogLayout({
 					/>
 				</div>
 				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
-					{isPostPrivate ? (
-						<PrivateToolbar language={post.language} />
-					) : (
-						<Toolbar language={post?.language} id={post.id} />
-					)}
+					{isPostPrivate ? <PrivateToolbar /> : <Toolbar />}
 				</div>
 			</div>
 		</BlogContextProvider>

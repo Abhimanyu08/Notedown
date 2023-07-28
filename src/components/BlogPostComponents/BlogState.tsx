@@ -60,7 +60,8 @@ interface DispatchObj {
 		| "set blog meta"
 		// | "set canvas apps"
 		| "remove container"
-		| "set uploaded images";
+		| "set uploaded images"
+		| "remove editor";
 	// | "remove canvas app"
 	// | "empty canvas apps";
 	payload: BlogStateInterface[keyof BlogStateInterface];
@@ -96,6 +97,13 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 					...state.blockToEditor,
 					...(action.payload as Record<number, EditorView>),
 				},
+			};
+		}
+		case "remove editor": {
+			delete state.blockToEditor[action.payload as number];
+			return {
+				...state,
+				blockToEditor: state.blockToEditor,
 			};
 		}
 		case "set running block": {

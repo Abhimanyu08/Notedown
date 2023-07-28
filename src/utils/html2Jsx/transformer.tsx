@@ -153,6 +153,7 @@ const tagToTransformer: TagToTransformer = {
 			return (
 				<Code
 					code={code}
+					key={BLOCK_NUMBER}
 					blockNumber={BLOCK_NUMBER}
 					{...{ start, end }}
 				/>
