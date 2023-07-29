@@ -46,14 +46,14 @@ interface PostParams extends NextParsedUrlQuery {
 
 async function Post({ params }: { params: PostParams }) {
 	try {
-		const { post, markdown, imagesToUrls } = await getPost(
+		const { post, markdown, imagesToUrls, fileNames } = await getPost(
 			params.postId,
 			supabase
 		);
 
 		return (
 			<BlogLayout
-				postMeta={{ post, markdown, imagesToUrls }}
+				postMeta={{ post, markdown, imagesToUrls, fileNames }}
 				isPostPrivate={false}
 			/>
 			// <BlogContextProvider

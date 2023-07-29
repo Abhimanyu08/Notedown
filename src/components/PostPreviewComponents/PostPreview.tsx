@@ -16,18 +16,23 @@ async function PostPreview({ postId }: { postId: string }) {
 		cookies,
 	});
 
-	const { post, markdown, imagesToUrls } = await getPost(postId, supabase);
+	const { post, markdown, imagesToUrls, fileNames } = await getPost(
+		postId,
+		supabase
+	);
 
 	const { content } = parseFrontMatter(markdown);
 	return (
 		<div className="flex flex-col items-center justify-center h-full w-full relative">
 			<BlogContextProvider
 				uploadedImages={imagesToUrls}
+				fileNames={fileNames}
 				blogMeta={{
 					id: post.id,
 					title: post.title,
 					language: post.language,
 					imageFolder: post.image_folder,
+					blogger: post.bloggers as { id: string; name: string },
 				}}
 			>
 				{/* <PublishModal publishPostAction={publishPostAction} /> */}

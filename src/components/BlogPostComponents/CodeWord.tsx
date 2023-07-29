@@ -6,6 +6,7 @@ import TLDrawing from "./TLDrawing";
 import { usePathname } from "next/navigation";
 import { Codesandbox } from "lucide-react";
 import CodesandboxWithEditor from "./CodeSandbox/CodesandboxWithEditor";
+import SandboxRouter from "./CodeSandbox/SandboxRouters";
 
 function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
@@ -40,12 +41,7 @@ function CodeWord({ code }: { code: string }) {
 		const regexArray = sandboxRegex.exec(code)!;
 		const persistanceKey = regexArray.at(1)!;
 
-		return (
-			<CodesandboxWithEditor
-				persistanceKey={persistanceKey}
-				key={persistanceKey}
-			/>
-		);
+		return <SandboxRouter persistanceKey={persistanceKey} />;
 	}
 
 	return <code>{code}</code>;

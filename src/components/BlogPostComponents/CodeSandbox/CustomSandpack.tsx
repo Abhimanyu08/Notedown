@@ -18,7 +18,9 @@ import JsonUpdater from "./JsonUpdater";
 import { SandpackConfigType } from "./types";
 import { usePathname } from "next/navigation";
 
-function CustomSandpack(props: SandpackConfigType) {
+function CustomSandpack(
+	props: SandpackConfigType & { persistanceKey?: string }
+) {
 	const [previewOrConsole, setPreviewOrConsole] = useState<
 		"preview" | "console"
 	>("preview");
@@ -114,6 +116,11 @@ function CustomSandpack(props: SandpackConfigType) {
 							className={cn(
 								"[&>*]:py-1 border-b-2 border-border gap-3"
 							)}
+							layoutId={
+								expand
+									? `expand-${props.persistanceKey}`
+									: `tabs-${props.persistanceKey}`
+							}
 						>
 							<TabChildren
 								active={previewOrConsole === "preview"}

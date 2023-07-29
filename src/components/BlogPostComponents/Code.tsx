@@ -154,7 +154,7 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div
-				className="w-full border-[1px] border-white/50 rounded-sm"
+				className="w-full border-2 border-border rounded-sm rounded-se-none"
 				id={`codearea-${blockNumber}`}
 				onDoubleClick={() => {
 					// if (setRunningBlock) setRunningBlock(blockNumber);

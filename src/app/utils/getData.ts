@@ -136,7 +136,10 @@ export const getPost = async (postId: string, supabaseClient: SupabaseClient) =>
     }
 
 
+    const { data: fileObjects } = await supabaseClient.storage.from(SUPABASE_FILES_BUCKET).list(`${post.created_by}/${post.id}`)
+    const fileNames = fileObjects?.map(f => f.name)
+
     const markdown = await fileData.text()
 
-    return { post, imagesToUrls, markdown }
+    return { post, imagesToUrls, markdown, fileNames }
 }

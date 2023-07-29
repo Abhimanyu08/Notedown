@@ -19,7 +19,7 @@ export function CodeBlockButtons({
 	return (
 		<div
 			className={cn(
-				"flex flex-row  gap-5 w-fit self-end border-[1px] border-b-0 border-white/50 bg-[#15181c] py-1 px-3 rounded-t-md",
+				"flex flex-row  gap-5 w-fit self-end border-2 border-b-0 border-border bg-[#15181c] py-1 px-3 rounded-t-md",
 				className
 			)}
 		>

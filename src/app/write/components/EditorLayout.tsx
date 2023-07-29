@@ -19,6 +19,7 @@ function EditorLayout({
 	post,
 	imagesToUrls,
 	markdown,
+	fileNames,
 }: Partial<Awaited<ReturnType<typeof getPost>>>) {
 	const { dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
@@ -62,6 +63,11 @@ function EditorLayout({
 				type: "set uploaded images",
 				payload: imagesToUrls!,
 			});
+			blogStateDispatch({
+				type: "add sandbox filenames",
+				payload: fileNames,
+			});
+			// blogStateDispatch
 			// getHtmlFromMarkdownFile(markdown || "")
 			// 	.then((val) => {
 			// 		if (!val) return;

@@ -29,6 +29,7 @@ interface BlogStateInterface {
 	}>;
 	// canvasApps: Record<string, any>;
 	uploadedImages: Record<string, string>;
+	uploadedFileNames?: string[];
 	// imagesToFiles: Record<string, File>;
 	// imagesToUpload: string[];
 }
@@ -45,6 +46,7 @@ const blogInitialState: BlogStateInterface = {
 	// canvasApps: {},
 	// imagesToFiles: {},
 	uploadedImages: {},
+	uploadedFileNames: [],
 	// imagesToUpload: [],
 };
 
@@ -61,7 +63,8 @@ interface DispatchObj {
 		// | "set canvas apps"
 		| "remove container"
 		| "set uploaded images"
-		| "remove editor";
+		| "remove editor"
+		| "add sandbox filenames";
 	// | "remove canvas app"
 	// | "empty canvas apps";
 	payload: BlogStateInterface[keyof BlogStateInterface];
@@ -79,6 +82,12 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				vimEnabled: !state.vimEnabled,
+			};
+		}
+		case "add sandbox filenames": {
+			return {
+				...state,
+				uploadedFileNames: action.payload as string[],
 			};
 		}
 		case "set output": {
@@ -167,10 +176,12 @@ function BlogContextProvider({
 	children,
 	blogMeta,
 	uploadedImages = {},
+	fileNames,
 }: {
 	children: React.ReactNode;
 	blogMeta?: BlogStateInterface["blogMeta"];
 	uploadedImages?: BlogStateInterface["uploadedImages"];
+	fileNames?: BlogStateInterface["uploadedFileNames"];
 }) {
 	const [blogState, dispatch] = useReducer<typeof reducer>(reducer, {
 		...blogInitialState,
@@ -179,6 +190,7 @@ function BlogContextProvider({
 			...blogMeta,
 		},
 		uploadedImages,
+		uploadedFileNames: fileNames,
 	});
 	useEffect(() => {
 		const { containerId } = blogState;

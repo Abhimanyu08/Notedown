@@ -15,7 +15,7 @@ function BlogLayout({
 	postMeta: Awaited<ReturnType<typeof getPost>>;
 	isPostPrivate: boolean;
 }) {
-	const { post, imagesToUrls, markdown } = postMeta;
+	const { post, imagesToUrls, markdown, fileNames } = postMeta;
 	const { content } = parseFrontMatter(markdown);
 	return (
 		<BlogContextProvider
@@ -28,6 +28,7 @@ function BlogLayout({
 				blogger: post.bloggers as { id: string; name: string },
 			}}
 			uploadedImages={imagesToUrls}
+			fileNames={fileNames}
 		>
 			<div className="grow flex flex-row min-h-0 relative [&>*]:pt-20">
 				<div

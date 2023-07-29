@@ -20,7 +20,7 @@ async function PrivatePost({ params }: { params: PostParams }) {
 	});
 
 	try {
-		const { post, markdown, imagesToUrls } = await getPost(
+		const { post, markdown, imagesToUrls, fileNames } = await getPost(
 			params.postId,
 			supabase
 		);
@@ -30,7 +30,7 @@ async function PrivatePost({ params }: { params: PostParams }) {
 
 		return (
 			<BlogLayout
-				postMeta={{ post, markdown, imagesToUrls }}
+				postMeta={{ post, markdown, imagesToUrls, fileNames }}
 				isPostPrivate={true}
 			/>
 		);

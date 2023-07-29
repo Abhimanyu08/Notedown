@@ -23,6 +23,9 @@ import {
 } from "./types";
 import { keymap } from "@codemirror/view";
 import useSyncHook from "@/hooks/useSyncHook";
+import { BlogContext } from "../BlogState";
+import { useSupabase } from "@/app/appContext";
+import { SUPABASE_FILES_BUCKET } from "@utils/constants";
 
 export const JsonEditorContext = createContext<{
 	jsonEditorView: EditorView | null;
@@ -44,7 +47,9 @@ function CodesandboxWithEditor({
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
 	// const markdownEditorContext = useContext(EditorContext);
+	const { supabase, session } = useSupabase();
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { blogState } = useContext(BlogContext);
 	const [sandpackProps, setSandPackProps] = useState<SandpackConfigType>();
 
 	const { editorView: jsonEditorView } = useEditor({
@@ -80,25 +85,35 @@ function CodesandboxWithEditor({
 			});
 		};
 	}, [jsonEditorView]);
-	// useEffect(() => {
-	// 	if (!jsonEditorView) return;
-	// 	if (
-	// 		initialConfig.trim().replace(/\n/g, "") !==
-	// 		jsonEditorView?.state.sliceDoc().trim().replace(/\n/g, "")
-	// 	) {
-	// 		setEditConfig(true);
-	// 		setError("Please update json using the above editor");
-	// 	} else {
-	// 		setError("");
-	// 	}
-	// }, [initialConfig, jsonEditorView]);
 
-	// useSyncHook({
-	// 	editorView: jsonEditorView,
-	// 	startOffset: start + 11,
-	// 	endOffset: end - 3,
-	// 	sandbox: true,
-	// });
+	useEffect(() => {
+		// if this config file exists in database download it and then put the config string in jsoneditor
+		if (!jsonEditorView) return;
+		if (blogState.uploadedFileNames?.includes(`${persistanceKey}.json`)) {
+			const { blogger, id } = blogState.blogMeta;
+			const fileName = `${session?.user?.id}/${id}/${persistanceKey}.json`;
+
+			supabase.storage
+				.from(SUPABASE_FILES_BUCKET)
+				.download(fileName)
+				.then((val) => {
+					const { data } = val;
+					if (data) {
+						data.text().then((jsonString) => {
+							jsonEditorView?.dispatch({
+								changes: [
+									{
+										from: 0,
+										to: jsonEditorView.state.doc.length,
+										insert: jsonString,
+									},
+								],
+							});
+						});
+					}
+				});
+		}
+	}, [jsonEditorView, blogState.uploadedFileNames]);
 
 	const onSandboxGenerate = () => {
 		const configJsonString = jsonEditorView?.state.sliceDoc();
@@ -137,7 +152,12 @@ function CodesandboxWithEditor({
 					>
 						Edit Config
 					</Button>
-					{sandpackProps && <CustomSandpack {...sandpackProps} />}
+					{sandpackProps && (
+						<CustomSandpack
+							{...sandpackProps}
+							persistanceKey={persistanceKey}
+						/>
+					)}
 				</div>
 				<JsonConfigEditor
 					className={`${!editConfig ? "hidden" : ""}`}
