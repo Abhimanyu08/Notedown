@@ -12,8 +12,8 @@ function CodeWithoutLanguage({
 	code: string;
 	language?: string;
 }) {
-	const [imported, setImported] = useState(false);
 	const [copied, setCopied] = useState(false);
+	const [importedLanguage, setImportedLanguage] = useState("");
 	// const [Highlighter, setHighlighter] = useState(SyntaxHighlighter);
 
 	useEffect(() => {
@@ -29,7 +29,7 @@ function CodeWithoutLanguage({
 				languageToImporter[
 					language as keyof typeof languageToImporter
 				]().then(() => {
-					setImported(true);
+					setImportedLanguage(language!);
 				});
 			}
 		}
@@ -52,19 +52,17 @@ function CodeWithoutLanguage({
 					<MdContentCopy size={20} className="text-gray-100" />
 				)}
 			</button>
-			{imported && (
-				<SyntaxHighlighter
-					language={language}
-					style={theme}
-					customStyle={{ paddingLeft: "8px", fontSize: "16px" }}
-					showLineNumbers={true}
-					lineNumberStyle={{
-						color: "rgb(148 163 184)",
-					}}
-				>
-					{code.trim()}
-				</SyntaxHighlighter>
-			)}
+			<SyntaxHighlighter
+				language={importedLanguage}
+				style={theme}
+				customStyle={{ paddingLeft: "8px", fontSize: "16px" }}
+				showLineNumbers={true}
+				lineNumberStyle={{
+					color: "rgb(148 163 184)",
+				}}
+			>
+				{code.trim()}
+			</SyntaxHighlighter>
 		</div>
 	);
 }
