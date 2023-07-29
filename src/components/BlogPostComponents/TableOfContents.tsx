@@ -1,78 +1,51 @@
-const headingToMargin: Record<string, string> = {
-	h2: "ml-0",
-	h3: "ml-4",
-	h4: "ml-8",
-	h5: "ml-12",
-	h6: "ml-16",
+import { cn } from "@/lib/utils";
+import {
+	HeadingType,
+	createHeadingIdFromHeadingText,
+	mdToHast,
+} from "@utils/html2Jsx/transformer";
+
+const Toc = ({ markdown }: { markdown: string }) => {
+	const { headingAST } = mdToHast(markdown);
+
+	return <HeadingNodeToDetailsTag headingNode={headingAST} />;
 };
 
-// const Toc = memo(function Toc({
-// 	content
-// }: {
-// 	content: string
-// }) {
-// 	// const { blogState } = useContext(BlogContext);
-// 	// const html = blogState.blogMeta.content;
-// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
-// 	const matches = Array.from(html?.matchAll(re) || []);
-// 	const headings: string[] = [];
-// 	const headingIds: string[] = [];
-// 	const headingTypes: string[] = [];
-// 	matches.forEach((match) => {
-// 		const headingElem = parser(tokenizer(match.at(0)!))
-// 			.children[0] as HtmlNode;
-// 		const headingText = extractTextFromChildren(headingElem.children);
-// 		const headingId = createHeadingIdFromHeadingText(headingText);
+const HeadingNodeToDetailsTag = ({
+	headingNode,
+}: {
+	headingNode: HeadingType;
+}) => {
+	return (
+		<details
+			className={cn(
+				"flex flex-col my-1 text-gray-400",
+				headingNode.depth !== 0 && "ml-6"
+			)}
+			open={headingNode.depth === 0}
+		>
+			<summary
+				className={cn(
+					"hover:underline hover:text-gray-100",
+					headingNode.children.length === 0 && "list-none "
+				)}
+			>
+				<a
+					href={
+						headingNode.depth !== 0
+							? "#" +
+							  createHeadingIdFromHeadingText(headingNode.text)
+							: "#title"
+					}
+				>
+					{headingNode.text}
+				</a>
+			</summary>
+			{headingNode.children.map((c) => (
+				<HeadingNodeToDetailsTag headingNode={c} key={c.text} />
+			))}
+		</details>
+	);
+};
 
-// 		headings.push(headingText);
-// 		headingIds.push(headingId);
-// 		headingTypes.push(headingElem.tagName);
-// 	});
-
-// 	// const [matches, setMatches] = useState<RegExpMatchArray[]>();
-// 	// const [open, setOpen] = useState(true);
-
-// 	// useEffect(() => {
-// 	// 	if (!html) {
-// 	// 		setMatches([]);
-// 	// 		return;
-// 	// 	}
-// 	// 	const re = /<(h(\d))( .*)?>((.|\r|\n)*?)<\/\1>/g;
-// 	// 	setMatches(Array.from(html.matchAll(re)));
-// 	// }, [html]);
-
-// 	return (
-// 		<ul
-// 			className={` flex flex-col text-gray-700  dark:text-gray-400 tracking-wider gap-1 list-inside font-sans font-light text-sm list-disc text-left`}
-// 		>
-// 			<li className="">
-// 				<a
-// 					href="#title"
-// 					className="hover:text-black hover:dark:text-white"
-// 				>
-// 					Title
-// 				</a>
-// 			</li>
-// 			{headings.map((heading, idx) => {
-// 				return (
-// 					<li
-// 						className={`
-// 							${headingToMargin[headingTypes[idx]]}
-// 							break-words`}
-// 						key={heading}
-// 					>
-// 						<a
-// 							href={`#${headingIds[idx]}`}
-// 							className={`hover:text-black  hover:dark:text-white`}
-// 						>
-// 							{heading}
-// 						</a>
-// 					</li>
-// 				);
-// 			})}
-// 		</ul>
-// 	);
-// });
-
-const Toc = ({ html }: { html: string }) => <></>;
 export default Toc;

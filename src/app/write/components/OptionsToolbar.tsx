@@ -3,18 +3,20 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { AnimatePresence, motion } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { BiCodeAlt } from "react-icons/bi";
+import { BiBookContent, BiCodeAlt } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
 import { SlOptions } from "react-icons/sl";
 import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
+import Button from "@components/ui/button";
+import Toc from "@components/BlogPostComponents/TableOfContents";
 
-function OptionsToolbar() {
-	const [openOptions, setOpenOptions] = useState(false);
-
+function OptionsToolbar({ content }: { content: string }) {
+	const [showToc, setShowToc] = useState(false);
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { blogState } = useContext(BlogContext);
 	const [startUpload, setStartUpload] = useState(false);
 
 	const { uploadFinished } = useUploadPost({
@@ -35,54 +37,36 @@ function OptionsToolbar() {
 	}, [uploadFinished]);
 	return (
 		<>
-			{openOptions ? (
-				<AnimatePresence>
+			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
+				{blogState.blogMeta.language && <EnableRceButton />}
+				<ToolTipComponent tip="Upload changes" side="right">
+					<button
+						className=" hover:text-gray-100"
+						onClick={() => onUpload(editorState)}
+					>
+						<FaFileUpload size={26} />
+					</button>
+				</ToolTipComponent>
+				<Button
+					className="text-gray-400 hover:text-white active:scale-95"
+					onMouseOver={() => setShowToc(true)}
+				>
+					<BiBookContent size={24} />
+				</Button>
+			</div>
+			<AnimatePresence>
+				{showToc && (
 					<motion.div
-						className="px-4 py-2 z-[500]  flex gap-8 rounded-md bg-black absolute text-gray-400 border-[1px] border-border
-                        
-                        [&>*]:active:scale-95
-                        "
-						style={{
-							left: "calc(50% - 60px)",
-							bottom: "90px",
-						}}
-						key={openOptions ? "open" : "close"}
+						className="h-fit absolute py-4 px-5 bg-black right-12 top-[40%] border-border border-[1px]  w-[400px] max-h-[450px] overflow-auto shadow-sm shadow-gray-200 z-[1000]"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
-						onMouseLeave={() => {
-							setOpenOptions(false);
-						}}
+						onMouseLeave={() => setShowToc(false)}
 					>
-						<EnableRceButton />
-						<ToolTipComponent tip="Upload changes" side="right">
-							<button
-								className=" hover:text-gray-100"
-								onClick={() => onUpload(editorState)}
-							>
-								<FaFileUpload size={26} />
-							</button>
-						</ToolTipComponent>
+						<Toc markdown={content} />
 					</motion.div>
-				</AnimatePresence>
-			) : (
-				<AnimatePresence>
-					<motion.button
-						className="absolute flex items-center justify-center p-2 bg-primary-foreground border-border border-[1px] rounded-full opacity-20 hover:opacity-100 "
-						onMouseOver={() => setOpenOptions(true)}
-						key={openOptions ? "close" : "open"}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						style={{
-							left: "calc(50% - 20px)",
-							bottom: "90px",
-						}}
-					>
-						<SlOptions />
-					</motion.button>
-				</AnimatePresence>
-			)}
+				)}
+			</AnimatePresence>
 		</>
 	);
 }

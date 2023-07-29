@@ -1,8 +1,3 @@
-import { raw } from "hast-util-raw";
-import { defaultSchema, sanitize } from "hast-util-sanitize";
-import { fromMarkdown } from "mdast-util-from-markdown";
-import { toHast } from "mdast-util-to-hast";
-import { visit } from "unist-util-visit";
 import Carousel from "@components/BlogPostComponents/Carousel";
 import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
@@ -10,17 +5,18 @@ import CodeWord from "@components/BlogPostComponents/CodeWord";
 import Footers from "@components/BlogPostComponents/Footers";
 import HeadingButton from "@components/BlogPostComponents/HeadinglinkButton";
 import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
-import ImageUploader from "@components/EditorComponents/ImageUploader";
-import React from "react";
-import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
-import Details from "@components/BlogPostComponents/Details";
 import LexicaImage from "@components/BlogPostComponents/LexicaImage";
-import { Element, Root, Text } from "hast";
-import CodesandboxWithEditor from "@components/BlogPostComponents/CodeSandbox/CodesandboxWithEditor";
-import SandboxRouter from "@components/BlogPostComponents/CodeSandbox/SandboxRouters";
+import ImageUploader from "@components/EditorComponents/ImageUploader";
+import { Element, Text } from "hast";
+import { raw } from "hast-util-raw";
+import { defaultSchema, sanitize } from "hast-util-sanitize";
+import { fromMarkdown } from "mdast-util-from-markdown";
+import { toHast } from "mdast-util-to-hast";
+import React from "react";
+import { visit } from "unist-util-visit";
+import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 
 let BLOCK_NUMBER = 0;
-let SANDBOX_NUMBER = 0;
 let footNotes: { id: number; node: any }[] = [];
 
 const attributes: (typeof defaultSchema)["attributes"] = {
@@ -28,10 +24,76 @@ const attributes: (typeof defaultSchema)["attributes"] = {
 	img: ["alt", "src"],
 	a: ["href"],
 };
+export type HeadingType = {
+	depth: number;
+	text: string;
+	children: HeadingType[];
+	parent: HeadingType | null;
+};
 
 export function mdToHast(markdown: string) {
 	const mdast = fromMarkdown(markdown);
+	// const curre
+	let rootHeadingItem: HeadingType = {
+		depth: 0,
+		text: "Table of contents",
+		children: [],
+		parent: null,
+	};
+	let currentHeadingItem = rootHeadingItem;
 	visit(mdast, (node) => {
+		if (node.type === "heading") {
+			if (currentHeadingItem.depth < node.depth) {
+				// node should be a child of the currentHeadingItem
+				let headingNode: HeadingType = {
+					depth: node.depth,
+					text: extractTextFromChildren(node.children as any),
+					children: [],
+					parent: currentHeadingItem,
+				};
+
+				currentHeadingItem.children.push(headingNode);
+				currentHeadingItem = headingNode;
+			} else if (currentHeadingItem.depth === node.depth) {
+				// current node is sibling of the currentHeadingItem
+				let headingNode: HeadingType = {
+					depth: node.depth,
+					text: extractTextFromChildren(node.children as any),
+					children: [],
+					parent: currentHeadingItem.parent,
+				};
+				currentHeadingItem.parent?.children.push(headingNode);
+
+				currentHeadingItem = headingNode;
+			} else {
+				// currentHeadingItem.depth > node.depth. Therefore node is child of one of it's grandparent
+
+				let parent = currentHeadingItem.parent;
+				while (parent?.depth !== node.depth && parent?.depth !== 0) {
+					parent = parent!.parent;
+				}
+				if (parent.depth === node.depth) {
+					let headingNode: HeadingType = {
+						depth: node.depth,
+						text: extractTextFromChildren(node.children as any),
+						children: [],
+						parent: parent.parent,
+					};
+					parent.parent?.children.push(headingNode);
+					currentHeadingItem = headingNode;
+				}
+				if (parent.depth === 0) {
+					let headingNode: HeadingType = {
+						depth: node.depth,
+						text: extractTextFromChildren(node.children as any),
+						children: [],
+						parent: parent,
+					};
+					parent.children.push(headingNode);
+					currentHeadingItem = headingNode;
+				}
+			}
+		}
 		node.data = node.data || {};
 		node.data.hProperties = {
 			datastartoffset: node.position?.start.offset,
@@ -40,7 +102,10 @@ export function mdToHast(markdown: string) {
 	});
 	const hast = raw(toHast(mdast, { allowDangerousHtml: true })!);
 	const safeHast = sanitize(hast, { attributes });
-	return safeHast;
+	return {
+		htmlAST: safeHast,
+		headingAST: rootHeadingItem,
+	};
 	// return hast;
 }
 
@@ -58,12 +123,11 @@ function defaultTagToJsx(node: HtmlAstElement) {
 }
 
 export function transformer(
-	node: ReturnType<typeof mdToHast>
+	node: ReturnType<typeof mdToHast>["htmlAST"]
 	// parent?: HtmlNode
 ): JSX.Element {
 	if (node.type === "root") {
 		BLOCK_NUMBER = 0;
-		SANDBOX_NUMBER = 0;
 		footNotes = [];
 		return (
 			<main>
@@ -316,7 +380,7 @@ const tagToTransformer: TagToTransformer = {
 
 function headingsRenderer(node: HtmlAstElement) {
 	const headingChildren = node.children;
-	const headingText = extractTextFromChildren(headingChildren);
+	const headingText = extractTextFromChildren(headingChildren as any);
 	const headingId = createHeadingIdFromHeadingText(headingText);
 	const { start } = getStartEndFromNode(node);
 	return React.createElement(
@@ -332,7 +396,7 @@ function headingsRenderer(node: HtmlAstElement) {
 	);
 }
 
-const createHeadingIdFromHeadingText = (headingText: string) => {
+export const createHeadingIdFromHeadingText = (headingText: string) => {
 	return headingText
 		.split(" ")
 		.map((w) => w.toLowerCase())
@@ -340,14 +404,16 @@ const createHeadingIdFromHeadingText = (headingText: string) => {
 };
 
 const extractTextFromChildren = (
-	children: HtmlAstElement["children"]
+	children: ReturnType<typeof fromMarkdown>["children"]
 ): string => {
-	const textArray = children.map((c) => {
-		if (c.type === "text") return c.value;
-		return extractTextFromChildren((c as HtmlAstElement).children);
+	const textArray = children?.map((c) => {
+		if (c.type === "inlineCode" || c.type === "text") return c.value;
+		if (Object.hasOwn(c, "children")) {
+			return extractTextFromChildren((c as any).children);
+		}
 	});
 
-	return textArray.join("");
+	return (textArray || []).join("");
 };
 
 function getStartEndFromNode(node: HtmlAstElement) {

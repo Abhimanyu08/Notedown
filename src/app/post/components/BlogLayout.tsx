@@ -35,7 +35,7 @@ function BlogLayout({
 					className={`lg:basis-1/5 flex-col overflow-y-auto justify-start flex px-4 
 					`}
 				>
-					<Toc html={content} />
+					<Toc markdown={content} />
 				</div>
 				<div
 					className={`lg:basis-3/5 relative 

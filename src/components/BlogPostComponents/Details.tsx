@@ -16,10 +16,10 @@ function Details({
 		// setSummaryText(st)
 
 		if (summaryText) {
-			setSummaryJsx(transformer(mdToHast(summaryText)));
+			setSummaryJsx(transformer(mdToHast(summaryText)["htmlAST"]));
 		}
 		if (detailsText) {
-			setDetailsJsx(transformer(mdToHast(detailsText)));
+			setDetailsJsx(transformer(mdToHast(detailsText)["htmlAST"]));
 		}
 	}, [summaryText, detailsText]);
 

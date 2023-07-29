@@ -39,14 +39,12 @@ function PostPreviewControls({
 				text-gray-400 hover:text-white active:scale-95"
 					/>
 				)}
-				<ToolTipComponent tip="Table of contents">
-					<Button
-						className="text-gray-400 hover:text-white active:scale-95"
-						onClick={() => setShowToc((p) => !p)}
-					>
-						<BiBookContent size={24} />
-					</Button>
-				</ToolTipComponent>
+				<Button
+					className="text-gray-400 hover:text-white active:scale-95"
+					onMouseOver={() => setShowToc(true)}
+				>
+					<BiBookContent size={24} />
+				</Button>
 				<ToolTipComponent
 					tip="Close preview (Esc)"
 					onClick={() => {
@@ -57,7 +55,7 @@ function PostPreviewControls({
 					<AiFillCloseCircle size={24} />
 				</ToolTipComponent>
 			</div>
-			{/* <AnimatePresence>
+			<AnimatePresence>
 				{showToc && (
 					<motion.div
 						className="h-fit absolute py-4 px-5 bg-black right-12 w-fit border-border border-[1px]  max-w-[400px] max-h-[500px] overflow-y-auto ring-2 ring-gray-300"
@@ -66,10 +64,10 @@ function PostPreviewControls({
 						exit={{ opacity: 0 }}
 						onMouseLeave={() => setShowToc(false)}
 					>
-						<Toc html={content} />
+						<Toc markdown={content} />
 					</motion.div>
 				)}
-			</AnimatePresence> */}
+			</AnimatePresence>
 		</>
 	);
 }

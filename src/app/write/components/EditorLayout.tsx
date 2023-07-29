@@ -27,7 +27,7 @@ function EditorLayout({
 	const [initialMarkdown, setInitialMarkdown] = useState(
 		markdown || initialMarkdownMeta
 	);
-	const blogHtml = useBlogStateUpdate();
+	const blogContent = useBlogStateUpdate();
 
 	useEffect(() => {
 		if (searchParams?.has("draft")) {
@@ -67,19 +67,6 @@ function EditorLayout({
 				type: "add sandbox filenames",
 				payload: fileNames,
 			});
-			// blogStateDispatch
-			// getHtmlFromMarkdownFile(markdown || "")
-			// 	.then((val) => {
-			// 		if (!val) return;
-
-			// 		// blogStateDispatch({
-			// 		// 	type: "set blog meta",
-			// 		// 	payload: { ...val?.data, content: val?.content },
-			// 		// });
-			// 	})
-			// 	.catch((e) => {
-			// 		alert((e as Error).message);
-			// 	});
 		} else {
 			dispatch({
 				type: "set previous uploaded doc",
@@ -95,7 +82,7 @@ function EditorLayout({
 			>
 				<MarkdownEditor initialMarkdown={initialMarkdown} />
 			</div>
-			<OptionsToolbar />
+			<OptionsToolbar content={blogContent} />
 
 			<div
 				className={` basis-1/2 flex justify-center pt-10`}
@@ -103,9 +90,10 @@ function EditorLayout({
 			>
 				<Blog
 					{...blogState.blogMeta}
-					content={blogHtml}
+					content={blogContent}
 					AuthorComponent={BlogAuthorClient}
 				/>
+				{/* <Toc markdown={blogContent} /> */}
 			</div>
 		</div>
 	);

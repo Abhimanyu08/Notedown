@@ -19,8 +19,8 @@ const Blog = memo(
 			| React.MemoExoticComponent<() => JSX.Element>
 			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>);
 	}) {
-		const hAst = mdToHast(content || "");
-		const blogJsx = transformer(hAst);
+		const { htmlAST } = mdToHast(content || "");
+		const blogJsx = transformer(htmlAST);
 
 		return (
 			<div
