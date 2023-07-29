@@ -8,6 +8,7 @@ import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 import editorToJsonFile from "@utils/processingTldrawings";
+import { sendRevalidationRequest } from "@utils/sendRequest";
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
@@ -42,6 +43,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                     type: "set blog meta",
                     payload: { id: postId },
                 });
+                sendRevalidationRequest('/profile/[id]')
                 context?.setMessage("Changes Uploaded");
 
             }).catch((e) => {
