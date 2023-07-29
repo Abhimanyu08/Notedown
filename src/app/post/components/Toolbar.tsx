@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useContext, useState } from "react";
 import { IoMdShareAlt } from "react-icons/io";
 import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
+import { Link } from "lucide-react";
+import { AiFillEdit } from "react-icons/ai";
 
 // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
@@ -13,7 +15,6 @@ function Toolbar() {
 	const pathname = usePathname();
 	const { blogState } = useContext(BlogContext);
 	const [linkCopied, setLinkCopied] = useState(false);
-	const { startPreparingContainer, preparingContainer } = useSetContainer();
 
 	// const [upvoted, setUpvoted] = useState<boolean | null>(null);
 	// const [upvotes, setUpvotes] = useState<number | null>(null);
@@ -71,7 +72,7 @@ function Toolbar() {
 			{blogState.blogMeta.language && <EnableRceButton />}
 
 			<ToolTipComponent
-				className="relative"
+				className="relative text-gray-400 hover:text-white active:scale-95"
 				tip="Share this post"
 				onClick={() => {
 					const link =
@@ -92,6 +93,14 @@ function Toolbar() {
 				>
 					Link Copied!
 				</span>
+			</ToolTipComponent>
+			<ToolTipComponent
+				tip="Edit markdown"
+				className={`text-gray-400 hover:text-white active:scale-95`}
+			>
+				<Link href={`/write/${blogState.blogMeta.id}`}>
+					<AiFillEdit size={28} />
+				</Link>
 			</ToolTipComponent>
 
 			{/* <div className="flex items-center gap-2">

@@ -41,7 +41,7 @@ function TLDrawing({
 					/>
 				</div>
 				<ToolTipComponent
-					tip="Expand (E)"
+					tip="Expand"
 					className="absolute top-2 left-2 z-[300]"
 					onClick={() => {
 						if (setPersistanceKey)
