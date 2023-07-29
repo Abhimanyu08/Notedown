@@ -9,13 +9,11 @@ import langToCodeMirrorExtension from "@utils/langToExtension";
 
 function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	const { dispatch } = useContext(EditorContext);
-	const [mounted, setMounted] = useState(false);
 
 	const { editorView } = useEditor({
 		language: "markdown",
 		code: initialMarkdown,
 		editorParentId: "markdown-textarea",
-		mounted,
 	});
 
 	useEffect(() => {
@@ -25,13 +23,22 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	}, [editorView]);
 
 	useEffect(() => {
-		if (!mounted) setMounted(true);
-	}, []);
-	// useEffect(() => {
-	// 	if (editorState.editingMarkdown) {
-	// 		editorState.editorView?.focus();
-	// 	}
-	// }, [editorState.editingMarkdown]);
+		// This is for when user loads the drafts. Initialmarkdown will change after we read from localstorage.
+		if (!editorView) return;
+
+		if (editorView.state.sliceDoc() !== initialMarkdown) {
+			editorView.dispatch({
+				changes: [
+					{
+						from: 0,
+						to: editorView.state.doc.length,
+						insert: initialMarkdown,
+					},
+				],
+			});
+		}
+	}, [initialMarkdown, editorView]);
+
 	return (
 		<>
 			<EditorHelperComponent />
