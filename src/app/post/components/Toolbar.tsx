@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 import { useContext, useState } from "react";
 import { IoMdShareAlt } from "react-icons/io";
 import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
-import { Link } from "lucide-react";
 import { AiFillEdit } from "react-icons/ai";
+import Link from "next/link";
 
 // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
