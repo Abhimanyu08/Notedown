@@ -3,13 +3,13 @@ import "@/styles/globals.css";
 import "@/styles/xterm.css";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Metadata } from "next";
-import { Noto_Serif, Nunito, IBM_Plex_Mono, Roboto } from "next/font/google";
+import { Petrona, Nunito_Sans, IBM_Plex_Mono } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
 import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
 
-const serif = Noto_Serif({
+const serif = Petrona({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-serif",
@@ -21,12 +21,12 @@ const mono = IBM_Plex_Mono({
 	variable: "--font-mono",
 	weight: ["400", "700"],
 });
-const sans = Nunito({
+const sans = Nunito_Sans({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-sans",
 	style: ["normal", "italic"],
-	weight: ["400", "700", "300", "200"],
+	weight: ["400", "700", "300"],
 });
 
 export const metadata: Metadata = {

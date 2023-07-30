@@ -6,7 +6,7 @@ import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
 import OptionsToolbar from "./OptionsToolbar";
@@ -28,6 +28,9 @@ function EditorLayout({
 		markdown || initialMarkdownMeta
 	);
 	const blogContent = useBlogStateUpdate();
+	const previewRef = useRef<HTMLDivElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const [atEnd, setAtEnd] = useState(false);
 
 	useEffect(() => {
 		if (searchParams?.has("draft")) {
@@ -75,8 +78,23 @@ function EditorLayout({
 		}
 	}, []);
 
+	useEffect(() => {
+		if (!atEnd) return;
+		if (!previewRef || !containerRef) return;
+
+		previewRef.current?.scrollTo({
+			top:
+				previewRef.current.scrollHeight -
+				previewRef.current.clientHeight,
+			left: 0,
+		});
+	}, [blogContent]);
+
 	return (
-		<div className="grow flex flex-row min-h-0 relative  gap-2 ">
+		<div
+			className="grow flex flex-row min-h-0 relative  gap-2 "
+			ref={containerRef}
+		>
 			<div
 				className={`flex flex-col basis-1/2 overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
@@ -96,6 +114,18 @@ function EditorLayout({
 
 				`}
 				id="post-preview"
+				ref={previewRef}
+				onScroll={(e) => {
+					if (
+						e.currentTarget.clientHeight +
+							Math.round(e.currentTarget.scrollTop) ===
+						e.currentTarget.scrollHeight
+					) {
+						if (!atEnd) setAtEnd(true);
+						return;
+					}
+					if (atEnd) setAtEnd(false);
+				}}
 			>
 				<Blog
 					{...blogState.blogMeta}

@@ -71,7 +71,7 @@ function Drafts() {
 
 	return (
 		<>
-			<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-2">
+			<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
 				{!loadingDrafts ? (
 					<>
 						{drafts.length > 0 ? (
@@ -155,24 +155,26 @@ function Drafts() {
 
 function SingleDraft({ draft }: { draft: Draft }) {
 	return (
-		<>
+		<div className="flex flex-col group p-2">
 			<Link
 				href={
 					draft.postId
 						? `/write/${draft.postId}?draft=${draft.timeStamp}`
 						: `/write?draft=${draft.timeStamp}`
 				}
-				className="text-lg text-black font-serif font-semibold hover:italic hover:underline dark:text-gray-100 truncate w-3/4"
+				className=""
 			>
-				{draft.draftData.data?.title || "Couldn't parse front matter"}
-			</Link>
+				<h2 className="text-xl text-black underline decoration-transparent group-hover:decoration-gray-300 transition-all duration-100 underline-offset-2 dark:text-gray-200 break-words max-w-3/4">
+					{draft.draftData.data?.title ||
+						"Couldn't parse front matter"}
+				</h2>
 
-			<p className="text-sm text-gray-400 mt-2">
-				created on{" "}
-				<span className="text-gray-200 font-bold">{draft.date}</span> at{" "}
-				<span className="text-gray-200 font-bold">{draft.time}</span>
-			</p>
-		</>
+				<p className="text-sm text-gray-400 mt-2">
+					<span className="">{draft.date}</span>.{" "}
+					<span className="">{draft.time}</span>
+				</p>
+			</Link>
+		</div>
 	);
 }
 
