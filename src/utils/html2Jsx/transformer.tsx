@@ -127,6 +127,7 @@ export function transformer(
 	// parent?: HtmlNode
 ): JSX.Element {
 	if (node.type === "root") {
+		console.log(node);
 		BLOCK_NUMBER = 0;
 		footNotes = [];
 		return (
@@ -279,8 +280,16 @@ const tagToTransformer: TagToTransformer = {
 		// let firstWord = "";
 		if (node.children.length == 0) return <></>;
 
-		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
+		// a single dot should be treated as <br/> tag.
+		if (
+			node.children.length === 1 &&
+			node.children.at(0)?.type === "text" &&
+			(node.children.at(0)! as any).value === "."
+		) {
+			return <br />;
+		}
 
+		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
 		if (
 			node.children[0].type === "text" &&
 			/^\[(\d+)\]:/.test(node.children[0].value)
