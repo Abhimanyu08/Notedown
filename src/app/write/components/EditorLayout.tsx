@@ -29,7 +29,6 @@ function EditorLayout({
 	);
 	const blogContent = useBlogStateUpdate();
 	const previewRef = useRef<HTMLDivElement>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const [atEnd, setAtEnd] = useState(false);
 
 	useEffect(() => {
@@ -80,7 +79,7 @@ function EditorLayout({
 
 	useEffect(() => {
 		if (!atEnd) return;
-		if (!previewRef || !containerRef) return;
+		if (!previewRef || !previewRef.current) return;
 
 		previewRef.current?.scrollTo({
 			top:
@@ -91,10 +90,7 @@ function EditorLayout({
 	}, [blogContent]);
 
 	return (
-		<div
-			className="grow flex flex-row min-h-0 relative  gap-2 "
-			ref={containerRef}
-		>
+		<div className="grow flex flex-row min-h-0 relative  gap-2 ">
 			<div
 				className={`flex flex-col basis-1/2 overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
@@ -116,11 +112,12 @@ function EditorLayout({
 				id="post-preview"
 				ref={previewRef}
 				onScroll={(e) => {
-					if (
+					const val = Math.abs(
 						e.currentTarget.clientHeight +
-							Math.round(e.currentTarget.scrollTop) ===
-						e.currentTarget.scrollHeight
-					) {
+							Math.ceil(e.currentTarget.scrollTop) -
+							e.currentTarget.scrollHeight
+					);
+					if (val < 5) {
 						if (!atEnd) setAtEnd(true);
 						return;
 					}
