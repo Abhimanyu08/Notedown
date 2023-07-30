@@ -13,7 +13,6 @@ function getYoutubeEmbedLink(link: string): string {
     videoId = videoId?.replace(/\&#x26;t/g, '?start')
     if (videoId) {
         embedLink = embedLink + `${videoId}`
-        console.log(embedLink)
         return embedLink
     }
 

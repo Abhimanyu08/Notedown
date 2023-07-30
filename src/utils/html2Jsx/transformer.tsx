@@ -127,7 +127,6 @@ export function transformer(
 	// parent?: HtmlNode
 ): JSX.Element {
 	if (node.type === "root") {
-		console.log(node);
 		BLOCK_NUMBER = 0;
 		footNotes = [];
 		return (

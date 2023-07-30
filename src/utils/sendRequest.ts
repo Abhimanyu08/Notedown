@@ -34,7 +34,6 @@ export async function getImages({ caption }: { caption: string }) {
     const resp = await fetch(`/api/generateImage?q=${caption}`, { method: "GET" })
 
     const data = await resp.json()
-    console.log(data)
 
     if (data.error) {
         return data.error as string

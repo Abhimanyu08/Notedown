@@ -23,7 +23,6 @@ export default function useShortCut({
                 keyArray.current.add(e.key);
                 if (keys.length === keyArray.current.size) {
 
-                    console.log("calling callback for keys", keys)
                     callback()
                 }
             }
@@ -36,7 +35,6 @@ export default function useShortCut({
         document.addEventListener("keyup", keyUp)
 
         return () => {
-            console.log("removing callback registered for keys", keys)
             document.removeEventListener("keydown", keyDown)
             document.removeEventListener("keyup", keyUp)
         }

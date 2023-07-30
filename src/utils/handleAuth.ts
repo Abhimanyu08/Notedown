@@ -30,7 +30,6 @@ export const handleLogout = async (supabaseClient: SupabaseClient) => {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
         alert(error.message);
-        console.log(error);
         return;
     }
 };

@@ -10,7 +10,6 @@ export default async function prepareContainer(language: BlogProps["language"] |
         });
 
         if (resp.status !== 201) {
-            console.log(resp.statusText);
             alert("Couldn't set up remote code execution");
             return;
         }

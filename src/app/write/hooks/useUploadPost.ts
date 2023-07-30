@@ -107,7 +107,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         const imagesToDelete = uploadedImages.filter(i => !(editorState.imagesToUpload.includes(i))).map(i => created_by + '/' + postId + "/" + i)
 
-        console.log(imagesToDelete)
         await supabase.storage.from(SUPABASE_IMAGE_BUCKET).remove(imagesToDelete)
 
     }

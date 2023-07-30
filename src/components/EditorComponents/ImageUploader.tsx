@@ -107,7 +107,6 @@ const getImagesObj = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 		obj[fileName] = file;
 	}
-	console.log(fileNames);
 	return [obj, fileNames] as const;
 };
 export default ImageUploader;
