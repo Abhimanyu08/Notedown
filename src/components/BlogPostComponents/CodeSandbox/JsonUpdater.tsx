@@ -12,17 +12,10 @@ function JsonUpdater() {
 
 	useEffect(() => {
 		if (sandpackProps && jsonEditorView) {
-			let propsCopy = JSON.parse(
-				JSON.stringify(sandpackProps)
-			) as SandpackConfigType;
-			// let codefiles = propsCopy.files || {};
+			let propsCopy = JSON.parse(jsonEditorView.state.sliceDoc());
 			// codefiles[activeFile] = code;
 			// propsCopy.files = codefiles;
-			const currentFiles: Record<string, string> = {};
-			for (let file of Object.keys(files)) {
-				currentFiles[file] = files[file].code;
-			}
-			propsCopy.files = currentFiles;
+			propsCopy.files[activeFile] = files[activeFile].code;
 
 			jsonEditorView.dispatch({
 				changes: [

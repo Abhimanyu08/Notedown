@@ -2,6 +2,10 @@ import React, { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Tldraw } from "@tldraw/tldraw";
+import { ToolTipComponent } from "@components/ToolTipComponent";
+import Button from "@components/ui/button";
+import { cn } from "@/lib/utils";
+import { AiOutlineClose } from "react-icons/ai";
 
 function ExpandedCanvasDisplay({
 	persistanceKey,
@@ -21,14 +25,23 @@ function ExpandedCanvasDisplay({
 					exit={{ opacity: 0 }}
 					transition={{ type: "tween", duration: 0.1 }}
 				>
-					<div
-						className={`w-2/3 aspect-[4/3] relative`}
-						onClick={(e) => e.stopPropagation()}
-					>
-						<div className="tldraw__editor w-full h-full">
+					<div className={`w-full h-full px-10 py-5 relative`}>
+						<div
+							className="tldraw__editor w-full h-full"
+							onClick={(e) => e.stopPropagation()}
+						>
 							<Tldraw persistenceKey={persistanceKey} />
 						</div>
 					</div>
+
+					<Button
+						className={cn(
+							"p-2 rounded-full absolute top-[1.5rem] left-[2.8rem] bg-black hover:bg-popover/80 z-[500]"
+						)}
+						onClick={() => setPersistanceKey("")}
+					>
+						<AiOutlineClose />
+					</Button>
 				</motion.div>
 			)}
 		</AnimatePresence>

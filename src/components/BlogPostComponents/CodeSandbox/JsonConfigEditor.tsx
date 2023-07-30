@@ -38,7 +38,7 @@ function JsonConfigEditor({
 					tip={
 						error
 							? "Please remove the error"
-							: "Generate code sandbox"
+							: "Generate code sandbox (shift + enter)"
 					}
 					onClick={() => onSandboxGenerate()}
 				>
@@ -55,18 +55,12 @@ function JsonConfigEditor({
 				</CodeBlockButton>
 				<CodeBlockButton
 					onClick={() => setMinimize((p) => !p)}
-					tip={minimize ? "maximize" : "minize"}
+					tip={minimize ? "maximize" : "minimize"}
 				>
 					{minimize ? (
-						<FiMaximize2
-							size={14}
-							className={`${vimEnabled ? "text-lime-400" : ""}`}
-						/>
+						<FiMaximize2 size={14} />
 					) : (
-						<FiMinimize2
-							size={14}
-							className={`${vimEnabled ? "text-lime-400" : ""}`}
-						/>
+						<FiMinimize2 size={14} />
 					)}
 				</CodeBlockButton>
 			</CodeBlockButtons>

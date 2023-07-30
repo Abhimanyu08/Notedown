@@ -92,6 +92,11 @@ function CustomSandpack(
 				>
 					<SandpackCodeEditor
 						{...props.options}
+						showTabs={
+							props.options.editorHeight === 0 && !expand
+								? false
+								: props.options.showTabs
+						}
 						style={{
 							height: expand
 								? "100%"
@@ -116,11 +121,7 @@ function CustomSandpack(
 							className={cn(
 								"[&>*]:py-1 border-b-2 border-border gap-3"
 							)}
-							layoutId={
-								expand
-									? `expand-${props.persistanceKey}`
-									: `tabs-${props.persistanceKey}`
-							}
+							layoutId={`tabs-${props.persistanceKey}`}
 						>
 							<TabChildren
 								active={previewOrConsole === "preview"}
@@ -161,7 +162,7 @@ function CustomSandpack(
 							{...props.options}
 							style={{
 								height: !expand
-									? props.options.previewHeight || 200
+									? props.options.previewHeight
 									: "100%",
 							}}
 						/>
