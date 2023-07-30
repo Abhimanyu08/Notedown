@@ -5,13 +5,16 @@ import Image from "next/image";
 import React, { memo, useContext, useEffect, useState } from "react";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
+import ImageUploader from "@components/EditorComponents/ImageUploader";
 
 function Carousel({
 	imageNamesString,
 	captionString,
+	end,
 }: {
 	imageNamesString: string;
 	captionString: string;
+	end?: number;
 }) {
 	const { blogState } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
@@ -106,7 +109,7 @@ function Carousel({
 						${idx === 0 ? "opacity-100" : "opacity-0"}
 						transition-opacity duration-500
 				`}
-					key={idx}
+					key={image}
 					style={{
 						transform: `translateX(${100 * idx}%)`,
 					}}
@@ -122,12 +125,13 @@ function Carousel({
 						/>
 					</div>
 					<figcaption
-						className={`text-center italic text-gray-400 text-[0.875em]`}
+						className={`text-center italic text-gray-400 mt-2 text-[0.875em]`}
 					>
 						{captions.at(idx) || ""}
 					</figcaption>
 				</figure>
 			))}
+			<ImageUploader add={true} end={end} />
 		</div>
 	);
 }

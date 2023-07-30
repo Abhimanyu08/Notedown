@@ -41,7 +41,7 @@ function PostPreviewControls({
 				)}
 				<Button
 					className="text-gray-400 hover:text-white active:scale-95"
-					onMouseOver={() => setShowToc(true)}
+					onClick={() => setShowToc((p) => !p)}
 				>
 					<BiBookContent size={24} />
 				</Button>

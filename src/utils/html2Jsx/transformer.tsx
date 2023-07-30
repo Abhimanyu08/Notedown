@@ -357,20 +357,23 @@ const tagToTransformer: TagToTransformer = {
 	img: (node) => {
 		const { alt, src } = node.properties as { alt: string; src: string };
 
+		let { end } = getStartEndFromNode(node);
 		if (src.split(",").length > 1) {
 			return (
 				<Carousel
 					imageNamesString={src}
 					captionString={alt}
 					key={src}
+					end={end}
 				/>
 			);
 		}
 
 		if (src) {
-			return <ImageWithCaption name={src} alt={alt} key={src} />;
+			return (
+				<ImageWithCaption name={src} alt={alt} end={end} key={src} />
+			);
 		}
-		let { end } = getStartEndFromNode(node);
 		if (alt && !src) {
 			return <LexicaImage alt={alt} key={alt} end={end} />;
 		}

@@ -20,7 +20,7 @@ interface DispatchObj {
 		| "toggle markdown editor"
 		| "set previous uploaded doc"
 		| "set time stamp"
-		| "set image to files"
+		| "add image to files"
 		| "remove image from upload"
 		| "add images to upload"
 		| "set canvas apps"
@@ -101,7 +101,7 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 				...state,
 				canvasApps: {},
 			};
-		case "set image to files":
+		case "add image to files":
 			return {
 				...state,
 				imagesToFiles: {

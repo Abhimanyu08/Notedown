@@ -42,7 +42,7 @@ function LexicaImage({ alt, end }: { alt: string; end?: number }) {
 		const file = b64ToFile(link);
 		const imageName = `${alt.split(" ").join("_")}.png`;
 		dispatch({
-			type: "set image to files",
+			type: "add image to files",
 			payload: { [imageName]: file },
 		});
 		if (!end) return;

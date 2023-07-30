@@ -102,27 +102,6 @@ function Toolbar() {
 					<AiFillEdit size={28} />
 				</Link>
 			</ToolTipComponent>
-
-			{/* <div className="flex items-center gap-2">
-				<ToolTipComponent
-					tip={` ${
-						user
-							? `${upvoted ? "Remove Upvote" : "Upvote"}`
-							: "Please login to upvote"
-					} `}
-					onClick={onUpvote}
-				>
-					<FaHeart
-						size={26}
-						className={`${
-							upvoted
-								? "text-rose-500"
-								: "dark:text-white text-black"
-						}`}
-					/>
-				</ToolTipComponent>
-				<span>{formatter.format(upvotes || 0)}</span>
-			</div> */}
 		</>
 	);
 }

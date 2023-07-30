@@ -4,8 +4,21 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import { memo, useContext, useEffect, useState } from "react";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
+import Button from "@components/ui/button";
+import { BiImageAdd } from "react-icons/bi";
+import { ToolTipComponent } from "@components/ToolTipComponent";
+import { cn } from "@/lib/utils";
+import ImageUploader from "@components/EditorComponents/ImageUploader";
 
-function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
+function ImageWithCaption({
+	name,
+	alt,
+	end,
+}: {
+	name: string;
+	alt: string;
+	end?: number;
+}) {
 	const { blogState } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { setImageUrl } = useContext(ExpandedImageContext);
@@ -35,23 +48,31 @@ function ImageWithCaption({ name, alt }: { name: string; alt: string }) {
 	}, []);
 
 	return (
-		<figure className="w-4/5 mb-4 mx-auto">
-			{imageSrc && (
-				<>
-					<Image
-						src={imageSrc}
-						alt={alt}
-						width={1440}
-						height={1080}
-						onClick={() => setImageUrl && setImageUrl(imageSrc)}
-						className="cursor-zoom-in"
-					/>
-					<figcaption className="text-center italic">
-						{alt}
-					</figcaption>
-				</>
-			)}
-		</figure>
+		<div className="w-4/5 mx-auto relative">
+			<figure className="w-full mb-4 mx-auto">
+				{imageSrc && (
+					<>
+						<Image
+							src={imageSrc}
+							alt={alt}
+							width={1440}
+							height={1080}
+							onClick={() => setImageUrl && setImageUrl(imageSrc)}
+							className="cursor-zoom-in"
+						/>
+						<figcaption
+							className={cn(
+								"text-center italic",
+								alt ? "" : "invisible"
+							)}
+						>
+							{alt || "hello"}
+						</figcaption>
+					</>
+				)}
+			</figure>
+			<ImageUploader add={true} end={end} />
+		</div>
 	);
 }
 

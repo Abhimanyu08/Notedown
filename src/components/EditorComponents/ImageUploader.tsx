@@ -9,21 +9,23 @@ import React, {
 	useState,
 } from "react";
 import { MdContentCopy } from "react-icons/md";
-import { BiCheck } from "react-icons/bi";
+import { BiCheck, BiImageAdd } from "react-icons/bi";
 import { cn } from "@/lib/utils";
+import { ToolTipComponent } from "@components/ToolTipComponent";
+import { usePathname } from "next/navigation";
 
 function ImageUploader({
 	className,
 	end,
+	add = false,
 }: {
 	end?: number;
 	className?: string;
+	add?: boolean;
 }) {
 	// const { dispatch } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
-	const [fileNames, setFileNames] = useState<string[]>([]);
-	const [copied, setCopied] = useState(false);
-	useEffect(() => {}, [fileNames]);
+	const pathname = usePathname();
 
 	const onImageSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
 		const [imagesObj, fileNamesToAdd] = getImagesObj(e);
@@ -32,21 +34,48 @@ function ImageUploader({
 		if (fileNamesToAdd.length === 0) return;
 		if (!end) return;
 		const imageNames = fileNamesToAdd.join(",");
+		dispatch({
+			type: "add image to files",
+			payload: imagesObj,
+		});
 		// const transaction = view.state.update({changes: {from: cursorPos, to:imageNames.length, inser}})
 		editorState.editorView?.focus();
+		// if we are adding to already uploaded images then we need to put a comma in front.
+		const toInsert = add ? "," + imageNames : imageNames;
 		editorState.editorView?.dispatch({
 			changes: {
 				from: end + frontMatterLength - 1,
-				insert: imageNames,
+				insert: toInsert,
 			},
-		});
-		setFileNames(fileNamesToAdd);
-		dispatch({
-			type: "set image to files",
-			payload: imagesObj,
 		});
 	};
 
+	if (!pathname?.startsWith("/write")) return <></>;
+
+	if (add) {
+		return (
+			<>
+				<input
+					type="file"
+					onChange={onImageSelect}
+					id={`add-images-${end}`}
+					accept="image/*"
+					className="hidden"
+					multiple
+				/>
+				<ToolTipComponent
+					tip={"Add Images"}
+					className="absolute bottom-0 right-0 border-[1px] rounded-sm px-2 py-1 border-border text-gray-400 hover:text-white hover:scale-100"
+				>
+					{/* <Button className="border-border border-[1px] text-gray-400 hover:text-white hover:scale-100"> */}
+					<label htmlFor={`add-images-${end}`}>
+						<BiImageAdd />
+					</label>
+					{/* </Button> */}
+				</ToolTipComponent>
+			</>
+		);
+	}
 	return (
 		<div
 			className={cn(
@@ -62,26 +91,6 @@ function ImageUploader({
 				className="file:my-2  file:px-4 file:text-gray-400 file:rounded-md file:bg-black file:border-[1px] file:border-gray-200 file:hover:bg-gray-800 file:active:scale-95"
 				multiple
 			/>
-			{fileNames.length > 0 && (
-				<button
-					className="bg-black hover:bg-gray-900 active:scale-95 text-gray-100 w-fit px-3 py-1 rounded-md no-scale tooltip"
-					data-tip="Copy image names"
-					onClick={() => {
-						navigator.clipboard
-							.writeText(fileNames.join(","))
-							.then(() => {
-								setCopied(true);
-								setTimeout(() => setCopied(false), 2000);
-							});
-					}}
-				>
-					{copied ? (
-						<BiCheck size={20} className="text-gray-100" />
-					) : (
-						<MdContentCopy size={20} />
-					)}
-				</button>
-			)}
 		</div>
 	);
 }
