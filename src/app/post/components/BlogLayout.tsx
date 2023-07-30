@@ -30,7 +30,7 @@ function BlogLayout({
 			uploadedImages={imagesToUrls}
 			fileNames={fileNames}
 		>
-			<div className="grow flex flex-row min-h-0 relative [&>*]:pt-20">
+			<div className="grow flex flex-row min-h-0 relative pt-20">
 				<div
 					className={`lg:basis-1/5 flex-col overflow-y-auto justify-start flex px-4 
 					`}
@@ -40,8 +40,12 @@ function BlogLayout({
 				<div
 					className={`lg:basis-3/5 relative 
 							hidden lg:block
-							overflow-y-hidden
+							overflow-y-auto
 
+lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700 
+				scroll-smooth
 							`}
 				>
 					<Blog

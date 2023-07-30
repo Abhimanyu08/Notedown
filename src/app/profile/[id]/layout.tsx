@@ -29,47 +29,60 @@ async function ProfilePostsLayout({
 			? `${name}'s Notebook`
 			: "Anon's Notebook";
 	return (
-		<SearchProvider>
+		<>
 			<SideSheet>
 				<LoggedInOptions
 					{...{ name, notebook_title: notebookTitle, username }}
 				/>
 			</SideSheet>
-			<div className="grid grid-cols-2 w-full h-full grid-rows-1 ">
-				<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-10 pt-10 ">
-					<h1 className="font-serif text-4xl px-2">
-						{notebookTitle}
-					</h1>
 
-					{/* @ts-expect-error Async Server Component  */}
-					<OwnerOnlyStuff id={params.id}>
-						<div className="flex justify-between col-span-1 px-2 mr-10">
-							<PostControl className="font-mono text-gray-400" />
-							<NewNoteButton />
-						</div>
-						<div className="flex justify-between px-2 col-span-1 mt-1 mr-10 relative">
-							<NoteTypeToggle className="text-gray-400 " />
-							<SearchInput className="basis-1/3" />
-						</div>
-					</OwnerOnlyStuff>
-					<div className="h-[2px] bg-border col-span-1 mr-10 mt-4"></div>
-					<div
-						className="
+			<div className="grid grid-cols-2 w-full h-screen grid-rows-1 ">
+				<SearchProvider>
+					<div className="flex flex-col col-span-1 row-span-1 gap-4 pl-10 pt-10 ">
+						<h1 className="font-serif text-4xl px-2">
+							{notebookTitle}
+						</h1>
+
+						{/* @ts-expect-error Async Server Component  */}
+						<OwnerOnlyStuff id={params.id}>
+							<div className="flex justify-between col-span-1 px-2 mr-10">
+								<PostControl className="font-mono text-gray-400" />
+								<NewNoteButton />
+							</div>
+							<div className="flex justify-between px-2 col-span-1 mt-1 mr-10 relative">
+								<NoteTypeToggle className="text-gray-400 " />
+								<SearchInput className="basis-1/3" />
+							</div>
+						</OwnerOnlyStuff>
+						<div className="h-[2px] bg-border col-span-1 mr-10 mt-4"></div>
+						<div
+							className="
 				lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
 				mr-10
 				"
-					>
-						<NormalChildrenLayout>{children}</NormalChildrenLayout>
+						>
+							<NormalChildrenLayout>
+								{children}
+							</NormalChildrenLayout>
+						</div>
 					</div>
-				</div>
-				<PostPreviewLayout className="col-start-2 col-span-1 row-span-1 mt-10 relative border-l-[1px] border-gray-600">
+				</SearchProvider>
+				<PostPreviewLayout
+					className="col-start-2  col-span-1 h-full row-span-1 pt-10 relative border-l-[1px] border-gray-600 
+				overflow-y-auto
+		lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
+				scroll-smooth
+	
+				"
+				>
 					{postpreview}
 				</PostPreviewLayout>
 			</div>
-		</SearchProvider>
-
+		</>
 		// <LayoutChange>
 		// 	<>
 		// 		<div className="flex w-full items-end justify-between">

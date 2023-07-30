@@ -85,7 +85,16 @@ function EditorLayout({
 			<OptionsToolbar content={blogContent} />
 
 			<div
-				className={` basis-1/2 flex justify-center pt-10`}
+				className={` basis-1/2  pt-10
+				overflow-y-auto
+				lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
+				pl-8
+
+				scroll-smooth   
+
+				`}
 				id="post-preview"
 			>
 				<Blog

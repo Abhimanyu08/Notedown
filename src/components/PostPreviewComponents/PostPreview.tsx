@@ -23,7 +23,11 @@ async function PostPreview({ postId }: { postId: string }) {
 
 	const { content } = parseFrontMatter(markdown);
 	return (
-		<div className="flex flex-col items-center justify-center h-full w-full relative">
+		<div
+			className="flex flex-col items-center justify-center w-full relative
+			 
+		"
+		>
 			<BlogContextProvider
 				uploadedImages={imagesToUrls}
 				fileNames={fileNames}
@@ -39,7 +43,6 @@ async function PostPreview({ postId }: { postId: string }) {
 				<Blog
 					{...post}
 					content={content}
-					extraClasses="w-full "
 					AuthorComponent={BlogAuthorServer}
 				/>
 				<PostPreviewControls {...{ post, content }} />

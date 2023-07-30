@@ -26,8 +26,6 @@ const Blog = memo(
 			<div
 				className={
 					`
-				scroll-smooth   
-				h-full 
 				overflow-x-hidden		
 				// --------overflow-y-auto
 				prose
@@ -89,9 +87,7 @@ const Blog = memo(
 
 				
 				pb-20 md:pb-10 
-				lg:scrollbar-thin 
-				scrollbar-track-black 
-				scrollbar-thumb-slate-700 ` +
+				` +
 					" " +
 					extraClasses
 				}

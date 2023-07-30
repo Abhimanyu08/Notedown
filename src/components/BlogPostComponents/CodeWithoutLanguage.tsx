@@ -36,7 +36,15 @@ function CodeWithoutLanguage({
 	}, [language]);
 
 	return (
-		<div className="not-prose relative group ">
+		<div
+			className="not-prose relative group 
+			overflow-x-auto
+w-full
+lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
+		"
+		>
 			<button
 				className="absolute top-2 right-2 p-1 rounded-md bg-black/70 opacity-0 group-hover:opacity-100"
 				onClick={() => {
@@ -55,7 +63,11 @@ function CodeWithoutLanguage({
 			<SyntaxHighlighter
 				language={importedLanguage}
 				style={theme}
-				customStyle={{ paddingLeft: "8px", fontSize: "16px" }}
+				customStyle={{
+					paddingLeft: "8px",
+					fontSize: "16px",
+					width: "fit-content",
+				}}
 				showLineNumbers={true}
 				lineNumberStyle={{
 					color: "rgb(148 163 184)",

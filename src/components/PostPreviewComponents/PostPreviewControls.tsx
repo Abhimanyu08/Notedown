@@ -26,7 +26,7 @@ function PostPreviewControls({
 
 	return (
 		<>
-			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
+			<div className="flex flex-col items-center fixed gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
 				<ExpandButton
 					postId={post.id!}
 					published={post.published}
@@ -58,7 +58,7 @@ function PostPreviewControls({
 			<AnimatePresence>
 				{showToc && (
 					<motion.div
-						className="h-fit absolute py-4 px-5 bg-black right-12 w-fit border-border border-[1px]  max-w-[400px] max-h-[500px] overflow-y-auto ring-2 ring-gray-300"
+						className="h-fit fixed py-4 px-5 bg-black right-12 top-[40%] border-border border-[1px]  w-[400px] max-h-[450px] overflow-auto shadow-sm shadow-gray-200 z-[1000]"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
