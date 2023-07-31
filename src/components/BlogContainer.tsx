@@ -132,10 +132,8 @@ lg:scrollbar-thin
 							  }
 							: {}
 					}
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
 				>
-					<div className="text-sm font-serif basis-11/12 overflow-x-auto  text-slate-100/60 flex gap-2 w-max scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700">
+					<div className="text-sm font-serif basis-11/12 overflow-x-auto  text-gray-200/80 flex gap-2 w-max scrollbar-thin scrollbar-track-black scrollbar-thumb-slate-700">
 						<a
 							href="#title"
 							className="hover:text-gray-100 shrink-0 hover:underline"
@@ -155,7 +153,7 @@ lg:scrollbar-thin
 											"#" +
 											createHeadingIdFromHeadingText(v)
 										}
-										className="hover:underline shrink-0 hover:underline-offset-2 decoration-1"
+										className="hover:underline shrink-0 hover:text-gray-100 hover:underline-offset-2 decoration-1"
 									>
 										{v}
 									</a>

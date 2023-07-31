@@ -82,6 +82,7 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 			};
 
 		case "set frontmatter length":
+			if (state.frontMatterLength === action.payload) return state;
 			return {
 				...state,
 				frontMatterLength: action.payload as number,

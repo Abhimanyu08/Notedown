@@ -4,7 +4,7 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { EditorView } from "codemirror";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useTransition } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/getResources";
 
@@ -18,6 +18,7 @@ function useBlogStateUpdate() {
 	const [eventHandlerCompartment, setEventHandlerCompartment] =
 		useState<Compartment>();
 	const searchParams = useSearchParams();
+	const [_, startTransition] = useTransition();
 
 	useEffect(() => {
 		let ts = editorState.timeStamp;
@@ -75,20 +76,23 @@ function useBlogStateUpdate() {
 						// if (!update.view.hasFocus) return;
 						const { data, content, frontMatterLength } =
 							parseFrontMatter(markdown);
-						blogStateDispatch({
-							type: "set blog meta",
-							payload: {
-								title: data?.title,
-								description: data?.description || undefined,
-								language: data?.language || undefined,
-							},
-						});
 
-						editorStateDispatch({
-							type: "set frontmatter length",
-							payload: frontMatterLength,
+						startTransition(() => {
+							blogStateDispatch({
+								type: "set blog meta",
+								payload: {
+									title: data?.title,
+									description: data?.description || undefined,
+									language: data?.language || undefined,
+								},
+							});
+
+							editorStateDispatch({
+								type: "set frontmatter length",
+								payload: frontMatterLength,
+							});
+							setBlogContent(content);
 						});
-						setBlogContent(content);
 					}
 				}
 			}
