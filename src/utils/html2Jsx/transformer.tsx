@@ -408,10 +408,7 @@ function headingsRenderer(node: HtmlAstElement) {
 }
 
 export const createHeadingIdFromHeadingText = (headingText: string) => {
-	return headingText
-		.split(" ")
-		.map((w) => w.toLowerCase())
-		.join("-");
+	return headingText.split(" ").join("-");
 };
 
 const extractTextFromChildren = (

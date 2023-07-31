@@ -78,6 +78,7 @@ function EditorLayout({
 	}, []);
 
 	useEffect(() => {
+		// if user has scrolled to the bottom of the preview (atEnd = true) then whenever he adds new content the scroll position of view should adjust accordingly.
 		if (!atEnd) return;
 		if (!previewRef || !previewRef.current) return;
 

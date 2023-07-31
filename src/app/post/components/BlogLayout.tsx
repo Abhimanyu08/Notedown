@@ -7,6 +7,7 @@ import BlogContextProvider from "../../../components/BlogPostComponents/BlogStat
 import Toolbar from "./Toolbar";
 import PrivateToolbar from "./PrivateToolbar";
 import { parseFrontMatter } from "@utils/getResources";
+import BlogContainer from "@components/BlogContainer";
 
 function BlogLayout({
 	postMeta,
@@ -37,7 +38,7 @@ function BlogLayout({
 				>
 					<Toc markdown={content} />
 				</div>
-				<div
+				{/* <div
 					className={`lg:basis-3/5 relative 
 							hidden lg:block
 							overflow-y-auto
@@ -47,14 +48,16 @@ lg:scrollbar-thin
 				scrollbar-thumb-slate-700 
 				scroll-smooth
 							`}
-				>
+				> */}
+				<BlogContainer markdown={content} title={post.title}>
 					<Blog
 						content={content}
 						{...post}
 						extraClasses="mx-auto"
 						AuthorComponent={BlogAuthorServer}
 					/>
-				</div>
+				</BlogContainer>
+				{/* </div> */}
 				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
 					{isPostPrivate ? <PrivateToolbar /> : <Toolbar />}
 				</div>

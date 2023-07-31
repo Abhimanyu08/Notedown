@@ -97,7 +97,7 @@ const Blog = memo(
 						{title}
 					</h1>
 
-					<blockquote className="text-left text-lg text-gray-400">
+					<blockquote className="text-left font-serif text-xl text-gray-400 not-italic">
 						{description}
 					</blockquote>
 					<div className="dark:text-gray-400 flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12">
