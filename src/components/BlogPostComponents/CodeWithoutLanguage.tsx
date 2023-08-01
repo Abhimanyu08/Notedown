@@ -66,6 +66,8 @@ lg:scrollbar-thin
 				customStyle={{
 					paddingLeft: "8px",
 					fontSize: "16px",
+					width: "fit-content",
+					minWidth: "100%",
 				}}
 				showLineNumbers={true}
 				lineNumberStyle={{
