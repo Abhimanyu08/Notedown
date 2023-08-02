@@ -64,22 +64,17 @@ function CustomSandpack(
 					tip="Expand"
 					className={cn(
 						"absolute top-1 right-2 z-[300]",
-						expand && "fixed top-2 right-2"
+						expand && "fixed top-2 right-2",
+						"p-2 rounded-full  hover:bg-popover/80",
+						"text-white "
 					)}
 					onClick={() => setExpand((p) => !p)}
 				>
-					<Button
-						className={cn(
-							"p-2 rounded-full  hover:bg-popover/80",
-							"text-white "
-						)}
-					>
-						{expand ? (
-							<AiOutlineCloseCircle size={24} />
-						) : (
-							<BsArrowsAngleExpand size={16} />
-						)}
-					</Button>
+					{expand ? (
+						<AiOutlineCloseCircle size={24} />
+					) : (
+						<BsArrowsAngleExpand size={16} />
+					)}
 				</ToolTipComponent>
 				{expand && props.options.showFilesInExpandedMode && (
 					<SandpackFileExplorer className="basis-2/12 border-border" />
@@ -130,6 +125,8 @@ function CustomSandpack(
 									onClick={() =>
 										setPreviewOrConsole("preview")
 									}
+									variant={"ghost"}
+									className="hover:bg-transparent py-1 text-sm h-fit font-normal"
 								>
 									Preview
 								</Button>
@@ -141,6 +138,8 @@ function CustomSandpack(
 									onClick={() =>
 										setPreviewOrConsole("console")
 									}
+									variant={"ghost"}
+									className="hover:bg-transparent py-1 text-sm h-fit font-normal"
 								>
 									Console
 								</Button>

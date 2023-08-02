@@ -42,20 +42,19 @@ function TLDrawing({
 				</div>
 				<ToolTipComponent
 					tip="Expand"
-					className="absolute top-2 left-2 z-[300]"
+					className={cn(
+						"absolute top-2 left-2 z-[300]",
+						"p-2 rounded-full  hover:white",
+						dark
+							? "hover:bg-white text-white hover:text-black"
+							: "hover:bg-black text-black hover:text-white "
+					)}
 					onClick={() => {
 						if (setPersistanceKey)
 							setPersistanceKey(persistanceKey);
 					}}
 				>
-					<Button
-						className={cn(
-							"p-2 rounded-full  hover:bg-popover/80",
-							dark ? "text-white" : "text-black hover:text-white "
-						)}
-					>
-						<BsArrowsAngleExpand size={20} />
-					</Button>
+					<BsArrowsAngleExpand size={20} />
 				</ToolTipComponent>
 			</div>
 

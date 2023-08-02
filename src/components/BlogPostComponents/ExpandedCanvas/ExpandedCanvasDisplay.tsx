@@ -36,8 +36,9 @@ function ExpandedCanvasDisplay({
 
 					<Button
 						className={cn(
-							"p-2 rounded-full absolute top-[1.5rem] left-[2.8rem] bg-black hover:bg-popover/80 z-[500]"
+							"absolute top-[1.5rem] left-[2.8rem] w-fit rounded-full p-3  hover:bg-white hover:text-black z-[500]"
 						)}
+						variant={"ghost"}
 						onClick={() => setPersistanceKey("")}
 					>
 						<AiOutlineClose />

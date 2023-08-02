@@ -148,7 +148,8 @@ function CodesandboxWithEditor({
 				>
 					<Button
 						onClick={() => setEditConfig(true)}
-						className="text-sm self-end border-border border-[1px] mb-2 text-gray-400 hover:text-white hover:scale-100"
+						className="text-sm bg-black py-1 px-2  self-end border-border border-[1px] mb-2 text-gray-400 hover:text-white hover:scale-100"
+						variant={"outline"}
 					>
 						Edit Config
 					</Button>
