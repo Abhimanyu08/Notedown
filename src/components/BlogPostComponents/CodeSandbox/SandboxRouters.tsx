@@ -1,25 +1,15 @@
 "use client";
-import { usePathname } from "next/navigation";
-import React, {
-	ComponentProps,
-	useContext,
-	useEffect,
-	useLayoutEffect,
-	useState,
-} from "react";
-import CodesandboxWithEditor from "./CodesandboxWithEditor";
-import CustomSandpack from "./CustomSandpack";
-import { SandpackConfigType } from "./types";
 import { useSupabase } from "@/app/appContext";
 import { SUPABASE_FILES_BUCKET } from "@utils/constants";
-import { BlogContext } from "../BlogState";
-import { EditorContext } from "@/app/write/components/EditorContext";
+import { usePathname } from "next/navigation";
+import { lazy, useContext, useEffect, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
+import { BlogContext } from "../BlogState";
 
+const CodesandboxWithEditor = lazy(() => import("./CodesandboxWithEditor"));
+const CustomSandpack = lazy(() => import("./CustomSandpack"));
 //  Todo
-function SandboxRouter({
-	persistanceKey,
-}: ComponentProps<typeof CodesandboxWithEditor>) {
+function SandboxRouter({ persistanceKey }: { persistanceKey: string }) {
 	const pathname = usePathname();
 	const { supabase } = useSupabase();
 	const { blogState } = useContext(BlogContext);

@@ -2,11 +2,14 @@
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
-import React, { memo, useContext, useEffect, useState } from "react";
+import React, { lazy, memo, useContext, useEffect, useState } from "react";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
-import ImageUploader from "@components/EditorComponents/ImageUploader";
+import { usePathname } from "next/navigation";
 
+const ImageUploader = lazy(
+	() => import("@components/EditorComponents/ImageUploader")
+);
 function Carousel({
 	imageNamesString,
 	captionString,
@@ -21,6 +24,7 @@ function Carousel({
 	const [images, setImages] = useState<string[]>([]);
 	const [captions, setCaptions] = useState<string[]>([]);
 	const { setImageUrl } = useContext(ExpandedImageContext);
+	const pathname = usePathname();
 
 	useEffect(() => {
 		const imageNames = imageNamesString.split(",");
@@ -131,7 +135,9 @@ function Carousel({
 					</figcaption>
 				</figure>
 			))}
-			<ImageUploader add={true} end={end} />
+			{pathname?.startsWith("/write") && (
+				<ImageUploader add={true} end={end} />
+			)}
 		</div>
 	);
 }

@@ -50,8 +50,6 @@ function ImageUploader({
 		});
 	};
 
-	if (!pathname?.startsWith("/write")) return <></>;
-
 	if (add) {
 		return (
 			<>

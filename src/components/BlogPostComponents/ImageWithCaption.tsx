@@ -2,13 +2,13 @@
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
-import { memo, useContext, useEffect, useState } from "react";
+import { lazy, memo, useContext, useEffect, useState } from "react";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
-import { Button } from "@components/ui/button";
-import { BiImageAdd } from "react-icons/bi";
-import { ToolTipComponent } from "@components/ToolTipComponent";
 import { cn } from "@/lib/utils";
-import ImageUploader from "@components/EditorComponents/ImageUploader";
+import { usePathname } from "next/navigation";
+const ImageUploader = lazy(
+	() => import("@components/EditorComponents/ImageUploader")
+);
 
 function ImageWithCaption({
 	name,
@@ -23,6 +23,7 @@ function ImageWithCaption({
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { setImageUrl } = useContext(ExpandedImageContext);
 	const [imageSrc, setImageSrc] = useState("");
+	const pathname = usePathname();
 
 	useEffect(() => {
 		if (name.startsWith("http")) {
@@ -71,7 +72,9 @@ function ImageWithCaption({
 					</>
 				)}
 			</figure>
-			<ImageUploader add={true} end={end} />
+			{pathname?.startsWith("/write") && (
+				<ImageUploader add={true} end={end} />
+			)}
 		</div>
 	);
 }

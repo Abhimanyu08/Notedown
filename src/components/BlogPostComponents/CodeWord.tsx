@@ -2,6 +2,11 @@
 import { lazy, memo } from "react";
 import { usePathname } from "next/navigation";
 
+const SandboxRouter = lazy(() => import("./CodeSandbox/SandboxRouters"));
+
+const DrawingSvg = lazy(() => import("./DrawingSvg"));
+
+const TLDrawing = lazy(() => import("./TLDrawing"));
 function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
 
@@ -19,7 +24,6 @@ function CodeWord({ code }: { code: string }) {
 		const caption = regexArray.at(2) || "";
 		const dark = regexArray.at(4);
 		if (pathname?.startsWith("/write")) {
-			const TLDrawing = lazy(() => import("./TLDrawing"));
 			return (
 				<TLDrawing
 					persistanceKey={persistanceKey}
@@ -29,7 +33,6 @@ function CodeWord({ code }: { code: string }) {
 				/>
 			);
 		}
-		const DrawingSvg = lazy(() => import("./DrawingSvg"));
 		return <DrawingSvg {...{ persistanceKey, caption }} />;
 	}
 
@@ -38,9 +41,6 @@ function CodeWord({ code }: { code: string }) {
 		const regexArray = sandboxRegex.exec(code)!;
 		const persistanceKey = regexArray.at(1)!;
 
-		const SandboxRouter = lazy(
-			() => import("./CodeSandbox/SandboxRouters")
-		);
 		return <SandboxRouter persistanceKey={persistanceKey} />;
 	}
 

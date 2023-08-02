@@ -4,15 +4,21 @@ import {
 	getStartEndFromNode,
 } from "@utils/html2Jsx/transformer";
 import React, { lazy } from "react";
-
+const ImageWithCaption = lazy(
+	() => import("@components/BlogPostComponents/ImageWithCaption")
+);
+const Carousel = lazy(() => import("@components/BlogPostComponents/Carousel"));
+const LexicaImage = lazy(
+	() => import("@components/BlogPostComponents/LexicaImage")
+);
+const ImageUploader = lazy(
+	() => import("@components/EditorComponents/ImageUploader")
+);
 function ImageHandler({ node }: { node: HtmlAstElement }) {
 	const { alt, src } = node.properties as { alt: string; src: string };
 
 	let { end } = getStartEndFromNode(node);
 	if (src.split(",").length > 1) {
-		const Carousel = lazy(
-			() => import("@components/BlogPostComponents/Carousel")
-		);
 		return (
 			<Carousel
 				imageNamesString={src}
@@ -24,21 +30,12 @@ function ImageHandler({ node }: { node: HtmlAstElement }) {
 	}
 
 	if (src) {
-		const ImageWithCaption = lazy(
-			() => import("@components/BlogPostComponents/ImageWithCaption")
-		);
 		return <ImageWithCaption name={src} alt={alt} end={end} key={src} />;
 	}
 	if (alt && !src) {
-		const LexicaImage = lazy(
-			() => import("@components/BlogPostComponents/LexicaImage")
-		);
-
 		return <LexicaImage alt={alt} key={alt} end={end} />;
 	}
-	const ImageUploader = lazy(
-		() => import("@components/EditorComponents/ImageUploader")
-	);
+
 	return <ImageUploader {...{ end }} />;
 }
 
