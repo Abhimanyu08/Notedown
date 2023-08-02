@@ -1,17 +1,12 @@
 "use client";
-import { Suspense, memo } from "react";
-import Latex from "react-latex";
-import DrawingSvg from "./DrawingSvg";
-import TLDrawing from "./TLDrawing";
+import { lazy, memo } from "react";
 import { usePathname } from "next/navigation";
-import { Codesandbox } from "lucide-react";
-import CodesandboxWithEditor from "./CodeSandbox/CodesandboxWithEditor";
-import SandboxRouter from "./CodeSandbox/SandboxRouters";
 
 function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
 
 	if (code.startsWith("$") && code.endsWith("$")) {
+		const Latex = lazy(() => import("react-latex"));
 		return <Latex>{code}</Latex>;
 	}
 	if (code.startsWith("~~") && code.endsWith("~~")) {
@@ -24,6 +19,7 @@ function CodeWord({ code }: { code: string }) {
 		const caption = regexArray.at(2) || "";
 		const dark = regexArray.at(4);
 		if (pathname?.startsWith("/write")) {
+			const TLDrawing = lazy(() => import("./TLDrawing"));
 			return (
 				<TLDrawing
 					persistanceKey={persistanceKey}
@@ -33,6 +29,7 @@ function CodeWord({ code }: { code: string }) {
 				/>
 			);
 		}
+		const DrawingSvg = lazy(() => import("./DrawingSvg"));
 		return <DrawingSvg {...{ persistanceKey, caption }} />;
 	}
 
@@ -41,6 +38,9 @@ function CodeWord({ code }: { code: string }) {
 		const regexArray = sandboxRegex.exec(code)!;
 		const persistanceKey = regexArray.at(1)!;
 
+		const SandboxRouter = lazy(
+			() => import("./CodeSandbox/SandboxRouters")
+		);
 		return <SandboxRouter persistanceKey={persistanceKey} />;
 	}
 

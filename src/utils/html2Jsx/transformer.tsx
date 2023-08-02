@@ -1,12 +1,8 @@
-import Carousel from "@components/BlogPostComponents/Carousel";
 import Code from "@components/BlogPostComponents/Code";
 import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
 import CodeWord from "@components/BlogPostComponents/CodeWord";
 import Footers from "@components/BlogPostComponents/Footers";
 import HeadingButton from "@components/BlogPostComponents/HeadinglinkButton";
-import ImageWithCaption from "@components/BlogPostComponents/ImageWithCaption";
-import LexicaImage from "@components/BlogPostComponents/LexicaImage";
-import ImageUploader from "@components/EditorComponents/ImageUploader";
 import { Element, Text } from "hast";
 import { raw } from "hast-util-raw";
 import { defaultSchema, sanitize } from "hast-util-sanitize";
@@ -15,6 +11,7 @@ import { toHast } from "mdast-util-to-hast";
 import React from "react";
 import { visit } from "unist-util-visit";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
+import ImageHandler from "@components/BlogPostComponents/ImageHandler";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: any }[] = [];
@@ -142,8 +139,8 @@ export function transformer(
 		return <>{node.value}</>;
 	}
 	if (node.type === "element") {
-		if (tagToTransformer[node.tagName as HtmlTagName]) {
-			return tagToTransformer[node.tagName as HtmlTagName]!(
+		if (tagToJsx[node.tagName as HtmlTagName]) {
+			return tagToJsx[node.tagName as HtmlTagName]!(
 				node as HtmlAstElement
 			);
 		}
@@ -153,17 +150,15 @@ export function transformer(
 	return <></>;
 }
 
-type TagToTransformer = {
+type TagToJsx = {
 	[k in keyof HTMLElementTagNameMap]?: (node: HtmlAstElement) => JSX.Element;
 };
 
 type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-const tagToTransformer: TagToTransformer = {
+const tagToJsx: TagToJsx = {
 	...(() => {
-		let headingToRenderers: Partial<
-			Record<HeadTags, TagToTransformer["h1"]>
-		> = {};
+		let headingToRenderers: Partial<Record<HeadTags, TagToJsx["h1"]>> = {};
 		for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
 			headingToRenderers[heading as HeadTags] = (node) =>
 				headingsRenderer(node);
@@ -385,29 +380,7 @@ const tagToTransformer: TagToTransformer = {
 	},
 
 	img: (node) => {
-		const { alt, src } = node.properties as { alt: string; src: string };
-
-		let { end } = getStartEndFromNode(node);
-		if (src.split(",").length > 1) {
-			return (
-				<Carousel
-					imageNamesString={src}
-					captionString={alt}
-					key={src}
-					end={end}
-				/>
-			);
-		}
-
-		if (src) {
-			return (
-				<ImageWithCaption name={src} alt={alt} end={end} key={src} />
-			);
-		}
-		if (alt && !src) {
-			return <LexicaImage alt={alt} key={alt} end={end} />;
-		}
-		return <ImageUploader {...{ end }} />;
+		return <ImageHandler node={node} />;
 	},
 };
 
@@ -446,7 +419,7 @@ const extractTextFromChildren = (
 	return (textArray || []).join("");
 };
 
-function getStartEndFromNode(node: HtmlAstElement) {
+export function getStartEndFromNode(node: HtmlAstElement) {
 	let start = 0;
 	let end = 0;
 	if (node.properties) {
