@@ -4,7 +4,7 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import Image from "next/image";
 import { memo, useContext, useEffect, useState } from "react";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import { BiImageAdd } from "react-icons/bi";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { cn } from "@/lib/utils";

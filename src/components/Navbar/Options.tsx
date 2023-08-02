@@ -4,7 +4,7 @@ import { ToastContext } from "@/contexts/ToastProvider";
 import useOwner from "@/hooks/useOwner";
 import { Database } from "@/interfaces/supabase";
 import { cn } from "@/lib/utils";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import Divider from "@components/ui/divider";
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";

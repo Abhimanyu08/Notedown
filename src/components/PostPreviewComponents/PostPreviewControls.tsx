@@ -7,7 +7,7 @@ import { BiBookContent } from "react-icons/bi";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getPost } from "@/app/utils/getData";
 import { AnimatePresence, motion } from "framer-motion";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { AiFillCloseCircle } from "react-icons/ai";
 import useShortCut from "@/hooks/useShortcut";
@@ -40,7 +40,7 @@ function PostPreviewControls({
 					/>
 				)}
 				<Button
-					className="text-gray-400 hover:text-white active:scale-95"
+					className="bg-transparent hover:text-gray-100 text-gray-400 hover:bg-black"
 					onClick={() => setShowToc((p) => !p)}
 				>
 					<BiBookContent size={24} />

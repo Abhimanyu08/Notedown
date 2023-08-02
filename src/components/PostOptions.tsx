@@ -87,7 +87,7 @@ export function PostOptions({
 						<MenubarTrigger className="p-1">
 							<SlOptions size={12} />
 						</MenubarTrigger>
-						<MenubarContent className="min-w-0">
+						<MenubarContent className="min-w-0 border-border">
 							<MenubarItem className="">
 								<Link
 									href={`/write/${postId}`}

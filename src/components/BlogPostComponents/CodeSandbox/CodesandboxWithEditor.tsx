@@ -3,7 +3,7 @@ import { StateEffect } from "@codemirror/state";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import useEditor from "@/hooks/useEditor";
 import { cn } from "@/lib/utils";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import { EditorView } from "codemirror";
 import {
 	createContext,

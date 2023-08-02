@@ -10,7 +10,7 @@ import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 
 function OptionsToolbar({ content }: { content: string }) {
@@ -41,14 +41,14 @@ function OptionsToolbar({ content }: { content: string }) {
 				{blogState.blogMeta.language && <EnableRceButton />}
 				<ToolTipComponent tip="Upload changes" side="right">
 					<button
-						className=" hover:text-gray-100"
+						className=" hover:text-gray-100 text-gray-400"
 						onClick={() => onUpload(editorState)}
 					>
 						<FaFileUpload size={26} />
 					</button>
 				</ToolTipComponent>
 				<Button
-					className="text-gray-400 hover:text-white active:scale-95"
+					className="bg-transparent hover:text-gray-100 text-gray-400 hover:bg-black"
 					onClick={() => setShowToc((p) => !p)}
 				>
 					<BiBookContent size={24} />

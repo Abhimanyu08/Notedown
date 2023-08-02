@@ -3,7 +3,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Tldraw } from "@tldraw/tldraw";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import { cn } from "@/lib/utils";
 import { AiOutlineClose } from "react-icons/ai";
 

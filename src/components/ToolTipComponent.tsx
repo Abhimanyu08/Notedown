@@ -6,7 +6,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@components/ui/tooltip";
-import { MouseEventHandler } from "react";
 
 export function ToolTipComponent({
 	children,
@@ -31,7 +30,11 @@ export function ToolTipComponent({
 				<TooltipTrigger {...props} className={cn(className)}>
 					{children}
 				</TooltipTrigger>
-				<TooltipContent align={"start"} side={side || "left"}>
+				<TooltipContent
+					align={"start"}
+					side={side || "left"}
+					className="border-border font-sans"
+				>
 					{tip}
 				</TooltipContent>
 			</Tooltip>

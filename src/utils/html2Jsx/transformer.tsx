@@ -94,6 +94,7 @@ export function mdToHast(markdown: string) {
 				}
 			}
 		}
+
 		node.data = node.data || {};
 		node.data.hProperties = {
 			datastartoffset: node.position?.start.offset,
@@ -207,23 +208,44 @@ const tagToTransformer: TagToTransformer = {
 		let code = (codeNode.children[0] as Text)?.value || "";
 
 		const className = codeNode.properties?.className;
-		const blockLanguage =
+		const blockMetaString =
 			className &&
 			/language-(.*)/.exec((className as string[])[0])?.at(1);
 
 		const { start, end } = getStartEndFromNode(codeNode);
-		if (!blockLanguage) {
-			BLOCK_NUMBER += 1;
+		if (typeof blockMetaString === "string") {
+			const arr = blockMetaString.split("&");
+			// arr = ["lang=javascript","theme=dark","sln=true"]
+			const blockMeta: Record<string, string | boolean> = {};
+
+			arr.forEach((bm) => {
+				const matcharr = /(.*?)=(.*)/.exec(bm);
+				const key = matcharr?.at(1);
+				let val: boolean | string | undefined = matcharr?.at(2);
+				if (key === "sln") val = val === "true" ? true : false;
+				if (key !== undefined && val !== undefined)
+					blockMeta[key] = val;
+			});
 			return (
-				<Code
+				<CodeWithoutLanguage
 					code={code}
-					key={BLOCK_NUMBER}
-					blockNumber={BLOCK_NUMBER}
-					{...{ start, end }}
+					language={blockMeta.lang as string}
+					showLineNumbers={blockMeta.sln as boolean}
+					theme={blockMeta.theme as string}
+					start={start}
 				/>
 			);
 		}
-		return <CodeWithoutLanguage code={code} language={blockLanguage} />;
+
+		BLOCK_NUMBER += 1;
+		return (
+			<Code
+				code={code}
+				key={BLOCK_NUMBER}
+				blockNumber={BLOCK_NUMBER}
+				{...{ start, end }}
+			/>
+		);
 	},
 
 	a: (node) => {
@@ -398,7 +420,7 @@ function headingsRenderer(node: HtmlAstElement) {
 		node.tagName,
 		{
 			id: headingId,
-			className: "group not-prose",
+			className: "group prose-code:text-xl prose-code:mx-1",
 		},
 
 		<HeadingButton headingId={headingId} start={start}>

@@ -1,13 +1,13 @@
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import Link from "next/link";
 import React from "react";
 import { TfiPencilAlt } from "react-icons/tfi";
 
 function NewNoteButton() {
 	return (
-		<Link href={"/write"}>
-			<Button className="px-3 py-1 text-sm gap-2 hover:bg-secondary">
-				<TfiPencilAlt />
+		<Link href={"/write"} prefetch={false}>
+			<Button className="gap-2" variant="ghost">
+				<TfiPencilAlt size={14} />
 				<span>New Note</span>
 			</Button>
 		</Link>

@@ -9,7 +9,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import Tabs, { TabChildren } from "@components/ui/tabs";
 import { useEffect, useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";

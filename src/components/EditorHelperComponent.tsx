@@ -3,6 +3,7 @@ import {
 	onBold,
 	onCanvas,
 	onCodeBlock,
+	onCodeBlockNormal,
 	onCodeWord,
 	onImage,
 	onItalic,
@@ -30,38 +31,7 @@ import useToggleVim from "@/hooks/useToggleVim";
 function EditorHelperComponent() {
 	const { editorState } = useContext(EditorContext);
 	const { editorView } = editorState;
-	const pathname = usePathname();
 	const { toggleVim, vimEnabled } = useToggleVim({ editorView });
-	// const [vimCompartment, setVimCompartment] = useState<Compartment>();
-	// const [vimEnabled, setVimEnabled] = useState(false);
-
-	// useEffect(() => {
-	// 	if (!vimCompartment) {
-	// 		const compartment = new Compartment();
-	// 		setVimCompartment(compartment);
-	// 	}
-	// }, []);
-
-	// const onToggleVim = () => {
-	// 	if (!editorState.editorView) return;
-
-	// 	if (!vimEnabled) {
-	// 		editorState.editorView.dispatch({
-	// 			effects: StateEffect.appendConfig.of(vimCompartment!.of(vim())),
-	// 			// editorState.editorView.state.facet()
-	// 		});
-	// 	}
-	// 	// C
-	// 	if (vimEnabled) {
-	// 		editorState.editorView.dispatch({
-	// 			effects: vimCompartment?.reconfigure([]),
-	// 		});
-	// 		//we need to set a new compartment for next time someone enables vim
-	// 		const compartment = new Compartment();
-	// 		setVimCompartment(compartment);
-	// 	}
-	// 	setVimEnabled((prev) => !prev);
-	// };
 
 	return (
 		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
@@ -111,7 +81,15 @@ function EditorHelperComponent() {
 					if (editorView) onCodeBlock(editorView);
 				}}
 			>
-				Code block
+				Code block (executable)
+			</button>
+			<button
+				className="btn btn-xs normal-case tool"
+				onClick={() => {
+					if (editorView) onCodeBlockNormal(editorView);
+				}}
+			>
+				Code block (normal)
 			</button>
 			<button
 				className="btn btn-xs normal-case tool"

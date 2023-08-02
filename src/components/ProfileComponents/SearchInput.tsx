@@ -3,7 +3,7 @@ import { Input } from "@components/ui/input";
 import { useContext, useRef } from "react";
 import { SearchContext } from "./SearchProvider";
 import { cn } from "@/lib/utils";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { AiFillCloseCircle } from "react-icons/ai";
 

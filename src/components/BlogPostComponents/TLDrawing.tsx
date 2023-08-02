@@ -7,7 +7,7 @@ import { Tldraw } from "@tldraw/tldraw";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { ExpandedCanvasContext } from "./ExpandedCanvas/ExpandedCanvasProvider";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import { cn } from "@/lib/utils";
 
 function TLDrawing({

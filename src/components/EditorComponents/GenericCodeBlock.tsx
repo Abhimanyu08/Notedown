@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import Button from "@components/ui/button";
+import { Button } from "@components/ui/button";
 import React from "react";
 
 export function CodeBlock({
@@ -19,7 +19,7 @@ export function CodeBlockButtons({
 	return (
 		<div
 			className={cn(
-				"flex flex-row  gap-5 w-fit self-end border-2 border-b-0 border-border bg-[#15181c] py-1 px-3 rounded-t-md",
+				"flex flex-row  gap-10 w-fit self-end border-2 border-b-0 border-border bg-[#15181c] py-1 px-3 rounded-t-md",
 				className
 			)}
 		>
@@ -40,16 +40,16 @@ export const CodeBlockButton = ({
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
 	return (
-		<ToolTipComponent tip={tip} side="top">
-			<Button
-				className={
-					"text-cyan-400 hover:scale-110 py-0 active:scale-90 " +
-						className || ""
-				}
-				onClick={onClick}
-			>
-				{children}
-			</Button>
+		<ToolTipComponent
+			tip={tip}
+			side="top"
+			className={cn(
+				"text-cyan-400 hover:scale-110  py-0 active:scale-90 flex items-center",
+				className
+			)}
+			onClick={onClick}
+		>
+			{children}
 		</ToolTipComponent>
 	);
 };
