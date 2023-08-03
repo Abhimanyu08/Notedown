@@ -11,15 +11,20 @@ function PostTitle({
 	return (
 		<HoverCard>
 			<HoverCardTrigger className="w-max">
-				<div className="text-xl text-black underline decoration-transparent group-hover:decoration-gray-300 transition-all duration-100 underline-offset-2 dark:text-gray-200 break-words max-w-3/4">
+				<h2 className="text-xl text-black underline decoration-transparent group-hover:decoration-gray-300 transition-all duration-100 underline-offset-2 dark:text-gray-200 break-words max-w-3/4">
 					{title}{" "}
-				</div>
+				</h2>
 			</HoverCardTrigger>
-			{description && (
-				<HoverCardContent className="w-max" side="right">
-					<span>{description}</span>
-				</HoverCardContent>
-			)}
+			<HoverCardContent
+				className="border-border text-sm w-max"
+				side="bottom"
+				align="start"
+			>
+				<span>
+					{description ||
+						"No description, gotta open to read what's inside"}
+				</span>
+			</HoverCardContent>
 		</HoverCard>
 	);
 }

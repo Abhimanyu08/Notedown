@@ -23,7 +23,12 @@ export function TabChildren({
 }: { active?: boolean } & React.ComponentPropsWithoutRef<"div">) {
 	const { layoutId } = useContext(TabContext);
 	return (
-		<div className={cn("relative", className)}>
+		<div
+			className={cn(
+				"relative text-gray-400 hover:text-gray-100",
+				className
+			)}
+		>
 			{children}
 			{active && (
 				<motion.div

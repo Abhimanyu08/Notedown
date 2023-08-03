@@ -12,7 +12,6 @@ interface useEditorProps {
     language: string
     code: string
     editorParentId: string
-    mounted?: boolean
 }
 function useEditor({ language, code, editorParentId }: useEditorProps): { editorView: EditorView | null; } {
     const [editorView, setEditorView] = useState<EditorView | null>(null);

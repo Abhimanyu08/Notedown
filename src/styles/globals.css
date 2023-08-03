@@ -94,6 +94,9 @@ body {
 	-webkit-font-smoothing: antialiased;
 	/* -moz-osx-font-smoothing: antialiased; */
 }
+.prose {
+	width: 65ch;
+}
 
 #jsx span:where([class~="cm-editor"]) {
 	font-size: 0.875rem; /* 14px */

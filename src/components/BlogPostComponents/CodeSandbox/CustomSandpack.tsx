@@ -11,12 +11,13 @@ import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
 import Tabs, { TabChildren } from "@components/ui/tabs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsArrowsAngleExpand } from "react-icons/bs";
-import JsonUpdater from "./JsonUpdater";
 import { SandpackConfigType } from "./types";
 import { usePathname } from "next/navigation";
+
+const JsonUpdater = lazy(() => import("./JsonUpdater"));
 
 function CustomSandpack(
 	props: SandpackConfigType & { persistanceKey?: string }
@@ -82,6 +83,7 @@ function CustomSandpack(
 
 				<div
 					className={cn(
+						"border-border",
 						expand ? "w-1/2 shrink overflow-x-scroll" : "w-full"
 					)}
 				>
@@ -106,7 +108,7 @@ function CustomSandpack(
 				</div>
 				<div
 					className={cn(
-						"flex flex-col bg-black h-full",
+						"flex flex-col bg-black h-full border-border",
 
 						expand ? "w-1/2 shrink border-r-2 border-b-2" : "w-full"
 					)}
