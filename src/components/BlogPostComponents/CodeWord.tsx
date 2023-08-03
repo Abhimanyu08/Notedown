@@ -1,6 +1,7 @@
 "use client";
 import { lazy, memo } from "react";
 import { usePathname } from "next/navigation";
+import Latex from "react-latex";
 
 const SandboxRouter = lazy(() => import("./CodeSandbox/SandboxRouters"));
 
@@ -11,7 +12,6 @@ function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
 
 	if (code.startsWith("$") && code.endsWith("$")) {
-		const Latex = lazy(() => import("react-latex"));
 		return <Latex>{code}</Latex>;
 	}
 	if (code.startsWith("~~") && code.endsWith("~~")) {
