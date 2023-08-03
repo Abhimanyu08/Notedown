@@ -142,7 +142,7 @@ lg:scrollbar-thin
 							{title}
 						</a>
 						{/* <span>{">"}</span> */}
-						{(currHeadingIndex
+						{(currHeadingIndex !== null
 							? headingItemToPath(headingList[currHeadingIndex])
 							: []
 						)?.map((v) => {
