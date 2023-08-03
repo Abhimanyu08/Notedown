@@ -33,7 +33,7 @@ function BlogLayout({
 		>
 			<div className="grow flex flex-row min-h-0 relative pt-20">
 				<div
-					className={`lg:basis-1/5 flex-col overflow-y-auto justify-start flex px-4 
+					className={`lg:basis-1/5 hidden flex-col overflow-y-auto justify-start lg:flex px-4 
 					`}
 				>
 					<Toc markdown={content} />
@@ -58,7 +58,7 @@ lg:scrollbar-thin
 					/>
 				</BlogContainer>
 				{/* </div> */}
-				<div className="hidden lg:flex lg:flex-col basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
+				<div className="hidden lg:flex lg:flex-col lg:basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
 					{isPostPrivate ? <PrivateToolbar /> : <Toolbar />}
 				</div>
 			</div>

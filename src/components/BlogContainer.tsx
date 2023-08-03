@@ -87,6 +87,7 @@ function BlogContainer({
 			className={`lg:basis-3/5 relative 
 							overflow-y-auto
 
+							basis-full
 lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700 

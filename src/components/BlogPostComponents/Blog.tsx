@@ -29,7 +29,9 @@ const Blog = memo(
 				overflow-x-hidden		
 				// --------overflow-y-auto
 				prose
-				prose-lg
+				prose-sm
+				lg:prose-lg
+				mx-4 lg:mx-auto
 				//-------------prose-headings------------
 				prose-headings:text-black
 				dark:prose-headings:text-gray-200
