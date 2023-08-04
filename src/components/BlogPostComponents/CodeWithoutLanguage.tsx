@@ -100,7 +100,7 @@ lg:scrollbar-thin
 					language={importedLanguage}
 					style={importedTheme}
 					customStyle={{
-						paddingLeft: "8px",
+						paddingLeft: showLineNumbers ? "8px" : "16px",
 						fontSize: "16px",
 						width: "fit-content",
 						minWidth: "100%",
