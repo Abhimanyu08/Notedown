@@ -25,9 +25,8 @@ function ImageUploader({
 }) {
 	// const { dispatch } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
-	const pathname = usePathname();
 
-	const onImageSelect: ChangeEventHandler<HTMLInputElement> = (e) => {
+	const onImageSelect: ChangeEventHandler<HTMLInputElement> = async (e) => {
 		const [imagesObj, fileNamesToAdd] = getImagesObj(e);
 		const { editorView, frontMatterLength } = editorState;
 		if (!editorView) return;
@@ -38,7 +37,19 @@ function ImageUploader({
 			type: "add image to files",
 			payload: imagesObj,
 		});
-		// const transaction = view.state.update({changes: {from: cursorPos, to:imageNames.length, inser}})
+		for (let [imageName, imageFile] of Object.entries(imagesObj)) {
+			const imageBlob = imageFile;
+			let objectStore = editorState
+				.documentDb!.transaction("images", "readwrite")
+				.objectStore("images");
+
+			const newData = {
+				imageName,
+				imageBlob,
+			};
+
+			objectStore.put(newData);
+		}
 		editorState.editorView?.focus();
 		// if we are adding to already uploaded images then we need to put a comma in front.
 		const toInsert = add ? "," + imageNames : imageNames;

@@ -1,7 +1,14 @@
 "use client";
 import useEditor from "@/hooks/useEditor";
 import { EditorView } from "codemirror";
-import { Dispatch, Reducer, createContext, useReducer } from "react";
+import {
+	Dispatch,
+	Reducer,
+	createContext,
+	useEffect,
+	useReducer,
+	useState,
+} from "react";
 
 interface EditorStateInterface {
 	editorView: EditorView | null;
@@ -13,6 +20,7 @@ interface EditorStateInterface {
 	editingMarkdown: boolean;
 	frontMatterLength: number;
 	sandboxEditors: Record<string, EditorView>;
+	documentDb: IDBDatabase | null;
 }
 interface DispatchObj {
 	type:
@@ -28,7 +36,8 @@ interface DispatchObj {
 		| "empty canvas apps"
 		| "set frontmatter length"
 		| "set sandbox editor"
-		| "remove sandbox editor";
+		| "remove sandbox editor"
+		| "set document db";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -43,6 +52,7 @@ const initialEditorState: EditorStateInterface = {
 	editingMarkdown: false,
 	frontMatterLength: 0,
 	sandboxEditors: {},
+	documentDb: null,
 };
 
 export const EditorContext = createContext<{
@@ -86,6 +96,11 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 			return {
 				...state,
 				frontMatterLength: action.payload as number,
+			};
+		case "set document db":
+			return {
+				...state,
+				documentDb: action.payload as IDBDatabase | null,
 			};
 
 		case "remove canvas app":
@@ -164,12 +179,31 @@ export default function EditorContextProvider({
 		reducer,
 		initialEditorState
 	);
-	const { editorView } = useEditor({
-		language: "markdown",
-		code: "",
-		editorParentId: "markdown-textarea",
-		mounted: true,
-	});
+	useEffect(() => {
+		let documentDbRequest = indexedDB.open("RCEBLOG_DOCUMENT", 4);
+
+		documentDbRequest.onsuccess = (e) => {
+			dispatch({
+				type: "set document db",
+				payload: (e.target as any)?.result,
+			});
+		};
+
+		documentDbRequest.onupgradeneeded = function () {
+			let db = documentDbRequest.result;
+			if (!db.objectStoreNames.contains("markdowns")) {
+				db.createObjectStore("markdown", { keyPath: "timeStamp" });
+			}
+			if (!db.objectStoreNames.contains("sandpackConfigs")) {
+				db.createObjectStore("sandpackConfigs", {
+					keyPath: "timeStamp",
+				});
+			}
+			if (!db.objectStoreNames.contains("images")) {
+				db.createObjectStore("images", { keyPath: "imageName" });
+			}
+		};
+	}, []);
 
 	return (
 		<EditorContext.Provider

@@ -23,50 +23,58 @@ function Drafts() {
 
 	useEffect(() => {
 		// if (drafts && drafts.length > 0) return;
-		processDrafts();
+
+		let documentDbRequest = indexedDB.open("RCEBLOG_DOCUMENT", 4);
+		documentDbRequest.onsuccess = (e) => {
+			const documentDb = (e.target as IDBOpenDBRequest).result;
+			processDrafts(documentDb);
+		};
 	}, []);
 
-	function processDrafts() {
+	function processDrafts(db: IDBDatabase) {
 		setLoadingDrafts(true);
 		const draftsToAdd: typeof drafts = [];
-		for (let i = 0; i < localStorage.length; i++) {
-			const key = localStorage.key(i);
-			if (key && (key.startsWith("draft") || key.startsWith("post"))) {
-				const timeStamp = /draft-(\d+)$/.exec(key)?.at(1);
-				const postId = /post-(\d+);/.exec(key)?.at(1);
-				const draftText = localStorage.getItem(key);
-				try {
-					const draftData = parseFrontMatter(draftText!);
-					if (timeStamp) {
-						const formattedTimeStamp = new Date(
-							parseInt(timeStamp)
-						);
-						const date = formatDate(
-							formattedTimeStamp.toLocaleDateString()
-						);
-						const longTime =
-							formattedTimeStamp.toLocaleTimeString();
+		let objectStore = db
+			.transaction("markdown", "readwrite")
+			.objectStore("markdown");
+		const getAllMarkdowns = objectStore.getAll();
 
-						const amOrPm = longTime.match(/[AP]M/)?.at(0);
-						const shortTime = longTime
-							.split(":")
-							.slice(0, 2)
-							.join(":");
-						const time = `${shortTime} ${amOrPm}`;
-						draftsToAdd.push({
-							key,
-							timeStamp,
-							date,
-							time,
-							draftData,
-							postId,
-						});
-					}
-				} catch (_) {}
+		getAllMarkdowns.onsuccess = (e) => {
+			const mdWithTsArray = (
+				e.target as IDBRequest<
+					{ timeStamp: string; markdown: string }[]
+				>
+			).result;
+
+			for (let mdWithTs of mdWithTsArray) {
+				const { timeStamp: timeStampWithPostId, markdown } = mdWithTs;
+				const timeStamp = /draft-(\d+)$/
+					.exec(timeStampWithPostId)
+					?.at(1);
+				const postId = /post-(\d+);/.exec(timeStampWithPostId)?.at(1);
+
+				const draftData = parseFrontMatter(markdown);
+				if (timeStamp) {
+					const formattedTimeStamp = new Date(parseInt(timeStamp));
+					const date = formatDate(formattedTimeStamp);
+					const longTime = formattedTimeStamp.toLocaleTimeString();
+
+					const amOrPm = longTime.match(/[ap]m/)?.at(0);
+					const shortTime = longTime.split(":").slice(0, 2).join(":");
+					const time = `${shortTime} ${amOrPm}`;
+					draftsToAdd.push({
+						key: timeStampWithPostId,
+						timeStamp,
+						date,
+						time,
+						draftData,
+						postId,
+					});
+				}
 			}
-		}
-		setDrafts(draftsToAdd);
-		setLoadingDrafts(false);
+			setDrafts(draftsToAdd);
+			setLoadingDrafts(false);
+		};
 	}
 
 	return (
@@ -82,7 +90,7 @@ function Drafts() {
 											className="flex flex-col  relative"
 											key={draft.timeStamp}
 										>
-											<ActionModal
+											{/* <ActionModal
 												action="delete"
 												postTitle={
 													draft.draftData.data
@@ -121,7 +129,7 @@ function Drafts() {
 												}
 											>
 												<MdDelete />
-											</button>
+											</button> */}
 											<SingleDraft draft={draft} />
 										</div>
 									);

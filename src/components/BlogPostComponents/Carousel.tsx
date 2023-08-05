@@ -6,6 +6,7 @@ import React, { lazy, memo, useContext, useEffect, useState } from "react";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
 import { usePathname } from "next/navigation";
+import useRecoverImages from "@/hooks/useRecoverImages";
 
 const ImageUploader = lazy(
 	() => import("@components/EditorComponents/ImageUploader")
@@ -19,41 +20,50 @@ function Carousel({
 	captionString: string;
 	end?: number;
 }) {
-	const { blogState } = useContext(BlogContext);
-	const { editorState, dispatch } = useContext(EditorContext);
-	const [images, setImages] = useState<string[]>([]);
+	const { dispatch } = useContext(EditorContext);
+	const [imageSrcs, setImagesrcs] = useState<string[]>([]);
 	const [captions, setCaptions] = useState<string[]>([]);
 	const { setImageUrl } = useContext(ExpandedImageContext);
 	const pathname = usePathname();
-
+	const imageUrls = useRecoverImages({
+		imageNames: imageNamesString.split(","),
+	});
 	useEffect(() => {
+		// const imageNames = imageNamesString.split(",");
+		// const validImages = imageNames.filter(
+		// 	(i) =>
+		// 		Object.hasOwn(blogState.uploadedImages, i) ||
+		// 		Object.hasOwn(editorState?.imagesToFiles, i)
+		// );
+		// setImagesrcs(
+		// 	validImages.map((image) =>
+		// 		editorState.imagesToFiles[image]
+		// 			? window.URL.createObjectURL(
+		// 					editorState.imagesToFiles[image]
+		// 			  )
+		// 			: blogState.uploadedImages[image]
+		// 	)
+		// );
 		const imageNames = imageNamesString.split(",");
-		const validImages = imageNames.filter(
-			(i) =>
-				Object.hasOwn(blogState.uploadedImages, i) ||
-				Object.hasOwn(editorState?.imagesToFiles, i)
-		);
-		setImages(
-			validImages.map((image) =>
-				editorState.imagesToFiles[image]
-					? window.URL.createObjectURL(
-							editorState.imagesToFiles[image]
-					  )
-					: blogState.uploadedImages[image]
-			)
-		);
 
 		dispatch({
 			type: "add images to upload",
-			payload: validImages,
+			payload: imageNames,
 		});
 		return () => {
 			dispatch({
 				type: "remove image from upload",
-				payload: validImages,
+				payload: imageNames,
 			});
 		};
 	}, []);
+
+	useEffect(() => {
+		const imageNames = imageNamesString.split(",");
+		if (imageUrls.length === imageNames.length) {
+			setImagesrcs(imageUrls);
+		}
+	}, [imageUrls]);
 
 	useEffect(() => {
 		setCaptions(captionString.split(";"));
@@ -101,7 +111,7 @@ function Carousel({
 				});
 			}}
 		>
-			{images.map((image, idx) => (
+			{imageSrcs.map((image, idx) => (
 				<figure
 					className={`
 

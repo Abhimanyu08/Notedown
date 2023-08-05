@@ -1,6 +1,14 @@
-function formatDate(date: string): string {
+function formatDate(date: Date | string): string {
 
-    let dateString = new Date(date).toDateString().slice(4)
+    let dateString: string
+    if (typeof date === "string") {
+        dateString = new Date(date).toDateString().slice(4)
+    }
+    else {
+
+        dateString = date.toDateString().slice(4)
+    }
+
 
     const dmy = dateString.split(" ")
 

@@ -47,7 +47,7 @@ function useBlogStateUpdate() {
 	}, [blogState.blogMeta.id]);
 
 	useEffect(() => {
-		if (!editorState.editorView) return;
+		if (!editorState.editorView || !editorState.documentDb) return;
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
 				constructor(view: EditorView) {
@@ -72,7 +72,7 @@ function useBlogStateUpdate() {
 					if (update.docChanged) {
 						const markdown = update.state.sliceDoc();
 
-						localStorage.setItem(localStorageDraftKey, markdown);
+						// localStorage.setItem(localStorageDraftKey, markdown);
 						// if (!update.view.hasFocus) return;
 						const { data, content, frontMatterLength } =
 							parseFrontMatter(markdown);
@@ -93,6 +93,15 @@ function useBlogStateUpdate() {
 							});
 							setBlogContent(content);
 						});
+
+						let objectStore = editorState
+							.documentDb!.transaction("markdown", "readwrite")
+							.objectStore("markdown");
+						const newData = {
+							timeStamp: localStorageDraftKey,
+							markdown,
+						};
+						objectStore.put(newData);
 					}
 				}
 			}
@@ -113,7 +122,7 @@ function useBlogStateUpdate() {
 				stateUpdatePlugin.extension
 			),
 		});
-	}, [editorState.editorView, localStorageDraftKey]);
+	}, [editorState.editorView, localStorageDraftKey, editorState.documentDb]);
 
 	return blogContent;
 }

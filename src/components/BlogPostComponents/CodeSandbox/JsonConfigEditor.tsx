@@ -1,17 +1,19 @@
+import { EditorContext } from "@/app/write/components/EditorContext";
+import useRecoverSandpack from "@/hooks/useRecoverSandpackConfig";
 import useToggleVim from "@/hooks/useToggleVim";
 import { cn } from "@/lib/utils";
+import { StateEffect } from "@codemirror/state";
+import { ViewPlugin, ViewUpdate, keymap } from "@codemirror/view";
 import {
 	CodeBlock,
-	CodeBlockButtons,
 	CodeBlockButton,
+	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
 import { EditorView } from "codemirror";
-import error from "next/error";
-import React, { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineCodeSandbox } from "react-icons/ai";
-import { SiVim } from "react-icons/si";
 import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { SiVim } from "react-icons/si";
 
 function JsonConfigEditor({
 	persistanceKey,
@@ -26,10 +28,86 @@ function JsonConfigEditor({
 	className?: string;
 	error?: string;
 }) {
+	const [minimize, setMinimize] = useState(false);
+
+	const { editorState, dispatch } = useContext(EditorContext);
+
 	const { toggleVim, vimEnabled } = useToggleVim({
 		editorView: jsonEditorView,
 	});
-	const [minimize, setMinimize] = useState(false);
+
+	useRecoverSandpack({ jsonEditorView, persistanceKey });
+
+	useEffect(() => {
+		if (!jsonEditorView) return;
+		jsonEditorView.dispatch({
+			effects: StateEffect.appendConfig.of([
+				keymap.of([
+					{
+						key: "Shift-Enter",
+						run() {
+							onSandboxGenerate();
+							return true;
+						},
+					},
+				]),
+			]),
+		});
+		dispatch({
+			type: "set sandbox editor",
+			payload: { [persistanceKey]: jsonEditorView },
+		});
+
+		return () => {
+			dispatch({
+				type: "remove sandbox editor",
+				payload: persistanceKey,
+			});
+		};
+	}, [jsonEditorView]);
+
+	useEffect(() => {
+		if (!jsonEditorView || !editorState.documentDb) return;
+		const stateUpdatePlugin = ViewPlugin.fromClass(
+			class {
+				constructor(view: EditorView) {
+					const configString = view.state.sliceDoc();
+					let objectStore = editorState
+						.documentDb!.transaction("sandpackConfigs", "readwrite")
+						.objectStore("sandpackConfigs");
+					const newData = {
+						timeStamp: persistanceKey,
+						config: configString,
+					};
+					objectStore.put(newData);
+				}
+
+				update(update: ViewUpdate) {
+					if (update.docChanged) {
+						const configString = update.state.sliceDoc();
+
+						let objectStore = editorState
+							.documentDb!.transaction(
+								"sandpackConfigs",
+								"readwrite"
+							)
+							.objectStore("sandpackConfigs");
+						const newData = {
+							timeStamp: persistanceKey,
+							config: configString,
+						};
+						objectStore.put(newData);
+					}
+
+					// localStorage.setItem(localStorageDraftKey, markdown);
+					// if (!update.view.hasFocus) return;
+				}
+			}
+		);
+		jsonEditorView.dispatch({
+			effects: StateEffect.appendConfig.of(stateUpdatePlugin.extension),
+		});
+	}, [jsonEditorView, editorState.documentDb]);
 
 	return (
 		<CodeBlock className={cn("w-full", className)}>

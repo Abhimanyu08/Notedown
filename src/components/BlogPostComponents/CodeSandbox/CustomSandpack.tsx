@@ -20,7 +20,7 @@ import { usePathname } from "next/navigation";
 const JsonUpdater = lazy(() => import("./JsonUpdater"));
 
 function CustomSandpack(
-	props: SandpackConfigType & { persistanceKey?: string }
+	props: SandpackConfigType & { persistanceKey: string }
 ) {
 	const [previewOrConsole, setPreviewOrConsole] = useState<
 		"preview" | "console"
@@ -53,7 +53,9 @@ function CustomSandpack(
 			files={props.files}
 			theme={theme}
 		>
-			{pathname?.includes("/write") && <JsonUpdater />}
+			{pathname?.includes("/write") && (
+				<JsonUpdater persistanceKey={props.persistanceKey} />
+			)}
 			<div
 				className={cn(
 					"flex flex-col relative w-full border-border border-2",
@@ -84,7 +86,9 @@ function CustomSandpack(
 				<div
 					className={cn(
 						"border-border",
-						expand ? "w-1/2 shrink overflow-x-scroll" : "w-full"
+						expand
+							? "w-1/2 shrink overflow-x-scroll"
+							: "w-full border-b-2"
 					)}
 				>
 					<SandpackCodeEditor

@@ -6,6 +6,7 @@ import { lazy, memo, useContext, useEffect, useState } from "react";
 import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import useRecoverImages from "@/hooks/useRecoverImages";
 const ImageUploader = lazy(
 	() => import("@components/EditorComponents/ImageUploader")
 );
@@ -19,34 +20,24 @@ function ImageWithCaption({
 	alt: string;
 	end?: number;
 }) {
-	const { blogState } = useContext(BlogContext);
-	const { editorState, dispatch } = useContext(EditorContext);
+	const { dispatch } = useContext(EditorContext);
 	const { setImageUrl } = useContext(ExpandedImageContext);
 	const [imageSrc, setImageSrc] = useState("");
 	const pathname = usePathname();
+	const indexStoreUrls = useRecoverImages({ imageNames: [name] });
 
 	useEffect(() => {
-		if (name.startsWith("http")) {
-			setImageSrc(name);
-			return;
-		}
-		if (
-			Object.hasOwn(editorState.imagesToFiles, name) ||
-			Object.hasOwn(blogState.uploadedImages, name)
-		) {
-			setImageSrc(
-				editorState.imagesToFiles[name]
-					? window.URL.createObjectURL(
-							editorState.imagesToFiles[name]
-					  )
-					: blogState.uploadedImages[name]
-			);
-			dispatch({ type: "add images to upload", payload: [name] });
-		}
+		dispatch({ type: "add images to upload", payload: [name] });
 		return () => {
 			dispatch({ type: "remove image from upload", payload: [name] });
 		};
 	}, []);
+
+	useEffect(() => {
+		if (indexStoreUrls.length > 0) {
+			setImageSrc(indexStoreUrls[0]);
+		}
+	}, [indexStoreUrls]);
 
 	return (
 		<div className="w-4/5 mx-auto relative">

@@ -41,7 +41,7 @@ function ExpandedCanvasDisplay({
 						variant={"ghost"}
 						onClick={() => setPersistanceKey("")}
 					>
-						<AiOutlineClose />
+						<AiOutlineClose size={16} />
 					</Button>
 				</motion.div>
 			)}

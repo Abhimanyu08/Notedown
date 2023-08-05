@@ -23,26 +23,11 @@ function EditorLayout({
 }: Partial<Awaited<ReturnType<typeof getPost>>>) {
 	const { dispatch } = useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
-	const searchParams = useSearchParams();
-	const [initialMarkdown, setInitialMarkdown] = useState(
-		markdown || initialMarkdownMeta
-	);
 	const blogContent = useBlogStateUpdate();
 	const previewRef = useRef<HTMLDivElement>(null);
 	const [atEnd, setAtEnd] = useState(false);
 
 	useEffect(() => {
-		if (searchParams?.has("draft")) {
-			const key = makeLocalStorageDraftKey(
-				searchParams.get("draft")!,
-				post?.id
-			);
-
-			let draftText = localStorage.getItem(key);
-			if (draftText) {
-				setInitialMarkdown(draftText);
-			}
-		}
 		if (post) {
 			blogStateDispatch({
 				type: "set blog meta",
@@ -69,12 +54,13 @@ function EditorLayout({
 				type: "add sandbox filenames",
 				payload: fileNames,
 			});
-		} else {
-			dispatch({
-				type: "set previous uploaded doc",
-				payload: initialMarkdown,
-			});
 		}
+		// } else {
+		// 	dispatch({
+		// 		type: "set previous uploaded doc",
+		// 		payload: initialMarkdown,
+		// 	});
+		// }
 	}, []);
 
 	useEffect(() => {
@@ -95,7 +81,9 @@ function EditorLayout({
 			<div
 				className={`flex flex-col basis-1/2 overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
-				<MarkdownEditor initialMarkdown={initialMarkdown} />
+				<MarkdownEditor
+					initialMarkdown={markdown || initialMarkdownMeta}
+				/>
 			</div>
 			<OptionsToolbar content={blogContent} />
 
