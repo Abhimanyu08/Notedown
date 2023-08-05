@@ -86,35 +86,6 @@ function CodesandboxWithEditor({
 		};
 	}, [jsonEditorView]);
 
-	useEffect(() => {
-		// if this config file exists in database download it and then put the config string in jsoneditor
-		if (!jsonEditorView) return;
-		if (blogState.uploadedFileNames?.includes(`${persistanceKey}.json`)) {
-			const { blogger, id } = blogState.blogMeta;
-			const fileName = `${session?.user?.id}/${id}/${persistanceKey}.json`;
-
-			supabase.storage
-				.from(SUPABASE_FILES_BUCKET)
-				.download(fileName)
-				.then((val) => {
-					const { data } = val;
-					if (data) {
-						data.text().then((jsonString) => {
-							jsonEditorView?.dispatch({
-								changes: [
-									{
-										from: 0,
-										to: jsonEditorView.state.doc.length,
-										insert: jsonString,
-									},
-								],
-							});
-						});
-					}
-				});
-		}
-	}, [jsonEditorView, blogState.uploadedFileNames]);
-
 	const onSandboxGenerate = () => {
 		const configJsonString = jsonEditorView?.state.sliceDoc();
 		if (!configJsonString) return;

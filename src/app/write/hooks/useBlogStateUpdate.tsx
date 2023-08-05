@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState, useTransition } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/getResources";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 
 function useBlogStateUpdate() {
 	//This hook takes care of updating the blog state on every keypress of user on the editor
@@ -14,6 +15,7 @@ function useBlogStateUpdate() {
 	const { editorState, dispatch: editorStateDispatch } =
 		useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
+	const { documentDb } = useContext(IndexedDbContext);
 	const [localStorageDraftKey, setLocalStorageDraftKey] = useState("");
 	const [eventHandlerCompartment, setEventHandlerCompartment] =
 		useState<Compartment>();
@@ -47,7 +49,7 @@ function useBlogStateUpdate() {
 	}, [blogState.blogMeta.id]);
 
 	useEffect(() => {
-		if (!editorState.editorView || !editorState.documentDb) return;
+		if (!editorState.editorView || !documentDb) return;
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
 				constructor(view: EditorView) {
@@ -94,8 +96,8 @@ function useBlogStateUpdate() {
 							setBlogContent(content);
 						});
 
-						let objectStore = editorState
-							.documentDb!.transaction("markdown", "readwrite")
+						let objectStore = documentDb!
+							.transaction("markdown", "readwrite")
 							.objectStore("markdown");
 						const newData = {
 							timeStamp: localStorageDraftKey,
@@ -122,7 +124,7 @@ function useBlogStateUpdate() {
 				stateUpdatePlugin.extension
 			),
 		});
-	}, [editorState.editorView, localStorageDraftKey, editorState.documentDb]);
+	}, [editorState.editorView, localStorageDraftKey, documentDb]);
 
 	return blogContent;
 }

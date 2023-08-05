@@ -5,40 +5,21 @@ import { usePathname } from "next/navigation";
 import { lazy, useContext, useEffect, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { BlogContext } from "../BlogState";
+import useRecoverSandpack from "@/hooks/useRecoverSandpackConfig";
 
 const CodesandboxWithEditor = lazy(() => import("./CodesandboxWithEditor"));
 const CustomSandpack = lazy(() => import("./CustomSandpack"));
 //  Todo
 function SandboxRouter({ persistanceKey }: { persistanceKey: string }) {
 	const pathname = usePathname();
-	const { supabase } = useSupabase();
-	const { blogState } = useContext(BlogContext);
-	const [downloadedJsonString, setDownloadedJsonString] = useState("");
 	const [downloading, setDownloading] = useState(false);
-
-	const downloadFileAndReturnJson = async (fileName: string) => {
-		const { data, error } = await supabase.storage
-			.from(SUPABASE_FILES_BUCKET)
-			.download(fileName);
-		if (!data || error) return "";
-
-		const jsonString = await data.text();
-		return jsonString;
-	};
+	const jsonConfigString = useRecoverSandpack({ persistanceKey });
 
 	useEffect(() => {
-		if (!blogState.uploadedFileNames || pathname?.startsWith("/write"))
-			return;
-		if (blogState.uploadedFileNames.includes(`${persistanceKey}.json`)) {
-			setDownloading(true);
-			const { blogger, id } = blogState.blogMeta;
-			const fileName = `${blogger?.id}/${id}/${persistanceKey}.json`;
-			downloadFileAndReturnJson(fileName).then((jsonString) => {
-				setDownloadedJsonString(jsonString);
-				setDownloading(false);
-			});
+		if (jsonConfigString) {
+			setDownloading(false);
 		}
-	}, []);
+	}, [jsonConfigString]);
 
 	if (pathname?.startsWith("/write")) {
 		return (
@@ -49,7 +30,7 @@ function SandboxRouter({ persistanceKey }: { persistanceKey: string }) {
 		);
 	}
 
-	if (downloading || !downloadedJsonString) {
+	if (downloading || !jsonConfigString) {
 		return (
 			<div className="w-full border-y-[1px] border-border py-10 flex flex-col gap-4 items-center justify-center">
 				<VscLoading size={30} className="animate-spin" />
@@ -58,7 +39,7 @@ function SandboxRouter({ persistanceKey }: { persistanceKey: string }) {
 		);
 	}
 	try {
-		const config = JSON.parse(downloadedJsonString);
+		const config = JSON.parse(jsonConfigString);
 		return <CustomSandpack {...config} persistanceKey={persistanceKey} />;
 	} catch (e) {
 		return <p>{(e as Error).message}</p>;

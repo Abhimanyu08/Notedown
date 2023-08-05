@@ -1,68 +1,50 @@
 import { getPost } from "@/app/utils/getData";
+import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 import Toc from "@components/BlogPostComponents/TableOfContents";
-import React from "react";
-import BlogContextProvider from "../../../components/BlogPostComponents/BlogState";
-import Toolbar from "./Toolbar";
-import PrivateToolbar from "./PrivateToolbar";
 import { parseFrontMatter } from "@utils/getResources";
-import BlogContainer from "@components/BlogContainer";
+import { MemoExoticComponent } from "react";
 
 function BlogLayout({
 	postMeta,
-	isPostPrivate,
+	ToolbarComponent,
+	AuthorComponent,
 }: {
-	postMeta: Awaited<ReturnType<typeof getPost>>;
-	isPostPrivate: boolean;
+	postMeta: Partial<Awaited<ReturnType<typeof getPost>>>;
+	ToolbarComponent?: () => JSX.Element;
+	AuthorComponent:
+		| React.MemoExoticComponent<() => JSX.Element>
+		| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>);
 }) {
-	const { post, imagesToUrls, markdown, fileNames } = postMeta;
-	const { content } = parseFrontMatter(markdown);
+	const { post, markdown } = postMeta;
+	const { content, data } = parseFrontMatter(markdown || "");
 	return (
-		<BlogContextProvider
-			blogMeta={{
-				id: post.id,
-				title: post.title,
-				description: post.description,
-				language: post.language,
-				imageFolder: post.image_folder,
-				blogger: post.bloggers as { id: string; name: string },
-			}}
-			uploadedImages={imagesToUrls}
-			fileNames={fileNames}
-		>
-			<div className="grow flex flex-row min-h-0 relative pt-20">
-				<div
-					className={`lg:basis-1/5 hidden flex-col overflow-y-auto justify-start lg:flex px-4 
+		<div className="grow flex flex-row min-h-0 relative pt-20">
+			<div
+				className={`lg:basis-1/5 hidden flex-col overflow-y-auto justify-start lg:flex px-4 
 					`}
-				>
-					<Toc markdown={content} />
-				</div>
-				{/* <div
-					className={`lg:basis-3/5 relative 
-							hidden lg:block
-							overflow-y-auto
-
-lg:scrollbar-thin 
-				scrollbar-track-black 
-				scrollbar-thumb-slate-700 
-				scroll-smooth
-							`}
-				> */}
-				<BlogContainer markdown={content} title={post.title}>
-					<Blog
-						content={content}
-						{...post}
-						extraClasses="mx-auto"
-						AuthorComponent={BlogAuthorServer}
-					/>
-				</BlogContainer>
-				{/* </div> */}
-				<div className="hidden lg:flex lg:flex-col lg:basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
-					{isPostPrivate ? <PrivateToolbar /> : <Toolbar />}
-				</div>
+			>
+				<Toc markdown={content} />
 			</div>
-		</BlogContextProvider>
+			<BlogContainer
+				markdown={content}
+				title={post?.title || data?.title || ""}
+			>
+				<Blog
+					content={content}
+					title={post?.title || data?.title || ""}
+					description={post?.description || data?.description || ""}
+					language={post?.language || data?.language || ("" as any)}
+					extraClasses="mx-auto"
+					AuthorComponent={AuthorComponent}
+				/>
+			</BlogContainer>
+			{/* </div> */}
+			<div className="hidden lg:flex lg:flex-col lg:basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
+				{ToolbarComponent && <ToolbarComponent />}
+			</div>
+		</div>
 	);
 }
 

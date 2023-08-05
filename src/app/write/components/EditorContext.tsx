@@ -1,14 +1,6 @@
 "use client";
-import useEditor from "@/hooks/useEditor";
 import { EditorView } from "codemirror";
-import {
-	Dispatch,
-	Reducer,
-	createContext,
-	useEffect,
-	useReducer,
-	useState,
-} from "react";
+import { Dispatch, Reducer, createContext, useEffect, useReducer } from "react";
 
 interface EditorStateInterface {
 	editorView: EditorView | null;
@@ -20,7 +12,6 @@ interface EditorStateInterface {
 	editingMarkdown: boolean;
 	frontMatterLength: number;
 	sandboxEditors: Record<string, EditorView>;
-	documentDb: IDBDatabase | null;
 }
 interface DispatchObj {
 	type:
@@ -52,7 +43,6 @@ const initialEditorState: EditorStateInterface = {
 	editingMarkdown: false,
 	frontMatterLength: 0,
 	sandboxEditors: {},
-	documentDb: null,
 };
 
 export const EditorContext = createContext<{
@@ -179,31 +169,6 @@ export default function EditorContextProvider({
 		reducer,
 		initialEditorState
 	);
-	useEffect(() => {
-		let documentDbRequest = indexedDB.open("RCEBLOG_DOCUMENT", 4);
-
-		documentDbRequest.onsuccess = (e) => {
-			dispatch({
-				type: "set document db",
-				payload: (e.target as any)?.result,
-			});
-		};
-
-		documentDbRequest.onupgradeneeded = function () {
-			let db = documentDbRequest.result;
-			if (!db.objectStoreNames.contains("markdowns")) {
-				db.createObjectStore("markdown", { keyPath: "timeStamp" });
-			}
-			if (!db.objectStoreNames.contains("sandpackConfigs")) {
-				db.createObjectStore("sandpackConfigs", {
-					keyPath: "timeStamp",
-				});
-			}
-			if (!db.objectStoreNames.contains("images")) {
-				db.createObjectStore("images", { keyPath: "imageName" });
-			}
-		};
-	}, []);
 
 	return (
 		<EditorContext.Provider

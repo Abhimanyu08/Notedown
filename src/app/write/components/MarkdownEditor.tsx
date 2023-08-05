@@ -5,11 +5,13 @@ import { memo, useContext, useEffect, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import langToCodeMirrorExtension from "@utils/langToExtension";
 import { useSearchParams } from "next/navigation";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 
 // This component should be page diagnostic.
 
 function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	const { dispatch, editorState } = useContext(EditorContext);
+	const { documentDb } = useContext(IndexedDbContext);
 
 	const { editorView } = useEditor({
 		language: "markdown",
@@ -27,13 +29,13 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 
 	useEffect(() => {
 		// This is for when user loads the drafts. Initialmarkdown will change after we read from localstorage.
-		if (!editorView || !editorState.documentDb) return;
+		if (!editorView || !documentDb) return;
 
 		const draftTimeStamp = searchParams?.get("draft");
 		if (!draftTimeStamp) return;
 		const key = `draft-${draftTimeStamp}`;
 
-		const markdownObjectStoreRequest = editorState.documentDb
+		const markdownObjectStoreRequest = documentDb
 			.transaction("markdown", "readonly")
 			.objectStore("markdown")
 			.get(key);
@@ -54,7 +56,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 				});
 			}
 		};
-	}, [editorView, editorState.documentDb]);
+	}, [editorView, documentDb]);
 
 	return (
 		<>

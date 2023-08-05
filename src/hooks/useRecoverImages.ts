@@ -1,17 +1,19 @@
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { useContext, useEffect, useState } from "react";
 
 export default function useRecoverImages({ imageNames }: { imageNames: string[] }) {
 
     const { editorState, dispatch: editorStateDispatch } = useContext(EditorContext)
     const { blogState } = useContext(BlogContext)
+    const { documentDb } = useContext(IndexedDbContext)
     const [urls, setUrls] = useState<string[]>([])
 
 
     useEffect(() => {
-        if (!editorState.documentDb) return;
-        const imageObjectStore = editorState.documentDb
+        if (!documentDb) return;
+        const imageObjectStore = documentDb
             .transaction("images", "readonly")
             .objectStore("images")
 
@@ -43,7 +45,7 @@ export default function useRecoverImages({ imageNames }: { imageNames: string[] 
 
             };
         }
-    }, [editorState.documentDb]);
+    }, [documentDb]);
 
 
     return urls

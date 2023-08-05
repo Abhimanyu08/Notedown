@@ -4,6 +4,7 @@ import useToggleVim from "@/hooks/useToggleVim";
 import { cn } from "@/lib/utils";
 import { StateEffect } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate, keymap } from "@codemirror/view";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import {
 	CodeBlock,
 	CodeBlockButton,
@@ -31,12 +32,24 @@ function JsonConfigEditor({
 	const [minimize, setMinimize] = useState(false);
 
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { documentDb } = useContext(IndexedDbContext);
 
 	const { toggleVim, vimEnabled } = useToggleVim({
 		editorView: jsonEditorView,
 	});
 
-	useRecoverSandpack({ jsonEditorView, persistanceKey });
+	const jsonConfigString = useRecoverSandpack({ persistanceKey });
+	useEffect(() => {
+		jsonEditorView?.dispatch({
+			changes: [
+				{
+					from: 0,
+					to: jsonEditorView.state.doc.length,
+					insert: jsonConfigString,
+				},
+			],
+		});
+	}, [jsonConfigString]);
 
 	useEffect(() => {
 		if (!jsonEditorView) return;
@@ -67,13 +80,13 @@ function JsonConfigEditor({
 	}, [jsonEditorView]);
 
 	useEffect(() => {
-		if (!jsonEditorView || !editorState.documentDb) return;
+		if (!jsonEditorView || !documentDb) return;
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
 				constructor(view: EditorView) {
 					const configString = view.state.sliceDoc();
-					let objectStore = editorState
-						.documentDb!.transaction("sandpackConfigs", "readwrite")
+					let objectStore = documentDb!
+						.transaction("sandpackConfigs", "readwrite")
 						.objectStore("sandpackConfigs");
 					const newData = {
 						timeStamp: persistanceKey,
@@ -86,11 +99,8 @@ function JsonConfigEditor({
 					if (update.docChanged) {
 						const configString = update.state.sliceDoc();
 
-						let objectStore = editorState
-							.documentDb!.transaction(
-								"sandpackConfigs",
-								"readwrite"
-							)
+						let objectStore = documentDb!
+							.transaction("sandpackConfigs", "readwrite")
 							.objectStore("sandpackConfigs");
 						const newData = {
 							timeStamp: persistanceKey,
@@ -107,7 +117,7 @@ function JsonConfigEditor({
 		jsonEditorView.dispatch({
 			effects: StateEffect.appendConfig.of(stateUpdatePlugin.extension),
 		});
-	}, [jsonEditorView, editorState.documentDb]);
+	}, [jsonEditorView, documentDb]);
 
 	return (
 		<CodeBlock className={cn("w-full", className)}>
