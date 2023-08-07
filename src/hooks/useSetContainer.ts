@@ -1,5 +1,5 @@
-import prepareContainer from "@/app/utils/prepareContainer";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import prepareContainer from "@utils/prepareContainer";
 import { useCallback, useContext, useState } from "react";
 
 export default function useSetContainer() {

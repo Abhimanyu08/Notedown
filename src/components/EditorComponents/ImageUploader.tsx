@@ -1,18 +1,11 @@
 "use client";
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { EditorContext } from "@/app/write/components/EditorContext";
-import { processImageName } from "@utils/makeFolderName";
-import React, {
-	ChangeEventHandler,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
-import { MdContentCopy } from "react-icons/md";
-import { BiCheck, BiImageAdd } from "react-icons/bi";
 import { cn } from "@/lib/utils";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import { usePathname } from "next/navigation";
+import { processImageName } from "@utils/makeFolderName";
+import React, { ChangeEventHandler, useContext } from "react";
+import { BiImageAdd } from "react-icons/bi";
 
 function ImageUploader({
 	className,
@@ -25,6 +18,7 @@ function ImageUploader({
 }) {
 	// const { dispatch } = useContext(BlogContext);
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { documentDb } = useContext(IndexedDbContext);
 
 	const onImageSelect: ChangeEventHandler<HTMLInputElement> = async (e) => {
 		const [imagesObj, fileNamesToAdd] = getImagesObj(e);
@@ -39,8 +33,8 @@ function ImageUploader({
 		});
 		for (let [imageName, imageFile] of Object.entries(imagesObj)) {
 			const imageBlob = imageFile;
-			let objectStore = editorState
-				.documentDb!.transaction("images", "readwrite")
+			let objectStore = documentDb!
+				.transaction("images", "readwrite")
 				.objectStore("images");
 
 			const newData = {

@@ -1,17 +1,14 @@
-import prepareContainer from "@/app/utils/prepareContainer";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { AnimatePresence, motion } from "framer-motion";
-import { useContext, useEffect, useState } from "react";
-import { AiFillCloseCircle } from "react-icons/ai";
-import { BiBookContent, BiCodeAlt } from "react-icons/bi";
-import { FaFileUpload } from "react-icons/fa";
-import { SlOptions } from "react-icons/sl";
-import useUploadPost from "../hooks/useUploadPost";
-import { EditorContext } from "./EditorContext";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
+import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
-import Toc from "@components/BlogPostComponents/TableOfContents";
+import { AnimatePresence, motion } from "framer-motion";
+import { useContext, useEffect, useState } from "react";
+import { BiBookContent } from "react-icons/bi";
+import { FaFileUpload } from "react-icons/fa";
+import useUploadPost from "../hooks/useUploadPost";
+import { EditorContext } from "./EditorContext";
 
 function OptionsToolbar({ content }: { content: string }) {
 	const [showToc, setShowToc] = useState(false);
