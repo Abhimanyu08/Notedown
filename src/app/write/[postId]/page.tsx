@@ -1,4 +1,4 @@
-import { getPost } from "@/app/utils/getData";
+import { getPost } from "@utils/getData";
 import { Database } from "@/interfaces/supabase";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";

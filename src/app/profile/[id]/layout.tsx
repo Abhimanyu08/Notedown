@@ -1,4 +1,4 @@
-import { getUser } from "@/app/utils/getData";
+import { getUser } from "@utils/getData";
 import React from "react";
 import NewNoteButton from "@components/ProfileComponents/NewPostButton";
 import NoteTypeToggle from "@components/ProfileComponents/NoteTypeToggle";

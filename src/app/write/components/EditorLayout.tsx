@@ -1,5 +1,5 @@
 "use client";
-import { getPost } from "@/app/utils/getData";
+import { getPost } from "@utils/getData";
 import { Text } from "@codemirror/state";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";

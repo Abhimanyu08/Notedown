@@ -1,4 +1,4 @@
-import { getUpvotes } from "@/app/utils/getData";
+import { getUpvotes } from "@utils/getData";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import PostComponent from "./PostComponent";
 

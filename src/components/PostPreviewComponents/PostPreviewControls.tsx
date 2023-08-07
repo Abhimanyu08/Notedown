@@ -5,7 +5,7 @@ import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BiBookContent } from "react-icons/bi";
 import Toc from "@components/BlogPostComponents/TableOfContents";
-import { getPost } from "@/app/utils/getData";
+import { getPost } from "@utils/getData";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@components/ui/button";
 import { useParams, useRouter } from "next/navigation";

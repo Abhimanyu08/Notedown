@@ -11,17 +11,8 @@ export interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
-	const {
-		id,
-		title,
-		description,
-		created_by,
-		published_on,
-		published,
-		language,
-		created_at,
-		upvoted_on,
-	} = post;
+	const { id, title, description, published_on, published, created_at } =
+		post;
 
 	return (
 		<div className="relative">

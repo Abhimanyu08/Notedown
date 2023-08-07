@@ -1,4 +1,4 @@
-import { getUserAllPosts } from "@/app/utils/getData";
+import { getUserAllPosts } from "@utils/getData";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";

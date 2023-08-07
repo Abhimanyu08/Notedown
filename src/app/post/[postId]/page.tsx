@@ -1,4 +1,4 @@
-import { getPost } from "@/app/utils/getData";
+import { getPost } from "@utils/getData";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import { Metadata } from "next";

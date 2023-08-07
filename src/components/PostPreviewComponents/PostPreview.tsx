@@ -1,4 +1,4 @@
-import { getPost } from "@/app/utils/getData";
+import { getPost } from "@utils/getData";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";

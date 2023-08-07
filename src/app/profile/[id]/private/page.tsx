@@ -1,4 +1,4 @@
-import { getUserPrivatePosts } from "@/app/utils/getData";
+import { getUserPrivatePosts } from "@utils/getData";
 import { Database } from "@/interfaces/supabase";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";

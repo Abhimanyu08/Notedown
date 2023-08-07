@@ -1,4 +1,4 @@
-import { getUserPublicPosts } from "@/app/utils/getData";
+import { getUserPublicPosts } from "@utils/getData";
 import Paginator from "@components/Paginator";
 import PostDisplay from "@components/PostDisplay";
 

@@ -1,11 +1,11 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
-import postTypeToFetcher from "@/app/utils/postTypeToFetcher";
 import { PostTypes } from "@/interfaces/PostTypes";
 import PostWithBlogger from "@/interfaces/PostWithBlogger";
 import { useState } from "react";
 import PostComponent from "./PostComponent";
 import UpvoteWithPost from "@/interfaces/Upvotes";
+import postTypeToFetcher from "@utils/postTypeToFetcher";
 
 function Paginator({
 	postType,
