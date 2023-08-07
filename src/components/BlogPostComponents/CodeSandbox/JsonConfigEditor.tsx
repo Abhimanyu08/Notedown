@@ -40,6 +40,7 @@ function JsonConfigEditor({
 
 	const jsonConfigString = useRecoverSandpack({ persistanceKey });
 	useEffect(() => {
+		if (!jsonEditorView) return;
 		jsonEditorView?.dispatch({
 			changes: [
 				{
@@ -49,7 +50,7 @@ function JsonConfigEditor({
 				},
 			],
 		});
-	}, [jsonConfigString]);
+	}, [jsonConfigString, jsonEditorView]);
 
 	useEffect(() => {
 		if (!jsonEditorView) return;
@@ -83,18 +84,6 @@ function JsonConfigEditor({
 		if (!jsonEditorView || !documentDb) return;
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
-				constructor(view: EditorView) {
-					const configString = view.state.sliceDoc();
-					let objectStore = documentDb!
-						.transaction("sandpackConfigs", "readwrite")
-						.objectStore("sandpackConfigs");
-					const newData = {
-						timeStamp: persistanceKey,
-						config: configString,
-					};
-					objectStore.put(newData);
-				}
-
 				update(update: ViewUpdate) {
 					if (update.docChanged) {
 						const configString = update.state.sliceDoc();

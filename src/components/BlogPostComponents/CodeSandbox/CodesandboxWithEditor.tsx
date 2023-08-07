@@ -47,9 +47,7 @@ function CodesandboxWithEditor({
 	const [editConfig, setEditConfig] = useState(true);
 	const [error, setError] = useState("");
 	// const markdownEditorContext = useContext(EditorContext);
-	const { supabase, session } = useSupabase();
-	const { editorState, dispatch } = useContext(EditorContext);
-	const { blogState } = useContext(BlogContext);
+	const { dispatch } = useContext(EditorContext);
 	const [sandpackProps, setSandPackProps] = useState<SandpackConfigType>();
 
 	const { editorView: jsonEditorView } = useEditor({
