@@ -1,5 +1,6 @@
 "use client";
 import { EditorContext } from "@/app/write/components/EditorContext";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import ImageUploader from "@components/EditorComponents/ImageUploader";
 import { getImages } from "@utils/sendRequest";
 import { memo, useContext, useEffect, useState } from "react";
@@ -12,6 +13,7 @@ function LexicaImage({ alt, end }: { alt: string; end?: number }) {
 	const [generating, setGenerating] = useState(false);
 	const [lexicaLinkNumber, setLexicaLinkNumber] = useState(0);
 	const { editorState, dispatch } = useContext(EditorContext);
+	const { documentDb } = useContext(IndexedDbContext);
 
 	useEffect(() => {
 		if (!generate) return;
@@ -54,6 +56,16 @@ function LexicaImage({ alt, end }: { alt: string; end?: number }) {
 				insert: imageName,
 			},
 		});
+		let objectStore = documentDb!
+			.transaction("images", "readwrite")
+			.objectStore("images");
+
+		const newData = {
+			imageName,
+			imageBlob: file,
+		};
+
+		objectStore.put(newData);
 	};
 
 	if (generate) {
