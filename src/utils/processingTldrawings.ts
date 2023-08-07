@@ -2,8 +2,10 @@ import { Editor } from "@tldraw/tldraw";
 
 
 
-export default async function editorToJsonFile(editor: any, fileName: string) {
-    const json = await tldrawEditorToJsonString(editor)
+export default async function editorToJsonFile(editor: Editor, fileName: string) {
+    const svg = await tldrawEditorToSVG(editor)
+    if (!svg) return
+    const json = svgToJson(svg)
     if (!json) return
     return new File([json], `${fileName}.json`, { type: "application/json" })
 
@@ -11,7 +13,7 @@ export default async function editorToJsonFile(editor: any, fileName: string) {
 
 
 
-async function tldrawEditorToJsonString(editor: Editor) {
+export async function tldrawEditorToSVG(editor: Editor) {
 
     const shapesArray = editor?.getShapeIdsInPage(
         editor.currentPageId
@@ -23,12 +25,7 @@ async function tldrawEditorToJsonString(editor: Editor) {
         background: editor.instanceState.exportBackground,
     });
 
-    if (svg) {
-
-        return svgToJson(svg)
-    }
-    return null
-
+    return svg
 }
 
 // Assuming you have an SVG element with the id "mySvgElement"
