@@ -23,7 +23,7 @@ function CodeWord({ code }: { code: string }) {
 		const persistanceKey = regexArray.at(1)!;
 		const caption = regexArray.at(2) || "";
 		const dark = regexArray.at(4);
-		if (pathname?.startsWith("/write")) {
+		if (pathname?.startsWith("/write") || pathname?.startsWith("/draft")) {
 			return (
 				<TLDrawing
 					persistanceKey={persistanceKey}
@@ -33,6 +33,7 @@ function CodeWord({ code }: { code: string }) {
 				/>
 			);
 		}
+
 		return <DrawingSvg {...{ persistanceKey, caption }} />;
 	}
 

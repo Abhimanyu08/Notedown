@@ -11,7 +11,10 @@ import TLDrawing from "./TLDrawing";
 export default function DrawingSvg({
 	persistanceKey,
 	caption,
-}: Parameters<typeof TLDrawing>[0] & { caption: string }) {
+}: {
+	persistanceKey: string;
+	caption: string;
+}) {
 	const { blogState } = useContext(BlogContext);
 	const { supabase } = useSupabase();
 	const [svgMounted, setSvgMounted] = useState(false);
