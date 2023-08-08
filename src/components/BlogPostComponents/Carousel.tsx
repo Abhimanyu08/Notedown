@@ -29,21 +29,6 @@ function Carousel({
 		imageNames: imageNamesString.split(","),
 	});
 	useEffect(() => {
-		// const imageNames = imageNamesString.split(",");
-		// const validImages = imageNames.filter(
-		// 	(i) =>
-		// 		Object.hasOwn(blogState.uploadedImages, i) ||
-		// 		Object.hasOwn(editorState?.imagesToFiles, i)
-		// );
-		// setImagesrcs(
-		// 	validImages.map((image) =>
-		// 		editorState.imagesToFiles[image]
-		// 			? window.URL.createObjectURL(
-		// 					editorState.imagesToFiles[image]
-		// 			  )
-		// 			: blogState.uploadedImages[image]
-		// 	)
-		// );
 		const imageNames = imageNamesString.split(",");
 
 		dispatch({

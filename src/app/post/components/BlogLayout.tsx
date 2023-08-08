@@ -35,6 +35,7 @@ function BlogLayout({
 					content={content}
 					title={post?.title || data?.title || ""}
 					description={post?.description || data?.description || ""}
+					created_by={post?.created_by}
 					language={post?.language || data?.language || ("" as any)}
 					extraClasses="mx-auto"
 					AuthorComponent={AuthorComponent}

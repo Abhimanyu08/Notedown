@@ -12,11 +12,6 @@ export default function useRecoverImages({ imageNames }: { imageNames: string[] 
 
 
     useEffect(() => {
-        if (!documentDb) return;
-        const imageObjectStore = documentDb
-            .transaction("images", "readonly")
-            .objectStore("images")
-
 
         for (let name of imageNames) {
             if (
@@ -32,6 +27,12 @@ export default function useRecoverImages({ imageNames }: { imageNames: string[] 
 
                 continue
             }
+
+            if (!documentDb) continue;
+            const imageObjectStore = documentDb
+                .transaction("images", "readonly")
+                .objectStore("images")
+
 
             const request = imageObjectStore.get(name);
 

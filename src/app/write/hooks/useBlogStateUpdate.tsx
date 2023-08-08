@@ -8,6 +8,7 @@ import { useContext, useEffect, useState, useTransition } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/getResources";
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 
 function useBlogStateUpdate() {
 	//This hook takes care of updating the blog state on every keypress of user on the editor
@@ -16,9 +17,7 @@ function useBlogStateUpdate() {
 		useContext(EditorContext);
 	const { blogState, dispatch: blogStateDispatch } = useContext(BlogContext);
 	const { documentDb } = useContext(IndexedDbContext);
-	const [localStorageDraftKey, setLocalStorageDraftKey] = useState("");
-	const [eventHandlerCompartment, setEventHandlerCompartment] =
-		useState<Compartment>();
+	const [indexMdStoreKey, setIndexMdStoreKey] = useState("");
 	const searchParams = useSearchParams();
 	const [_, startTransition] = useTransition();
 
@@ -38,18 +37,11 @@ function useBlogStateUpdate() {
 			});
 		}
 
-		let localStorageKey = makeLocalStorageDraftKey(
-			ts,
-			blogState.blogMeta.id
-		);
-
-		if (localStorageKey !== localStorageDraftKey) {
-			setLocalStorageDraftKey(localStorageKey);
-		}
-	}, [blogState.blogMeta.id]);
+		setIndexMdStoreKey(`draft-${ts}`);
+	}, []);
 
 	useEffect(() => {
-		if (!editorState.editorView || !documentDb) return;
+		if (!editorState.editorView || !documentDb || !indexMdStoreKey) return;
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
 				constructor(view: EditorView) {
@@ -95,38 +87,37 @@ function useBlogStateUpdate() {
 							});
 							setBlogContent(content);
 						});
-
-						let objectStore = documentDb!
-							.transaction("markdown", "readwrite")
-							.objectStore("markdown");
-						const newData = {
-							timeStamp: localStorageDraftKey,
-							markdown,
-						};
-						objectStore.put(newData);
+						updateMarkdown(documentDb, indexMdStoreKey, markdown);
 					}
 				}
 			}
 		);
-		if (!eventHandlerCompartment) {
-			let compartment = new Compartment();
-
-			editorState.editorView.dispatch({
-				effects: StateEffect.appendConfig.of(
-					compartment.of(stateUpdatePlugin.extension)
-				),
-			});
-			setEventHandlerCompartment(compartment);
-			return;
-		}
 		editorState.editorView.dispatch({
-			effects: eventHandlerCompartment.reconfigure(
-				stateUpdatePlugin.extension
-			),
+			effects: StateEffect.appendConfig.of(stateUpdatePlugin.extension),
 		});
-	}, [editorState.editorView, localStorageDraftKey, documentDb]);
+	}, [editorState.editorView, indexMdStoreKey, documentDb]);
 
 	return blogContent;
+}
+
+function updateMarkdown(db: IDBDatabase, key: string, markdown: string) {
+	const mdObjectStore = getMarkdownObjectStore(db);
+	const mdReq = mdObjectStore.get(key);
+	mdReq.onsuccess = () => {
+		const previousData = mdReq.result;
+		if (!previousData) {
+			// markdown with this key doesn't exist in index store currently.
+			const newData = {
+				timeStamp: key,
+				markdown,
+			};
+			mdObjectStore.put(newData);
+			return;
+		}
+		// data with this key exists, just update the markdown
+		previousData.markdown = markdown;
+		mdObjectStore.put(previousData);
+	};
 }
 
 export default useBlogStateUpdate;

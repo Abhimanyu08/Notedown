@@ -173,7 +173,7 @@ lg:scrollbar-thin
 
 				<motion.div
 					className={cn(
-						"fixed bg-white opacity-30 rounded-sm flex",
+						"fixed bg-slate-700 rounded-sm flex",
 						breadcrumbRef.current && !hide ? "" : "hidden"
 					)}
 					style={

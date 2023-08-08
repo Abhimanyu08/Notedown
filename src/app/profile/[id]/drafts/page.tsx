@@ -49,16 +49,19 @@ function Drafts() {
 		getAllMarkdowns.onsuccess = (e) => {
 			const mdWithTsArray = (
 				e.target as IDBRequest<
-					{ timeStamp: string; markdown: string }[]
+					{ timeStamp: string; markdown: string; postId?: string }[]
 				>
 			).result;
 
 			for (let mdWithTs of mdWithTsArray) {
-				const { timeStamp: timeStampWithPostId, markdown } = mdWithTs;
+				const {
+					timeStamp: timeStampWithPostId,
+					markdown,
+					postId,
+				} = mdWithTs;
 				const timeStamp = /draft-(\d+)$/
 					.exec(timeStampWithPostId)
 					?.at(1);
-				const postId = /post-(\d+);/.exec(timeStampWithPostId)?.at(1);
 
 				const draftData = parseFrontMatter(markdown);
 				if (timeStamp) {
@@ -162,7 +165,11 @@ function DraftActions({ draft }: { draft: Draft }) {
 				<MenubarContent className="min-w-0 border-border">
 					<MenubarItem className="">
 						<Link
-							href={`/write?draft=${draft.timeStamp}`}
+							href={
+								draft.postId
+									? `/write/${draft.postId}?draft=${draft.timeStamp}`
+									: `/write?draft=${draft.timeStamp}`
+							}
 							prefetch={false}
 							className="flex gap-2 items-center"
 						>

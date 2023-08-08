@@ -9,6 +9,21 @@ import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 import editorToJsonFile from "@utils/processingTldrawings";
 import { sendRevalidationRequest } from "@utils/sendRequest";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+
+function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
+    const mdObjectStore = getMarkdownObjectStore(db)
+
+    const mdReq = mdObjectStore.get(key)
+
+    mdReq.onsuccess = () => {
+        const previousData = mdReq.result
+        previousData.postId = postId
+
+        mdObjectStore.put(previousData)
+    }
+}
 
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
@@ -16,7 +31,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const { editorState, dispatch: editorStateDispatch } = useContext(EditorContext)
     const { blogState, dispatch } = useContext(BlogContext)
     const toastContext = useContext(ToastContext)
-    const context = useContext(ToastContext);
+    const { documentDb } = useContext(IndexedDbContext)
 
     const { supabase, session } = useSupabase()
     const created_by = session?.user?.id
@@ -34,17 +49,16 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 afterUpload()
                 setUploadFinished(true)
 
-                const localStorageKey = makeLocalStorageDraftKey(
-                    editorState.timeStamp!,
-                    blogState.blogMeta.id
-                );
-                localStorage.removeItem(localStorageKey);
                 dispatch({
                     type: "set blog meta",
                     payload: { id: postId },
                 });
+
+                if (documentDb) {
+                    updateIndexDbMarkdown(documentDb, `draft-${editorState.timeStamp}`, postId)
+                }
                 sendRevalidationRequest('/profile/[id]')
-                context?.setMessage("Changes Uploaded");
+                toastContext?.setMessage("Changes Uploaded");
 
             }).catch((e) => {
                 alert((e as Error).message)

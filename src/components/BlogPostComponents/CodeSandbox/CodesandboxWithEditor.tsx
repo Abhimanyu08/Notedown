@@ -1,17 +1,12 @@
 "use client";
-import { StateEffect } from "@codemirror/state";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import useEditor from "@/hooks/useEditor";
 import { cn } from "@/lib/utils";
+import { StateEffect } from "@codemirror/state";
+import { keymap } from "@codemirror/view";
 import { Button } from "@components/ui/button";
 import { EditorView } from "codemirror";
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import CustomSandpack from "./CustomSandpack";
@@ -21,11 +16,6 @@ import {
 	defaultSandpackProps,
 	sandboxConfigSchema,
 } from "./types";
-import { keymap } from "@codemirror/view";
-import useSyncHook from "@/hooks/useSyncHook";
-import { BlogContext } from "../BlogState";
-import { useSupabase } from "@/app/appContext";
-import { SUPABASE_FILES_BUCKET } from "@utils/constants";
 
 export const JsonEditorContext = createContext<{
 	jsonEditorView: EditorView | null;

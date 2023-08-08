@@ -34,7 +34,7 @@ function OptionsToolbar({ content }: { content: string }) {
 	}, [uploadFinished]);
 	return (
 		<>
-			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
+			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100 hover:z-[2000] -z-[0]  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
 				{blogState.blogMeta.language && <EnableRceButton />}
 				<ToolTipComponent tip="Upload changes" side="right">
 					<button
