@@ -10,6 +10,7 @@ import SearchInput from "@components/ProfileComponents/SearchInput";
 import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
 import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
 import SearchProvider from "@components/ProfileComponents/SearchProvider";
+import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
 
 async function ProfilePostsLayout({
 	children,
@@ -29,7 +30,7 @@ async function ProfilePostsLayout({
 			? `${name}'s Notebook`
 			: "Anon's Notebook";
 	return (
-		<>
+		<IndexedDbContextProvider>
 			<SideSheet>
 				<LoggedInOptions
 					{...{ name, notebook_title: notebookTitle, username }}
@@ -82,45 +83,7 @@ async function ProfilePostsLayout({
 					{postpreview}
 				</PostPreviewLayout>
 			</div>
-		</>
-		// <LayoutChange>
-		// 	<>
-		// 		<div className="flex w-full items-end justify-between">
-		// 			<PostControl />
-		// 			<input
-		// 				type="text"
-		// 				name=""
-		// 				id=""
-		// 				placeholder="Search"
-		// 				className="h-6 p-4 bg-transparent border-[1px] border-gray-400 rounded-md w-32 focus:w-52 transition-all duration-200"
-		// 			/>
-		// 		</div>
-		// 		{/* <div
-		// 			className="grow overflow-y-auto
-		// 		lg:scrollbar-thin
-		// 		scrollbar-track-black
-		// 		scrollbar-thumb-slate-700
-		// 		"
-		// 		> */}
-		// 		{children}
-		// 		{/* </div> */}
-		// 	</>
-		// 	{/* <SearchComponent
-		// 		{...{
-		// 			publishPostAction,
-		// 			unpublishPostAction,
-		// 			deletePostAction,
-		// 		}}
-		// 	/> */}
-		// 	{/* <aside className="absolute top-[400px] left-[-30%]">
-		// 		<Link href={"/write"}>
-		// 			<Button className="px-2 py-1 gap-2">
-		// 				<SlNote /> New Note
-		// 			</Button>
-		// 		</Link>
-		// 	</aside> */}
-		// 	<>{postpreview}</>
-		// </LayoutChange>
+		</IndexedDbContextProvider>
 	);
 }
 

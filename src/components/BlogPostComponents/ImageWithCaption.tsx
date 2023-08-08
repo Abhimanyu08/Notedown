@@ -40,32 +40,36 @@ function ImageWithCaption({
 	}, [indexStoreUrls]);
 
 	return (
-		<div className="w-4/5 mx-auto relative">
-			<figure className="w-full mb-4 mx-auto">
-				{imageSrc && (
-					<>
-						<Image
-							src={imageSrc}
-							alt={alt}
-							width={1440}
-							height={1080}
-							onClick={() => setImageUrl && setImageUrl(imageSrc)}
-							className="cursor-zoom-in"
-						/>
-						<figcaption
-							className={cn(
-								"text-center italic",
-								alt ? "" : "invisible"
-							)}
-						>
-							{alt || "hello"}
-						</figcaption>
-					</>
-				)}
-			</figure>
+		<div className="flex flex-col">
 			{pathname?.startsWith("/write") && (
 				<ImageUploader add={true} end={end} />
 			)}
+			<div className="w-4/5 mx-auto relative">
+				<figure className="w-full mb-4 mx-auto">
+					{imageSrc && (
+						<>
+							<Image
+								src={imageSrc}
+								alt={alt}
+								width={1440}
+								height={1080}
+								onClick={() =>
+									setImageUrl && setImageUrl(imageSrc)
+								}
+								className="cursor-zoom-in"
+							/>
+							<figcaption
+								className={cn(
+									"text-center italic",
+									alt ? "" : "invisible"
+								)}
+							>
+								{alt || "hello"}
+							</figcaption>
+						</>
+					)}
+				</figure>
+			</div>
 		</div>
 	);
 }

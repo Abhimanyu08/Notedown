@@ -1,7 +1,7 @@
 "use client";
 import ActionModal from "@components/Modals/ActionModal";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import PostsLoading from "../loading";
 import formatDate from "@utils/dateFormatter";
@@ -16,6 +16,7 @@ import {
 } from "@components/ui/menubar";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 
 type Draft = {
 	key: string;
@@ -29,14 +30,11 @@ type Draft = {
 function Drafts() {
 	const [drafts, setDrafts] = useState<Draft[]>([]);
 	const [loadingDrafts, setLoadingDrafts] = useState(false);
+	const { documentDb } = useContext(IndexedDbContext);
 
 	useEffect(() => {
-		let documentDbRequest = indexedDB.open("RCEBLOG_DOCUMENT", 4);
-		documentDbRequest.onsuccess = (e) => {
-			const documentDb = (e.target as IDBOpenDBRequest).result;
-			processDrafts(documentDb);
-		};
-	}, []);
+		if (documentDb) processDrafts(documentDb);
+	}, [documentDb]);
 
 	function processDrafts(db: IDBDatabase) {
 		setLoadingDrafts(true);

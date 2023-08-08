@@ -3,6 +3,7 @@ import { EditorContext } from "@/app/write/components/EditorContext";
 import { cn } from "@/lib/utils";
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { ToolTipComponent } from "@components/ToolTipComponent";
+import { Button } from "@components/ui/button";
 import { processImageName } from "@utils/makeFolderName";
 import React, { ChangeEventHandler, useContext } from "react";
 import { BiImageAdd } from "react-icons/bi";
@@ -66,16 +67,20 @@ function ImageUploader({
 					className="hidden"
 					multiple
 				/>
-				<ToolTipComponent
-					tip={"Add Images"}
-					className="absolute bottom-0 right-0 border-[1px] rounded-sm px-2 py-1 border-border text-gray-400 hover:text-white hover:scale-100"
+				<Button
+					className="text-sm bg-black py-1 px-2  self-end border-border border-[1px] mb-2 text-gray-400 hover:text-white hover:scale-100"
+					variant={"outline"}
 				>
 					{/* <Button className="border-border border-[1px] text-gray-400 hover:text-white hover:scale-100"> */}
-					<label htmlFor={`add-images-${end}`}>
-						<BiImageAdd />
+					<label
+						htmlFor={`add-images-${end}`}
+						className="flex items-center gap-2"
+					>
+						<BiImageAdd size={12} />
+						<span>Add Images</span>
 					</label>
 					{/* </Button> */}
-				</ToolTipComponent>
+				</Button>
 			</>
 		);
 	}

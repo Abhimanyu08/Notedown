@@ -40,7 +40,7 @@ function JsonConfigEditor({
 
 	const jsonConfigString = useRecoverSandpack({ persistanceKey });
 	useEffect(() => {
-		if (!jsonEditorView) return;
+		if (!jsonEditorView || !jsonConfigString) return;
 		jsonEditorView?.dispatch({
 			changes: [
 				{

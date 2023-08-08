@@ -1,9 +1,11 @@
 import { useSupabase } from "@/app/appContext";
 import { Database } from "@/interfaces/supabase";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { PostgrestError } from "@supabase/supabase-js";
 import { SEARCH_PRIVATE, SEARCH_PUBLC } from "@utils/constants";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function useSearch(query: string) {
 
@@ -12,6 +14,7 @@ export default function useSearch(query: string) {
     const [searchResults, setSearchResults] = useState<Database["public"]["Functions"]["private_search"]["Returns"]>([])
     const [searchError, setSearchError] = useState<Error | PostgrestError | null>(null)
     const [owner, setOwner] = useState(false)
+    const { documentDb } = useContext(IndexedDbContext)
     const pathname = usePathname()
 
     useEffect(() => {
@@ -27,10 +30,30 @@ export default function useSearch(query: string) {
             setSearchError(null)
             return
         }
+
         let searchQuery = query.trim().split(" ").join(" | ")
         setSearchError(null)
         setSearchResults([])
         setSearching(true)
+
+        if (pathname?.includes("/drafts") && documentDb) {
+            const mdObjectStore = getMarkdownObjectStore(documentDb)
+            const markdownIndex = mdObjectStore.index("markdownIndex")
+
+            markdownIndex.openCursor().onsuccess = (e) => {
+                const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
+
+                if (cursor) {
+                    const record = cursor.value;
+                    if (record.markdown.includes(query)) {
+                        // Match found in description
+                        console.log(record);
+                    }
+                    cursor.continue();
+                }
+            }
+            return
+        }
 
         try {
 
