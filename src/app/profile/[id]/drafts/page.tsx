@@ -1,11 +1,5 @@
 "use client";
-import ActionModal from "@components/Modals/ActionModal";
-import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
-import { MdDelete } from "react-icons/md";
-import PostsLoading from "../loading";
-import formatDate from "@utils/dateFormatter";
-import { parseFrontMatter } from "@utils/getResources";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import PostTitle from "@components/PostTitle";
 import {
 	Menubar,
@@ -14,18 +8,12 @@ import {
 	MenubarMenu,
 	MenubarTrigger,
 } from "@components/ui/menubar";
+import { Draft, processDrafts } from "@utils/processDrafts";
+import Link from "next/link";
+import { useContext, useEffect, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
-
-type Draft = {
-	key: string;
-	timeStamp: string;
-	time: string;
-	date: string;
-	draftData: Awaited<ReturnType<typeof parseFrontMatter>>;
-	postId?: string;
-};
+import PostsLoading from "../loading";
 
 function Drafts() {
 	const [drafts, setDrafts] = useState<Draft[]>([]);
@@ -33,61 +21,14 @@ function Drafts() {
 	const { documentDb } = useContext(IndexedDbContext);
 
 	useEffect(() => {
-		if (documentDb) processDrafts(documentDb);
+		if (documentDb) {
+			setLoadingDrafts(true);
+			processDrafts(documentDb).then((drafts) => {
+				setDrafts(drafts);
+				setLoadingDrafts(false);
+			});
+		}
 	}, [documentDb]);
-
-	function processDrafts(db: IDBDatabase) {
-		setLoadingDrafts(true);
-		const draftsToAdd: typeof drafts = [];
-		let objectStore = db
-			.transaction("markdown", "readwrite")
-			.objectStore("markdown");
-		const getAllMarkdowns = objectStore.getAll();
-
-		getAllMarkdowns.onsuccess = (e) => {
-			const mdWithTsArray = (
-				e.target as IDBRequest<
-					{ timeStamp: string; markdown: string; postId?: string }[]
-				>
-			).result;
-
-			for (let mdWithTs of mdWithTsArray) {
-				const {
-					timeStamp: timeStampWithPostId,
-					markdown,
-					postId,
-				} = mdWithTs;
-				const timeStamp = /draft-(\d+)$/
-					.exec(timeStampWithPostId)
-					?.at(1);
-
-				const draftData = parseFrontMatter(markdown);
-				if (timeStamp) {
-					const formattedTimeStamp = new Date(parseInt(timeStamp));
-					const date = formatDate(formattedTimeStamp);
-					const longTime = formattedTimeStamp.toLocaleTimeString();
-
-					const amOrPm = longTime.match(/[ap]m/)?.at(0);
-					const shortTime = longTime.split(":").slice(0, 2).join(":");
-					const time = `${shortTime} ${amOrPm}`;
-					draftsToAdd.push({
-						key: timeStampWithPostId,
-						timeStamp,
-						date,
-						time,
-						draftData,
-						postId,
-					});
-				}
-			}
-			setDrafts(
-				draftsToAdd.sort(
-					(a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp)
-				)
-			);
-			setLoadingDrafts(false);
-		};
-	}
 
 	return (
 		<>
@@ -95,18 +36,7 @@ function Drafts() {
 				{!loadingDrafts ? (
 					<>
 						{drafts.length > 0 ? (
-							<>
-								{drafts.map((draft) => {
-									return (
-										<div
-											className="flex flex-col  relative"
-											key={draft.timeStamp}
-										>
-											<SingleDraft draft={draft} />
-										</div>
-									);
-								})}
-							</>
+							<DraftsDisplay drafts={drafts} />
 						) : (
 							<div className="text-gray-500 ">
 								<p>
@@ -133,17 +63,30 @@ function Drafts() {
 	);
 }
 
-function SingleDraft({ draft }: { draft: Draft }) {
-	const { data } = draft.draftData;
+export function DraftsDisplay({ drafts }: { drafts: Draft[] }) {
+	return (
+		<>
+			{drafts.map((draft) => {
+				return (
+					<div
+						className="flex flex-col  relative"
+						key={draft.timeStamp}
+					>
+						<SingleDraft draft={draft} />
+					</div>
+				);
+			})}
+		</>
+	);
+}
 
+export function SingleDraft({ draft }: { draft: Draft }) {
+	const { title, description } = draft.draftMeta;
 	return (
 		<div className="flex flex-col group p-2 relative">
 			<DraftActions draft={draft} />
 			<Link href={`/draft/${draft.timeStamp}`} className="">
-				<PostTitle
-					title={data?.title || ""}
-					description={data?.description}
-				/>
+				<PostTitle title={title || ""} description={description} />
 				<p className="text-sm text-gray-400 mt-2">
 					<span className="">{draft.date}</span>,{" "}
 					<span className="">{draft.time}</span>

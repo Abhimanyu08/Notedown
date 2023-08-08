@@ -4,6 +4,7 @@ import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { PostgrestError } from "@supabase/supabase-js";
 import { SEARCH_PRIVATE, SEARCH_PUBLC } from "@utils/constants";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import { RawObject } from "@utils/processDrafts";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
@@ -12,6 +13,7 @@ export default function useSearch(query: string) {
     const { supabase, session } = useSupabase()
     const [searching, setSearching] = useState(false)
     const [searchResults, setSearchResults] = useState<Database["public"]["Functions"]["private_search"]["Returns"]>([])
+    const [draftSearchResults, setDraftSearchResults] = useState<RawObject[]>([])
     const [searchError, setSearchError] = useState<Error | PostgrestError | null>(null)
     const [owner, setOwner] = useState(false)
     const { documentDb } = useContext(IndexedDbContext)
@@ -27,6 +29,7 @@ export default function useSearch(query: string) {
 
         if (!query) {
             setSearchResults([])
+            setDraftSearchResults([])
             setSearchError(null)
             return
         }
@@ -34,9 +37,11 @@ export default function useSearch(query: string) {
         let searchQuery = query.trim().split(" ").join(" | ")
         setSearchError(null)
         setSearchResults([])
+        setDraftSearchResults([])
         setSearching(true)
 
-        if (pathname?.includes("/drafts") && documentDb) {
+        if (owner && documentDb) {
+            const results: RawObject[] = []
             const mdObjectStore = getMarkdownObjectStore(documentDb)
             const markdownIndex = mdObjectStore.index("markdownIndex")
 
@@ -44,15 +49,16 @@ export default function useSearch(query: string) {
                 const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result
 
                 if (cursor) {
-                    const record = cursor.value;
-                    if (record.markdown.includes(query)) {
-                        // Match found in description
-                        console.log(record);
+                    const record = (cursor.value as RawObject);
+                    const regexpQuery = new RegExp(searchQuery, "i")
+                    if (record.markdown.search(regexpQuery)) {
+                        results.push(record)
                     }
                     cursor.continue();
+                } else {
+                    setDraftSearchResults(results)
                 }
             }
-            return
         }
 
         try {
@@ -70,12 +76,13 @@ export default function useSearch(query: string) {
             supabase.rpc(searchFunction, searchParams).then((val) => {
                 const { data, error } = val
                 if (error) setSearchError(error)
-                if (data === null || data.length === 0) setSearchError(new Error(`No posts returned for query "${query}"`))
+                if (data === null || data.length === 0) return
                 if (data) setSearchResults(data)
-                setSearching(false)
             })
         } catch (e) {
             setSearchError(e as Error)
+        } finally {
+
             setSearching(false)
         }
 
@@ -88,7 +95,8 @@ export default function useSearch(query: string) {
     return {
         searching,
         searchResults,
-        searchError
+        searchError,
+        draftSearchResults
     }
 
 

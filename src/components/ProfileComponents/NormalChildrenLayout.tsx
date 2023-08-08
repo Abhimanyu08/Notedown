@@ -3,6 +3,10 @@ import PostComponent from "@components/PostComponent";
 import React, { useContext } from "react";
 import { SearchContext } from "./SearchProvider";
 import { SinglePostLoading } from "./SinglePostLoading";
+import { rawObjectToDraft } from "@utils/processDrafts";
+import { DraftsDisplay } from "@/app/profile/[id]/drafts/page";
+import PostDisplay from "@components/PostDisplay";
+import Divider from "@components/ui/divider";
 
 function NormalChildrenLayout({
 	children,
@@ -12,7 +16,8 @@ function NormalChildrenLayout({
 	const { searchMeta } = useContext(SearchContext);
 
 	if (searchMeta) {
-		const { searchError, searchResults, searching } = searchMeta;
+		const { searchError, searchResults, searching, draftSearchResults } =
+			searchMeta;
 
 		if (searching) {
 			return (
@@ -32,14 +37,28 @@ function NormalChildrenLayout({
 			);
 		}
 
-		if (searchResults.length > 0) {
+		if (searchResults.length > 0 && draftSearchResults.length > 0) {
+			const drafts = draftSearchResults.map((raw) =>
+				rawObjectToDraft(raw)
+			);
 			return (
-				<div className="flex flex-col gap-3">
-					{searchResults.map((post) => (
-						<PostComponent key={post.id} post={post} />
-					))}
+				<div className="flex flex-col">
+					<Divider>Uploaded</Divider>
+					<PostDisplay posts={searchResults} />
+					<Divider>Drafts</Divider>
+					<DraftsDisplay drafts={drafts} />
 				</div>
 			);
+		}
+
+		if (searchResults.length > 0) {
+			return <PostDisplay posts={searchResults} />;
+		}
+		if (draftSearchResults.length > 0) {
+			const drafts = draftSearchResults.map((raw) =>
+				rawObjectToDraft(raw)
+			);
+			return <DraftsDisplay drafts={drafts} />;
 		}
 	}
 

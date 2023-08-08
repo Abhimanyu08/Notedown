@@ -4,7 +4,7 @@ import { supabase } from "./supabaseClient";
 
 
 
-export function parseFrontMatter(markdown: string): { data?: { title?: string, description?: string, language?: typeof ALLOWED_LANGUAGES[number] | null }, content: string, frontMatterLength: number } {
+export function parseFrontMatter(markdown: string): { data: { title?: string, description?: string, language?: typeof ALLOWED_LANGUAGES[number] | null }, content: string, frontMatterLength: number } {
 
     try {
 
@@ -19,7 +19,7 @@ export function parseFrontMatter(markdown: string): { data?: { title?: string, d
         // html = resetCodeblocks(content, html)
         return { data: data as { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] }, content, frontMatterLength }
     } catch (_) {
-        return { content: markdown, frontMatterLength: 0 }
+        return { content: markdown, frontMatterLength: 0, data: { title: "Couldn't parse frontmatter" } }
     }
 
 }
