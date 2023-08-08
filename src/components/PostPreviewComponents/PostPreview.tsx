@@ -45,7 +45,10 @@ async function PostPreview({ postId }: { postId: string }) {
 					content={content}
 					AuthorComponent={BlogAuthorServer}
 				/>
-				<PostPreviewControls {...{ post, content }} />
+				<PostPreviewControls
+					content={content}
+					language={post?.language || undefined}
+				/>
 			</BlogContextProvider>
 		</div>
 	);

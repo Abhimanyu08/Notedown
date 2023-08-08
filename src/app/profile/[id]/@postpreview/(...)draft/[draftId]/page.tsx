@@ -2,6 +2,7 @@
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewControls";
 import { parseFrontMatter } from "@utils/getResources";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -43,6 +44,10 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 				language={blogData.data?.language}
 				content={blogData.content}
 				AuthorComponent={BlogAuthorClient}
+			/>
+			<PostPreviewControls
+				content={blogData.content}
+				language={blogData.data?.language || undefined}
 			/>
 		</div>
 	);

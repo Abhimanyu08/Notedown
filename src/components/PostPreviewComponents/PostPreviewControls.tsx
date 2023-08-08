@@ -8,17 +8,22 @@ import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getPost } from "@utils/getData";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@components/ui/button";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { AiFillCloseCircle } from "react-icons/ai";
 import useShortCut from "@/hooks/useShortcut";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
 
 function PostPreviewControls({
-	post,
+	language,
 	content,
-}: Pick<Awaited<ReturnType<typeof getPost>>, "post"> & { content: string }) {
+}: {
+	language?: (typeof ALLOWED_LANGUAGES)[number];
+	content: string;
+}) {
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
+	const pathname = usePathname();
 	useShortCut({
 		keys: ["Escape"],
 		callback: () => router.push(`/profile/${params?.id}`),
@@ -28,12 +33,10 @@ function PostPreviewControls({
 		<>
 			<div className="flex flex-col items-center fixed gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
 				<ExpandButton
-					postId={post.id!}
-					published={post.published}
 					className="
 				text-gray-400 hover:text-white active:scale-95"
 				/>
-				{post.language && (
+				{language && (
 					<EnableRceButton
 						className="
 				text-gray-400 hover:text-white active:scale-95"
@@ -48,6 +51,10 @@ function PostPreviewControls({
 				<ToolTipComponent
 					tip="Close preview (Esc)"
 					onClick={() => {
+						if (pathname?.includes("/draft")) {
+							router.push(`/profile/${params?.id}/drafts`);
+							return;
+						}
 						router.push(`/profile/${params?.id}`);
 					}}
 					className=" text-gray-400 hover:text-white active:scale-95"

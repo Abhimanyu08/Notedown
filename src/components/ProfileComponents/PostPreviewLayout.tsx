@@ -12,14 +12,15 @@ function PostPreviewLayout({
 }) {
 	// let className = "";
 	const pathname = usePathname();
-	const layoutSegment = useSelectedLayoutSegment();
-	console.log(layoutSegment);
 
 	return (
 		<>
-			<div key={pathname} className={cn(className)}>
-				{children}
-			</div>
+			{(pathname?.startsWith("/post") ||
+				pathname?.startsWith("/draft")) && (
+				<div key={pathname} className={cn(className)}>
+					{children}
+				</div>
+			)}
 		</>
 	);
 }

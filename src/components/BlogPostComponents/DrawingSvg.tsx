@@ -62,7 +62,7 @@ export default function DrawingSvg({
 	return (
 		<div
 			className={cn(
-				"flex  flex-col w-full h-auto items-center justify-center"
+				"flex  flex-col w-full h-auto items-center justify-center z-[600]"
 			)}
 			onClick={() => setExpand((p) => !p)}
 		>
@@ -70,7 +70,7 @@ export default function DrawingSvg({
 				className={cn(
 					"flex w-full justify-center items-center gap-5",
 					expand
-						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto z-[600]"
+						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto "
 						: " [&>*]:cursor-zoom-in"
 				)}
 				id={`svgContainer-${persistanceKey}`}
