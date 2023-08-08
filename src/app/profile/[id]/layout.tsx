@@ -87,14 +87,4 @@ async function ProfilePostsLayout({
 	);
 }
 
-{
-	/* <div className="w-full flex flex-col px-2 gap-4 h-full overflow-hidden relative ">
-				
-				<div className="flex justify-start gap-2 mr-4 ">
-					<PostControl />
-				</div>
-
-				<div className="overflow-y-auto grow">{children}</div>
-			</div> */
-}
 export default ProfilePostsLayout;
