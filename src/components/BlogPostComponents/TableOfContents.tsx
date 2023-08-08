@@ -19,8 +19,8 @@ const HeadingNodeToDetailsTag = ({
 	return (
 		<details
 			className={cn(
-				"flex flex-col my-1 text-gray-400",
-				headingNode.depth !== 0 && "ml-6"
+				"flex flex-col mb-1 text-gray-400",
+				headingNode.depth !== 0 && "ml-6 mt-1"
 			)}
 			open={headingNode.depth === 0}
 		>

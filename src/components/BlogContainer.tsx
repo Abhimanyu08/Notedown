@@ -174,7 +174,9 @@ lg:scrollbar-thin
 				<motion.div
 					className={cn(
 						"fixed bg-slate-700 rounded-sm flex",
-						breadcrumbRef.current && !hide ? "" : "hidden"
+						breadcrumbRef.current && !hide && startedScrolling
+							? ""
+							: "hidden"
 					)}
 					style={
 						containerRef.current

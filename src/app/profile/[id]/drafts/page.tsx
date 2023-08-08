@@ -82,7 +82,11 @@ function Drafts() {
 					});
 				}
 			}
-			setDrafts(draftsToAdd);
+			setDrafts(
+				draftsToAdd.sort(
+					(a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp)
+				)
+			);
 			setLoadingDrafts(false);
 		};
 	}
