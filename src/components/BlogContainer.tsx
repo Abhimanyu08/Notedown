@@ -29,7 +29,7 @@ function BlogContainer({
 	const [headingList, setHeadingList] = useState<HeadingType[]>([]);
 	const { scrollYProgress } = useScroll({ container: containerRef });
 	useEffect(() => {
-		if (!containerRef) return;
+		if (!containerRef || !markdown) return;
 		const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
 		const { headingAST } = mdToHast(markdown);
 		let { nameList, headingList: headinglist } =
@@ -75,7 +75,7 @@ function BlogContainer({
 		);
 
 		headings.forEach((hElem) => observer.observe(hElem));
-	}, []);
+	}, [markdown]);
 
 	useShortCut({
 		keys: ["H"],

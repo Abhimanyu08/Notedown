@@ -10,7 +10,6 @@ async function PublicPosts({ params }: { params: { id: string } }) {
 	if (data.length > 0) {
 		return (
 			<>
-				{/* @ts-expect-error Async Server Component  */}
 				<PostDisplay key={"public_posts"} posts={data || []} />
 				<Paginator
 					key="public"
