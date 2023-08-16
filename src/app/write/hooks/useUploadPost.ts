@@ -56,7 +56,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 });
 
                 if (documentDb) {
-                    updateIndexDbMarkdown(documentDb, `draft-${editorState.timeStamp}`, postId)
+                    updateIndexDbMarkdown(documentDb, editorState.timeStamp || "", postId)
                 }
                 sendRevalidationRequest('/profile/[id]')
                 toastContext?.setMessage("Changes Uploaded");
@@ -89,6 +89,31 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         }
     }
 
+
+
+    const uploadPostRow = async ({ title, description, language }: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
+        const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).insert({
+            title,
+            description,
+            language,
+            created_by,
+            timestamp: editorState.timeStamp
+        }).select("*"), 3);
+
+        return newPost
+    }
+
+    const updatePostRow = async ({ postId, title, description, language }: { postId: number, title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
+        const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).update({
+            title,
+            description,
+            language,
+        }).eq("id", postId).select("id,title,description,language,published"), 3);
+
+
+        return newPost
+    }
+
     const uploadTags = async ({ tags }: { tags: string[] }) => {
         const tagIds: number[] = []
         for (let tag of tags) {
@@ -111,30 +136,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         const tagBlogData = tagIds.map((tid) => ({ tag_id: tid, blog_id: postId }))
 
         await tryNTimesSupabaseTableFunction<Database["public"]["Tables"]["blogtag"]["Row"]>(() => supabase.from(SUPABASE_BLOGTAG_TABLE).insert(tagBlogData).select("*"), 3);
-    }
-
-
-
-    const uploadPostRow = async ({ title, description, language }: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
-        const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).insert({
-            title,
-            description,
-            language,
-            created_by
-        }).select("*"), 3);
-
-
-        return newPost
-    }
-    const updatePostRow = async ({ postId, title, description, language }: { postId: number, title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
-        const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).update({
-            title,
-            description,
-            language,
-        }).eq("id", postId).select("id,title,description,language,published"), 3);
-
-
-        return newPost
     }
 
     const uploadPostMarkdownFile = async ({ postId, markdownFile }: { postId: Number, markdownFile: File }) => {

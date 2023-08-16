@@ -11,8 +11,15 @@ export interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
-	const { id, title, description, published_on, published, created_at } =
-		post;
+	const {
+		id,
+		title,
+		description,
+		published_on,
+		published,
+		created_at,
+		timestamp,
+	} = post;
 
 	return (
 		<div className="relative">
@@ -21,6 +28,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 					published: !!published,
 					postId: id!,
 					postTitle: title!,
+					timeStamp: timestamp || undefined,
 				}}
 			/>
 			<Link

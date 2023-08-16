@@ -1,5 +1,3 @@
-import { ALLOWED_LANGUAGES } from "@utils/constants"
-
 export type Json =
   | string
   | number
@@ -109,10 +107,11 @@ export interface Database {
           filename: string | null
           id: number
           image_folder: string | null
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string | null
           published: boolean
           published_on: string | null
           search_index_col: unknown | null
+          timestamp: string | null
           title: string
           upvote_count: number
         }
@@ -123,10 +122,11 @@ export interface Database {
           filename?: string | null
           id?: number
           image_folder?: string | null
-          language?: typeof ALLOWED_LANGUAGES[number] | null
+          language?: string | null
           published?: boolean
           published_on?: string | null
           search_index_col?: unknown | null
+          timestamp?: string | null
           title: string
           upvote_count?: number
         }
@@ -137,10 +137,11 @@ export interface Database {
           filename?: string | null
           id?: number
           image_folder?: string | null
-          language?: typeof ALLOWED_LANGUAGES[number] | null
+          language?: string | null
           published?: boolean
           published_on?: string | null
           search_index_col?: unknown | null
+          timestamp?: string | null
           title?: string
           upvote_count?: number
         }
@@ -231,7 +232,7 @@ export interface Database {
           published: boolean
           created_at: string
           published_on: string
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string
           upvote_count: number
           author: string
           search_rank: number
@@ -250,7 +251,7 @@ export interface Database {
           published: boolean
           created_at: string
           published_on: string
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string
           upvote_count: number
           author: string
           search_rank: number
@@ -270,7 +271,7 @@ export interface Database {
           published: boolean
           created_at: string
           published_on: string
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string
           upvote_count: number
           author: string
           search_rank: number
@@ -289,7 +290,7 @@ export interface Database {
           published: boolean
           created_at: string
           published_on: string
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string
           upvote_count: number
           author: string
           search_rank: number
@@ -308,7 +309,7 @@ export interface Database {
           description: string
           published: boolean
           published_on: string
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string
           upvote_count: number
           author: string
           search_rank: number
@@ -327,7 +328,7 @@ export interface Database {
           description: string
           published: boolean
           published_on: string
-          language: typeof ALLOWED_LANGUAGES[number] | null
+          language: string
           upvote_count: number
           author: string
           search_rank: number

@@ -21,7 +21,7 @@ export const getUserAllPosts = async (userId: string, supabase: SupabaseClient) 
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
         .select(
-            "id,published,published_on,title,description,language,bloggers(name,id),created_by,created_at"
+            "*"
         )
         .match({ created_by: userId })
         .order("created_at", { ascending: false })

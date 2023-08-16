@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 import { SearchContext } from "./SearchProvider";
 import { SinglePostLoading } from "./SinglePostLoading";
 import { rawObjectToDraft } from "@utils/processDrafts";
-import { DraftsDisplay } from "@/app/profile/[id]/drafts/page";
+import { DraftsDisplay } from "@/app/profile/[id]/page";
 import PostDisplay from "@components/PostDisplay";
 import Divider from "@components/ui/divider";
 

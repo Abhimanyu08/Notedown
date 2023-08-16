@@ -46,13 +46,13 @@ async function ProfilePostsLayout({
 
 						{/* @ts-expect-error Async Server Component  */}
 						<OwnerOnlyStuff id={params.id}>
-							<div className="flex justify-between col-span-1 px-2 mr-10">
+							{/* <div className="flex justify-between col-span-1 px-2 mr-10">
 								<PostControl className="font-mono text-gray-400" />
-								<NewNoteButton />
-							</div>
-							<div className="flex justify-between px-2 col-span-1 mt-1 mr-10 relative">
 								<NoteTypeToggle className="text-gray-400 " />
+							</div> */}
+							<div className="flex justify-between px-2 col-span-1 mt-1 mr-10 relative">
 								<SearchInput className="basis-1/3" />
+								<NewNoteButton />
 							</div>
 						</OwnerOnlyStuff>
 						<div className="h-[2px] bg-border col-span-1 mr-10 mt-4"></div>
@@ -62,6 +62,7 @@ async function ProfilePostsLayout({
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
 				mr-10
+				px-2
 				"
 						>
 							<NormalChildrenLayout>

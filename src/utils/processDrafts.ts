@@ -41,7 +41,7 @@ export function processDrafts(db: IDBDatabase) {
 
 export function rawObjectToDraft({ timeStamp, markdown, postId }: RawObject): Draft {
 
-    timeStamp = /draft-(\d+)$/.exec(timeStamp)!.at(1)!
+    timeStamp = /(draft-)?(\d+)$/.exec(timeStamp)!.at(2)!
     const { data } = parseFrontMatter(markdown);
     const formattedTimeStamp = new Date(parseInt(timeStamp));
     const date = formatDate(formattedTimeStamp);

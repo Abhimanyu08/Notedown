@@ -36,7 +36,7 @@ function useBlogStateUpdate() {
 			});
 		}
 
-		setIndexMdStoreKey(`draft-${ts}`);
+		setIndexMdStoreKey(ts);
 	}, []);
 
 	useEffect(() => {

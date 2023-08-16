@@ -24,10 +24,12 @@ export function PostOptions({
 	published,
 	postId,
 	postTitle,
+	timeStamp,
 }: {
 	published: boolean;
 	postId: number;
 	postTitle: string;
+	timeStamp?: string;
 }) {
 	const owner = useOwner();
 	const [takenAction, setTakenAction] = useState<
@@ -90,7 +92,11 @@ export function PostOptions({
 						<MenubarContent className="min-w-0 border-border">
 							<MenubarItem className="">
 								<Link
-									href={`/write/${postId}`}
+									href={
+										timeStamp
+											? `/write/${postId}?draft=${timeStamp}`
+											: `/write/${postId}`
+									}
 									prefetch={false}
 									className="flex gap-2 items-center"
 								>
