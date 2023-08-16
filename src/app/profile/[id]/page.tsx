@@ -11,7 +11,7 @@ import {
 import {
 	Draft,
 	RawObject,
-	processDrafts,
+	processNoTagDrafts,
 	rawObjectToDraft,
 } from "@utils/processDrafts";
 import Link from "next/link";
@@ -58,7 +58,6 @@ function Drafts() {
 
 					cursor.continue();
 				} else {
-					console.log(Array.from(tagToDraftMap.keys()));
 					setLoadingDrafts(false);
 				}
 			};
@@ -86,12 +85,9 @@ function Drafts() {
 											/>
 										);
 								})}
-								<TaggedDrafts
-									tag="notag"
-									rawObjects={
-										tagToDraftMap.get("notag") || []
-									}
-								/>
+								{documentDb && (
+									<NoTagDrafts documentDb={documentDb} />
+								)}
 							</>
 						) : (
 							<div className="text-gray-500 ">
@@ -127,11 +123,6 @@ function TaggedDrafts({
 	rawObjects: RawObject[];
 }) {
 	if (tag === "notag") {
-		return (
-			<div className="pl-4 border-l-2 border-border ml-1">
-				<DraftsDisplay rawObjects={rawObjects} />
-			</div>
-		);
 	}
 	return (
 		<details>
@@ -140,6 +131,15 @@ function TaggedDrafts({
 				<DraftsDisplay rawObjects={rawObjects} />
 			</div>
 		</details>
+	);
+}
+
+async function NoTagDrafts({ documentDb }: { documentDb: IDBDatabase }) {
+	const notagDrafts = await processNoTagDrafts(documentDb);
+	return (
+		<div className="pl-4 border-l-2 border-border ml-1">
+			<DraftsDisplay rawObjects={notagDrafts} />
+		</div>
 	);
 }
 

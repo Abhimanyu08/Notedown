@@ -11,28 +11,26 @@ export type Draft = {
 
 export type RawObject = { timeStamp: string, markdown: string, postId?: string }
 
-export function processDrafts(db: IDBDatabase) {
-
-    return new Promise<Draft[]>((res) => {
+export function processNoTagDrafts(db: IDBDatabase) {
+    // this funciton should only return drafts with no tags
+    return new Promise<RawObject[]>((res) => {
 
         let objectStore = getMarkdownObjectStore(db);
         const markdownIndex = objectStore.index("markdownIndex")
 
-        const draftsToAdd: Draft[] = [];
+        const rawObjs: RawObject[] = [];
         markdownIndex.openCursor().onsuccess = (e) => {
 
 
             const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
             if (cursor) {
 
-                const draft = rawObjectToDraft(cursor.value as { timeStamp: string, markdown: string, postId?: string })
-
-                draftsToAdd.push(draft);
+                const draft = cursor.value as { timeStamp: string, markdown: string, postId?: string, tags?: string[] }
+                if (!Object.hasOwn(draft, "tags") || (draft["tags"] as string[]).includes("notag"))
+                    rawObjs.push(draft);
                 cursor.continue()
             } else {
-                res(draftsToAdd.sort(
-                    (a, b) => parseInt(b.timeStamp) - parseInt(a.timeStamp)
-                ))
+                res(rawObjs)
             }
         };
     })

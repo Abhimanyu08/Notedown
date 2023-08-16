@@ -38,7 +38,6 @@ async function Notes({ params }: { params: { id: string } }) {
 					- The Joy Of Writing, Wislawa Szymborska
 				</span>
 			</div>
-			{/* @ts-expect-error Async Server Component  */}
 			<OwnerOnlyStuff id={params.id}>
 				<p>
 					All your notes (public and private) will be diplayed here.
