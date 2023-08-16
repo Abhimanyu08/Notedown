@@ -1,8 +1,14 @@
 "use client";
 import BlogLayout from "@/app/post/components/BlogLayout";
+import useRetrieveBlogFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
+import BlogContextProvider, {
+	BlogContext,
+} from "@components/BlogPostComponents/BlogState";
+import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { ToolTipComponent } from "@components/ToolTipComponent";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -10,34 +16,24 @@ import { AiFillEdit } from "react-icons/ai";
 
 function Draft() {
 	const params = useParams();
-	const [blogMarkdown, setBlogMarkdown] = useState("");
-	const { documentDb } = useContext(IndexedDbContext);
-
+	const blogData = useRetrieveBlogFromIndexDb({
+		timeStamp: params!.draftId as string,
+	});
+	const { dispatch } = useContext(BlogContext);
 	useEffect(() => {
-		if (!params) return;
-		if (!documentDb) return;
-
-		const draftTimeStamp = params.draftId;
-		const key = `draft-${draftTimeStamp}`;
-
-		const markdownObjectStoreRequest = documentDb
-			.transaction("markdown", "readonly")
-			.objectStore("markdown")
-			.get(key);
-
-		markdownObjectStoreRequest.onsuccess = (e) => {
-			const { markdown } = (
-				e.target as IDBRequest<{ timeStamp: string; markdown: string }>
-			).result;
-			setBlogMarkdown(markdown);
-		};
-	}, [params]);
+		if (blogData) {
+			dispatch({ type: "set blog meta", payload: blogData.data });
+		}
+	}, [blogData]);
 
 	return (
 		<BlogLayout
-			postMeta={{ markdown: blogMarkdown }}
-			AuthorComponent={BlogAuthorClient}
+			postMeta={{
+				markdown: blogData.content,
+				post: { ...(blogData.data as any) },
+			}}
 			ToolbarComponent={DraftToolbar}
+			AuthorComponent={BlogAuthorClient}
 		/>
 	);
 }
@@ -45,14 +41,18 @@ function Draft() {
 function DraftToolbar() {
 	const params = useParams();
 	return (
-		<ToolTipComponent
-			tip="Edit markdown"
-			className={`text-gray-400 hover:text-white active:scale-95`}
-		>
-			<Link href={`/write?draft=${params?.draftId}`}>
-				<AiFillEdit size={28} />
-			</Link>
-		</ToolTipComponent>
+		<>
+			<ToolTipComponent
+				tip="Edit markdown"
+				className={`text-gray-400 hover:text-white active:scale-95`}
+			>
+				<Link href={`/write?draft=${params?.draftId}`}>
+					<AiFillEdit size={28} />
+				</Link>
+			</ToolTipComponent>
+
+			<EnableRceButton />
+		</>
 	);
 }
 

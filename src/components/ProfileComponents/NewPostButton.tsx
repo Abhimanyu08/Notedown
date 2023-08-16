@@ -6,7 +6,11 @@ import { TfiPencilAlt } from "react-icons/tfi";
 function NewNoteButton() {
 	return (
 		<Link href={"/write"} prefetch={false}>
-			<Button className="gap-2" variant="ghost">
+			<Button
+				className="gap-2 text-gray-300"
+				variant="secondary"
+				size={"sm"}
+			>
 				<TfiPencilAlt size={14} />
 				<span>New Note</span>
 			</Button>

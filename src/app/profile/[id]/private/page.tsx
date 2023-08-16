@@ -19,7 +19,6 @@ async function PrivatePosts({ params }: { params: { id: string } }) {
 	if (data.length > 0) {
 		return (
 			<>
-				{/* @ts-expect-error Async Server Component  */}
 				<PostDisplay key="private_posts" posts={data || []} />
 				<Paginator
 					key="private"

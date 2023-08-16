@@ -34,7 +34,7 @@ async function PostPreview({ postId }: { postId: string }) {
 				blogMeta={{
 					id: post.id,
 					title: post.title,
-					language: post.language,
+					language: post.language as any,
 					imageFolder: post.image_folder,
 					blogger: post.bloggers as { id: string; name: string },
 				}}

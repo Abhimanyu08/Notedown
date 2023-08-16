@@ -15,7 +15,7 @@ function SearchInput({ className }: { className?: string }) {
 			<div className={cn(className, "flex gap-2")}>
 				<Input
 					placeholder="Search"
-					className={"peer focus-visible:ring-0"}
+					className={"peer focus-visible:ring-0 h-full"}
 					onKeyDown={(e) => {
 						if (!setSearchQuery) return;
 						if (e.key === "Enter") {

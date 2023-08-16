@@ -9,6 +9,9 @@ import { BlogContext } from "./BlogState";
 function EnableRceButton({ className }: { className?: string }) {
 	const { blogState } = useContext(BlogContext);
 	const { startPreparingContainer, preparingContainer } = useSetContainer();
+	if (!blogState.blogMeta.language) {
+		return <></>;
+	}
 	return (
 		<ToolTipComponent
 			tip={` 

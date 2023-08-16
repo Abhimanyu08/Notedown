@@ -1,8 +1,8 @@
-import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
+import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import React from "react";
 
 function DraftPreviewLayout({ children }: { children: React.ReactNode }) {
-	return <IndexedDbContextProvider>{children}</IndexedDbContextProvider>;
+	return <BlogContextProvider>{children}</BlogContextProvider>;
 }
 
 export default DraftPreviewLayout;

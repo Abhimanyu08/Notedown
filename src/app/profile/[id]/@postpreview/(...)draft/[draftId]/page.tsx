@@ -1,36 +1,19 @@
 "use client";
+import useRetrieveBlogFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewControls";
-import { parseFrontMatter } from "@utils/getResources";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 function DraftPreview({ params }: { params: { draftId: string } }) {
-	const [blogData, setBlogData] = useState<
-		ReturnType<typeof parseFrontMatter>
-	>({ content: "", frontMatterLength: 0 });
-	const { documentDb } = useContext(IndexedDbContext);
-
+	const blogData = useRetrieveBlogFromIndexDb({ timeStamp: params.draftId });
+	const { dispatch } = useContext(BlogContext);
 	useEffect(() => {
-		if (!params) return;
-		if (!documentDb) return;
-
-		const draftTimeStamp = params.draftId;
-		const key = `draft-${draftTimeStamp}`;
-
-		const markdownObjectStoreRequest = documentDb
-			.transaction("markdown", "readonly")
-			.objectStore("markdown")
-			.get(key);
-
-		markdownObjectStoreRequest.onsuccess = (e) => {
-			const { markdown } = (
-				e.target as IDBRequest<{ timeStamp: string; markdown: string }>
-			).result;
-			setBlogData(parseFrontMatter(markdown));
-		};
-	}, [params, documentDb]);
+		if (blogData) {
+			dispatch({ type: "set blog meta", payload: blogData.data });
+		}
+	}, [blogData]);
 	return (
 		<div
 			className="flex flex-col items-center justify-center w-full relative

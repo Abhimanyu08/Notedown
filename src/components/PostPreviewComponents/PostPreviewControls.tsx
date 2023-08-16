@@ -17,13 +17,12 @@ function PostPreviewControls({
 	language,
 	content,
 }: {
-	language?: (typeof ALLOWED_LANGUAGES)[number];
+	language?: string;
 	content: string;
 }) {
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
-	const pathname = usePathname();
 	useShortCut({
 		keys: ["Escape"],
 		callback: () => router.push(`/profile/${params?.id}`),
@@ -51,10 +50,10 @@ function PostPreviewControls({
 				<ToolTipComponent
 					tip="Close preview (Esc)"
 					onClick={() => {
-						if (pathname?.includes("/draft")) {
-							router.push(`/profile/${params?.id}/drafts`);
-							return;
-						}
+						// if (pathname?.includes("/draft")) {
+						// 	router.push(`/profile/${params?.id}/drafts`);
+						// 	return;
+						// }
 						router.push(`/profile/${params?.id}`);
 					}}
 					className=" text-gray-400 hover:text-white active:scale-95"

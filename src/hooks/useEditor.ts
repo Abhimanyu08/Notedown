@@ -22,7 +22,7 @@ function useEditor({ language, code, editorParentId }: useEditorProps): { editor
         const editorParent = document.getElementById(editorParentId)
         if (!editorParent) return
         if (!language || (language && !Array.from([...ALLOWED_LANGUAGES, "markdown", "json"]).includes(language))) {
-            language = "javascript"
+            return
         }
 
 

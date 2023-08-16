@@ -8,6 +8,7 @@ import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
 import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
+import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
 
 const serif = Petrona({
 	subsets: ["latin"],
@@ -78,7 +79,9 @@ export default async function RootLayout({
 					<ToastProvider>
 						<ExpandedImageProvider>
 							<ExpandedCanvasProvider>
-								{children}
+								<IndexedDbContextProvider>
+									{children}
+								</IndexedDbContextProvider>
 							</ExpandedCanvasProvider>
 						</ExpandedImageProvider>
 					</ToastProvider>

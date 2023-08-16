@@ -74,18 +74,24 @@ function Drafts() {
 							// <DraftsDisplay drafts={drafts} />
 							<>
 								{Array.from(tagToDraftMap.keys()).map((tag) => {
-									console.log(tag);
-									return (
-										<TaggedDrafts
-											tag={tag}
-											rawObjects={
-												tagToDraftMap.get(
-													tag as string
-												) || []
-											}
-										/>
-									);
+									if (tag !== "notag")
+										return (
+											<TaggedDrafts
+												tag={tag}
+												rawObjects={
+													tagToDraftMap.get(
+														tag as string
+													) || []
+												}
+											/>
+										);
 								})}
+								<TaggedDrafts
+									tag="notag"
+									rawObjects={
+										tagToDraftMap.get("notag") || []
+									}
+								/>
 							</>
 						) : (
 							<div className="text-gray-500 ">
@@ -122,14 +128,14 @@ function TaggedDrafts({
 }) {
 	if (tag === "notag") {
 		return (
-			<div className="">
+			<div className="pl-4 border-l-2 border-border ml-1">
 				<DraftsDisplay rawObjects={rawObjects} />
 			</div>
 		);
 	}
 	return (
 		<details>
-			<summary className="text-xl font-serif">#{tag}</summary>
+			<summary className="text-lg font-serif font-bold">{tag}</summary>
 			<div className="border-l-2 border-border ml-1 pl-4">
 				<DraftsDisplay rawObjects={rawObjects} />
 			</div>
@@ -162,11 +168,9 @@ export function SingleDraft({ draft }: { draft: Draft }) {
 			<DraftActions draft={draft} />
 			<Link href={`/draft/${draft.timeStamp}`} className="">
 				<PostTitle title={title || ""} description={description} />
-				{/* <p className="text-xs text-gray-400 mt-2"> */}
-				{/* <span className="">{draft.date}</span> */}
-				{/* ,{" "} */}
-				{/* <span className="">{draft.time}</span> */}
-				{/* </p> */}
+				<p className="text-xs text-gray-400 mt-1">
+					<span className="">{draft.date}</span>
+				</p>
 			</Link>
 		</div>
 	);

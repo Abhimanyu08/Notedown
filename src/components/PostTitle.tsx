@@ -11,7 +11,7 @@ function PostTitle({
 	return (
 		<HoverCard>
 			<HoverCardTrigger className="w-max">
-				<h2 className="text-black font-serif  underline decoration-transparent group-hover:decoration-gray-300 transition-all duration-100 underline-offset-2 dark:text-gray-400 break-words max-w-3/4">
+				<h2 className="text-black font-serif  underline text-lg decoration-transparent group-hover:decoration-gray-300 transition-all duration-100 underline-offset-2 dark:text-gray-300 break-words max-w-3/4">
 					{title}{" "}
 				</h2>
 			</HoverCardTrigger>
