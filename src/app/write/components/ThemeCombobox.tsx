@@ -3,8 +3,14 @@ import availableThemes from "@utils/syntaxhighlighter/availableThemes";
 import React, { useContext, useEffect } from "react";
 import { EditorContext } from "./EditorContext";
 
-export function ThemeCombobox({ start }: { start?: number }) {
-	const [value, setValue] = React.useState("coldark-dark");
+export function ThemeCombobox({
+	theme,
+	start,
+}: {
+	theme: string;
+	start?: number;
+}) {
+	const [value, setValue] = React.useState(theme);
 
 	const { editorState } = useContext(EditorContext);
 

@@ -56,10 +56,10 @@ function TLDrawing({
 			</Button>
 			<div
 				className={cn(
-					"w-full",
+					"w-full z-[600]",
 					!preview && "hidden",
 					expand
-						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto z-[600]"
+						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto "
 						: " [&>*]:cursor-zoom-in"
 				)}
 				onClick={() => setExpand((p) => !p)}

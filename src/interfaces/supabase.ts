@@ -73,6 +73,34 @@ export interface Database {
           }
         ]
       }
+      blogtag: {
+        Row: {
+          blog_id: number | null
+          tag_id: number | null
+        }
+        Insert: {
+          blog_id?: number | null
+          tag_id?: number | null
+        }
+        Update: {
+          blog_id?: number | null
+          tag_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blogtag_blog_id_fkey"
+            columns: ["blog_id"]
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blogtag_tag_id_fkey"
+            columns: ["tag_id"]
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       posts: {
         Row: {
           created_at: string | null
@@ -119,6 +147,31 @@ export interface Database {
         Relationships: [
           {
             foreignKeyName: "posts_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "bloggers"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      tags: {
+        Row: {
+          created_by: string | null
+          id: number
+          tag_name: string | null
+        }
+        Insert: {
+          created_by?: string | null
+          id?: never
+          tag_name?: string | null
+        }
+        Update: {
+          created_by?: string | null
+          id?: never
+          tag_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tags_created_by_fkey"
             columns: ["created_by"]
             referencedRelation: "bloggers"
             referencedColumns: ["id"]

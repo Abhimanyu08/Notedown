@@ -13,7 +13,6 @@ export type RawObject = { timeStamp: string, markdown: string, postId?: string }
 
 export function processDrafts(db: IDBDatabase) {
 
-
     return new Promise<Draft[]>((res) => {
 
         let objectStore = getMarkdownObjectStore(db);

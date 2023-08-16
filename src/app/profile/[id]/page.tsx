@@ -15,7 +15,6 @@ async function Notes({ params }: { params: { id: string } }) {
 	if (data.length > 0) {
 		return (
 			<>
-				{/* @ts-expect-error Async Server Component  */}
 				<PostDisplay key={"all_posts"} posts={data || []} />
 				<Paginator
 					key="all"

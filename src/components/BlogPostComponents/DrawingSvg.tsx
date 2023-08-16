@@ -68,9 +68,9 @@ export default function DrawingSvg({
 		>
 			<div
 				className={cn(
-					"flex w-full justify-center items-center gap-5",
+					"flex w-full justify-center items-center gap-5 ",
 					expand
-						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto "
+						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto z-[600]"
 						: " [&>*]:cursor-zoom-in"
 				)}
 				id={`svgContainer-${persistanceKey}`}

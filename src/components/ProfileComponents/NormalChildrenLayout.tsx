@@ -38,15 +38,15 @@ function NormalChildrenLayout({
 		}
 
 		if (searchResults.length > 0 && draftSearchResults.length > 0) {
-			const drafts = draftSearchResults.map((raw) =>
-				rawObjectToDraft(raw)
-			);
+			// const drafts = draftSearchResults.map((raw) =>
+			// 	rawObjectToDraft(raw)
+			// );
 			return (
 				<div className="flex flex-col">
 					<Divider>Uploaded</Divider>
 					<PostDisplay posts={searchResults} />
 					<Divider>Drafts</Divider>
-					<DraftsDisplay drafts={drafts} />
+					<DraftsDisplay rawObjects={draftSearchResults} />
 				</div>
 			);
 		}
@@ -55,10 +55,7 @@ function NormalChildrenLayout({
 			return <PostDisplay posts={searchResults} />;
 		}
 		if (draftSearchResults.length > 0) {
-			const drafts = draftSearchResults.map((raw) =>
-				rawObjectToDraft(raw)
-			);
-			return <DraftsDisplay drafts={drafts} />;
+			return <DraftsDisplay rawObjects={draftSearchResults} />;
 		}
 	}
 

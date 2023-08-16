@@ -3,8 +3,14 @@ import availableLanguages from "@utils/syntaxhighlighter/availableLanguages";
 import React, { useContext, useEffect } from "react";
 import { EditorContext } from "./EditorContext";
 
-export default function LanguageCombobox({ start }: { start?: number }) {
-	const [value, setValue] = React.useState("javascript");
+export default function LanguageCombobox({
+	language,
+	start,
+}: {
+	language: string;
+	start?: number;
+}) {
+	const [value, setValue] = React.useState(language);
 
 	const { editorState } = useContext(EditorContext);
 

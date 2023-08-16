@@ -1,16 +1,17 @@
 import { useSupabase } from "@/app/appContext";
+import { ToastContext } from "@/contexts/ToastProvider";
 import Post from "@/interfaces/Post";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { ALLOWED_LANGUAGES, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE } from "@utils/constants";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { ALLOWED_LANGUAGES, SUPABASE_BLOGTAG_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
-import { ToastContext } from "@/contexts/ToastProvider";
-import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
-import { useContext, useEffect, useState } from "react";
-import { EditorContext } from "../components/EditorContext";
 import editorToJsonFile from "@utils/processingTldrawings";
 import { sendRevalidationRequest } from "@utils/sendRequest";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { useContext, useEffect, useState } from "react";
+import { EditorContext } from "../components/EditorContext";
+import { parseFrontMatter } from "@utils/getResources";
+import { Database } from "@/interfaces/supabase";
 
 function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
     const mdObjectStore = getMarkdownObjectStore(db)
@@ -67,7 +68,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         }
 
-    }, [startUpload])
+    }, [startUpload, documentDb])
 
 
     const prepareForUpload = () => {
@@ -78,13 +79,40 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         if (!ALLOWED_LANGUAGES.includes(language as any)) {
             language = null
         }
+        const { data } = parseFrontMatter(markdown)
         return {
-            title: blogState.blogMeta.title || "",
-            description: blogState.blogMeta.description || "",
-            language: language || null,
+            title: data.title || "",
+            description: data.description || "",
+            language: data.language || null,
+            tags: data.tags,
             markdownFile
         }
     }
+
+    const uploadTags = async ({ tags }: { tags: string[] }) => {
+        const tagIds: number[] = []
+        for (let tag of tags) {
+            // we can't bulk insert tags cause we need to bypass the violation of tag_name,created_by unique constraint.
+
+            const { data, error } = await supabase.from(SUPABASE_TAGS_TABLE).insert({ tag_name: tag, created_by }).select("*").single();
+            if (data) tagIds.push(data.id)
+            if (error) {
+                // there's a violation of unique key constraint
+                if (error.message === 'duplicate key value violates unique constraint "unique_tag_created_by"') {
+                    const { data } = await supabase.from(SUPABASE_TAGS_TABLE).select("id").match({ tag_name: tag, created_by }).single()
+                    if (data) tagIds.push(data.id)
+                }
+            }
+        }
+        return tagIds
+    }
+
+    const uploadBlogTag = async ({ postId, tagIds }: { postId: number, tagIds: number[] }) => {
+        const tagBlogData = tagIds.map((tid) => ({ tag_id: tid, blog_id: postId }))
+
+        await tryNTimesSupabaseTableFunction<Database["public"]["Tables"]["blogtag"]["Row"]>(() => supabase.from(SUPABASE_BLOGTAG_TABLE).insert(tagBlogData).select("*"), 3);
+    }
+
 
 
     const uploadPostRow = async ({ title, description, language }: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
@@ -186,13 +214,21 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const upload = async () => {
 
 
-
         toastContext?.setMessage("preparing for upload")
         const postMeta = prepareForUpload()
 
+
+
         toastContext?.setMessage("Uploading markdown file")
         const post = await uploadPostRow(postMeta)
+
         await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
+
+        const tags = postMeta.tags
+        if (tags) {
+            const tagIds = await uploadTags({ tags })
+            await uploadBlogTag({ postId: post.id, tagIds })
+        }
 
         toastContext?.setMessage("Uploading Images")
         await uploadPostImages({ postId: post.id })

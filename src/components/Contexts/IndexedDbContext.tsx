@@ -1,5 +1,4 @@
 "use client";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import React, { createContext, useEffect, useState } from "react";
 
 export const IndexedDbContext = createContext<{
@@ -12,13 +11,14 @@ function IndexedDbContextProvider({ children }: { children: React.ReactNode }) {
 	const [documentDb, setDocumentDb] = useState<IDBDatabase | null>(null);
 
 	useEffect(() => {
-		let documentDbRequest = indexedDB.open("RCEBLOG", 1);
+		let documentDbRequest = indexedDB.open("RCEBLOG", 2);
 
 		documentDbRequest.onsuccess = (e) => {
+			console.log("setting document db");
 			setDocumentDb((e.target as any).result);
 		};
 
-		documentDbRequest.onupgradeneeded = function () {
+		documentDbRequest.onupgradeneeded = function (e) {
 			let db = documentDbRequest.result;
 			if (!db.objectStoreNames.contains("markdown")) {
 				const mdObjectStore = db.createObjectStore("markdown", {
@@ -26,6 +26,18 @@ function IndexedDbContextProvider({ children }: { children: React.ReactNode }) {
 				});
 				mdObjectStore.createIndex("markdownIndex", "markdown", {
 					unique: false,
+				});
+				mdObjectStore.createIndex("tagsIndex", "tags", {
+					multiEntry: true,
+				});
+			} else {
+				const transaction = (e.currentTarget as any).transaction;
+
+				// Get the existing object store
+				const mdObjectStore = transaction.objectStore("markdown");
+
+				mdObjectStore.createIndex("tagsIndex", "tags", {
+					multiEntry: true,
 				});
 			}
 			if (!db.objectStoreNames.contains("sandpackConfigs")) {

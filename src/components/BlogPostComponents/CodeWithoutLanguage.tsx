@@ -112,8 +112,14 @@ lg:scrollbar-thin
 			</div>
 			{pathname?.startsWith("/write") && (
 				<div className="flex gap-2 justify-center mt-2">
-					<LanguageSelector start={start} />
-					<ThemeSelector start={start} />
+					<LanguageSelector
+						start={start}
+						language={language || "javascript"}
+					/>
+					<ThemeSelector
+						start={start}
+						theme={theme || "coldark-dark"}
+					/>
 					<ShowLnSwitch {...{ start, showLineNumbers }} />
 				</div>
 			)}

@@ -1,7 +1,6 @@
 import { Compartment, StateEffect } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
 import { EditorView } from "codemirror";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState, useTransition } from "react";
@@ -87,7 +86,12 @@ function useBlogStateUpdate() {
 							});
 							setBlogContent(content);
 						});
-						updateMarkdown(documentDb, indexMdStoreKey, markdown);
+						updateMarkdown(
+							documentDb,
+							indexMdStoreKey,
+							markdown,
+							data.tags
+						);
 					}
 				}
 			}
@@ -100,9 +104,15 @@ function useBlogStateUpdate() {
 	return blogContent;
 }
 
-function updateMarkdown(db: IDBDatabase, key: string, markdown: string) {
+function updateMarkdown(
+	db: IDBDatabase,
+	key: string,
+	markdown: string,
+	tags?: string[]
+) {
 	const mdObjectStore = getMarkdownObjectStore(db);
 	const mdReq = mdObjectStore.get(key);
+
 	mdReq.onsuccess = () => {
 		const previousData = mdReq.result;
 		if (!previousData) {
@@ -110,12 +120,15 @@ function updateMarkdown(db: IDBDatabase, key: string, markdown: string) {
 			const newData = {
 				timeStamp: key,
 				markdown,
+				tags: tags || ["notag"],
 			};
 			mdObjectStore.put(newData);
 			return;
 		}
 		// data with this key exists, just update the markdown
 		previousData.markdown = markdown;
+		previousData.tags = tags || ["notag"];
+
 		mdObjectStore.put(previousData);
 	};
 }
