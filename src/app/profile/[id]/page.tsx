@@ -122,8 +122,6 @@ function TaggedDrafts({
 	tag: string;
 	rawObjects: RawObject[];
 }) {
-	if (tag === "notag") {
-	}
 	return (
 		<details>
 			<summary className="text-lg font-serif font-bold">{tag}</summary>

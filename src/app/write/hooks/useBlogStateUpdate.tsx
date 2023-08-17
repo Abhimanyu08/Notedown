@@ -120,14 +120,14 @@ function updateMarkdown(
 			const newData = {
 				timeStamp: key,
 				markdown,
-				tags: tags || ["notag"],
+				tags,
 			};
 			mdObjectStore.put(newData);
 			return;
 		}
 		// data with this key exists, just update the markdown
 		previousData.markdown = markdown;
-		previousData.tags = tags || ["notag"];
+		previousData.tags = tags;
 
 		mdObjectStore.put(previousData);
 	};

@@ -26,7 +26,8 @@ export function processNoTagDrafts(db: IDBDatabase) {
             if (cursor) {
 
                 const draft = cursor.value as { timeStamp: string, markdown: string, postId?: string, tags?: string[] }
-                if (!Object.hasOwn(draft, "tags") || (draft["tags"] as string[]).includes("notag"))
+                const tagArray = draft["tags"]
+                if (!Object.hasOwn(draft, "tags") || tagArray === undefined || tagArray.length === 0)
                     rawObjs.push(draft);
                 cursor.continue()
             } else {
