@@ -6,7 +6,7 @@ import { supabase } from '@utils/supabaseClient';
 import { checkDataLength } from './postTypeToFetcher';
 import { Database } from '@/interfaces/supabase';
 
-export const getUser = cache(async (id: string) => {
+export const getUser = async (id: string) => {
 
     const { data: userData } = await supabase
         .from(SUPABASE_BLOGGER_TABLE)
@@ -15,7 +15,7 @@ export const getUser = cache(async (id: string) => {
         .single();
 
     return userData
-})
+}
 
 export const getUserAllPosts = async (userId: string, supabase: SupabaseClient) => {
     const { data } = await supabase

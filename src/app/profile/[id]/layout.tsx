@@ -1,16 +1,13 @@
+import { LoggedInOptions } from "@components/Navbar/Options";
+import NewNoteButton from "@components/ProfileComponents/NewPostButton";
+import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
+import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
+import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
+import SearchInput from "@components/ProfileComponents/SearchInput";
+import SearchProvider from "@components/ProfileComponents/SearchProvider";
+import SideSheet from "@components/SideSheet";
 import { getUser } from "@utils/getData";
 import React from "react";
-import NewNoteButton from "@components/ProfileComponents/NewPostButton";
-import NoteTypeToggle from "@components/ProfileComponents/NoteTypeToggle";
-import PostControl from "@components/ProfileComponents/PostControl";
-import { LoggedInOptions } from "@components/Navbar/Options";
-import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
-import SideSheet from "@components/SideSheet";
-import SearchInput from "@components/ProfileComponents/SearchInput";
-import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
-import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
-import SearchProvider from "@components/ProfileComponents/SearchProvider";
-import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
 
 async function ProfilePostsLayout({
 	children,
@@ -22,7 +19,7 @@ async function ProfilePostsLayout({
 	params: { id: string };
 }) {
 	const { name, notebook_title, username } = (await getUser(params.id))!;
-
+	console.log("Notebook title ---------------> ", notebook_title);
 	let notebookTitle =
 		notebook_title !== null
 			? notebook_title

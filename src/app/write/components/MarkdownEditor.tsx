@@ -33,7 +33,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 
 		const draftTimeStamp = searchParams?.get("draft");
 		if (!draftTimeStamp) return;
-		const key = `draft-${draftTimeStamp}`;
+		const key = draftTimeStamp;
 
 		const markdownObjectStoreRequest = documentDb
 			.transaction("markdown", "readonly")

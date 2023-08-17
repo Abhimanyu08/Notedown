@@ -1,12 +1,8 @@
 "use client";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
-import { processNoTagDrafts } from "@utils/processDrafts";
-import { useContext, useEffect, useState } from "react";
-import PostsLoading from "./loading";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { TaggedDrafts } from "./_components/TaggedDrafts";
 import { NoTagDrafts } from "./_components/NoTagDrafts";
+import { TaggedDrafts } from "./_components/TaggedDrafts";
 import useRetrieveDrafts from "./_components/_hooks/useRetrieveDrafts";
+import PostsLoading from "./loading";
 
 function Drafts() {
 	const { tagToDraftMap, loadingDrafts } = useRetrieveDrafts();
