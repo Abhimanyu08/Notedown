@@ -23,7 +23,7 @@ import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 
 function Drafts() {
 	// const [drafts, setDrafts] = useState<Draft[]>([]);
-	const [loadingDrafts, setLoadingDrafts] = useState(false);
+	const [loadingDrafts, setLoadingDrafts] = useState(true);
 	const { documentDb } = useContext(IndexedDbContext);
 	const [tagToDraftMap, setTagToDraftMap] = useState(
 		new Map<string, { timeStamp: string; markdown: string }[]>()
@@ -36,7 +36,6 @@ function Drafts() {
 
 	useEffect(() => {
 		if (documentDb) {
-			setLoadingDrafts(true);
 			const mdObjectStore = getMarkdownObjectStore(
 				documentDb,
 				"readonly"
@@ -58,9 +57,17 @@ function Drafts() {
 
 					cursor.continue();
 				} else {
-					setLoadingDrafts(false);
+					// setLoadingDrafts(false);
 				}
 			};
+
+			processNoTagDrafts(documentDb).then((rawObjs) => {
+				setTagToDraftMap((p) => {
+					p.set("notag", rawObjs);
+					setLoadingDrafts(false);
+					return p;
+				});
+			});
 		}
 	}, [documentDb]);
 
@@ -85,8 +92,12 @@ function Drafts() {
 											/>
 										);
 								})}
-								{documentDb && (
-									<NoTagDrafts documentDb={documentDb} />
+								{tagToDraftMap.has("notag") && (
+									<NoTagDrafts
+										rawObjects={
+											tagToDraftMap.get("notag") || []
+										}
+									/>
 								)}
 							</>
 						) : (
@@ -132,11 +143,10 @@ function TaggedDrafts({
 	);
 }
 
-async function NoTagDrafts({ documentDb }: { documentDb: IDBDatabase }) {
-	const notagDrafts = await processNoTagDrafts(documentDb);
+async function NoTagDrafts({ rawObjects }: { rawObjects: RawObject[] }) {
 	return (
 		<div className="pl-4 border-l-2 border-border ml-1">
-			<DraftsDisplay rawObjects={notagDrafts} />
+			<DraftsDisplay rawObjects={rawObjects} />
 		</div>
 	);
 }
