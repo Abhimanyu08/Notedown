@@ -14,6 +14,7 @@ const serif = Petrona({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-serif",
+	style: ["normal", "italic"],
 	weight: ["400", "700"],
 });
 const mono = IBM_Plex_Mono({

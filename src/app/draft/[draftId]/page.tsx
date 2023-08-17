@@ -1,6 +1,6 @@
 "use client";
 import BlogLayout from "@/app/post/components/BlogLayout";
-import useRetrieveBlogFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
+import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import BlogContextProvider, {
 	BlogContext,
@@ -16,7 +16,7 @@ import { AiFillEdit } from "react-icons/ai";
 
 function Draft() {
 	const params = useParams();
-	const blogData = useRetrieveBlogFromIndexDb({
+	const blogData = useRetrieveDraftFromIndexDb({
 		timeStamp: params!.draftId as string,
 	});
 	const { dispatch } = useContext(BlogContext);

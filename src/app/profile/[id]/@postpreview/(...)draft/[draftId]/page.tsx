@@ -1,5 +1,5 @@
 "use client";
-import useRetrieveBlogFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
+import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
@@ -7,7 +7,7 @@ import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewCo
 import { useContext, useEffect } from "react";
 
 function DraftPreview({ params }: { params: { draftId: string } }) {
-	const blogData = useRetrieveBlogFromIndexDb({ timeStamp: params.draftId });
+	const blogData = useRetrieveDraftFromIndexDb({ timeStamp: params.draftId });
 	const { dispatch } = useContext(BlogContext);
 	useEffect(() => {
 		if (blogData) {

@@ -3,7 +3,7 @@ import { parseFrontMatter } from "@utils/getResources";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { useContext, useEffect, useState } from "react";
 
-export default function useRetrieveBlogFromIndexDb({ timeStamp }: { timeStamp: string }) {
+export default function useRetrieveDraftFromIndexDb({ timeStamp }: { timeStamp: string }) {
     const [blogData, setBlogData] = useState<
         ReturnType<typeof parseFrontMatter>
     >({ content: "", frontMatterLength: 0, data: {} });
