@@ -15,7 +15,7 @@ function PostTitle({
 					{title}{" "}
 				</h2>
 			</HoverCardTrigger>
-			<HoverCardContent
+			{/* <HoverCardContent
 				className="border-border text-sm w-max"
 				side="bottom"
 				align="start"
@@ -24,7 +24,7 @@ function PostTitle({
 					{description ||
 						"No description, gotta open to read what's inside"}
 				</span>
-			</HoverCardContent>
+			</HoverCardContent> */}
 		</HoverCard>
 	);
 }

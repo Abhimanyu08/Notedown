@@ -37,9 +37,6 @@ export function DraftActions({ draft }: { draft: Draft }) {
 							<span>Edit</span>
 						</Link>
 					</MenubarItem>
-					<MenubarItem>
-						<AiFillDelete className="inline" size={15} /> Delete
-					</MenubarItem>
 				</MenubarContent>
 			</MenubarMenu>
 		</Menubar>
