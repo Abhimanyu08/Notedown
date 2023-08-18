@@ -6,7 +6,7 @@ export default async function prepareContainer(language: BlogProps["language"] |
         return;
     try {
         const resp = await sendRequestToRceServer("POST", {
-            language: language,
+            language: language as any,
         });
 
         if (resp.status !== 201) {

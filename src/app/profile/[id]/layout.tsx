@@ -125,6 +125,7 @@ async function ProfilePostsLayout({
 													posts={map.get(tag) || []}
 													drafts={[]}
 													tag={tag}
+													key={tag}
 												/>
 											);
 										})}

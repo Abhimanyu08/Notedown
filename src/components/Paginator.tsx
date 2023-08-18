@@ -39,7 +39,14 @@ function Paginator({
 	return (
 		<div className="flex flex-col gap-3">
 			{newPosts?.map((post, idx) => (
-				<PostComponent key={idx} post={post} />
+				<PostComponent
+					key={idx}
+					post={{
+						...post,
+						description: post.description || undefined,
+						language: undefined,
+					}}
+				/>
 			))}
 			{hasMorePosts && (
 				<button

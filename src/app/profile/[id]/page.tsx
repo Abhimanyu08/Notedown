@@ -24,7 +24,11 @@ function Drafts() {
 						draftAndPostMap.get(tag as string)?.posts || [];
 					return (
 						<>
-							<TaggedDrafts tag={tag} {...{ drafts, posts }} />
+							<TaggedDrafts
+								tag={tag}
+								{...{ drafts, posts }}
+								key={tag}
+							/>
 						</>
 					);
 				})}

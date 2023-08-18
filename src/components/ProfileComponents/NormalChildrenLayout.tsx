@@ -44,7 +44,7 @@ function NormalChildrenLayout({
 			return (
 				<div className="flex flex-col">
 					<Divider>Uploaded</Divider>
-					<PostDisplay posts={searchResults} />
+					<PostDisplay posts={searchResults as any} />
 					<Divider>Drafts</Divider>
 					<DraftsDisplay rawObjects={draftSearchResults} />
 				</div>
@@ -52,7 +52,7 @@ function NormalChildrenLayout({
 		}
 
 		if (searchResults.length > 0) {
-			return <PostDisplay posts={searchResults} />;
+			return <PostDisplay posts={searchResults as any} />;
 		}
 		if (draftSearchResults.length > 0) {
 			return <DraftsDisplay rawObjects={draftSearchResults} />;

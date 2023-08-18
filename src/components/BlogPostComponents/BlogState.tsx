@@ -2,6 +2,7 @@
 import { ALLOWED_LANGUAGES, langToExtension } from "@utils/constants";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 import { EditorView } from "codemirror";
+import { ALL } from "dns";
 import React, {
 	Dispatch,
 	Reducer,
@@ -24,7 +25,7 @@ interface BlogStateInterface {
 		author: string;
 		blogger: { id: string; name: string };
 		description: string | null;
-		language: (typeof ALLOWED_LANGUAGES)[number] | null;
+		language: string | null;
 		imageFolder: string | null;
 	}>;
 	// canvasApps: Record<string, any>;
@@ -202,7 +203,7 @@ function BlogContextProvider({
 
 	useEffect(() => {
 		let language = blogState.blogMeta.language;
-		if (!language) return;
+		if (!language || !ALLOWED_LANGUAGES.includes(language as any)) return;
 		const {
 			containerId,
 			runningBlock,
@@ -267,9 +268,16 @@ function BlogContextProvider({
 					const blockFileName = checkFileName(firstLineOfBlock);
 					if (
 						blockFileName === fileName ||
-						blockFileName + langToExtension[language] ===
+						blockFileName +
+							langToExtension[
+								language as keyof typeof langToExtension
+							] ===
 							fileName ||
-						blockFileName === fileName + langToExtension[language]
+						blockFileName ===
+							fileName +
+								langToExtension[
+									language as keyof typeof langToExtension
+								]
 					) {
 						codeArray.push(blockToEditor[i].state.sliceDoc());
 					}
@@ -279,16 +287,20 @@ function BlogContextProvider({
 
 		const code = codeArray.join("\n");
 		const run = typeof writingBlock !== "number";
-		runCodeRequest({ code, run, containerId, fileName, language }).then(
-			(val) => {
-				// setBlockToOutput((prev) => ({ ...prev, [block]: val }));
-				dispatch({ type: "set output", payload: { [block]: val } });
+		runCodeRequest({
+			code,
+			run,
+			containerId,
+			fileName,
+			language: language as any,
+		}).then((val) => {
+			// setBlockToOutput((prev) => ({ ...prev, [block]: val }));
+			dispatch({ type: "set output", payload: { [block]: val } });
 
-				dispatch({ type: "set running block", payload: null });
-				dispatch({ type: "set writing block", payload: null });
-				dispatch({ type: "toggle running request", payload: null });
-			}
-		);
+			dispatch({ type: "set running block", payload: null });
+			dispatch({ type: "set writing block", payload: null });
+			dispatch({ type: "toggle running request", payload: null });
+		});
 	}, [blogState.runningBlock, blogState.writingBlock]);
 
 	return (
