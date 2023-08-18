@@ -1,35 +1,38 @@
 "use client";
+import PostDisplay from "@components/PostDisplay";
 import { NoTagDrafts } from "./_components/NoTagDrafts";
+import { ProfileContext } from "./_components/ProfileContext";
 import { TaggedDrafts } from "./_components/TaggedDrafts";
 import useRetrieveDrafts from "./_components/_hooks/useRetrieveDrafts";
 import PostsLoading from "./loading";
+import { useContext } from "react";
 
 function Drafts() {
-	const { tagToDraftMap, loadingDrafts } = useRetrieveDrafts();
-
+	const { loadingDrafts, draftAndPostMap } = useContext(ProfileContext);
 	if (loadingDrafts) {
 		return <PostsLoading numPosts={6} />;
 	}
 
-	if (tagToDraftMap.size > 0) {
+	if (draftAndPostMap.size > 0) {
 		return (
 			<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
-				{Array.from(tagToDraftMap.keys()).map((tag) => {
-					if (tag !== "notag")
-						return (
-							<TaggedDrafts
-								tag={tag}
-								rawObjects={
-									tagToDraftMap.get(tag as string) || []
-								}
-							/>
-						);
+				{Array.from(draftAndPostMap.keys()).map((tag) => {
+					if (tag === "notag") return;
+					const drafts =
+						draftAndPostMap.get(tag as string)?.drafts || [];
+					const posts =
+						draftAndPostMap.get(tag as string)?.posts || [];
+					return (
+						<>
+							<TaggedDrafts tag={tag} {...{ drafts, posts }} />
+						</>
+					);
 				})}
-				{tagToDraftMap.has("notag") && (
+				{/* {tagToDraftMap.has("notag") && (
 					<NoTagDrafts
 						rawObjects={tagToDraftMap.get("notag") || []}
 					/>
-				)}
+				)} */}
 			</div>
 		);
 	}

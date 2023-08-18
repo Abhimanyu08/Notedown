@@ -1,13 +1,17 @@
 "use client";
-import { RawObject } from "@utils/processDrafts";
+import { Draft, RawObject } from "@utils/processDrafts";
 import { DraftsDisplay } from "./DraftsDisplay";
+import { Database } from "@/interfaces/supabase";
+import PostDisplay from "@components/PostDisplay";
 
 export function TaggedDrafts({
 	tag,
-	rawObjects,
+	drafts,
+	posts,
 }: {
 	tag: string;
-	rawObjects: RawObject[];
+	drafts: RawObject[];
+	posts: Draft[];
 }) {
 	return (
 		<details>
@@ -15,7 +19,8 @@ export function TaggedDrafts({
 				{tag}
 			</summary>
 			<div className="border-l-2 border-border ml-1 pl-4">
-				<DraftsDisplay rawObjects={rawObjects} />
+				<DraftsDisplay rawObjects={drafts} />
+				<PostDisplay posts={posts} />
 			</div>
 		</details>
 	);

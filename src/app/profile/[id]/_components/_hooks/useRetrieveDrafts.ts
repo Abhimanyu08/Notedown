@@ -1,6 +1,6 @@
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { processNoTagDrafts } from "@utils/processDrafts";
+import { RawObject, processNoTagDrafts } from "@utils/processDrafts";
 import { useContext, useState, useEffect } from "react";
 
 export default function useRetrieveDrafts() {
@@ -8,7 +8,7 @@ export default function useRetrieveDrafts() {
     const [loadingDrafts, setLoadingDrafts] = useState(true);
     const { documentDb } = useContext(IndexedDbContext);
     const [tagToDraftMap, setTagToDraftMap] = useState(
-        new Map<string, { timeStamp: string; markdown: string }[]>()
+        new Map<string, RawObject[]>()
     );
 
     useEffect(() => {

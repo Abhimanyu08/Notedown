@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 
 export function SingleDraft({ draft }: { draft: Draft }) {
-	const { title, description } = draft.draftMeta;
+	const { title, description } = draft;
 	return (
 		<div className="flex flex-col group p-2 relative ">
 			<DraftOnPreviewIndicator draftId={draft.timeStamp} />

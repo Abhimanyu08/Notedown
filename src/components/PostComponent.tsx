@@ -5,37 +5,30 @@ import Link from "next/link";
 import PostOnPreviewColor from "./PostOnPreviewColor";
 import { PostOptions } from "./PostOptions";
 import PostTitle from "./PostTitle";
+import { Draft } from "@utils/processDrafts";
 
 export interface PostComponentProps {
-	post: Partial<SearchResult>;
+	post: Partial<Draft>;
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
-	const {
-		id,
-		title,
-		description,
-		published_on,
-		published,
-		created_at,
-		timestamp,
-	} = post;
+	const { postId: id, title, description, date, timeStamp, published } = post;
 
 	return (
 		<div className="relative">
 			<PostOptions
 				{...{
 					published: !!published,
-					postId: id!,
+					postId: parseInt(id!),
 					postTitle: title!,
-					timeStamp: timestamp || undefined,
+					timeStamp,
 				}}
 			/>
 			<Link
 				href={published ? `/post/${id}` : `/post/private/${id}`}
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
 			>
-				<PostOnPreviewColor postId={id!} />
+				<PostOnPreviewColor postId={parseInt(id!)} />
 
 				<PostTitle
 					{...{
@@ -44,11 +37,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 					}}
 				/>
 				<div className="flex gap-2 items-center text-xs text-gray-400">
-					<span>
-						{published && published_on
-							? `published on ${formatDate(published_on)}`
-							: `created on ${formatDate(created_at!)}`}
-					</span>
+					<p className="text-xs text-gray-400 mt-1">
+						<span className="">{date && formatDate(date)}</span>
+					</p>
 					<span
 						className={cn(
 							"rounded-lg px-1 text-xs underline underline-offset-2",

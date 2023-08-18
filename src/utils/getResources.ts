@@ -3,7 +3,7 @@ import { ALLOWED_LANGUAGES, DESCRIPTION_LENGTH, SUPABASE_FILES_BUCKET, TITLE_LEN
 import { supabase } from "./supabaseClient";
 
 
-type FrontMatter =
+export type FrontMatter =
     { title?: string, description?: string, language?: typeof ALLOWED_LANGUAGES[number] | null, tags?: string[] }
 
 

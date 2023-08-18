@@ -8,8 +8,6 @@ import { SUPABASE_POST_TABLE } from "@utils/constants";
 
 type PostWithBlogger = Partial<Database["public"]["Tables"]["posts"]["Row"]> & {
     bloggers?: Pick<Database["public"]["Tables"]["bloggers"]["Row"], "name" | "id">[] | Pick<Database["public"]["Tables"]["bloggers"]["Row"], "name" | "id"> | null
-    upvoter?: any
-    posts?: any
 };
 
 

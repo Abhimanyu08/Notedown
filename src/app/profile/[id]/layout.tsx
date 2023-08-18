@@ -2,12 +2,21 @@ import { LoggedInOptions } from "@components/Navbar/Options";
 import NewNoteButton from "@components/ProfileComponents/NewPostButton";
 import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
 import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
+import PostControl from "@components/ProfileComponents/PostControl";
 import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
 import SearchInput from "@components/ProfileComponents/SearchInput";
 import SearchProvider from "@components/ProfileComponents/SearchProvider";
 import SideSheet from "@components/SideSheet";
+import {
+	createServerComponentSupabaseClient,
+	createServerSupabaseClient,
+} from "@supabase/auth-helpers-nextjs";
+import { SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getUser } from "@utils/getData";
+import { Draft } from "@utils/processDrafts";
+import { cookies, headers } from "next/headers";
 import React from "react";
+import ProfileContextProvider from "./_components/ProfileContext";
 
 async function ProfilePostsLayout({
 	children,
@@ -19,15 +28,52 @@ async function ProfilePostsLayout({
 	params: { id: string };
 }) {
 	const { name, notebook_title, username } = (await getUser(params.id))!;
-	console.log("Notebook title ---------------> ", notebook_title);
+	const supabase = createServerComponentSupabaseClient({ headers, cookies });
 	let notebookTitle =
 		notebook_title !== null
 			? notebook_title
 			: name
 			? `${name}'s Notebook`
 			: "Anon's Notebook";
+
+	const { data: tagsData } = await supabase
+		.from(SUPABASE_TAGS_TABLE)
+		.select("tag_name, posts(id,title,description,created_at,timestamp)")
+		.match({ created_by: params.id });
+
+	const map = new Map<string, Draft[]>();
+	if (tagsData) {
+		for (let tagData of tagsData) {
+			if (tagData.posts) {
+				const posts = tagData.posts;
+				if (Array.isArray(posts)) {
+					map.set(
+						tagData.tag_name,
+						posts.map((p) => ({
+							date: p.created_at,
+							timeStamp: p.timestamp,
+							title: p.title,
+							description: p.description,
+							postId: p.id,
+						}))
+					);
+				} else {
+					map.set(tagData.tag_name, [
+						{
+							date: posts.created_at as string,
+							timeStamp: posts.timestamp,
+							title: posts.title,
+							description: posts.description,
+							postId: posts.id,
+						},
+					]);
+				}
+			}
+		}
+	}
+
 	return (
-		<>
+		<ProfileContextProvider tagToPostMap={map}>
 			<SideSheet>
 				<LoggedInOptions
 					{...{ name, notebook_title: notebookTitle, username }}
@@ -43,7 +89,6 @@ async function ProfilePostsLayout({
 
 						<OwnerOnlyStuff id={params.id}>
 							{/* <div className="flex justify-between col-span-1 px-2 mr-10">
-								<PostControl className="font-mono text-gray-400" />
 								<NoteTypeToggle className="text-gray-400 " />
 							</div> */}
 							<div className="flex justify-between px-2 col-span-1 mt-1 relative">
@@ -79,7 +124,7 @@ async function ProfilePostsLayout({
 					{postpreview}
 				</PostPreviewLayout>
 			</div>
-		</>
+		</ProfileContextProvider>
 	);
 }
 

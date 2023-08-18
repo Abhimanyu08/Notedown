@@ -1,13 +1,12 @@
 import formatDate from "./dateFormatter";
-import { parseFrontMatter } from "./getResources";
+import { FrontMatter, parseFrontMatter } from "./getResources";
 import { getMarkdownObjectStore } from "./indexDbFuncs";
 export type Draft = {
     timeStamp: string;
-    time: string;
     date: string;
-    draftMeta: ReturnType<typeof parseFrontMatter>["data"];
     postId?: string;
-};
+    published?: boolean
+} & FrontMatter;
 
 export type RawObject = { timeStamp: string, markdown: string, postId?: string }
 
@@ -44,17 +43,12 @@ export function rawObjectToDraft({ timeStamp, markdown, postId }: RawObject): Dr
     const { data } = parseFrontMatter(markdown);
     const formattedTimeStamp = new Date(parseInt(timeStamp));
     const date = formatDate(formattedTimeStamp);
-    const longTime = formattedTimeStamp.toLocaleTimeString();
 
-    const amOrPm = longTime.match(/[ap]m/)?.at(0);
-    const shortTime = longTime.split(":").slice(0, 2).join(":");
-    const time = `${shortTime} ${amOrPm}`;
 
     return {
         timeStamp,
         date,
-        time,
-        draftMeta: data,
+        ...data,
         postId,
     }
 
