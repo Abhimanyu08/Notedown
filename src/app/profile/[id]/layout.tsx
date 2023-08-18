@@ -1,7 +1,9 @@
 import { LoggedInOptions } from "@components/Navbar/Options";
 import NewNoteButton from "@components/ProfileComponents/NewPostButton";
 import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
-import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
+import OwnerOnlyStuff, {
+	NotOwnerOnlyStuff,
+} from "@components/ProfileComponents/OwnerOnlyStuff";
 import PostControl from "@components/ProfileComponents/PostControl";
 import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
 import SearchInput from "@components/ProfileComponents/SearchInput";
@@ -17,6 +19,7 @@ import { Draft } from "@utils/processDrafts";
 import { cookies, headers } from "next/headers";
 import React from "react";
 import ProfileContextProvider from "./_components/ProfileContext";
+import { TaggedDrafts } from "./_components/TaggedDrafts";
 
 async function ProfilePostsLayout({
 	children,
@@ -29,6 +32,10 @@ async function ProfilePostsLayout({
 }) {
 	const { name, notebook_title, username } = (await getUser(params.id))!;
 	const supabase = createServerComponentSupabaseClient({ headers, cookies });
+	const {
+		data: { session },
+	} = await supabase.auth.getSession();
+
 	let notebookTitle =
 		notebook_title !== null
 			? notebook_title
@@ -90,15 +97,13 @@ async function ProfilePostsLayout({
 							{notebookTitle}
 						</h1>
 
-						<OwnerOnlyStuff id={params.id}>
-							{/* <div className="flex justify-between col-span-1 px-2 mr-10">
-								<NoteTypeToggle className="text-gray-400 " />
-							</div> */}
+						<OwnerOnlyStuff id={params.id} session={session}>
 							<div className="flex justify-between px-2 col-span-1 mt-1 relative">
 								<SearchInput className="basis-1/2" />
 								<NewNoteButton />
 							</div>
 						</OwnerOnlyStuff>
+
 						<div className="h-[2px] bg-border col-span-1 mt-4"></div>
 						<div
 							className="
@@ -109,7 +114,28 @@ async function ProfilePostsLayout({
 				"
 						>
 							<NormalChildrenLayout>
-								{children}
+								<NotOwnerOnlyStuff
+									id={params.id}
+									session={session}
+								>
+									<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
+										{Array.from(map.keys()).map((tag) => {
+											return (
+												<TaggedDrafts
+													posts={map.get(tag) || []}
+													drafts={[]}
+													tag={tag}
+												/>
+											);
+										})}
+									</div>
+								</NotOwnerOnlyStuff>
+								<OwnerOnlyStuff
+									id={params.id}
+									session={session}
+								>
+									{children}
+								</OwnerOnlyStuff>
 							</NormalChildrenLayout>
 						</div>
 					</div>

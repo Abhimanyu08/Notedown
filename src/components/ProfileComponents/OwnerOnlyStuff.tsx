@@ -1,24 +1,36 @@
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import {
+	Session,
+	createServerComponentSupabaseClient,
+} from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
 import React from "react";
 
 async function OwnerOnlyStuff({
 	children,
 	id,
+	session,
 }: {
 	children: React.ReactNode;
 	id: string;
+	session: Session | null;
 }) {
-	const supabase = createServerComponentSupabaseClient({
-		headers,
-		cookies,
-	});
-
-	const {
-		data: { session },
-	} = await supabase.auth.getSession();
-
 	if (session?.user.id && session.user.id === id) {
+		return <>{children}</>;
+	}
+
+	return <></>;
+}
+
+export async function NotOwnerOnlyStuff({
+	children,
+	id,
+	session,
+}: {
+	children: React.ReactNode;
+	id: string;
+	session: Session | null;
+}) {
+	if (!session?.user.id || session.user.id !== id) {
 		return <>{children}</>;
 	}
 

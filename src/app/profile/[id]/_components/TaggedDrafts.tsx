@@ -1,4 +1,3 @@
-"use client";
 import { Draft, RawObject } from "@utils/processDrafts";
 import { DraftsDisplay } from "./DraftsDisplay";
 import { Database } from "@/interfaces/supabase";

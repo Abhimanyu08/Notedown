@@ -46,7 +46,7 @@ function ProfileContextProvider({
 		}
 
 		setDraftAndPostMap(map);
-	}, [loadingDrafts]);
+	}, [loadingDrafts, tagToPostMap]);
 
 	return (
 		<ProfileContext.Provider value={{ draftAndPostMap, loadingDrafts }}>
