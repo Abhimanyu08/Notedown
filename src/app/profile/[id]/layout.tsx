@@ -57,6 +57,7 @@ async function ProfilePostsLayout({
 							title: p.title,
 							description: p.description,
 							postId: p.id,
+							published: p.published,
 						}))
 					);
 				} else {
