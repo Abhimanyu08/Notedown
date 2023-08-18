@@ -38,7 +38,9 @@ async function ProfilePostsLayout({
 
 	const { data: tagsData } = await supabase
 		.from(SUPABASE_TAGS_TABLE)
-		.select("tag_name, posts(id,title,description,created_at,timestamp)")
+		.select(
+			"tag_name, posts(id,title,description,created_at,timestamp,published)"
+		)
 		.match({ created_by: params.id });
 
 	const map = new Map<string, Draft[]>();
