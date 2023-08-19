@@ -73,16 +73,16 @@ export interface Database {
       }
       blogtag: {
         Row: {
-          blog_id: number | null
-          tag_id: number | null
+          blog_id: number
+          tag_id: number
         }
         Insert: {
-          blog_id?: number | null
-          tag_id?: number | null
+          blog_id: number
+          tag_id: number
         }
         Update: {
-          blog_id?: number | null
-          tag_id?: number | null
+          blog_id?: number
+          tag_id?: number
         }
         Relationships: [
           {
@@ -218,6 +218,25 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      note_search: {
+        Args: {
+          user_id: string
+          search_term: string
+        }
+        Returns: {
+          id: number
+          created_by: string
+          title: string
+          description: string
+          published: boolean
+          created_at: string
+          published_on: string
+          language: string
+          upvote_count: number
+          author: string
+          timestamp: string
+        }[]
+      }
       private_search: {
         Args: {
           user_id: string
@@ -296,6 +315,46 @@ export interface Database {
           search_rank: number
         }[]
       }
+      search:
+        | {
+            Args: {
+              user_id: string
+              search_term: string
+              cursor: number
+            }
+            Returns: {
+              id: number
+              created_by: string
+              title: string
+              description: string
+              published: boolean
+              created_at: string
+              published_on: string
+              language: string
+              upvote_count: number
+              author: string
+              timestamp: string
+            }[]
+          }
+        | {
+            Args: {
+              user_id: string
+              search_term: string
+            }
+            Returns: {
+              id: number
+              created_by: string
+              title: string
+              description: string
+              published: boolean
+              created_at: string
+              published_on: string
+              language: string
+              upvote_count: number
+              author: string
+              timestamp: string
+            }[]
+          }
       search_upvotes: {
         Args: {
           user_id: string

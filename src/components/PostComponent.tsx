@@ -37,9 +37,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 					}}
 				/>
 				<div className="flex gap-2 items-center text-xs text-gray-400">
-					<p className="text-xs text-gray-400 mt-1">
-						<span className="">{date && formatDate(date)}</span>
-					</p>
+					<span className="">{date && formatDate(date)}</span>
 					<span
 						className={cn(
 							"rounded-lg px-1 text-xs underline underline-offset-2",

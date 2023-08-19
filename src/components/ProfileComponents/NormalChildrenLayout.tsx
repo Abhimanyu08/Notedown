@@ -7,6 +7,7 @@ import { rawObjectToDraft } from "@utils/processDrafts";
 import PostDisplay from "@components/PostDisplay";
 import Divider from "@components/ui/divider";
 import { DraftsDisplay } from "@/app/profile/[id]/_components/DraftsDisplay";
+import { postToDraft } from "@utils/postToDraft";
 
 function NormalChildrenLayout({
 	children,
@@ -38,21 +39,28 @@ function NormalChildrenLayout({
 		}
 
 		if (searchResults.length > 0 && draftSearchResults.length > 0) {
-			// const drafts = draftSearchResults.map((raw) =>
-			// 	rawObjectToDraft(raw)
-			// );
+			const postTimeStamps: string[] = [];
+			const uploadedDrafts = searchResults.map((result) => {
+				postTimeStamps.push(result.timestamp);
+				return postToDraft(result);
+			});
+			const filteredDrafts = draftSearchResults.filter(
+				(draft) => !postTimeStamps.includes(draft.timeStamp)
+			);
 			return (
-				<div className="flex flex-col">
-					<Divider>Uploaded</Divider>
-					<PostDisplay posts={searchResults as any} />
-					<Divider>Drafts</Divider>
-					<DraftsDisplay rawObjects={draftSearchResults} />
+				<div className="flex flex-col gap-4">
+					<PostDisplay posts={uploadedDrafts} />
+					<DraftsDisplay rawObjects={filteredDrafts} />
 				</div>
 			);
 		}
 
 		if (searchResults.length > 0) {
-			return <PostDisplay posts={searchResults as any} />;
+			return (
+				<PostDisplay
+					posts={searchResults.map((result) => postToDraft(result))}
+				/>
+			);
 		}
 		if (draftSearchResults.length > 0) {
 			return <DraftsDisplay rawObjects={draftSearchResults} />;

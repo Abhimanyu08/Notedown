@@ -5,25 +5,21 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { SEARCH_PRIVATE, SEARCH_PUBLC } from "@utils/constants";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { RawObject } from "@utils/processDrafts";
-import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import useOwner from "./useOwner";
+import { useParams } from "next/navigation";
 
 export default function useSearch(query: string) {
 
     const { supabase, session } = useSupabase()
     const [searching, setSearching] = useState(false)
-    const [searchResults, setSearchResults] = useState<Database["public"]["Functions"]["private_search"]["Returns"]>([])
+    const [searchResults, setSearchResults] = useState<Database["public"]["Functions"]["search"]["Returns"]>([])
     const [draftSearchResults, setDraftSearchResults] = useState<RawObject[]>([])
     const [searchError, setSearchError] = useState<Error | PostgrestError | null>(null)
-    const [owner, setOwner] = useState(false)
     const { documentDb } = useContext(IndexedDbContext)
-    const pathname = usePathname()
+    const owner = useOwner()
+    const params = useParams()
 
-    useEffect(() => {
-
-        setOwner(!!(session?.user.id !== undefined && pathname?.split("/").at(2) === session.user.id))
-
-    }, [session?.user.id])
 
     useEffect(() => {
 
@@ -51,7 +47,8 @@ export default function useSearch(query: string) {
                 if (cursor) {
                     const record = (cursor.value as RawObject);
                     const regexpQuery = new RegExp(searchQuery, "i")
-                    if (record.markdown.search(regexpQuery)) {
+                    const searchRes = record.markdown.search(regexpQuery)
+                    if (searchRes > -1) {
                         results.push(record)
                     }
                     cursor.continue();
@@ -63,14 +60,10 @@ export default function useSearch(query: string) {
 
         try {
 
-            const searchFunction = owner ? SEARCH_PRIVATE : SEARCH_PUBLC
-            const searchParams = owner ? {
-                user_id: session!.user.id,
+            const searchFunction = "search"
+            const searchParams = {
+                user_id: params!.id as string,
                 search_term: searchQuery,
-                cursor: 1
-            } : {
-                search_term: searchQuery,
-                cursor: 1
             }
 
             supabase.rpc(searchFunction, searchParams).then((val) => {

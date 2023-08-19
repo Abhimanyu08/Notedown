@@ -4,15 +4,11 @@ import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLa
 import OwnerOnlyStuff, {
 	NotOwnerOnlyStuff,
 } from "@components/ProfileComponents/OwnerOnlyStuff";
-import PostControl from "@components/ProfileComponents/PostControl";
 import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
 import SearchInput from "@components/ProfileComponents/SearchInput";
 import SearchProvider from "@components/ProfileComponents/SearchProvider";
 import SideSheet from "@components/SideSheet";
-import {
-	createServerComponentSupabaseClient,
-	createServerSupabaseClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getUser } from "@utils/getData";
 import { Draft } from "@utils/processDrafts";
@@ -20,6 +16,7 @@ import { cookies, headers } from "next/headers";
 import React from "react";
 import ProfileContextProvider from "./_components/ProfileContext";
 import { TaggedDrafts } from "./_components/TaggedDrafts";
+import { postToDraft } from "@utils/postToDraft";
 
 async function ProfilePostsLayout({
 	children,
@@ -61,42 +58,27 @@ async function ProfilePostsLayout({
 						tagData.tag_name,
 						posts.map((p) => {
 							postWithTagIds.push(p.id);
-							return {
-								date: p.created_at,
-								timeStamp: p.timestamp,
-								title: p.title,
-								description: p.description,
-								postId: p.id,
-								published: p.published,
-							};
+							return postToDraft(p);
 						})
 					);
 				} else {
 					postWithTagIds.push(posts.id);
-					map.set(tagData.tag_name, [
-						{
-							date: posts.created_at as string,
-							timeStamp: posts.timestamp,
-							title: posts.title,
-							description: posts.description,
-							postId: posts.id,
-						},
-					]);
+					map.set(tagData.tag_name, [postToDraft(posts)]);
 				}
 			}
 		}
 	}
 
-	const { data } = await supabase
+	const { data: postWithoutTags } = await supabase
 		.from(SUPABASE_POST_TABLE)
 		.select("id,title,description,created_at,timestamp,published")
 		.match({ created_by: params.id })
 		.not("id", "in", `(${postWithTagIds.join(",")})`);
 
-	if (data) {
+	if (postWithoutTags) {
 		map.set(
 			"notag",
-			data.map((p) => {
+			postWithoutTags.map((p) => {
 				return {
 					date: p.created_at,
 					timeStamp: p.timestamp,

@@ -3,7 +3,6 @@ import { Input } from "@components/ui/input";
 import { useContext, useRef } from "react";
 import { SearchContext } from "./SearchProvider";
 import { cn } from "@/lib/utils";
-import { Button } from "@components/ui/button";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { AiFillCloseCircle } from "react-icons/ai";
 
@@ -31,7 +30,8 @@ function SearchInput({ className }: { className?: string }) {
 					}}
 				/>
 				{((searchMeta?.searchResults.length || 0) > 0 ||
-					searchMeta?.searchError) && (
+					searchMeta?.searchError ||
+					(searchMeta?.draftSearchResults.length || 0) > 0) && (
 					<ToolTipComponent
 						tip="Clear search results"
 						side="right"
