@@ -13,7 +13,7 @@ import {
 	createServerComponentSupabaseClient,
 	createServerSupabaseClient,
 } from "@supabase/auth-helpers-nextjs";
-import { SUPABASE_TAGS_TABLE } from "@utils/constants";
+import { SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getUser } from "@utils/getData";
 import { Draft } from "@utils/processDrafts";
 import { cookies, headers } from "next/headers";
@@ -50,6 +50,7 @@ async function ProfilePostsLayout({
 		)
 		.match({ created_by: params.id });
 
+	const postWithTagIds = [];
 	const map = new Map<string, Draft[]>();
 	if (tagsData) {
 		for (let tagData of tagsData) {
@@ -58,16 +59,20 @@ async function ProfilePostsLayout({
 				if (Array.isArray(posts)) {
 					map.set(
 						tagData.tag_name,
-						posts.map((p) => ({
-							date: p.created_at,
-							timeStamp: p.timestamp,
-							title: p.title,
-							description: p.description,
-							postId: p.id,
-							published: p.published,
-						}))
+						posts.map((p) => {
+							postWithTagIds.push(p.id);
+							return {
+								date: p.created_at,
+								timeStamp: p.timestamp,
+								title: p.title,
+								description: p.description,
+								postId: p.id,
+								published: p.published,
+							};
+						})
 					);
 				} else {
+					postWithTagIds.push(posts.id);
 					map.set(tagData.tag_name, [
 						{
 							date: posts.created_at as string,
@@ -82,6 +87,26 @@ async function ProfilePostsLayout({
 		}
 	}
 
+	const { data } = await supabase
+		.from(SUPABASE_POST_TABLE)
+		.select("id,title,description,created_at,timestamp,published")
+		.not("id", "in", `(${postWithTagIds.join(",")})`);
+
+	if (data) {
+		map.set(
+			"notag",
+			data.map((p) => {
+				return {
+					date: p.created_at,
+					timeStamp: p.timestamp,
+					title: p.title,
+					description: p.description,
+					postId: p.id,
+					published: p.published,
+				};
+			})
+		);
+	}
 	return (
 		<ProfileContextProvider tagToPostMap={map}>
 			<SideSheet>

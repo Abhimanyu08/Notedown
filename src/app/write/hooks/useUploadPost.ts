@@ -132,10 +132,29 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         return tagIds
     }
 
+
+
     const uploadBlogTag = async ({ postId, tagIds }: { postId: number, tagIds: number[] }) => {
         const tagBlogData = tagIds.map((tid) => ({ tag_id: tid, blog_id: postId }))
 
-        await tryNTimesSupabaseTableFunction<Database["public"]["Tables"]["blogtag"]["Row"]>(() => supabase.from(SUPABASE_BLOGTAG_TABLE).insert(tagBlogData).select("*"), 3);
+        for (let tagBlog of tagBlogData) {
+            // can't bulk insert cause we may be violating unique key constraint on (blog_id, tag_id)
+            await supabase.from(SUPABASE_BLOGTAG_TABLE).insert(tagBlog)
+        }
+
+    }
+
+    const deleteBlogTags = async ({ postId, tagIds }: { postId: number, tagIds: number[] }) => {
+        //we may have to delete some combination of tag and posts cause user may have deleted some tags from his post
+        const { data } = await supabase.from(SUPABASE_BLOGTAG_TABLE).select("tag_id, blog_id").match({ blog_id: postId })
+        if (data) {
+            const rowsToDelete = data.filter((d) => !(tagIds.includes(d.tag_id!)))
+            console.log(rowsToDelete)
+            for (let { blog_id, tag_id } of rowsToDelete) {
+                await supabase.from(SUPABASE_BLOGTAG_TABLE).delete().match({ blog_id, tag_id })
+            }
+        }
+
     }
 
     const uploadPostMarkdownFile = async ({ postId, markdownFile }: { postId: Number, markdownFile: File }) => {
@@ -252,6 +271,16 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         toastContext?.setMessage("updating post row")
         //update the post row in the table to have new title,description,language etc.
         await updatePostRow({ postId, ...postMeta })
+        const tags = postMeta.tags
+
+        if (tags) {
+            const tagIds = await uploadTags({ tags })
+            await deleteBlogTags({ postId, tagIds })
+            await uploadBlogTag({ postId, tagIds })
+        }
+        else {
+            await deleteBlogTags({ postId, tagIds: [] })
+        }
         // upload new markdown file for the blog post
         toastContext?.setMessage("updating markdown file")
         await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })

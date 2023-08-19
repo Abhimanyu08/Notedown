@@ -1,11 +1,8 @@
 "use client";
-import PostDisplay from "@components/PostDisplay";
-import { NoTagDrafts } from "./_components/NoTagDrafts";
+import { useContext } from "react";
 import { ProfileContext } from "./_components/ProfileContext";
 import { TaggedDrafts } from "./_components/TaggedDrafts";
-import useRetrieveDrafts from "./_components/_hooks/useRetrieveDrafts";
 import PostsLoading from "./loading";
-import { useContext } from "react";
 
 function Drafts() {
 	const { loadingDrafts, draftAndPostMap } = useContext(ProfileContext);
@@ -32,11 +29,13 @@ function Drafts() {
 						</>
 					);
 				})}
-				{/* {tagToDraftMap.has("notag") && (
-					<NoTagDrafts
-						rawObjects={tagToDraftMap.get("notag") || []}
+				{draftAndPostMap.has("notag") && (
+					<TaggedDrafts
+						tag="notag"
+						drafts={draftAndPostMap.get("notag")?.drafts || []}
+						posts={draftAndPostMap.get("notag")?.posts || []}
 					/>
-				)} */}
+				)}
 			</div>
 		);
 	}
