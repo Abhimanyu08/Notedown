@@ -17,7 +17,7 @@ export function TaggedDrafts({
 	}
 	if (tag === "notag") {
 		return (
-			<div className="pl-4 border-l-2 border-border ml-1">
+			<div className="pl-4 border-l-2 border-border ml-1 gap-4">
 				<DraftsDisplay rawObjects={drafts} tag={tag} />
 				<PostDisplay posts={posts} tag={tag} />
 			</div>
@@ -28,7 +28,7 @@ export function TaggedDrafts({
 			<summary className="text-lg font-serif font-bold cursor-pointer">
 				{tag}
 			</summary>
-			<div className="border-l-2 border-border ml-1 pl-4">
+			<div className="border-l-2 border-border ml-1 pl-4 gap-4">
 				<DraftsDisplay rawObjects={drafts} tag={tag} />
 				<PostDisplay posts={posts} tag={tag} />
 			</div>

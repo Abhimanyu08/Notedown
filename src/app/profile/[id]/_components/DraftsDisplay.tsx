@@ -15,7 +15,7 @@ export function DraftsDisplay({
 			{drafts.map((draft) => {
 				return (
 					<div
-						className="flex flex-col  relative "
+						className="flex flex-col relative"
 						key={draft.timeStamp}
 					>
 						<SingleDraft draft={draft} tag={tag} />
