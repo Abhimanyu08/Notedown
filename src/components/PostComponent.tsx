@@ -9,9 +9,10 @@ import { Draft } from "@utils/processDrafts";
 
 export interface PostComponentProps {
 	post: Partial<Draft>;
+	tag?: string;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
+const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 	const { postId: id, title, description, date, timeStamp, published } = post;
 
 	return (
@@ -25,10 +26,14 @@ const PostComponent: React.FC<PostComponentProps> = ({ post }) => {
 				}}
 			/>
 			<Link
-				href={published ? `/post/${id}` : `/post/private/${id}`}
+				href={
+					published
+						? `/post/${id}?tag=${tag}`
+						: `/post/private/${id}?tag=${tag}`
+				}
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
 			>
-				<PostOnPreviewColor postId={parseInt(id!)} />
+				<PostOnPreviewColor postId={parseInt(id!)} tag={tag} />
 
 				<PostTitle
 					{...{

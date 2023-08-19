@@ -5,13 +5,14 @@ import { Draft } from "@utils/processDrafts";
 
 interface PostDisplayProps {
 	posts: Draft[];
+	tag?: string;
 }
 
-function PostDisplay({ posts }: PostDisplayProps) {
+function PostDisplay({ posts, tag }: PostDisplayProps) {
 	return (
 		<div className="flex flex-col gap-3">
 			{posts.map((post) => (
-				<PostComponent key={post.postId} post={post} />
+				<PostComponent key={post.postId} post={post} tag={tag} />
 			))}
 		</div>
 	);

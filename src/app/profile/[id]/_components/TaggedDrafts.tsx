@@ -18,8 +18,8 @@ export function TaggedDrafts({
 	if (tag === "notag") {
 		return (
 			<div className="pl-4 border-l-2 border-border ml-1">
-				<DraftsDisplay rawObjects={drafts} />
-				<PostDisplay posts={posts} />
+				<DraftsDisplay rawObjects={drafts} tag={tag} />
+				<PostDisplay posts={posts} tag={tag} />
 			</div>
 		);
 	}
@@ -29,8 +29,8 @@ export function TaggedDrafts({
 				{tag}
 			</summary>
 			<div className="border-l-2 border-border ml-1 pl-4">
-				<DraftsDisplay rawObjects={drafts} />
-				<PostDisplay posts={posts} />
+				<DraftsDisplay rawObjects={drafts} tag={tag} />
+				<PostDisplay posts={posts} tag={tag} />
 			</div>
 		</details>
 	);

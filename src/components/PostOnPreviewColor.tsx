@@ -1,13 +1,16 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { motion } from "framer-motion";
 
-function PostOnPreviewColor({ postId }: { postId: number }) {
-	const pathname = usePathname();
+function PostOnPreviewColor({ postId, tag }: { postId: number; tag?: string }) {
+	const params = useParams();
+	const searchParams = useSearchParams();
+	console.log(params?.postId);
 	const onPreview =
-		pathname === `/post/${postId}` ||
-		pathname === `/post/private/${postId}`;
+		parseInt(params?.postId as string) === postId &&
+		searchParams?.get("tag") === tag;
+	console.log(onPreview);
 	if (!onPreview) return <></>;
 	return (
 		<motion.div

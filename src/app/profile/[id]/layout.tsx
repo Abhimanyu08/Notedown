@@ -101,9 +101,9 @@ async function ProfilePostsLayout({
 			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
 					<div className="flex flex-col col-span-1 row-span-1 gap-4 p-4 pt-10">
-						<h1 className="font-serif text-4xl px-2">
+						{/* <h1 className="font-serif text-4xl px-2">
 							{notebookTitle}
-						</h1>
+						</h1> */}
 
 						<OwnerOnlyStuff id={params.id} session={session}>
 							<div className="flex justify-between px-2 col-span-1 mt-1 relative">
