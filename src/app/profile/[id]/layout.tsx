@@ -90,6 +90,7 @@ async function ProfilePostsLayout({
 	const { data } = await supabase
 		.from(SUPABASE_POST_TABLE)
 		.select("id,title,description,created_at,timestamp,published")
+		.match({ created_by: params.id })
 		.not("id", "in", `(${postWithTagIds.join(",")})`);
 
 	if (data) {
