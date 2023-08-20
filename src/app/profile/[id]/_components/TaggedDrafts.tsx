@@ -1,6 +1,5 @@
 import { Draft, RawObject } from "@utils/processDrafts";
 import { DraftsDisplay } from "./DraftsDisplay";
-import { Database } from "@/interfaces/supabase";
 import PostDisplay from "@components/PostDisplay";
 
 export function TaggedDrafts({
