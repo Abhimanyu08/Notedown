@@ -30,9 +30,10 @@ interface CodeProps {
 	//These start and end number are the start and end positions of this code block in markdown
 	start: number;
 	end: number;
+	file?: string;
 }
 
-function Code({ code, blockNumber, start, end }: CodeProps) {
+function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 	const { blogState, dispatch } = useContext(BlogContext);
 	const { language } = blogState.blogMeta;
 
@@ -48,8 +49,8 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 	});
 	useSyncHook({
 		editorView,
-		startOffset: start + 4,
-		endOffset: end - 4,
+		startOffset: start,
+		endOffset: end,
 	});
 
 	useEffect(() => {
@@ -84,6 +85,13 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 		};
 	}, [blockNumber, editorView]);
 
+	useEffect(() => {
+		dispatch({
+			type: "set block to filename",
+			payload: { [blockNumber]: file || "main" },
+		});
+	}, [file]);
+
 	const onUndo: MouseEventHandler = () => {
 		const docLength = editorView?.state.doc.length;
 
@@ -97,31 +105,32 @@ function Code({ code, blockNumber, start, end }: CodeProps) {
 		if (blogState.vimEnabled !== vimEnabledLocally) toggleVim();
 	}, [blogState.vimEnabled, editorView]);
 
+	const onRunCode = () => {
+		setOpenShell(true);
+		dispatch({
+			type: "set running block",
+			payload: blockNumber,
+		});
+	};
+
+	const onWriteCode = () => {
+		dispatch({
+			type: "set writing block",
+			payload: blockNumber,
+		});
+	};
+
 	return (
 		<CodeBlock>
 			<CodeBlockButtons>
 				<CodeBlockButton
-					onClick={() => {
-						// setRunningBlock(blockNumber);
-						setOpenShell(true);
-						dispatch({
-							type: "set running block",
-							payload: blockNumber,
-						});
-					}}
+					onClick={onRunCode}
 					tip="Run Code (Shift+Enter)"
 				>
 					<BsPlayFill size={16} />
 				</CodeBlockButton>
 				<CodeBlockButton
-					onClick={() => {
-						// setRunningBlock(blockNumber);
-						setOpenShell(true);
-						dispatch({
-							type: "set writing block",
-							payload: blockNumber,
-						});
-					}}
+					onClick={onWriteCode}
 					tip="Write code to file without running"
 				>
 					<BsPencilFill size={11} />

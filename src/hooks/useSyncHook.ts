@@ -33,8 +33,6 @@ export default function useSyncHook({ editorView, startOffset, endOffset, sandbo
 
         });
     }, [
-        // startOffset,
-        // endOffset,
         editorView,
         markdownEditorContext?.editorState?.frontMatterLength,
     ]);

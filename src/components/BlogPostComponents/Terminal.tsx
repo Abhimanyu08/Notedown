@@ -59,8 +59,6 @@ function Terminal({
 
 	useEffect(() => {
 		if (!containerId) {
-			// setBlockToOutput({ [blockNumber]: "Please enable remote code execution" })
-			// dispatch({ type: "set output", payload: { [blockNumber]: "Please enable remote code execution" } })
 			terminal?.writeln(
 				"\r\n" + "Please enable remote code execution" || ""
 			);

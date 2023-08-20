@@ -221,15 +221,36 @@ const tagToJsx: TagToJsx = {
 				if (key !== undefined && val !== undefined)
 					blockMeta[key] = val;
 			});
-			return (
-				<CodeWithoutLanguage
-					code={code}
-					language={blockMeta.lang as string}
-					showLineNumbers={blockMeta.sln as boolean}
-					theme={blockMeta.theme as string}
-					start={start}
-				/>
-			);
+			if (Object.hasOwn(blockMeta, "file")) {
+				BLOCK_NUMBER += 1;
+				return (
+					<Code
+						code={code}
+						key={BLOCK_NUMBER}
+						blockNumber={BLOCK_NUMBER}
+						{...{
+							start: start + blockMetaString.length + 4,
+							end: end - 4,
+						}}
+						file={blockMeta.file as string}
+					/>
+				);
+			}
+			if (
+				["lang", "sln", "theme"].every((i) =>
+					Object.hasOwn(blockMeta, i)
+				)
+			) {
+				return (
+					<CodeWithoutLanguage
+						code={code}
+						language={blockMeta.lang as string}
+						showLineNumbers={blockMeta.sln as boolean}
+						theme={blockMeta.theme as string}
+						start={start}
+					/>
+				);
+			}
 		}
 
 		BLOCK_NUMBER += 1;
@@ -238,7 +259,7 @@ const tagToJsx: TagToJsx = {
 				code={code}
 				key={BLOCK_NUMBER}
 				blockNumber={BLOCK_NUMBER}
-				{...{ start, end }}
+				{...{ start: start + 4, end: end - 4 }}
 			/>
 		);
 	},

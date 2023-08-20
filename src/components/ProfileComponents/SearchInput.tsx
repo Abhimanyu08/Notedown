@@ -34,7 +34,7 @@ function SearchInput({ className }: { className?: string }) {
 					(searchMeta?.draftSearchResults.length || 0) > 0) && (
 					<ToolTipComponent
 						tip="Clear search results"
-						side="right"
+						side="bottom"
 						onClick={() => {
 							if (setSearchQuery) setSearchQuery("");
 							if (inputRef.current) inputRef.current.value = "";

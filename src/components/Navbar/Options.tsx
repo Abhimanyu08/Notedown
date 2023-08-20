@@ -123,7 +123,7 @@ export function LoggedInOptions({
 								ref={nameRef}
 							/>
 						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
+						{/* <div className="grid grid-cols-4 items-center gap-4">
 							<Label htmlFor="username" className="text-right">
 								Title
 							</Label>
@@ -134,7 +134,7 @@ export function LoggedInOptions({
 								placeholder="A title for your note collection"
 								ref={titleRef}
 							/>
-						</div>
+						</div> */}
 						<div className="grid grid-cols-4 items-center gap-4">
 							<Label htmlFor="username" className="text-right">
 								Username

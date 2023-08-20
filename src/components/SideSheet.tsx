@@ -6,7 +6,7 @@ function SideSheet({ children }: { children: React.ReactNode }) {
 		<Sheet>
 			<SheetTrigger className="absolute top-6 right-8 z-50">
 				<button>
-					<RxHamburgerMenu size={26} />
+					<RxHamburgerMenu size={20} />
 				</button>
 			</SheetTrigger>
 			<SheetContent side={"right"} className="border-border">
