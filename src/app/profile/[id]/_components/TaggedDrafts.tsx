@@ -16,7 +16,7 @@ export function TaggedDrafts({
 	}
 	if (tag === "notag") {
 		return (
-			<div className="pl-4 border-l-2 border-border ml-1 gap-4">
+			<div className="gap-4 ml-1">
 				<DraftsDisplay rawObjects={drafts} tag={tag} />
 				<PostDisplay posts={posts} tag={tag} />
 			</div>
