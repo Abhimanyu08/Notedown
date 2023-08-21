@@ -14,11 +14,13 @@ import {
 import useOwner from "@/hooks/useOwner";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useContext, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import { IndexedDbContext } from "./Contexts/IndexedDbContext";
 
 export function PostOptions({
 	published,
@@ -37,6 +39,7 @@ export function PostOptions({
 	>("");
 	const [isPending, startTransition] = useTransition();
 	const pathname = usePathname();
+	const { documentDb } = useContext(IndexedDbContext);
 
 	return (
 		<>
@@ -46,6 +49,16 @@ export function PostOptions({
 				isActionPending={isPending}
 				onAction={() => {
 					startTransition(() => {
+						if (documentDb && timeStamp) {
+							removePostIdFromDraftObject(
+								documentDb,
+								timeStamp
+							).then(() => {
+								if (deletePostAction) deletePostAction(postId);
+								setTakenAction("");
+							});
+							return;
+						}
 						if (deletePostAction) deletePostAction(postId);
 						setTakenAction("");
 					});
@@ -148,4 +161,21 @@ export function PostOptions({
 			)}
 		</>
 	);
+}
+function removePostIdFromDraftObject(
+	db: IDBDatabase,
+	key: string
+): Promise<void> {
+	const mdObjectStore = getMarkdownObjectStore(db);
+
+	const mdReq = mdObjectStore.get(key);
+
+	return new Promise((res) => {
+		mdReq.onsuccess = () => {
+			const previousData = mdReq.result;
+			delete previousData["postId"];
+			mdObjectStore.put(previousData);
+			res();
+		};
+	});
 }

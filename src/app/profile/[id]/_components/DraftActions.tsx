@@ -25,11 +25,7 @@ export function DraftActions({ draft }: { draft: Draft }) {
 				<MenubarContent className="min-w-0 border-border">
 					<MenubarItem className="">
 						<Link
-							href={
-								draft.postId
-									? `/write/${draft.postId}?draft=${draft.timeStamp}`
-									: `/write?draft=${draft.timeStamp}`
-							}
+							href={`/write?draft=${draft.timeStamp}`}
 							prefetch={false}
 							className="flex gap-2 items-center"
 						>
