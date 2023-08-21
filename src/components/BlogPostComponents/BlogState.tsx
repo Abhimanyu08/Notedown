@@ -1,4 +1,5 @@
 "use client";
+import { useJumpBetweenCodeBlocks } from "@/hooks/useJumpBetweenCodeBlocks";
 import { useRunCode } from "@/hooks/useRunCode";
 import { ALLOWED_LANGUAGES, langToExtension } from "@utils/constants";
 import { sendRequestToRceServer } from "@utils/sendRequest";
@@ -209,6 +210,7 @@ function BlogContextProvider({
 	}, [blogState.containerId]);
 
 	useRunCode({ blogState, dispatch });
+	useJumpBetweenCodeBlocks({ blogState });
 
 	return (
 		<BlogContext.Provider value={{ blogState, dispatch }}>
