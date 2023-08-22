@@ -23,10 +23,6 @@ function PostPreviewControls({
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
-	useShortCut({
-		keys: ["Escape"],
-		callback: () => router.push(`/profile/${params?.id}`),
-	});
 
 	return (
 		<>
@@ -48,12 +44,8 @@ function PostPreviewControls({
 					<BiBookContent size={24} />
 				</Button>
 				<ToolTipComponent
-					tip="Close preview (Esc)"
+					tip="Close preview"
 					onClick={() => {
-						// if (pathname?.includes("/draft")) {
-						// 	router.push(`/profile/${params?.id}/drafts`);
-						// 	return;
-						// }
 						router.push(`/profile/${params?.id}`);
 					}}
 					className=" text-gray-400 hover:text-white active:scale-95"
