@@ -17,6 +17,7 @@ import React from "react";
 import ProfileContextProvider from "./_components/ProfileContext";
 import { TaggedDrafts } from "./_components/TaggedDrafts";
 import { postToDraft } from "@utils/postToDraft";
+import PostDisplay from "@components/PostDisplay";
 
 async function ProfilePostsLayout({
 	children,
@@ -130,11 +131,16 @@ async function ProfilePostsLayout({
 										{Array.from(map.keys()).map((tag) => {
 											return (
 												<TaggedDrafts
-													posts={map.get(tag) || []}
-													drafts={[]}
 													tag={tag}
 													key={tag}
-												/>
+												>
+													<PostDisplay
+														posts={
+															map.get(tag) || []
+														}
+														tag={tag}
+													/>
+												</TaggedDrafts>
 											);
 										})}
 									</div>

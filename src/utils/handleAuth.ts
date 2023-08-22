@@ -1,5 +1,4 @@
-import { SupabaseClient } from "@supabase/supabase-js"
-import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient"
+import { SupabaseClient } from "@supabase/supabase-js";
 
 export const handleSignIn = async (supabaseClient: SupabaseClient, provider: "github" | "google", redirectTo: string) => {
     const hostname = window.location.hostname

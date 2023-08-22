@@ -9,7 +9,7 @@ function PostOnPreviewColor({ postId, tag }: { postId: number; tag?: string }) {
 	console.log(params?.postId);
 	const onPreview =
 		parseInt(params?.postId as string) === postId &&
-		searchParams?.get("tag") === tag;
+		searchParams?.get("tagpreview") === tag;
 	console.log(onPreview);
 	if (!onPreview) return <></>;
 	return (

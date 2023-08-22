@@ -12,7 +12,10 @@ export function SingleDraft({ draft, tag }: { draft: Draft; tag?: string }) {
 		<div className="flex flex-col group p-2 relative ">
 			<DraftOnPreviewIndicator draftId={draft.timeStamp} tag={tag} />
 			<DraftActions draft={draft} />
-			<Link href={`/draft/${draft.timeStamp}?tag=${tag}`} className="">
+			<Link
+				href={`/draft/${draft.timeStamp}?tagpreview=${tag}`}
+				className=""
+			>
 				<PostTitle title={title || ""} description={description} />
 				<p className="text-xs text-gray-400 mt-1">
 					<span className="">{draft.date}</span>
@@ -34,7 +37,7 @@ function DraftOnPreviewIndicator({
 	const onPreview =
 		(params?.draftId === draftId ||
 			`draft-${params?.draftId}` === draftId) &&
-		searchParams?.get("tag") === tag;
+		searchParams?.get("tagpreview") === tag;
 	if (!onPreview) return <></>;
 	return (
 		<motion.div

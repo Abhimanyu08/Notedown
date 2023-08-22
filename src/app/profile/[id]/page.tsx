@@ -3,6 +3,8 @@ import { useContext } from "react";
 import { ProfileContext } from "./_components/ProfileContext";
 import { TaggedDrafts } from "./_components/TaggedDrafts";
 import PostsLoading from "./loading";
+import { DraftsDisplay } from "./_components/DraftsDisplay";
+import PostDisplay from "@components/PostDisplay";
 
 function Drafts() {
 	const { loadingDrafts, draftAndPostMap } = useContext(ProfileContext);
@@ -21,20 +23,26 @@ function Drafts() {
 						draftAndPostMap.get(tag as string)?.posts || [];
 					return (
 						<>
-							<TaggedDrafts
-								tag={tag}
-								{...{ drafts, posts }}
-								key={tag}
-							/>
+							<TaggedDrafts tag={tag} key={tag}>
+								<DraftsDisplay rawObjects={drafts} tag={tag} />
+								<PostDisplay posts={posts} tag={tag} />
+							</TaggedDrafts>
 						</>
 					);
 				})}
 				{draftAndPostMap.has("notag") && (
-					<TaggedDrafts
-						tag="notag"
-						drafts={draftAndPostMap.get("notag")?.drafts || []}
-						posts={draftAndPostMap.get("notag")?.posts || []}
-					/>
+					<TaggedDrafts tag="notag" key={"notag"}>
+						<DraftsDisplay
+							rawObjects={
+								draftAndPostMap.get("notag")?.drafts || []
+							}
+							tag={"notag"}
+						/>
+						<PostDisplay
+							posts={draftAndPostMap.get("notag")?.posts || []}
+							tag={"notag"}
+						/>
+					</TaggedDrafts>
 				)}
 			</div>
 		);
