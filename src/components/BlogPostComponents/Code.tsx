@@ -10,6 +10,7 @@ import { BsPencilFill, BsPlayFill } from "react-icons/bs";
 import { FcUndo } from "react-icons/fc";
 import { MdHideImage, MdImage } from "react-icons/md";
 import { SiVim } from "react-icons/si";
+import { BsEraserFill } from "react-icons/bs";
 
 import useEditor from "../../hooks/useEditor";
 
@@ -23,7 +24,7 @@ import {
 	CodeBlockButton,
 	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
-import Terminal from "./Terminal";
+import useTerminal from "./Terminal";
 interface CodeProps {
 	code: string;
 	blockNumber: number;
@@ -47,6 +48,8 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 	const { toggleVim, vimEnabled: vimEnabledLocally } = useToggleVim({
 		editorView,
 	});
+
+	const terminal = useTerminal({ blockNumber });
 	useSyncHook({
 		editorView,
 		startOffset: start,
@@ -92,6 +95,11 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 		});
 	}, [file]);
 
+	useEffect(() => {
+		if (!editorView) return;
+		if (blogState.vimEnabled !== vimEnabledLocally) toggleVim();
+	}, [blogState.vimEnabled, editorView]);
+
 	const onUndo: MouseEventHandler = () => {
 		const docLength = editorView?.state.doc.length;
 
@@ -99,11 +107,6 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 			changes: { from: 0, to: docLength, insert: code },
 		});
 	};
-
-	useEffect(() => {
-		if (!editorView) return;
-		if (blogState.vimEnabled !== vimEnabledLocally) toggleVim();
-	}, [blogState.vimEnabled, editorView]);
 
 	const onRunCode = () => {
 		setOpenShell(true);
@@ -161,6 +164,13 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 						size={14}
 					/>
 				</CodeBlockButton>
+				<CodeBlockButton
+					onClick={() => terminal.clear()}
+					tip="Clear console"
+					className="text-cyan-400"
+				>
+					<BsEraserFill size={16} className="" />
+				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div
 				className="w-full border-2 border-border rounded-sm rounded-se-none"
@@ -174,7 +184,15 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 				}}
 			></div>
 
-			<Terminal {...{ blockNumber, openShell }} />
+			{/* <Terminal {...{ blockNumber, openShell }} /> */}
+			{/* ----------------Terminal----------------- */}
+			<div
+				className={`not-prose border-[1px] border-white/50 rounded-sm z-10  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
+					openShell ? "" : "hidden"
+				} `}
+				id={`terminal-${blockNumber}`}
+				key={`terminal-${blockNumber}`}
+			></div>
 		</CodeBlock>
 	);
 }

@@ -21,7 +21,7 @@ const mono = IBM_Plex_Mono({
 	subsets: ["latin"],
 	display: "swap",
 	variable: "--font-mono",
-	weight: ["400", "700"],
+	weight: ["400", "700", "500"],
 });
 const sans = Nunito_Sans({
 	subsets: ["latin"],

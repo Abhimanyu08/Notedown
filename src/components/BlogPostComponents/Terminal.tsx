@@ -2,13 +2,7 @@ import { memo, useContext, useEffect, useState } from "react";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 
-function Terminal({
-	blockNumber,
-	openShell,
-}: {
-	blockNumber: number;
-	openShell: boolean;
-}) {
+function useTerminal({ blockNumber }: { blockNumber: number }) {
 	const [terminal, setTerminal] = useState<any>(undefined);
 	const [terminalCommand, setTerminalCommand] = useState("");
 	const [sendTerminalCommand, setSendTerminalCommand] = useState(false);
@@ -91,15 +85,7 @@ function Terminal({
 		dispatch({ type: "set output", payload: { [blockNumber]: null } });
 	}, [blogState.blockToOutput]);
 
-	return (
-		<div
-			className={`not-prose border-[1px] border-white/50 rounded-sm  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
-				openShell ? "" : "hidden"
-			} `}
-			id={`terminal-${blockNumber}`}
-			key={`terminal-${blockNumber}`}
-		></div>
-	);
+	return terminal;
 }
 
 async function runShellCommand({
@@ -122,4 +108,4 @@ async function runShellCommand({
 	return output;
 }
 
-export default memo(Terminal);
+export default useTerminal;

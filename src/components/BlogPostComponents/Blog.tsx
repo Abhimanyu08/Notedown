@@ -61,10 +61,11 @@ const Blog = memo(
 
 				// ---------------prose-code---------------
 				dark:prose-code:bg-gray-800
-				dark:prose-code:text-gray-300
+				dark:prose-code:text-gray-400
 				prose-code:bg-white
 				prose-code:text-black
 				prose-code:font-mono
+				prose-code:font-medium
 				prose-code:px-1 
 				prose-code:rounded-sm
 				prose-code:select-all

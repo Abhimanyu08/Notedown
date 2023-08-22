@@ -11,11 +11,13 @@ export function ToolTipComponent({
 	children,
 	tip,
 	side,
+	align,
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"button"> & {
 	tip: string;
 	side?: "left" | "top" | "right" | "bottom";
+	align?: "center" | "end" | "start";
 }) {
 	// {
 
@@ -31,7 +33,7 @@ export function ToolTipComponent({
 					{children}
 				</TooltipTrigger>
 				<TooltipContent
-					align={"start"}
+					align={align || "start"}
 					side={side || "left"}
 					className="border-border font-sans"
 				>

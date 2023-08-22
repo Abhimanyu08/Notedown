@@ -43,6 +43,7 @@ export const CodeBlockButton = ({
 		<ToolTipComponent
 			tip={tip}
 			side="top"
+			align="center"
 			className={cn(
 				"text-cyan-400 hover:scale-110  py-0 active:scale-90 flex items-center",
 				className
