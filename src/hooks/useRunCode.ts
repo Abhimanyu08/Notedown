@@ -6,9 +6,7 @@ import { Dispatch, useContext, useEffect } from "react";
 export function useRunCode({ blogState, dispatch }: { blogState: BlogStateInterface, dispatch: Dispatch<DispatchObj> }) {
 
     useEffect(() => {
-        console.log("running code")
         let language = blogState.blogMeta.language;
-        console.log(language)
         if (!language || !ALLOWED_LANGUAGES.includes(language as any)) return;
         const {
             containerId,
@@ -43,8 +41,8 @@ export function useRunCode({ blogState, dispatch }: { blogState: BlogStateInterf
                 },
             });
 
-            dispatch({ type: "set running block", payload: null });
-            dispatch({ type: "set writing block", payload: null });
+            // dispatch({ type: "set running block", payload: null });
+            // dispatch({ type: "set writing block", payload: null });
             return;
         }
 
@@ -86,8 +84,8 @@ export function useRunCode({ blogState, dispatch }: { blogState: BlogStateInterf
         }).then((val) => {
             dispatch({ type: "set output", payload: { [block]: val } });
 
-            dispatch({ type: "set running block", payload: null });
-            dispatch({ type: "set writing block", payload: null });
+            // dispatch({ type: "set running block", payload: null });
+            // dispatch({ type: "set writing block", payload: null });
             dispatch({ type: "toggle running request", payload: null });
         });
     }, [blogState.runningBlock, blogState.writingBlock]);

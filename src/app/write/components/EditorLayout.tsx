@@ -106,7 +106,7 @@ function EditorLayout({
 							Math.ceil(e.currentTarget.scrollTop) -
 							e.currentTarget.scrollHeight
 					);
-					if (val < 5) {
+					if (val < 300) {
 						if (!atEnd) setAtEnd(true);
 						return;
 					}

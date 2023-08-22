@@ -32,7 +32,7 @@ export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateIn
                         const previousElement = document.getElementById(
                             `codearea-${previousBlockNumber}`
                         );
-                        if (previousElement) {
+                        if (previousElement && Object.hasOwn(blogState.blockToEditor, previousBlockNumber)) {
                             blogState.blockToEditor[
                                 previousBlockNumber
                             ].focus();
@@ -43,7 +43,7 @@ export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateIn
                         const nextElement = document.getElementById(
                             `codearea-${nextBlockNumber}`
                         );
-                        if (nextElement) {
+                        if (nextElement && Object.hasOwn(blogState.blockToEditor, nextBlockNumber)) {
                             blogState.blockToEditor[nextBlockNumber].focus();
                             nextElement.scrollIntoView();
                         }

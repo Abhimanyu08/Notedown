@@ -14,7 +14,7 @@ import React, {
 } from "react";
 
 export interface BlogStateInterface {
-	blockToOutput: Record<string, string>;
+	blockToOutput: Record<number, string>;
 	vimEnabled: boolean;
 	blockToEditor: Record<number, EditorView>;
 	runningRequest: boolean;

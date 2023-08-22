@@ -63,10 +63,8 @@ function useTerminal({ blockNumber }: { blockNumber: number }) {
 			runShellCommand({ containerId, command: terminalCommand }).then(
 				(val) => {
 					// setBlockToOutput({ [blockNumber]: val })
-					dispatch({
-						type: "set output",
-						payload: { [blockNumber]: val },
-					});
+
+					terminal?.writeln("\r\n" + val);
 					setTerminalCommand("");
 					setSendTerminalCommand(false);
 				}
@@ -75,14 +73,29 @@ function useTerminal({ blockNumber }: { blockNumber: number }) {
 	}, [sendTerminalCommand]);
 
 	useEffect(() => {
-		if (
-			!Object.hasOwn(blogState.blockToOutput, blockNumber) ||
-			blogState.blockToOutput[blockNumber] === null
-		)
-			return;
-		terminal?.writeln("\r\n" + blogState.blockToOutput[blockNumber] || "");
+		if (!Object.hasOwn(blogState.blockToOutput, blockNumber)) return;
+		const { runningBlock, blockToFileName, blockToOutput } = blogState;
+		if (runningBlock !== blockNumber) return;
+		const currentFile = blockToFileName[blockNumber];
+
+		let previousOutputsLength = 0;
+		for (let [previosBlockNumber, output] of Object.entries(
+			blockToOutput
+		)) {
+			if (parseInt(previosBlockNumber) >= blockNumber) break;
+			if (blockToFileName[parseInt(previosBlockNumber)] === currentFile) {
+				previousOutputsLength += output.length;
+			}
+		}
+		const currentOutput = blogState.blockToOutput[blockNumber].slice(
+			previousOutputsLength
+		);
+		terminal?.writeln("\r\n" + currentOutput);
+
 		// if (setBlockToOutput) setBlockToOutput({})
-		dispatch({ type: "set output", payload: { [blockNumber]: null } });
+		dispatch({ type: "set running block", payload: null });
+		dispatch({ type: "set writing block", payload: null });
+		// dispatch({ type: "set output", payload: { [blockNumber]: null } });
 	}, [blogState.blockToOutput]);
 
 	return terminal;
