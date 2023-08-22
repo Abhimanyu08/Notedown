@@ -106,12 +106,12 @@ async function ProfilePostsLayout({
 							{notebookTitle}
 						</h1> */}
 
-						<OwnerOnlyStuff id={params.id} session={session}>
-							<div className="flex justify-between px-2 col-span-1 mt-1 relative">
-								<SearchInput className="basis-1/2" />
+						<div className="flex justify-between px-2 col-span-1 mt-1 relative">
+							<SearchInput className="basis-1/2" />
+							<OwnerOnlyStuff id={params.id} session={session}>
 								<NewNoteButton />
-							</div>
-						</OwnerOnlyStuff>
+							</OwnerOnlyStuff>
+						</div>
 
 						<div className="h-[2px] bg-border col-span-1 mt-4"></div>
 						<div
