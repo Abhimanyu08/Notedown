@@ -12,14 +12,13 @@ export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateIn
                 event.preventDefault();
 
                 let focusedElement = document.activeElement;
-                if (!focusedElement?.classList.contains("cm-content") || focusedElement?.getAttribute("data-language") !== blogState.blogMeta.language) return
+                if (!focusedElement?.classList.contains("cm-content") || focusedElement?.getAttribute("data-language") === "markdown") return
                 while (
                     focusedElement !== null &&
                     !focusedElement.id.startsWith("codearea")
                 ) {
                     focusedElement = focusedElement?.parentElement || null;
                 }
-                console.log(focusedElement);
                 if (
                     focusedElement &&
                     focusedElement.id.startsWith("codearea-")
