@@ -43,7 +43,7 @@ export const onOrdererdList = (editorView: EditorView) => insertAndChangeCursor(
 export const onBlockQuote = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "> ", cursorOffest: 2 })
 export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "[text](link)", cursorOffest: 1 })
 export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
-export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: `\n\`<draw id=${getUTCTimestamp()} caption="" dark=true/>\`\n`, cursorOffest: 12 })
+export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: `\n\n\`<draw id=${getUTCTimestamp()} caption="" dark=true/>\`\n`, cursorOffest: 12 })
 
 // const configString = JSON.stringify(
 //     defaultSandpackProps
@@ -51,7 +51,7 @@ export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ edit
 export const onSandbox = (editorView: EditorView) => insertAndChangeCursor(
     {
         editorView,
-        toInsert: `\n\`<sandbox id=${getUTCTimestamp()}/>\`\n`, cursorOffest: 12
+        toInsert: `\n\n\`<sandbox id=${getUTCTimestamp()}/>\`\n`, cursorOffest: 12
     })
 
 
