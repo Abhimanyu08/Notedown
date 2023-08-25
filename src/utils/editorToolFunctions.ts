@@ -45,9 +45,6 @@ export const onLink = (editorView: EditorView) => insertAndChangeCursor({ editor
 export const onLatex = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: "`$$`", cursorOffest: 2 })
 export const onCanvas = (editorView: EditorView) => insertAndChangeCursor({ editorView, toInsert: `\n\n\`<draw id=${getUTCTimestamp()} caption="" dark=true/>\`\n`, cursorOffest: 12 })
 
-// const configString = JSON.stringify(
-//     defaultSandpackProps
-//     , null, 2)
 export const onSandbox = (editorView: EditorView) => insertAndChangeCursor(
     {
         editorView,

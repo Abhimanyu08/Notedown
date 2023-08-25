@@ -1,4 +1,7 @@
-import { LoggedInOptions } from "@components/Navbar/Options";
+import {
+	LoggedInOptions,
+	NotLoggedInOptions,
+} from "@components/Navbar/Options";
 import NewNoteButton from "@components/ProfileComponents/NewPostButton";
 import NormalChildrenLayout from "@components/ProfileComponents/NormalChildrenLayout";
 import OwnerOnlyStuff, {
@@ -8,7 +11,10 @@ import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
 import SearchInput from "@components/ProfileComponents/SearchInput";
 import SearchProvider from "@components/ProfileComponents/SearchProvider";
 import SideSheet from "@components/SideSheet";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import {
+	SupabaseClient,
+	createServerComponentSupabaseClient,
+} from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getUser } from "@utils/getData";
 import { Draft } from "@utils/processDrafts";
@@ -18,6 +24,7 @@ import ProfileContextProvider from "./_components/ProfileContext";
 import { TaggedDrafts } from "./_components/TaggedDrafts";
 import { postToDraft } from "@utils/postToDraft";
 import PostDisplay from "@components/PostDisplay";
+import { m } from "framer-motion";
 
 async function ProfilePostsLayout({
 	children,
@@ -28,89 +35,35 @@ async function ProfilePostsLayout({
 	postpreview: React.ReactNode;
 	params: { id: string };
 }) {
-	const { name, notebook_title, username } = (await getUser(params.id))!;
+	let loggedInName = "",
+		loggedInUserName = "";
+	if (params.id !== "anon") {
+		let { name, username } = (await getUser(params.id))!;
+		loggedInName = name || "";
+		loggedInUserName = username || "";
+	}
 	const supabase = createServerComponentSupabaseClient({ headers, cookies });
-	const {
-		data: { session },
-	} = await supabase.auth.getSession();
 
-	let notebookTitle =
-		notebook_title !== null
-			? notebook_title
-			: name
-			? `${name}'s Notebook`
-			: "Anon's Notebook";
+	const map = await getPostTagMap(supabase, params.id);
 
-	const { data: tagsData } = await supabase
-		.from(SUPABASE_TAGS_TABLE)
-		.select(
-			"tag_name, posts(id,title,description,created_at,timestamp,published)"
-		)
-		.match({ created_by: params.id });
-
-	const postWithTagIds = [];
-	const map = new Map<string, Draft[]>();
-	if (tagsData) {
-		for (let tagData of tagsData) {
-			if (tagData.posts) {
-				const posts = tagData.posts;
-				if (Array.isArray(posts)) {
-					map.set(
-						tagData.tag_name,
-						posts.map((p) => {
-							postWithTagIds.push(p.id);
-							return postToDraft(p);
-						})
-					);
-				} else {
-					postWithTagIds.push(posts.id);
-					map.set(tagData.tag_name, [postToDraft(posts)]);
-				}
-			}
-		}
-	}
-
-	const { data: postWithoutTags } = await supabase
-		.from(SUPABASE_POST_TABLE)
-		.select("id,title,description,created_at,timestamp,published")
-		.match({ created_by: params.id })
-		.not("id", "in", `(${postWithTagIds.join(",")})`);
-
-	if (postWithoutTags) {
-		map.set(
-			"notag",
-			postWithoutTags.map((p) => {
-				return {
-					date: p.created_at,
-					timeStamp: p.timestamp,
-					title: p.title,
-					description: p.description,
-					postId: p.id,
-					published: p.published,
-				};
-			})
-		);
-	}
 	return (
 		<ProfileContextProvider tagToPostMap={map}>
 			<SideSheet>
-				<LoggedInOptions
-					{...{ name, notebook_title: notebookTitle, username }}
-				/>
+				{params.id === "anon" ? (
+					<NotLoggedInOptions />
+				) : (
+					<LoggedInOptions
+						{...{ name: loggedInName, username: loggedInUserName }}
+					/>
+				)}
 			</SideSheet>
 
 			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
 					<div className="flex flex-col col-span-1 row-span-1 gap-4 p-4 pt-10">
-						{/* <h1 className="font-serif text-4xl px-2">
-							{notebookTitle}
-						</h1> */}
-
 						<div className="flex justify-between px-2 col-span-1 mt-1 relative">
 							<SearchInput className="basis-1/2" />
-							<OwnerOnlyStuff id={params.id} session={session}>
-								<NewNoteButton />
-							</OwnerOnlyStuff>
+							<NewNoteButton />
 						</div>
 
 						<div className="h-[2px] bg-border col-span-1 mt-4"></div>
@@ -123,10 +76,7 @@ async function ProfilePostsLayout({
 				"
 						>
 							<NormalChildrenLayout>
-								<NotOwnerOnlyStuff
-									id={params.id}
-									session={session}
-								>
+								<NotOwnerOnlyStuff id={params.id}>
 									<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
 										{Array.from(map.keys()).map((tag) => {
 											return (
@@ -145,12 +95,13 @@ async function ProfilePostsLayout({
 										})}
 									</div>
 								</NotOwnerOnlyStuff>
-								<OwnerOnlyStuff
-									id={params.id}
-									session={session}
-								>
-									{children}
-								</OwnerOnlyStuff>
+								{params.id === "anon" ? (
+									children
+								) : (
+									<OwnerOnlyStuff id={params.id}>
+										{children}
+									</OwnerOnlyStuff>
+								)}
 							</NormalChildrenLayout>
 						</div>
 					</div>
@@ -170,6 +121,62 @@ async function ProfilePostsLayout({
 			</div>
 		</ProfileContextProvider>
 	);
+}
+
+async function getPostTagMap(supabase: SupabaseClient, id: string) {
+	const map = new Map<string, Draft[]>();
+	if (id !== "anon") {
+		const { data: tagsData } = await supabase
+			.from(SUPABASE_TAGS_TABLE)
+			.select(
+				"tag_name, posts(id,title,description,created_at,timestamp,published)"
+			)
+			.match({ created_by: id });
+
+		const postWithTagIds = [];
+		if (tagsData) {
+			for (let tagData of tagsData) {
+				if (tagData.posts) {
+					const posts = tagData.posts;
+					if (Array.isArray(posts)) {
+						map.set(
+							tagData.tag_name,
+							posts.map((p) => {
+								postWithTagIds.push(p.id);
+								return postToDraft(p);
+							})
+						);
+					} else {
+						postWithTagIds.push(posts.id);
+						map.set(tagData.tag_name, [postToDraft(posts)]);
+					}
+				}
+			}
+		}
+
+		const { data: postWithoutTags } = await supabase
+			.from(SUPABASE_POST_TABLE)
+			.select("id,title,description,created_at,timestamp,published")
+			.match({ created_by: id })
+			.not("id", "in", `(${postWithTagIds.join(",")})`);
+
+		if (postWithoutTags) {
+			map.set(
+				"notag",
+				postWithoutTags.map((p) => {
+					return {
+						date: p.created_at,
+						timeStamp: p.timestamp,
+						title: p.title,
+						description: p.description,
+						postId: p.id,
+						published: p.published,
+					};
+				})
+			);
+		}
+	}
+	return map;
 }
 
 export default ProfilePostsLayout;

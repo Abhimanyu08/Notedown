@@ -12,11 +12,12 @@ function Divider({
 	return (
 		<div
 			className={cn(
-				"flex gap-2",
+				"flex gap-2 text-gray-400",
 				"before:grow before:self-center before:h-0 before:border-[1px] before:border-border",
 				"after:grow after:self-center after:h-0 after:border-[1px] after:border-border",
 				flexDirection,
-				className
+				className,
+				!children && "gap-0"
 			)}
 			{...props}
 		>

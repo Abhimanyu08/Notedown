@@ -5,6 +5,8 @@ import { TaggedDrafts } from "./_components/TaggedDrafts";
 import PostsLoading from "./loading";
 import { DraftsDisplay } from "./_components/DraftsDisplay";
 import PostDisplay from "@components/PostDisplay";
+import { Button } from "@components/ui/button";
+import Link from "next/link";
 
 function Drafts() {
 	const { loadingDrafts, draftAndPostMap } = useContext(ProfileContext);
@@ -49,15 +51,22 @@ function Drafts() {
 	}
 
 	return (
-		<div className="flex flex-col gap-2 mt-20 mx-10 font-serif italic text-left text-gray-500 text-lg">
-			<span>Lying in wait, set to pounce on the blank page,</span>
-			<span>are letters up to no good,</span>
-			<span>clutches of clauses so subordinate</span>
-			<span>they{`'`}ll never let her get away.</span>
-
+		<div className="flex flex-col gap-2 mt-20  items-center  text-gray-500 ">
+			<div className="text-left flex flex-col gap-2 font-serif text-xl italic tracking-wide">
+				<span>Lying in wait, set to pounce on the blank page,</span>
+				<span>are letters up to no good,</span>
+				<span>clutches of clauses so subordinate</span>
+				<span>they{`'`}ll never let her get away.</span>
+			</div>
 			<span className="underline underline-offset-2 text-sm self-center">
 				- The Joy Of Writing, Wislawa Szymborska
 			</span>
+			<Button
+				variant={"secondary"}
+				className="mt-10 w-fit px-3 py-1 self-center text-gray-400"
+			>
+				<Link href={"/write"}>Start writing</Link>
+			</Button>
 		</div>
 	);
 }

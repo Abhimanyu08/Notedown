@@ -75,7 +75,7 @@ export default async function RootLayout({
 			lang="en"
 			className={`dark ${serif.variable} ${sans.variable} ${mono.variable}`}
 		>
-			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black transition-colors duration-300">
+			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black ">
 				<SupabaseProvider session={session}>
 					<ToastProvider>
 						<ExpandedImageProvider>

@@ -79,7 +79,7 @@ function EditorLayout({
 	return (
 		<div className="grow flex flex-row min-h-0 relative  gap-2 ">
 			<div
-				className={`flex flex-col basis-1/2 overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
+				className={`flex flex-col basis-[50%] overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
 				<MarkdownEditor
 					initialMarkdown={markdown || initialMarkdownMeta}
@@ -88,15 +88,12 @@ function EditorLayout({
 			<OptionsToolbar content={blogContent} />
 
 			<div
-				className={` basis-1/2  pt-10
+				className={` grow  pt-10
 				overflow-y-auto
 				lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
-				pl-8
-
 				scroll-smooth   
-
 				`}
 				id="post-preview"
 				ref={previewRef}

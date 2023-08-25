@@ -4,6 +4,7 @@ import { ToastContext } from "@/contexts/ToastProvider";
 import useOwner from "@/hooks/useOwner";
 import { Database } from "@/interfaces/supabase";
 import { cn } from "@/lib/utils";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { Button } from "@components/ui/button";
 import Divider from "@components/ui/divider";
 import { Input } from "@components/ui/input";
@@ -16,16 +17,33 @@ import {
 	SheetClose,
 } from "@components/ui/sheet";
 import { handleLogout, handleSignIn } from "@utils/handleAuth";
-import { usePathname } from "next/navigation";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
-import { VscLoading } from "react-icons/vsc";
 
 export function NotLoggedInOptions({
 	className,
 }: React.ComponentPropsWithoutRef<"div">) {
 	const { supabase } = useSupabase();
 	const pathname = usePathname();
+	const { documentDb } = useContext(IndexedDbContext);
+	const router = useRouter();
+
+	useEffect(() => {
+		if (!documentDb) return;
+
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		const countReq = markdownObjectStore.count();
+		countReq.onsuccess = () => {
+			if (countReq.result > 0) {
+				router.push("/profile/anon");
+			}
+		};
+	}, [documentDb]);
 	return (
 		<div className={cn("flex flex-col gap-2 mt-4", className)}>
 			<span>Login with:</span>
@@ -57,7 +75,6 @@ export function NotLoggedInOptions({
 export function LoggedInOptions({
 	name,
 	username,
-	notebook_title,
 }: Partial<Database["public"]["Tables"]["bloggers"]["Row"]>) {
 	const { supabase, session } = useSupabase();
 	const owner = useOwner();
@@ -75,7 +92,7 @@ export function LoggedInOptions({
 		const newName = nameRef.current?.value;
 		const newTitle = titleRef.current?.value;
 		const newUserName = userNameRef.current?.value;
-		if (newName !== name || newTitle !== notebook_title) {
+		if (newName !== name) {
 			await supabase
 				.from("bloggers")
 				.update({
@@ -83,9 +100,6 @@ export function LoggedInOptions({
 					notebook_title: newTitle,
 				})
 				.eq("id", session.user.id);
-			if (newTitle !== notebook_title) {
-				await fetch("/api/revalidate?path=profile/[id]");
-			}
 		}
 		if (typeof newUserName === "string" && newUserName !== username) {
 			const { error } = await supabase

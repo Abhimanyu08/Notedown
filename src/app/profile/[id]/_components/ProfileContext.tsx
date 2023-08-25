@@ -39,10 +39,12 @@ function ProfileContextProvider({
 			draftsWithThisTag = draftsWithThisTag.filter(
 				(d) => !postTimeStamps.includes(d.timeStamp)
 			);
-			map.set(tagName, {
-				posts: postsWithThisTag,
-				drafts: draftsWithThisTag,
-			});
+			if (postsWithThisTag.length > 0 || draftsWithThisTag.length > 0) {
+				map.set(tagName, {
+					posts: postsWithThisTag,
+					drafts: draftsWithThisTag,
+				});
+			}
 		}
 
 		setDraftAndPostMap(map);

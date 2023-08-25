@@ -21,7 +21,10 @@ function BlogAuthorClient() {
 			});
 	}, [session]);
 
-	return <Link href={`/profile/${session?.user.id}`}>{author}</Link>;
+	if (session) {
+		return <Link href={`/profile/${session.user.id}`}>{author}</Link>;
+	}
+	return <Link href={`/profile/anon`}>{author}</Link>;
 }
 
 export default memo(BlogAuthorClient);

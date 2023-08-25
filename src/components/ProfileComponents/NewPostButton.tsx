@@ -7,7 +7,7 @@ function NewNoteButton() {
 	return (
 		<Link href={"/write"} prefetch={false}>
 			<Button
-				className="gap-2 text-gray-300"
+				className="gap-2 text-gray-400"
 				variant="secondary"
 				size={"sm"}
 			>

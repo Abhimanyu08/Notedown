@@ -18,7 +18,11 @@ async function BlogAuthorServer({ createdBy }: { createdBy: string | null }) {
 			.eq("id", createdBy)
 			.single();
 		if (data) {
-			return <Link href={`/profile/${createdBy}`}>{data.name}</Link>;
+			return (
+				<Link href={`/profile/${createdBy}`}>
+					{data.name || "Anon"}
+				</Link>
+			);
 		}
 	}
 	return <></>;

@@ -1,4 +1,5 @@
 "use client";
+import { useSupabase } from "@/app/appContext";
 import React, { createContext, useEffect, useState } from "react";
 
 export const IndexedDbContext = createContext<{
@@ -14,7 +15,6 @@ function IndexedDbContextProvider({ children }: { children: React.ReactNode }) {
 		let documentDbRequest = indexedDB.open("RCEBLOG", 2);
 
 		documentDbRequest.onsuccess = (e) => {
-			console.log("setting document db");
 			setDocumentDb((e.target as any).result);
 		};
 
