@@ -10,7 +10,7 @@ import { FaFileUpload } from "react-icons/fa";
 import useUploadPost from "../hooks/useUploadPost";
 import { EditorContext } from "./EditorContext";
 
-function OptionsToolbar({ content }: { content: string }) {
+function WriteToolbar({ content }: { content: string }) {
 	const [showToc, setShowToc] = useState(false);
 	const { editorState, dispatch } = useContext(EditorContext);
 	const { blogState } = useContext(BlogContext);
@@ -34,14 +34,18 @@ function OptionsToolbar({ content }: { content: string }) {
 	}, [uploadFinished]);
 	return (
 		<>
-			<div className="flex flex-col items-center absolute gap-3 right-0 top-[45%]  bg-black opacity-40 hover:opacity-100 hover:z-[2000] -z-[0]  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
-				{blogState.blogMeta.language && <EnableRceButton />}
-				<ToolTipComponent tip="Upload changes" side="right">
+			<div className="flex absolute bottom-0 right-0 h-fit     w-1/2  justify-center gap-32 px-10 items-center border-t-2  bg-black  z-[1000]  border-border [&>*]:p-2">
+				{blogState.blogMeta.language && <EnableRceButton side="top" />}
+				<ToolTipComponent
+					tip="Upload changes"
+					side="top"
+					align="center"
+				>
 					<button
 						className=" hover:text-gray-100 text-gray-400"
 						onClick={() => onUpload(editorState)}
 					>
-						<FaFileUpload size={26} />
+						<FaFileUpload size={24} className="mt-1" />
 					</button>
 				</ToolTipComponent>
 				<Button
@@ -54,7 +58,7 @@ function OptionsToolbar({ content }: { content: string }) {
 			<AnimatePresence>
 				{showToc && (
 					<motion.div
-						className="h-fit absolute py-4 px-5 bg-black right-12 top-[40%] border-border border-[1px]  w-[400px] max-h-[450px] overflow-auto shadow-sm shadow-gray-200 z-[1000]"
+						className="h-fit absolute py-4 px-5 bg-black right-12  border-border border-[1px]  w-[400px] max-h-[450px] overflow-auto shadow-sm shadow-gray-200 z-[1000]"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
@@ -68,4 +72,4 @@ function OptionsToolbar({ content }: { content: string }) {
 	);
 }
 
-export default OptionsToolbar;
+export default WriteToolbar;

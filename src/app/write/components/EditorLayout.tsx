@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
-import OptionsToolbar from "./OptionsToolbar";
+import WriteToolbar from "./OptionsToolbar";
 import useBlogStateUpdate from "../hooks/useBlogStateUpdate";
 
 let initialMarkdownMeta =
@@ -85,8 +85,8 @@ function EditorLayout({
 					initialMarkdown={markdown || initialMarkdownMeta}
 				/>
 			</div>
-			<OptionsToolbar content={blogContent} />
 
+			<WriteToolbar content={blogContent} />
 			<div
 				className={` grow  pt-10
 				overflow-y-auto
@@ -115,7 +115,6 @@ function EditorLayout({
 					content={blogContent}
 					AuthorComponent={BlogAuthorClient}
 				/>
-				{/* <Toc markdown={blogContent} /> */}
 			</div>
 		</div>
 	);

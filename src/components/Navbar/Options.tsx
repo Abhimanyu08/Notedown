@@ -37,12 +37,14 @@ export function NotLoggedInOptions({
 			documentDb,
 			"readonly"
 		);
-		const countReq = markdownObjectStore.count();
-		countReq.onsuccess = () => {
-			if (countReq.result > 0) {
-				router.push("/profile/anon");
-			}
-		};
+		if (pathname === "/") {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
 	}, [documentDb]);
 	return (
 		<div className={cn("flex flex-col gap-2 mt-4", className)}>

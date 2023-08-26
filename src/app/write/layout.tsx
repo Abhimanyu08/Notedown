@@ -23,7 +23,7 @@ async function WriteLayout({ children }: { children: React.ReactNode }) {
 							: `/profile/anon`
 					}
 				>
-					<Button>All Notes</Button>
+					<Button>View all notes</Button>
 				</Link>
 			</SideSheet>
 
