@@ -25,6 +25,7 @@ import { TaggedDrafts } from "./_components/TaggedDrafts";
 import { postToDraft } from "@utils/postToDraft";
 import PostDisplay from "@components/PostDisplay";
 import { m } from "framer-motion";
+import { Port_Lligat_Sans } from "next/font/google";
 
 async function ProfilePostsLayout({
 	children,
@@ -79,15 +80,16 @@ async function ProfilePostsLayout({
 								<NotOwnerOnlyStuff id={params.id}>
 									<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
 										{Array.from(map.keys()).map((tag) => {
+											const posts = map.get(tag);
+											if (!posts || posts.length === 0)
+												return <></>;
 											return (
 												<TaggedDrafts
 													tag={tag}
 													key={tag}
 												>
 													<PostDisplay
-														posts={
-															map.get(tag) || []
-														}
+														posts={posts}
 														tag={tag}
 													/>
 												</TaggedDrafts>
