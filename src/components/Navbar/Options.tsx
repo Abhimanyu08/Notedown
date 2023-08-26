@@ -25,7 +25,7 @@ import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 export function NotLoggedInOptions({
 	className,
 }: React.ComponentPropsWithoutRef<"div">) {
-	const { supabase } = useSupabase();
+	const { supabase, session } = useSupabase();
 	const pathname = usePathname();
 	const { documentDb } = useContext(IndexedDbContext);
 	const router = useRouter();
@@ -37,7 +37,7 @@ export function NotLoggedInOptions({
 			documentDb,
 			"readonly"
 		);
-		if (pathname === "/") {
+		if (pathname === "/" && !session) {
 			const countReq = markdownObjectStore.count();
 			countReq.onsuccess = () => {
 				if (countReq.result > 0) {
