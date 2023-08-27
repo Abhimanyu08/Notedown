@@ -21,8 +21,10 @@ import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { IndexedDbContext } from "./Contexts/IndexedDbContext";
+import { IoMdShareAlt } from "react-icons/io";
+import ActionWrapper from "./ActionWrapper";
 
-export function PostOptions({
+export function PostActions({
 	published,
 	postId,
 	postTitle,
@@ -93,71 +95,70 @@ export function PostOptions({
 				onClose={() => setTakenAction("")}
 			/>
 			{owner && (
-				<Menubar
-					className="absolute top-3 right-3 w-fit h-fit border-none
-					rounded-full bg-transparent hover:bg-accent
-				"
-				>
-					<MenubarMenu>
-						<MenubarTrigger className="p-1">
-							<SlOptions size={12} />
-						</MenubarTrigger>
-						<MenubarContent className="min-w-0 border-border">
-							<MenubarItem className="">
-								<Link
-									href={
-										timeStamp
-											? `/write/${postId}?draft=${timeStamp}`
-											: `/write/${postId}`
-									}
-									prefetch={false}
-									className="flex gap-2 items-center"
-								>
-									<AiFillEdit className="inline" size={15} />{" "}
-									<span>Edit</span>
-								</Link>
-							</MenubarItem>
-							{!pathname?.includes("post") && (
+				<ActionWrapper>
+					<MenubarItem className="">
+						<Link
+							href={
+								timeStamp
+									? `/write/${postId}?draft=${timeStamp}`
+									: `/write/${postId}`
+							}
+							prefetch={false}
+							className="flex gap-2 items-center"
+						>
+							<AiFillEdit className="inline" size={15} />{" "}
+							<span>Edit</span>
+						</Link>
+					</MenubarItem>
+					{!pathname?.includes("post") && (
+						<>
+							{published ? (
 								<>
-									{published ? (
-										<MenubarItem
-											onClick={() =>
-												setTakenAction("unpublish")
-											}
-										>
-											<TbNewsOff
-												className="inline"
-												size={15}
-											/>{" "}
-											<span>Unpublish</span>
-										</MenubarItem>
-									) : (
-										<MenubarItem
-											onClick={() =>
-												setTakenAction("publish")
-											}
-										>
-											<TbNews
-												className="inline"
-												size={15}
-											/>
-											<span>Publish</span>
-										</MenubarItem>
-									)}
 									<MenubarItem
-										onClick={() => setTakenAction("delete")}
+										onClick={() =>
+											setTakenAction("unpublish")
+										}
 									>
-										<AiFillDelete
+										<TbNewsOff
 											className="inline"
 											size={15}
 										/>{" "}
-										Delete
+										<span>Unpublish</span>
+									</MenubarItem>
+
+									<MenubarItem
+										onClick={() =>
+											navigator.clipboard.writeText(
+												window.location.origin +
+													"/post/" +
+													postId
+											)
+										}
+									>
+										<IoMdShareAlt
+											className="inline"
+											size={15}
+										/>{" "}
+										<span>Share</span>
 									</MenubarItem>
 								</>
+							) : (
+								<MenubarItem
+									onClick={() => setTakenAction("publish")}
+								>
+									<TbNews className="inline" size={15} />
+									<span>Publish</span>
+								</MenubarItem>
 							)}
-						</MenubarContent>
-					</MenubarMenu>
-				</Menubar>
+							<MenubarItem
+								onClick={() => setTakenAction("delete")}
+							>
+								<AiFillDelete className="inline" size={15} />{" "}
+								Delete
+							</MenubarItem>
+						</>
+					)}
+				</ActionWrapper>
 			)}
 		</>
 	);

@@ -30,7 +30,7 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 			/>
 			<PostPreviewControls
 				content={blogData.content}
-				language={blogData.data?.language || undefined}
+				draftId={params.draftId}
 			/>
 		</div>
 	);

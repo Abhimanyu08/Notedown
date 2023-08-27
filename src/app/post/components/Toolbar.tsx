@@ -75,14 +75,12 @@ function Toolbar() {
 				className="relative text-gray-400 hover:text-white active:scale-95"
 				tip="Share this post"
 				onClick={() => {
-					const link =
-						window.location.hostname === "localhost"
-							? `${window.location.protocol}//${window.location.hostname}:3000${pathname}`
-							: `${window.location.protocol}//${window.location.hostname}${pathname}`;
-					navigator.clipboard.writeText(link).then(() => {
-						setLinkCopied(true);
-						setTimeout(() => setLinkCopied(false), 2000);
-					});
+					navigator.clipboard
+						.writeText(window.location.toString())
+						.then(() => {
+							setLinkCopied(true);
+							setTimeout(() => setLinkCopied(false), 2000);
+						});
 				}}
 			>
 				<IoMdShareAlt size={30} />

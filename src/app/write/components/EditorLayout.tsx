@@ -88,12 +88,13 @@ function EditorLayout({
 
 			<WriteToolbar content={blogContent} />
 			<div
-				className={` grow  pt-10
+				className={` grow  py-10
 				overflow-y-auto
 				lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
 				scroll-smooth   
+
 				`}
 				id="post-preview"
 				ref={previewRef}

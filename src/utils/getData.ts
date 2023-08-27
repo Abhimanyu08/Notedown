@@ -98,7 +98,7 @@ export const getPost = async (postId: string, supabaseClient: SupabaseClient) =>
     const { data: post, error } = await supabaseClient
         .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
         .select(
-            "id,created_by,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name)"
+            "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name)"
         )
         .match({ id: postId })
         .single();

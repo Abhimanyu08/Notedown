@@ -1,4 +1,5 @@
 "use client";
+import ActionWrapper from "@components/ActionWrapper";
 import {
 	Menubar,
 	MenubarContent,
@@ -13,28 +14,17 @@ import { SlOptions } from "react-icons/sl";
 
 export function DraftActions({ draft }: { draft: Draft }) {
 	return (
-		<Menubar
-			className="absolute top-3 right-3 w-fit h-fit border-none
-					rounded-full bg-transparent hover:bg-accent
-				"
-		>
-			<MenubarMenu>
-				<MenubarTrigger className="p-1">
-					<SlOptions size={12} />
-				</MenubarTrigger>
-				<MenubarContent className="min-w-0 border-border">
-					<MenubarItem className="">
-						<Link
-							href={`/write?draft=${draft.timeStamp}`}
-							prefetch={false}
-							className="flex gap-2 items-center"
-						>
-							<AiFillEdit className="inline" size={15} />{" "}
-							<span>Edit</span>
-						</Link>
-					</MenubarItem>
-				</MenubarContent>
-			</MenubarMenu>
-		</Menubar>
+		<ActionWrapper>
+			<MenubarItem className="">
+				<Link
+					href={`/write?draft=${draft.timeStamp}`}
+					prefetch={false}
+					className="flex gap-2 items-center"
+				>
+					<AiFillEdit className="inline" size={15} />{" "}
+					<span>Edit</span>
+				</Link>
+			</MenubarItem>
+		</ActionWrapper>
 	);
 }

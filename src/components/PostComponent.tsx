@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
 import PostOnPreviewColor from "./PostOnPreviewColor";
-import { PostOptions } from "./PostOptions";
+import { PostActions } from "./PostOptions";
 import PostTitle from "./PostTitle";
 import { Draft } from "@utils/processDrafts";
 
@@ -17,7 +17,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 
 	return (
 		<div className="relative">
-			<PostOptions
+			<PostActions
 				{...{
 					published: !!published,
 					postId: parseInt(id!),

@@ -2,7 +2,7 @@
 import { Draft, RawObject } from "@utils/processDrafts";
 import { DraftsDisplay } from "./DraftsDisplay";
 import PostDisplay from "@components/PostDisplay";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BiCheck, BiLink } from "react-icons/bi";
@@ -18,6 +18,7 @@ export function TaggedDrafts({
 	tag: string;
 }) {
 	const searchParams = useSearchParams();
+	const params = useParams();
 	const [copied, setCopied] = useState(false);
 	useEffect(() => {
 		if (copied) {
@@ -49,20 +50,22 @@ export function TaggedDrafts({
 			<details
 				open={searchTag === tag || false}
 				className={cn(
-					"relative group/tag",
+					"relative ",
 					searchTag && searchTag !== tag ? "hidden" : ""
 				)}
 			>
-				<summary className="text-lg font-serif font-bold cursor-pointer">
+				<summary className="text-lg font-serif font-bold cursor-pointer group/tag">
 					{tag}
 					<ToolTipComponent
 						tip="Copy tag link"
 						side="left"
-						className="absolute invisible group-hover/tag:visible hover:bg-gray-800 p-1 rounded-md top-2 right-4"
+						className="absolute invisible group-hover/tag:visible hover:bg-gray-800 p-1 rounded-md top-2 right-3"
 						onClick={() => {
 							navigator.clipboard
 								.writeText(
-									window.location.toString() + `?tag=${tag}`
+									window.location.origin +
+										`/profile/${params?.id}` +
+										`?tag=${tag}`
 								)
 								.then(() => setCopied(true));
 						}}

@@ -47,7 +47,8 @@ async function PostPreview({ postId }: { postId: string }) {
 				/>
 				<PostPreviewControls
 					content={content}
-					language={post?.language || undefined}
+					postId={post.id}
+					draftId={post.timestamp}
 				/>
 			</BlogContextProvider>
 		</div>
