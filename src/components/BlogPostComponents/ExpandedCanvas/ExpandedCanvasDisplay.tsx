@@ -18,7 +18,7 @@ function ExpandedCanvasDisplay({
 		<AnimatePresence>
 			{persistanceKey && (
 				<motion.div
-					className="absolute w-screen flex items-center justify-center h-screen bg-black/75 z-[400] cursor-zoom-out"
+					className="absolute w-screen flex items-center justify-center h-screen bg-black/75 z-[2000] cursor-zoom-out"
 					onClick={() => setPersistanceKey("")}
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}

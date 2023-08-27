@@ -4,7 +4,7 @@ import { useSupabase } from "@/app/appContext";
 import { cn } from "@/lib/utils";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { SUPABASE_FILES_BUCKET } from "@utils/constants";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 import TLDrawing from "./TLDrawing";
 
@@ -19,6 +19,7 @@ export default function DrawingSvg({
 	const { supabase } = useSupabase();
 	const [svgMounted, setSvgMounted] = useState(false);
 	const [expand, setExpand] = useState(false);
+	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const getFileData = async (fileName: string) => {
 		const { imageFolder, blogger, id } = blogState.blogMeta;
@@ -38,33 +39,46 @@ export default function DrawingSvg({
 				setSvgMounted(true);
 				return;
 			}
-			const svgElement = jsonToSvg(jsonString);
-			svgElement.style.width = "100%";
-			svgElement.style.height = "100%";
-
 			const containerElem = document.getElementById(
 				`svgContainer-${persistanceKey}`
 			);
+			const svgElement = jsonToSvg(jsonString);
+			console.log(svgElement.style.width, svgElement.style.height);
+			const svgWidth = svgElement.width.baseVal.value;
+			const containerWidth = containerRef.current?.clientWidth || 0;
+
+			if (svgWidth > containerWidth) {
+				svgElement.style.width = "100%";
+			}
+			svgElement.setAttribute("id", `svg-${persistanceKey}`);
+			svgElement.style.height = "100%";
+
 			containerElem?.replaceChildren(svgElement);
 			setSvgMounted(true);
 		});
 	}, []);
-	// useEffect(() => {
-	// 	if (expand) {
-	// 		const svgElem = document.getElementById(`svg-${persistanceKey}`);
-	// 		// svgEleim?.setAttribute("preserveAspectRatio", "xMinYMin slice");
-	// 		if (!svgElem) return;
-	// 		svgElem.style.width = "100%";
-	// 		svgElem.style.height = "100%";
-	// 	}
-	// }, [expand]);
+
+	const onExpand = async () => {
+		const svg = document.getElementById(`svg-${persistanceKey}`);
+		console.log(svg);
+		if (expand) {
+			if (svg) {
+				svg.style.width = "";
+			}
+			setExpand(false);
+
+			return;
+		}
+		if (svg) svg.style.width = "100%";
+		setExpand(true);
+	};
 
 	return (
 		<div
 			className={cn(
 				"flex  flex-col w-full h-auto items-center justify-center z-[600]"
 			)}
-			onClick={() => setExpand((p) => !p)}
+			ref={containerRef}
 		>
 			<div
 				className={cn(
@@ -73,6 +87,7 @@ export default function DrawingSvg({
 						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto z-[600]"
 						: " [&>*]:cursor-zoom-in"
 				)}
+				onClick={onExpand}
 				id={`svgContainer-${persistanceKey}`}
 			>
 				<VscLoading className="animate-spin" size={24} />

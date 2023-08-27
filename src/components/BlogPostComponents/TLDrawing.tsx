@@ -1,5 +1,5 @@
 "use client";
-import { memo, useContext, useState } from "react";
+import { memo, useContext, useRef, useState } from "react";
 
 import { EditorContext } from "@/app/write/components/EditorContext";
 
@@ -25,6 +25,7 @@ function TLDrawing({
 	const [editor, setEditor] = useState<Editor>();
 	const [preview, setPreview] = useState(false);
 	const [expand, setExpand] = useState(false);
+	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const onPreview = async () => {
 		if (preview) {
@@ -38,15 +39,35 @@ function TLDrawing({
 		if (!container) return;
 		const svg = await tldrawEditorToSVG(editor);
 		if (!svg) return;
-		svg.style.width = "100%";
-		svg.style.height = "100%";
 
+		const svgWidth = svg.width.baseVal.value;
+		const containerWidth = containerRef.current?.clientWidth || 0;
+
+		if (svgWidth > containerWidth) {
+			svg.style.width = "100%";
+		}
+		svg.setAttribute("id", `svg-${persistanceKey}`);
+		svg.style.height = "100%";
+		console.log(svg);
 		container.replaceChildren(svg);
 		setPreview(true);
 	};
 
+	const onExpand = async () => {
+		const svg = document.getElementById(`svg-${persistanceKey}`);
+		console.log(svg);
+		if (expand) {
+			if (svg) svg.style.width = "";
+			setExpand(false);
+			setPreview(false);
+			return;
+		}
+		if (svg) svg.style.width = "100%";
+		setExpand(true);
+	};
+
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col " ref={containerRef}>
 			<Button
 				className="text-sm bg-black py-1 px-2 mb-2  self-end border-border border-[1px] text-gray-400 hover:text-white hover:scale-100"
 				variant={"outline"}
@@ -57,12 +78,13 @@ function TLDrawing({
 			<div
 				className={cn(
 					"w-full z-[600]",
-					!preview && "hidden",
 					expand
 						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto "
-						: " [&>*]:cursor-zoom-in"
+						: " [&>*]:cursor-zoom-in flex flex-col items-center",
+
+					!preview && "hidden"
 				)}
-				onClick={() => setExpand((p) => !p)}
+				onClick={onExpand}
 				id={`svgpreview-${persistanceKey}`}
 			></div>
 			<div
