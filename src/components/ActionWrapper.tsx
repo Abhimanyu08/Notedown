@@ -14,8 +14,8 @@ function ActionWrapper({ children }: { children: React.ReactNode }) {
 	return (
 		<Menubar
 			className={`absolute top-3 right-3 w-fit h-fit border-none
-					rounded-md bg-transparent hover:bg-accent
-					${pathname?.includes("profile") ? "" : "hidden"}
+					rounded-md bg-transparent hover:bg-secondary
+					${!(pathname?.includes("post") || pathname?.includes("draft")) ? "" : "hidden"}
 			`}
 		>
 			<MenubarMenu>

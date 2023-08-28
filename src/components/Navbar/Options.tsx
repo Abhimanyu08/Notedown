@@ -18,6 +18,7 @@ import {
 } from "@components/ui/sheet";
 import { handleLogout, handleSignIn } from "@utils/handleAuth";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import Link from "next/link";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
@@ -191,6 +192,9 @@ export function LoggedInOptions({
 			</div>
 		);
 	}
-
-	return <Button className="px-2 py-1">Go to your own profile</Button>;
+	return (
+		<Link href={`/profile/${session.user.id}`}>
+			<Button className="px-2 py-1">Go to your own profile</Button>;
+		</Link>
+	);
 }

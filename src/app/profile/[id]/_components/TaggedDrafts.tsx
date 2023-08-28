@@ -59,7 +59,7 @@ export function TaggedDrafts({
 					<ToolTipComponent
 						tip="Copy tag link"
 						side="left"
-						className="absolute invisible group-hover/tag:visible hover:bg-gray-800 p-1 rounded-md top-2 right-3"
+						className="absolute invisible group-hover/tag:visible hover:bg-secondary p-1 rounded-md top-2 right-3"
 						onClick={() => {
 							navigator.clipboard
 								.writeText(
