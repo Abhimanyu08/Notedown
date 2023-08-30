@@ -1,12 +1,23 @@
 "use client";
 import { Draft, RawObject } from "@utils/processDrafts";
-import React, { createContext, useEffect, useState } from "react";
+import React, {
+	Dispatch,
+	SetStateAction,
+	createContext,
+	useEffect,
+	useState,
+} from "react";
 import useRetrieveDrafts from "./_hooks/useRetrieveDrafts";
 
 export const ProfileContext = createContext<{
 	draftAndPostMap: Map<string, { drafts: RawObject[]; posts: Draft[] }>;
 	loadingDrafts: boolean;
-}>({ draftAndPostMap: new Map(), loadingDrafts: true });
+	setLoadDrafts: Dispatch<SetStateAction<boolean>>;
+}>({
+	draftAndPostMap: new Map(),
+	loadingDrafts: true,
+	setLoadDrafts: () => null,
+});
 
 function ProfileContextProvider({
 	children,
@@ -15,14 +26,15 @@ function ProfileContextProvider({
 	children: React.ReactNode;
 	tagToPostMap: Map<string, Draft[]>;
 }) {
-	const { tagToDraftMap, loadingDrafts } = useRetrieveDrafts();
+	const [loadDrafts, setLoadDrafts] = useState(true);
+	const { tagToDraftMap } = useRetrieveDrafts({ loadDrafts, setLoadDrafts });
 
 	const [draftAndPostMap, setDraftAndPostMap] = useState<
 		Map<string, { drafts: RawObject[]; posts: Draft[] }>
 	>(new Map());
 
 	useEffect(() => {
-		if (loadingDrafts) return;
+		if (loadDrafts) return;
 
 		const map: Map<string, { drafts: RawObject[]; posts: Draft[] }> =
 			new Map();
@@ -48,10 +60,17 @@ function ProfileContextProvider({
 		}
 
 		setDraftAndPostMap(map);
-	}, [loadingDrafts, tagToPostMap]);
+		setLoadDrafts(false);
+	}, [loadDrafts, tagToPostMap]);
 
 	return (
-		<ProfileContext.Provider value={{ draftAndPostMap, loadingDrafts }}>
+		<ProfileContext.Provider
+			value={{
+				draftAndPostMap,
+				loadingDrafts: loadDrafts,
+				setLoadDrafts,
+			}}
+		>
 			{children}
 		</ProfileContext.Provider>
 	);

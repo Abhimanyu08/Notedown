@@ -1,18 +1,18 @@
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { RawObject, processNoTagDrafts } from "@utils/processDrafts";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, Dispatch, SetStateAction } from "react";
 
-export default function useRetrieveDrafts() {
+export default function useRetrieveDrafts({ loadDrafts, setLoadDrafts }: { loadDrafts: boolean, setLoadDrafts: Dispatch<SetStateAction<boolean>> }) {
 
-    const [loadingDrafts, setLoadingDrafts] = useState(true);
     const { documentDb } = useContext(IndexedDbContext);
     const [tagToDraftMap, setTagToDraftMap] = useState(
         new Map<string, RawObject[]>()
     );
 
     useEffect(() => {
-        if (documentDb) {
+        if (documentDb && loadDrafts) {
+            setTagToDraftMap(new Map())
             const mdObjectStore = getMarkdownObjectStore(
                 documentDb,
                 "readonly"
@@ -41,11 +41,11 @@ export default function useRetrieveDrafts() {
             processNoTagDrafts(documentDb).then((rawObjs) => {
                 setTagToDraftMap((p) => {
                     p.set("notag", rawObjs);
-                    setLoadingDrafts(false)
+                    setLoadDrafts(false)
                     return p;
                 });
             });
         }
-    }, [documentDb]);
-    return { tagToDraftMap, loadingDrafts }
+    }, [documentDb, loadDrafts]);
+    return { tagToDraftMap }
 }
