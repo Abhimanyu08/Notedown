@@ -14,11 +14,21 @@ export async function sendRequestToRceServer(method: "POST" | "DELETE", body: { 
         return resp
     }
 
-    const resp = await fetch(`/api/sendReqApiRoute`, {
-        method,
-        body: JSON.stringify(body)
-    })
-    return resp
+    // const resp = await fetch(`/api/sendReqApiRoute`, {
+    //     method,
+    //     body: JSON.stringify(body)
+    // })
+    // return resp
+    const resp = await fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    });
+    console.log(resp.headers)
+    const respbody = await resp.json()
+    return respbody
 }
 
 export async function sendRevalidationRequest(pathToRevalidate: string) {

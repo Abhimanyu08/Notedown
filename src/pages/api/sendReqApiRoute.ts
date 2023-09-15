@@ -13,7 +13,7 @@ const handler = async (req: NextRequest) => {
         },
         body: req.body,
     });
-
+    console.log(resp.headers)
     const body = await resp.json()
 
     if (!body) {
