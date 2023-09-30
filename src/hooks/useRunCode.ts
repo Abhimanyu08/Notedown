@@ -125,16 +125,25 @@ async function runCodeRequest({
 		"POST",
 		{ language, containerId, code, fileName, run },
 	];
-	const resp = await sendRequestToRceServer(...params);
-
-	if (resp.status !== 201) {
-		return resp.statusText;
-	}
-	const { output } = (await resp.json()) as { output: string };
-
 	try {
-		sessionStorage.setItem(code, output);
-	} catch {}
+		const resp = await sendRequestToRceServer(...params);
 
-	return output;
+		if (resp.status !== 201) {
+			return resp.statusText;
+		}
+		const { output } = (await resp.json()) as { output: string };
+
+		try {
+			sessionStorage.setItem(code, output);
+		} catch {}
+
+		return output;
+	} catch (e) {
+		if ((e as any).name === "AbortError") {
+			return "Code running request aborted after 10 seconds";
+			// Handle abort here
+		} else {
+			return "Unexpected Error";
+		}
+	}
 }
