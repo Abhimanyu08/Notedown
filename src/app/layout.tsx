@@ -32,25 +32,22 @@ const sans = Nunito_Sans({
 });
 
 export const metadata: Metadata = {
-	title: "Rce-blog",
-	description:
-		"Write posts/notes containing prose, executable code snippets, free hand drawings and images.",
+	title: "Notedown",
+	description: "Web based note-taking app for developers and researchers",
 	icons: {
 		icon: "/icon.png",
 	},
 	twitter: {
-		title: "Rce-blog",
-		description:
-			"Write posts/notes containing prose, executable code snippets, free hand drawings and images.",
+		title: "Notedown",
+		description: "Web based note-taking app for developers and researchers",
 		card: "summary",
 	},
 	openGraph: {
-		url: "http://rce-blog.xyz",
+		url: "http://notedown.art",
 		type: "website",
-		title: "Rce-blog",
-		siteName: "Rce-blog",
-		description:
-			"Write posts/notes containing prose, executable code snippets, free hand drawings and images.",
+		title: "Notedown",
+		siteName: "Notedown",
+		description: "Web based note-taking app for developers and researchers",
 	},
 };
 
