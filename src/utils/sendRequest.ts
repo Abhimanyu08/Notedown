@@ -11,7 +11,7 @@ export async function sendRequestToRceServer(
 	}
 ) {
 	const controller = new AbortController();
-	setTimeout(() => controller.abort(), 10000);
+	setTimeout(() => controller.abort(), 8000);
 	if (window.location.hostname === "localhost") {
 		const resp = fetch("http://localhost:5000", {
 			method,
@@ -30,13 +30,14 @@ export async function sendRequestToRceServer(
 	//     body: JSON.stringify(body)
 	// })
 	// return resp
-	const resp = await fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
+	const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
 		method: method,
 		mode: "cors",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(body),
+		signal: controller.signal,
 	});
 	return resp;
 }
