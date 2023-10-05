@@ -2,16 +2,12 @@
 import BlogLayout from "@/app/post/components/BlogLayout";
 import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
-import BlogContextProvider, {
-	BlogContext,
-} from "@components/BlogPostComponents/BlogState";
+import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
 
 function Draft() {

@@ -1,19 +1,18 @@
-import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import SideSheet from "@components/SideSheet";
 import { Button } from "@components/ui/button";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { headers, cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import React from "react";
 
-async function DraftLayout({ children }: { children: React.ReactNode }) {
+async function layout({ children }: { children: React.ReactNode }) {
 	const supabase = createServerComponentSupabaseClient({ headers, cookies });
 	const {
 		data: { session },
 	} = await supabase.auth.getSession();
 
 	return (
-		<BlogContextProvider>
+		<>
 			<SideSheet>
 				<Link
 					href={
@@ -26,8 +25,8 @@ async function DraftLayout({ children }: { children: React.ReactNode }) {
 				</Link>
 			</SideSheet>
 			{children}
-		</BlogContextProvider>
+		</>
 	);
 }
 
-export default DraftLayout;
+export default layout;

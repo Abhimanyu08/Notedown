@@ -5,7 +5,6 @@ import { Metadata } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import { redirect } from "next/navigation";
 import BlogLayout from "../components/BlogLayout";
-import { parseFrontMatter } from "@utils/getResources";
 import Toolbar from "../components/Toolbar";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
