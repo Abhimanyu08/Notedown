@@ -1,5 +1,5 @@
 import Code from "@components/BlogPostComponents/Code";
-import CodeWithoutLanguage from "@components/BlogPostComponents/CodeWithoutLanguage";
+import NonExecutableCodeblock from "@components/BlogPostComponents/CodeWithoutLanguage";
 import CodeWord from "@components/BlogPostComponents/CodeWord";
 import Footers from "@components/BlogPostComponents/Footers";
 import HeadingButton from "@components/BlogPostComponents/HeadinglinkButton";
@@ -242,7 +242,7 @@ const tagToJsx: TagToJsx = {
 				)
 			) {
 				return (
-					<CodeWithoutLanguage
+					<NonExecutableCodeblock
 						code={code}
 						language={blockMeta.lang as string}
 						showLineNumbers={blockMeta.sln as boolean}

@@ -25,7 +25,7 @@ function importTheme(theme: string): Promise<typeof defaultDark> {
 	return import(`react-syntax-highlighter/dist/esm/styles/prism/${theme}`);
 }
 
-function CodeWithoutLanguage({
+function NonExecutableCodeblock({
 	code,
 	language,
 	theme,
@@ -82,7 +82,7 @@ lg:scrollbar-thin
 		"
 			>
 				<button
-					className="absolute top-2 right-2 p-1 rounded-md bg-black/70 opacity-0 group-hover:opacity-100"
+					className="absolute top-4 right-4 p-1 rounded-md bg-black/70 opacity-0 group-hover:opacity-100"
 					onClick={() => {
 						navigator.clipboard
 							.writeText(code)
@@ -111,7 +111,7 @@ lg:scrollbar-thin
 				</SyntaxHighlighter>
 			</div>
 			{pathname?.startsWith("/write") && (
-				<div className="flex gap-2 justify-center mt-2">
+				<div className="flex gap-2 justify-center mt-2 mb-4">
 					<LanguageSelector
 						start={start}
 						language={language || "javascript"}
@@ -127,4 +127,4 @@ lg:scrollbar-thin
 	);
 }
 
-export default memo(CodeWithoutLanguage);
+export default memo(NonExecutableCodeblock);
