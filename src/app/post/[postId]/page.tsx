@@ -29,15 +29,15 @@ export async function generateMetadata({
 		description,
 		openGraph: {
 			title,
-			description: description!,
+			description: description || "",
 			type: "article",
 			publishedTime: data.published_on!,
-			url: `https://rce-blog.xyz/post/${params.postId}`,
+			url: `https://notedown.art/post/${params.postId}`,
 		},
 		twitter: {
 			card: "summary",
 			title,
-			description: description!,
+			description: description || "",
 		},
 	};
 }
