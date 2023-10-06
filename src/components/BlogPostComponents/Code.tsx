@@ -125,7 +125,7 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 
 	return (
 		<CodeBlock>
-			<CodeBlockButtons>
+			<CodeBlockButtons file={file} language={language || ""}>
 				<CodeBlockButton
 					onClick={onRunCode}
 					tip="Run Code (Shift+Enter)"
@@ -173,7 +173,7 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div
-				className="w-full border-2 border-border rounded-sm rounded-se-none"
+				className="w-full border-2 border-border rounded-sm rounded-s-none"
 				id={`codearea-${blockNumber}`}
 				onDoubleClick={() => {
 					// if (setRunningBlock) setRunningBlock(blockNumber);
