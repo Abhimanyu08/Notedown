@@ -4,7 +4,7 @@ import { useEffect } from "react";
 export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateInterface }) {
     useEffect(() => {
         if (Object.keys(blogState.blockToEditor).length === 0) return;
-        document.addEventListener("keydown", function (event) {
+        document.onkeydown = function (event) {
             if (
                 event.ctrlKey &&
                 (event.key === "ArrowUp" || event.key === "ArrowDown")
@@ -12,6 +12,7 @@ export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateIn
                 event.preventDefault();
 
                 let focusedElement = document.activeElement;
+                console.log(focusedElement)
                 if (!focusedElement?.classList.contains("cm-content") || focusedElement?.getAttribute("data-language") === "markdown") return
                 while (
                     focusedElement !== null &&
@@ -50,7 +51,7 @@ export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateIn
                     }
                 }
             }
-        });
+        }
     }, [blogState]);
 
 
