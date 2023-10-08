@@ -103,13 +103,10 @@ const Blog = memo(
 					<blockquote className="text-left font-serif text-xl text-gray-400 not-italic">
 						{description}
 					</blockquote>
-					<div className="dark:text-gray-400 flex gap-2 not-prose text-xs md:text-sm text-black justify-start mb-10 md:mb-12">
-						<span className="underline underline-offset-2 hover:italic decoration-black dark:decoration-gray-400">
-							{/* @ts-expect-error Async Server Component  */}
-							<AuthorComponent createdBy={created_by} />
-						</span>
-						<span>.</span>
-						<span className="">
+					<div className="dark:text-gray-400 flex not-prose gap-2 text-xs md:text-sm text-black justify-start mb-10 md:mb-12">
+						<AuthorComponent createdBy={created_by || ""} />
+						<span className="first:hidden">.</span>
+						<span>
 							{published && published_on
 								? formatDate(published_on)
 								: created_at

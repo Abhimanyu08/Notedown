@@ -22,9 +22,16 @@ function BlogAuthorClient() {
 	}, [session]);
 
 	if (session) {
-		return <Link href={`/profile/${session.user.id}`}>{author}</Link>;
+		return (
+			<Link
+				href={`/profile/${session.user.id}`}
+				className="underline underline-offset-2 hover:italic decoration-black dark:decoration-gray-400"
+			>
+				{author}
+			</Link>
+		);
 	}
-	return <Link href={`/profile/anon`}>{author}</Link>;
+	return <></>;
 }
 
 export default memo(BlogAuthorClient);
