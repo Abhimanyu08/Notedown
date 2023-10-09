@@ -9,6 +9,7 @@ import SupabaseProvider from "./appContext";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
 import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
 import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
+import { Analytics } from "@vercel/analytics/react";
 
 const serif = Petrona({
 	subsets: ["latin"],
@@ -84,6 +85,7 @@ export default async function RootLayout({
 						</ExpandedImageProvider>
 					</ToastProvider>
 				</SupabaseProvider>
+				<Analytics />
 			</body>
 		</html>
 	);

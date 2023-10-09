@@ -12,7 +12,6 @@ export function useJumpBetweenCodeBlocks({ blogState }: { blogState: BlogStateIn
                 event.preventDefault();
 
                 let focusedElement = document.activeElement;
-                console.log(focusedElement)
                 if (!focusedElement?.classList.contains("cm-content") || focusedElement?.getAttribute("data-language") === "markdown") return
                 while (
                     focusedElement !== null &&
