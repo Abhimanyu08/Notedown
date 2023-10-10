@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 		card: "summary",
 	},
 	openGraph: {
-		url: "http://notedown.art",
+		url: "https://notedown.art",
 		type: "website",
 		title: "Notedown",
 		siteName: "Notedown",
