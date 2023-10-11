@@ -52,24 +52,26 @@ function useTerminal({ blockNumber }: { blockNumber: number }) {
 	}, [blockNumber]);
 
 	useEffect(() => {
+		if (!sendTerminalCommand) return;
+
 		if (!containerId) {
 			terminal?.writeln(
-				"\r\n" + "Please enable remote code execution" || ""
+				"\r\n" + "Please enable remote code execution\r\n" || ""
 			);
+			setTerminalCommand("");
+			setSendTerminalCommand(false);
 			return;
 		}
 
-		if (sendTerminalCommand) {
-			runShellCommand({ containerId, command: terminalCommand }).then(
-				(val) => {
-					// setBlockToOutput({ [blockNumber]: val })
+		runShellCommand({ containerId, command: terminalCommand }).then(
+			(val) => {
+				// setBlockToOutput({ [blockNumber]: val })
 
-					terminal?.writeln("\r\n" + val);
-					setTerminalCommand("");
-					setSendTerminalCommand(false);
-				}
-			);
-		}
+				terminal?.writeln("\r\n" + val);
+				setTerminalCommand("");
+				setSendTerminalCommand(false);
+			}
+		);
 	}, [sendTerminalCommand]);
 
 	useEffect(() => {
