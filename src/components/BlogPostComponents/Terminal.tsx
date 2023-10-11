@@ -76,22 +76,9 @@ function useTerminal({ blockNumber }: { blockNumber: number }) {
 
 	useEffect(() => {
 		if (!Object.hasOwn(blogState.blockToOutput, blockNumber)) return;
-		const { runningBlock, blockToFileName, blockToOutput } = blogState;
+		const { runningBlock } = blogState;
 		if (runningBlock !== blockNumber) return;
-		const currentFile = blockToFileName[blockNumber];
-
-		let previousOutputsLength = 0;
-		for (let [previosBlockNumber, output] of Object.entries(
-			blockToOutput
-		)) {
-			if (parseInt(previosBlockNumber) >= blockNumber) break;
-			if (blockToFileName[parseInt(previosBlockNumber)] === currentFile) {
-				previousOutputsLength += output.length;
-			}
-		}
-		const currentOutput = blogState.blockToOutput[blockNumber].slice(
-			previousOutputsLength
-		);
+		const currentOutput = blogState.blockToOutput[blockNumber];
 		terminal?.writeln("\r\n" + currentOutput);
 
 		// if (setBlockToOutput) setBlockToOutput({})
