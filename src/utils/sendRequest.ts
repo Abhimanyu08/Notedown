@@ -15,12 +15,10 @@ export async function sendRequestToRceServer(
 	if (window.location.hostname === "localhost") {
 		const resp = fetch("http://localhost:5000", {
 			method,
-			mode: "cors",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(body),
-			signal: controller.signal,
 		});
 		return resp;
 	}

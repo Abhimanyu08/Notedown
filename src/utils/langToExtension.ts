@@ -3,6 +3,8 @@ import { Compartment, Extension } from "@codemirror/state";
 
 import { ALLOWED_LANGUAGES } from "./constants";
 import { linter, lintGutter } from "@codemirror/lint"
+import { StreamLanguage } from "@codemirror/language"
+
 
 
 import * as eslint from "eslint-linter-browserify";
@@ -42,6 +44,10 @@ const langToCodeMirrorExtension = async (lang: typeof ALLOWED_LANGUAGES[number] 
             const { json, jsonParseLinter } = await import("@codemirror/lang-json")
             return languageCompartment.of([json(), linter(jsonParseLinter()), lintGutter()])
 
+        case "go":
+
+            const { go } = await import("@codemirror/legacy-modes/mode/go");
+            return StreamLanguage.define(go)
 
         default:
             return []
