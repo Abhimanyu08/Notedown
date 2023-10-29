@@ -1,10 +1,36 @@
+"use client";
+import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { NotLoggedInOptions } from "@components/Navbar/Options";
 import SideSheet from "@components/SideSheet";
 import { Button } from "@components/ui/button";
-import Divider from "@components/ui/divider";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
+import { useContext, useEffect } from "react";
+import { useSupabase } from "./appContext";
+import { usePathname, useRouter } from "next/navigation";
 
-async function Home() {
+function Home() {
+	const { session } = useSupabase();
+	const { documentDb } = useContext(IndexedDbContext);
+	const router = useRouter();
+	const pathname = usePathname();
+
+	useEffect(() => {
+		if (!documentDb) return;
+
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		if (pathname === "/" && !session) {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
+	}, [documentDb]);
 	return (
 		<>
 			<SideSheet>

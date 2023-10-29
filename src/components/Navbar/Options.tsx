@@ -4,49 +4,28 @@ import { ToastContext } from "@/contexts/ToastProvider";
 import useOwner from "@/hooks/useOwner";
 import { Database } from "@/interfaces/supabase";
 import { cn } from "@/lib/utils";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
 import { Button } from "@components/ui/button";
 import Divider from "@components/ui/divider";
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import {
-	SheetHeader,
-	SheetTitle,
 	SheetDescription,
 	SheetFooter,
-	SheetClose,
+	SheetHeader,
+	SheetTitle,
 } from "@components/ui/sheet";
 import { handleLogout, handleSignIn } from "@utils/handleAuth";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
-import { redirect, usePathname, useRouter } from "next/navigation";
-import { useContext, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useContext, useRef, useState } from "react";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 
 export function NotLoggedInOptions({
 	className,
 }: React.ComponentPropsWithoutRef<"div">) {
-	const { supabase, session } = useSupabase();
 	const pathname = usePathname();
-	const { documentDb } = useContext(IndexedDbContext);
-	const router = useRouter();
+	const { supabase } = useSupabase();
 
-	useEffect(() => {
-		if (!documentDb) return;
-
-		const markdownObjectStore = getMarkdownObjectStore(
-			documentDb,
-			"readonly"
-		);
-		if (pathname === "/" && !session) {
-			const countReq = markdownObjectStore.count();
-			countReq.onsuccess = () => {
-				if (countReq.result > 0) {
-					router.push("/profile/anon");
-				}
-			};
-		}
-	}, [documentDb]);
 	return (
 		<div className={cn("flex flex-col gap-2 mt-4", className)}>
 			<span>Login with:</span>

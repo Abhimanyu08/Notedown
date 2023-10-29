@@ -10,7 +10,8 @@ export default async function prepareContainer(language: BlogProps["language"] |
         });
 
         if (resp.status !== 201) {
-            alert("Couldn't set up remote code execution");
+            alert(resp.statusText);
+
             return;
         }
         const body: { containerId: string; } = await resp.json();

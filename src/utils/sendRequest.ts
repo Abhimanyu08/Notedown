@@ -10,11 +10,12 @@ export async function sendRequestToRceServer(
 		run?: boolean;
 	}
 ) {
-	const controller = new AbortController();
-	setTimeout(() => controller.abort(), 10000);
+	// const controller = new AbortController();
+	// setTimeout(() => controller.abort(), 10000);
 	if (window.location.hostname === "localhost") {
-		const resp = fetch("http://localhost:5000", {
+		const resp = fetch("/api/code", {
 			method,
+			mode: "cors",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -28,14 +29,13 @@ export async function sendRequestToRceServer(
 	//     body: JSON.stringify(body)
 	// })
 	// return resp
-	const resp = fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER as string, {
+	const resp = fetch("/api/code", {
 		method: method,
-		mode: "cors",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(body),
-		signal: controller.signal,
+		// signal: controller.signal,
 	});
 	return resp;
 }

@@ -50,8 +50,8 @@ export function useRunCode({
 				},
 			});
 
-			// dispatch({ type: "set running block", payload: null });
-			// dispatch({ type: "set writing block", payload: null });
+			dispatch({ type: "set running block", payload: null });
+			dispatch({ type: "set writing block", payload: null });
 			return;
 		}
 
@@ -66,15 +66,15 @@ export function useRunCode({
 				if (
 					blockFileName === fileName ||
 					blockFileName +
-						langToExtension[
-							language as keyof typeof langToExtension
-						] ===
-						fileName ||
+					langToExtension[
+					language as keyof typeof langToExtension
+					] ===
+					fileName ||
 					blockFileName ===
-						fileName +
-							langToExtension[
-								language as keyof typeof langToExtension
-							]
+					fileName +
+					langToExtension[
+					language as keyof typeof langToExtension
+					]
 				) {
 					codeArray.push(blockToEditor[i].state.sliceDoc());
 				}
@@ -92,8 +92,8 @@ export function useRunCode({
 		}).then((val) => {
 			dispatch({ type: "set output", payload: { [block]: val } });
 
-			// dispatch({ type: "set running block", payload: null });
-			// dispatch({ type: "set writing block", payload: null });
+			dispatch({ type: "set running block", payload: null });
+			dispatch({ type: "set writing block", payload: null });
 			dispatch({ type: "toggle running request", payload: null });
 		});
 	}, [blogState.runningBlock, blogState.writingBlock]);
@@ -114,12 +114,12 @@ async function runCodeRequest({
 	containerId,
 	fileName,
 }: runCodeParams) {
-	let sessionCodeToOutput = sessionStorage.getItem(code);
+	// let sessionCodeToOutput = sessionStorage.getItem(code);
 
-	if (sessionCodeToOutput) {
-		if (!run) return "";
-		return sessionCodeToOutput;
-	}
+	// if (sessionCodeToOutput) {
+	// 	if (!run) return "";
+	// 	return sessionCodeToOutput;
+	// }
 
 	const params: Parameters<typeof sendRequestToRceServer> = [
 		"POST",
@@ -133,9 +133,9 @@ async function runCodeRequest({
 		}
 		const { output } = (await resp.json()) as { output: string };
 
-		try {
-			sessionStorage.setItem(code, output);
-		} catch {}
+		// try {
+		// 	sessionStorage.setItem(code, output);
+		// } catch { }
 
 		return output;
 	} catch (e) {

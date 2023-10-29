@@ -76,16 +76,14 @@ function useTerminal({ blockNumber }: { blockNumber: number }) {
 
 	useEffect(() => {
 		if (!Object.hasOwn(blogState.blockToOutput, blockNumber)) return;
-		const { runningBlock } = blogState;
-		if (runningBlock !== blockNumber) return;
 		const currentOutput = blogState.blockToOutput[blockNumber];
 		terminal?.writeln("\r\n" + currentOutput);
 
 		// if (setBlockToOutput) setBlockToOutput({})
-		dispatch({ type: "set running block", payload: null });
-		dispatch({ type: "set writing block", payload: null });
+		// dispatch({ type: "set running block", payload: null });
+		// dispatch({ type: "set writing block", payload: null });
 		// dispatch({ type: "set output", payload: { [blockNumber]: null } });
-	}, [blogState.blockToOutput]);
+	}, [blogState.blockToOutput[blockNumber]]);
 
 	return terminal;
 }
