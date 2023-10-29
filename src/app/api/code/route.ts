@@ -11,7 +11,10 @@ export async function POST(request: Request) {
     const authCookie = cookies().get("supabase-auth-token")
 
     if (!authCookie) {
-        return new Response("", { status: 400, statusText: "Please log in to execute code" })
+        return Response.json("Please log in to execute code", {
+            status: 400,
+            statusText: "Please login to execute code"
+        })
     }
 
 
