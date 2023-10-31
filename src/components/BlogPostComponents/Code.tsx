@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import {
 	MouseEventHandler,
@@ -86,6 +87,7 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 		return () => {
 			dispatch({ type: "remove editor", payload: blockNumber });
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [blockNumber, editorView]);
 
 	useEffect(() => {
@@ -124,7 +126,7 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 	};
 
 	return (
-		<CodeBlock>
+		<CodeBlock className="mt-2">
 			<CodeBlockButtons file={file} language={language || ""}>
 				<CodeBlockButton
 					onClick={onRunCode}
@@ -173,7 +175,7 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div
-				className="w-full border-2 border-border rounded-sm rounded-s-none"
+				className="w-full border-2 border-border rounded-sm rounded-se-none rounded-ss-none"
 				id={`codearea-${blockNumber}`}
 				onDoubleClick={() => {
 					// if (setRunningBlock) setRunningBlock(blockNumber);

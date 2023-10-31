@@ -12,6 +12,7 @@ import React from "react";
 import { visit } from "unist-util-visit";
 import getYoutubeEmbedLink from "../getYoutubeEmbedLink";
 import ImageHandler from "@components/BlogPostComponents/ImageHandler";
+import Ptag from "@components/BlogPostComponents/Ptag";
 
 let BLOCK_NUMBER = 0;
 let footNotes: { id: number; node: any }[] = [];
@@ -112,7 +113,7 @@ export interface HtmlAstElement extends Element {
 	tagName: HtmlTagName;
 }
 
-function defaultTagToJsx(node: HtmlAstElement) {
+export function defaultTagToJsx(node: HtmlAstElement) {
 	return React.createElement(
 		node.tagName,
 		node.properties,
@@ -397,7 +398,7 @@ const tagToJsx: TagToJsx = {
 			);
 		}
 
-		return defaultTagToJsx(beforeNode);
+		return <Ptag element={beforeNode} />;
 	},
 
 	img: (node) => {

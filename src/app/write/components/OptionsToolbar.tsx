@@ -42,7 +42,7 @@ function WriteToolbar({ content }: { content: string }) {
 	}, [uploadFinished]);
 
 	return (
-		<div className="flex absolute bottom-0 right-0 h-fit w-1/2 z-[400]  justify-center gap-32 px-10 items-center border-t-2  bg-secondary   border-border [&>*]:p-2">
+		<div className="flex absolute bottom-0 right-0 h-fit w-[55%] z-[400]  justify-center gap-32 px-10 items-center border-t-2  bg-secondary   border-border [&>*]:p-2">
 			{progressMessage && !uploadFinished ? (
 				<div className="flex items-center gap-4 m-2">
 					<VscLoading className="animate-spin" />

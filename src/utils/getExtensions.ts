@@ -72,8 +72,8 @@ function getExtensions(): Extension[] {
                 },
                 ".cm-gutterElement": {
                     color: "rgb(34 211 238)",
-                    fontSize: "16px",
-                    lineHeight: "22.4px"
+                    fontSize: "0.8rem",
+                    lineHeight: "23px"
                 }
             }, { dark: true }),
 

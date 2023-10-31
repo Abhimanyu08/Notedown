@@ -79,7 +79,7 @@ function EditorLayout({
 	return (
 		<div className="grow flex flex-row min-h-0 relative  gap-2 ">
 			<div
-				className={`flex flex-col basis-[50%] overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
+				className={`flex flex-col basis-[45%] overflow-y-auto pt-10 border-r-[1px] border-gray-500 pr-1`}
 			>
 				<MarkdownEditor
 					initialMarkdown={markdown || initialMarkdownMeta}
