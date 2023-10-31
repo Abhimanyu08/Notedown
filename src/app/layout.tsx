@@ -1,4 +1,3 @@
-import ToastProvider from "@/contexts/ToastProvider";
 import "@/styles/globals.css";
 import "@/styles/xterm.css";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
@@ -10,6 +9,7 @@ import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/
 import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
 import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
 import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from "@components/ui/toaster";
 
 const serif = Petrona({
 	subsets: ["latin"],
@@ -74,16 +74,15 @@ export default async function RootLayout({
 			className={`dark ${serif.variable} ${sans.variable} ${mono.variable}`}
 		>
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black ">
+				<Toaster />
 				<SupabaseProvider session={session}>
-					<ToastProvider>
-						<ExpandedImageProvider>
-							<ExpandedCanvasProvider>
-								<IndexedDbContextProvider>
-									{children}
-								</IndexedDbContextProvider>
-							</ExpandedCanvasProvider>
-						</ExpandedImageProvider>
-					</ToastProvider>
+					<ExpandedImageProvider>
+						<ExpandedCanvasProvider>
+							<IndexedDbContextProvider>
+								{children}
+							</IndexedDbContextProvider>
+						</ExpandedCanvasProvider>
+					</ExpandedImageProvider>
 				</SupabaseProvider>
 				<Analytics />
 			</body>

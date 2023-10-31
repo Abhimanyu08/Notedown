@@ -1,5 +1,4 @@
 import { useSupabase } from "@/app/appContext";
-import { ToastContext } from "@/contexts/ToastProvider";
 import Post from "@/interfaces/Post";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
@@ -11,7 +10,6 @@ import { sendRevalidationRequest } from "@utils/sendRequest";
 import { useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/getResources";
-import { Database } from "@/interfaces/supabase";
 
 function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
     const mdObjectStore = getMarkdownObjectStore(db)
@@ -31,8 +29,8 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const [uploadFinished, setUploadFinished] = useState(false)
     const { editorState, dispatch: editorStateDispatch } = useContext(EditorContext)
     const { blogState, dispatch } = useContext(BlogContext)
-    const toastContext = useContext(ToastContext)
     const { documentDb } = useContext(IndexedDbContext)
+    const [progressMessage, setProgressMessage] = useState("")
 
     const { supabase, session } = useSupabase()
     const created_by = session?.user?.id
@@ -46,7 +44,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             if (blogState.blogMeta.id) process = update
 
             process().then((postId) => {
-                toastContext?.setMessage("Finished!")
+                setProgressMessage("Finished!")
                 afterUpload()
                 setUploadFinished(true)
 
@@ -59,9 +57,10 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                     updateIndexDbMarkdown(documentDb, editorState.timeStamp || "", postId)
                 }
                 sendRevalidationRequest('/profile/[id]')
-                toastContext?.setMessage("Changes Uploaded");
+                setProgressMessage("Changes Uploaded");
 
             }).catch((e) => {
+                console.error(e)
                 alert((e as Error).message)
                 setUploadFinished(true)
             })
@@ -179,7 +178,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         for (const image of imagesToUpload) {
 
-            toastContext?.setMessage(`Uploading ${image}`)
+            setProgressMessage(`Uploading ${image}`)
             const folderName = created_by + "/" + postId + "/" + image
             const imageFile = editorState.imagesToFiles[image]
             await tryNTimesSupabaseStorageFunction(() => supabase.storage.from(SUPABASE_IMAGE_BUCKET).upload(folderName, imageFile), 3)
@@ -195,7 +194,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         for (const [sandboxKey, sandboxEditor] of Object.entries(sandboxEditors)) {
 
             if (sandboxEditor === null) return;
-            toastContext?.setMessage(`Uploading sandbox-${sandboxKey}`)
+            setProgressMessage(`Uploading sandbox-${sandboxKey}`)
             const jsonString = sandboxEditor.state.sliceDoc().trim()
             const fileObject = new File([jsonString], `${sandboxKey}.json`, { type: "application/json" })
             if (!fileObject) continue
@@ -211,7 +210,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         for (const [canvasImageName, canvasApp] of Object.entries(canvasApps)) {
 
             if (canvasApp === null) return;
-            toastContext?.setMessage(`Uploading ${canvasImageName}`)
+            setProgressMessage(`Uploading ${canvasImageName}`)
             const fileObject = await editorToJsonFile(canvasApp, canvasImageName)
             if (!fileObject) continue
             const folderName = created_by + "/" + postId + "/" + canvasImageName + ".json"
@@ -233,13 +232,11 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const upload = async () => {
 
-
-        toastContext?.setMessage("preparing for upload")
+        setProgressMessage("preparing for upload")
         const postMeta = prepareForUpload()
 
-
-
-        toastContext?.setMessage("Uploading markdown file")
+        console.log(postMeta)
+        setProgressMessage("Uploading markdown file")
         const post = await uploadPostRow(postMeta)
 
         await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
@@ -250,25 +247,24 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             await uploadBlogTag({ postId: post.id, tagIds })
         }
 
-        toastContext?.setMessage("Uploading Images")
+        setProgressMessage("Uploading Images")
         await uploadPostImages({ postId: post.id })
 
-        toastContext?.setMessage("Uploading Canvas images")
+        setProgressMessage("Uploading Canvas images")
         await uploadCanvasImages({ postId: post.id })
         await uploadSandboxes({ postId: post.id })
 
         await finalUpdateToPost({ postId: post.id, postMeta })
 
         return post.id
-
-
     }
+
     const update = async () => {
         const postId = blogState.blogMeta.id!
-        toastContext?.setMessage("preparing for update")
+        setProgressMessage("preparing for update")
         const postMeta = prepareForUpload()
 
-        toastContext?.setMessage("updating post row")
+        setProgressMessage("updating post row")
         //update the post row in the table to have new title,description,language etc.
         await updatePostRow({ postId, ...postMeta })
         const tags = postMeta.tags
@@ -282,23 +278,23 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             await deleteBlogTags({ postId, tagIds: [] })
         }
         // upload new markdown file for the blog post
-        toastContext?.setMessage("updating markdown file")
+        setProgressMessage("updating markdown file")
         await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })
 
         //delete the images that need to be deleted
-        toastContext?.setMessage("deleting redundant images")
+        setProgressMessage("deleting redundant images")
         await deleteRedundantImages({ postId })
 
         //upload image files that need to be uploaded
-        toastContext?.setMessage("Uploading new images")
+        setProgressMessage("Uploading new images")
         await uploadPostImages({ postId })
 
         //upload canvas files that need to be uploaded
-        toastContext?.setMessage("Updating and uploading new canvas images")
+        setProgressMessage("Updating and uploading new canvas images")
         await uploadCanvasImages({ postId })
         await uploadSandboxes({ postId: postId })
 
-        toastContext?.setMessage("Finished updating!")
+        setProgressMessage("Finished updating!")
         // if (published) {
         //     revalidatePath("/profile/[id]/posts/(...)post/[postId]");
         // }
@@ -326,7 +322,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     }
 
-    return { uploadFinished }
+    return { uploadFinished, progressMessage }
 
 }
 

@@ -32,7 +32,7 @@ export function CodeBlockButtons({
 			</span>
 			<div
 				className={cn(
-					"flex flex-row gap-10 w-fit  border-2 z-20 border-b-0 border-border bg-[#15181c] py-1 px-3 rounded-t-md",
+					"flex flex-row gap-10 w-fit  border-2  border-b-0 border-border bg-[#15181c] py-1 px-3 rounded-t-md",
 					className
 				)}
 			>

@@ -10,6 +10,7 @@ function ActionModal({
 	onAction,
 	visible,
 	onClose,
+	type,
 }: {
 	action: "publish" | "unpublish" | "delete";
 	postTitle: string;
@@ -17,18 +18,29 @@ function ActionModal({
 	onAction: () => void;
 	visible: boolean;
 	onClose: () => void;
+	type?: "post" | "draft";
 }) {
-	return (
-		<>
-			{visible && (
-				<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+	if (visible) {
+		return (
+			<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+				<div className="flex flex-col items-center gap-2 text-center">
 					<div className="flex gap-2">
-						<span className="text-gray-300 capitalize">
+						<span
+							className={`text-gray-300 capitalize ${
+								action === "delete" && "text-rose-500"
+							}`}
+						>
 							{action}
 						</span>
 						<span className="font-bold text-gray-100">
-							{postTitle} ?
+							{postTitle}
 						</span>
+						{action === "delete" &&
+							(type === "post" ? (
+								<span>from server?</span>
+							) : (
+								<span>from the browser?</span>
+							))}
 						<button
 							className="p-1 rounded-full hover:bg-gray-700"
 							onClick={() => {
@@ -48,10 +60,18 @@ function ActionModal({
 							<IoMdClose />
 						</button>
 					</div>
+					{action === "delete" &&
+						(type === "post" ? (
+							<p className="text-xs text-gray-300">{`Note will be deleted from the server, but will remain intact in your browser locally`}</p>
+						) : (
+							<p className="text-xs text-gray-300">{`Note will be deleted forever, obliterated out of existence, with no way of getting it back, proceed with caution!!!`}</p>
+						))}
 				</div>
-			)}
-		</>
-	);
+			</div>
+		);
+	}
+
+	return <></>;
 }
 
 export default ActionModal;

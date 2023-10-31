@@ -1,6 +1,5 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
-import { ToastContext } from "@/contexts/ToastProvider";
 import useOwner from "@/hooks/useOwner";
 import { Database } from "@/interfaces/supabase";
 import { cn } from "@/lib/utils";
@@ -14,6 +13,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@components/ui/sheet";
+import { useToast } from "@components/ui/use-toast";
 import { handleLogout, handleSignIn } from "@utils/handleAuth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -64,7 +64,7 @@ export function LoggedInOptions({
 	const titleRef = useRef<HTMLInputElement>(null);
 	const userNameRef = useRef<HTMLInputElement>(null);
 	const [userNameError, setUserNameError] = useState(false);
-	const toastContext = useContext(ToastContext);
+	const { toast } = useToast();
 	//This component will only show up when user is on his or someone else'e profile. so if it's someone else's don't show the edit profile component.
 	if (!session?.user) {
 		return <NotLoggedInOptions />;
@@ -92,7 +92,9 @@ export function LoggedInOptions({
 				.eq("id", session.user.id);
 			if (error) setUserNameError(true);
 		}
-		toastContext?.setMessage("Updated Profile");
+		toast({
+			title: "Profile updated !",
+		});
 	};
 
 	if (owner) {

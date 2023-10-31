@@ -44,6 +44,7 @@ export function DraftActions({ draft }: { draft: Draft }) {
 				postTitle={draft.title || ""}
 				visible={startDelete}
 				key={draft.timeStamp}
+				type="draft"
 			/>
 			<ActionWrapper>
 				<MenubarItem className="">

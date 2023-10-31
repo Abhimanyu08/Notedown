@@ -23,6 +23,7 @@ import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { IndexedDbContext } from "./Contexts/IndexedDbContext";
 import { IoMdShareAlt } from "react-icons/io";
 import ActionWrapper from "./ActionWrapper";
+import { useToast } from "./ui/use-toast";
 
 export function PostActions({
 	published,
@@ -42,6 +43,7 @@ export function PostActions({
 	const [isPending, startTransition] = useTransition();
 	const pathname = usePathname();
 	const { documentDb } = useContext(IndexedDbContext);
+	const { toast } = useToast();
 
 	return (
 		<>
@@ -67,6 +69,7 @@ export function PostActions({
 				}}
 				visible={takenAction === "delete"}
 				onClose={() => setTakenAction("")}
+				type="post"
 			/>
 			<ActionModal
 				action="publish"
@@ -127,13 +130,17 @@ export function PostActions({
 									</MenubarItem>
 
 									<MenubarItem
-										onClick={() =>
+										onClick={() => {
 											navigator.clipboard.writeText(
 												window.location.origin +
 													"/post/" +
 													postId
-											)
-										}
+											);
+											toast({
+												title: "Link copied!!",
+												duration: 2000,
+											});
+										}}
 									>
 										<IoMdShareAlt
 											className="inline"

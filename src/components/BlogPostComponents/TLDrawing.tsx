@@ -55,11 +55,9 @@ function TLDrawing({
 
 	const onExpand = async () => {
 		const svg = document.getElementById(`svg-${persistanceKey}`);
-		console.log(svg);
 		if (expand) {
 			if (svg) svg.style.width = "";
 			setExpand(false);
-			setPreview(false);
 			return;
 		}
 		if (svg) svg.style.width = "100%";
@@ -67,7 +65,7 @@ function TLDrawing({
 	};
 
 	return (
-		<div className="flex flex-col " ref={containerRef}>
+		<div className="flex flex-col relative" ref={containerRef}>
 			<Button
 				className="text-sm bg-black py-1 px-2 mb-2  self-end border-border border-[1px] text-gray-400 hover:text-white hover:scale-100"
 				variant={"outline"}
@@ -77,10 +75,10 @@ function TLDrawing({
 			</Button>
 			<div
 				className={cn(
-					"w-full z-[600]",
+					"w-full",
 					expand
-						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto "
-						: " [&>*]:cursor-zoom-in flex flex-col items-center",
+						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto z-[500]"
+						: " [&>*]:cursor-zoom-in flex flex-col items-center absolute top-10 left-0",
 
 					!preview && "hidden"
 				)}
@@ -90,7 +88,7 @@ function TLDrawing({
 			<div
 				className={cn(
 					"relative w-full aspect-[4/3] self-center not-prose my-2",
-					preview && "hidden"
+					preview && "invisible"
 				)}
 			>
 				<div className="tldraw__editor w-full h-full">

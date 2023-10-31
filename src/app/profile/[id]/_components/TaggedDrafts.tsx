@@ -74,7 +74,7 @@ export function TaggedDrafts({
 					</ToolTipComponent>
 				</summary>
 
-				<div className="border-l-2 border-border ml-1 pl-4 gap-4">
+				<div className="border-l-2 border-border ml-1 mt-3 pl-4 gap-3 flex flex-col">
 					{/* <DraftsDisplay rawObjects={drafts} tag={tag} />
 				<PostDisplay posts={posts} tag={tag} /> */}
 					{children}

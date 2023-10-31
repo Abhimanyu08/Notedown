@@ -6,11 +6,9 @@ import { motion } from "framer-motion";
 function PostOnPreviewColor({ postId, tag }: { postId: number; tag?: string }) {
 	const params = useParams();
 	const searchParams = useSearchParams();
-	console.log(params?.postId);
 	const onPreview =
 		parseInt(params?.postId as string) === postId &&
 		searchParams?.get("tagpreview") === tag;
-	console.log(onPreview);
 	if (!onPreview) return <></>;
 	return (
 		<motion.div

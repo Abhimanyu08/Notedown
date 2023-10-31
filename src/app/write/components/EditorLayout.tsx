@@ -88,7 +88,7 @@ function EditorLayout({
 
 			<WriteToolbar content={blogContent} />
 			<div
-				className={` grow  py-10
+				className={` grow  my-10
 				overflow-y-auto
 				lg:scrollbar-thin 
 				scrollbar-track-black 

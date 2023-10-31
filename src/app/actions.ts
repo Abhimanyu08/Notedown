@@ -20,9 +20,7 @@ export async function publishPostAction(postId: number) {
         })
         .match({ id: postId });
 
-    revalidatePath("/profile/[id]");
-    revalidatePath("/profile/[id]/public");
-    revalidatePath("/profile/[id]/private");
+    revalidatePath("/profile/[id]", "layout");
 }
 
 export async function unpublishPostAction(postId: number) {
@@ -38,9 +36,7 @@ export async function unpublishPostAction(postId: number) {
         .match({ id: postId });
 
 
-    revalidatePath("/profile/[id]");
-    revalidatePath("/profile/[id]/public");
-    revalidatePath("/profile/[id]/private");
+    revalidatePath("/profile/[id]", "layout");
 }
 
 export async function deletePostAction(postId: number) {
@@ -84,9 +80,7 @@ export async function deletePostAction(postId: number) {
                 .from(SUPABASE_IMAGE_BUCKET)
                 .remove(imageNames);
         }
-        revalidatePath("/profile/[id]");
-        revalidatePath("/profile/[id]/public");
-        revalidatePath("/profile/[id]/private")
+        revalidatePath("/profile/[id]", "layout");
     }
 }
 

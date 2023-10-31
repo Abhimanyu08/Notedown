@@ -46,6 +46,5 @@ function svgToJson(svgElement: SVGSVGElement) {
     // If you want to include the inner HTML of the SVG element:
     svgObject.innerHTML = svgElement.innerHTML;
 
-    svgObject;
     return JSON.stringify(svgObject);
 }
