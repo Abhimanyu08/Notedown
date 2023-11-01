@@ -3,11 +3,13 @@ import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewControls";
+import { useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 
 function DraftPreview({ params }: { params: { draftId: string } }) {
 	const blogData = useRetrieveDraftFromIndexDb({ timeStamp: params.draftId });
 	const { dispatch } = useContext(BlogContext);
+	const searchParams = useSearchParams();
 	useEffect(() => {
 		if (blogData) {
 			dispatch({ type: "set blog meta", payload: blogData.data });
@@ -29,7 +31,10 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 			/>
 			<PostPreviewControls
 				markdown={blogData.content}
-				postMeta={{ timestamp: params.draftId }}
+				postMeta={{
+					timestamp: params.draftId,
+					id: blogData.data.postId,
+				}}
 			/>
 		</div>
 	);

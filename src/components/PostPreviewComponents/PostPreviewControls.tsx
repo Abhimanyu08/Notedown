@@ -3,16 +3,13 @@ import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
-import { AnimatePresence, motion } from "framer-motion";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { getPost } from "@utils/getData";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
 import { ExpandButton } from "../ProfileComponents/ModalButtons";
-import Link from "next/link";
-import { IndexedDbContext } from "@/contexts/IndexedDbContext";
-import useOwner from "@/hooks/useOwner";
-import { getPost } from "@utils/getData";
 
 function PostPreviewControls({
 	markdown,

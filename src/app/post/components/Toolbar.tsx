@@ -98,9 +98,9 @@ function Toolbar() {
 				<Link
 					href={
 						`/write/${blogState.blogMeta.id}` +
-						blogState.blogMeta.timeStamp
+						(blogState.blogMeta.timeStamp
 							? `?draft=${blogState.blogMeta.timeStamp}`
-							: ""
+							: "")
 					}
 				>
 					<AiFillEdit size={28} />

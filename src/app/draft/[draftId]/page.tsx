@@ -27,26 +27,33 @@ function Draft() {
 				markdown: blogData.content,
 				post: { ...(blogData.data as any) },
 			}}
-			ToolbarComponent={DraftToolbar}
+			ToolbarComponent={() => (
+				<DraftToolbar postId={blogData.data.postId} />
+			)}
 			AuthorComponent={() => <></>}
 		/>
 	);
 }
 
-function DraftToolbar() {
+function DraftToolbar({ postId }: { postId?: number }) {
 	const params = useParams();
 	return (
 		<>
+			<EnableRceButton />
 			<ToolTipComponent
 				tip="Edit markdown"
 				className={`text-gray-400 hover:text-white active:scale-95`}
 			>
-				<Link href={`/write?draft=${params?.draftId}`}>
+				<Link
+					href={
+						postId
+							? `/write/${postId}?draft=${params?.draftId}`
+							: `/write?draft=${params?.draftId}`
+					}
+				>
 					<AiFillEdit size={28} />
 				</Link>
 			</ToolTipComponent>
-
-			<EnableRceButton />
 		</>
 	);
 }
