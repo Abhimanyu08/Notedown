@@ -12,7 +12,6 @@ import Link from "next/link";
 // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
 function Toolbar() {
-	const pathname = usePathname();
 	const { blogState } = useContext(BlogContext);
 	const [linkCopied, setLinkCopied] = useState(false);
 
@@ -96,7 +95,14 @@ function Toolbar() {
 				tip="Edit markdown"
 				className={`text-gray-400 hover:text-white active:scale-95`}
 			>
-				<Link href={`/write/${blogState.blogMeta.id}`}>
+				<Link
+					href={
+						`/write/${blogState.blogMeta.id}` +
+						blogState.blogMeta.timeStamp
+							? `?draft=${blogState.blogMeta.timeStamp}`
+							: ""
+					}
+				>
 					<AiFillEdit size={28} />
 				</Link>
 			</ToolTipComponent>

@@ -15,7 +15,14 @@ function PrivateToolbar() {
 				tip="Edit markdown"
 				className={`text-gray-400 hover:text-white active:scale-95`}
 			>
-				<Link href={`/write/${blogState.blogMeta.id}`} prefetch={false}>
+				<Link
+					href={
+						`/write/${blogState.blogMeta.id}` +
+						blogState.blogMeta.timeStamp
+							? `?draft=${blogState.blogMeta.timeStamp}`
+							: ""
+					}
+				>
 					<AiFillEdit size={28} />
 				</Link>
 			</ToolTipComponent>
