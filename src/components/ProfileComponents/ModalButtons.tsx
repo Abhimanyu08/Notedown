@@ -3,10 +3,11 @@ import useShortCut from "@/hooks/useShortcut";
 import { cn } from "@/lib/utils";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { ToolTipComponent } from "../ToolTipComponent";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function ExpandButton({ className }: { className?: string }) {
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 	useShortCut({
 		keys: ["e"],
 		callback: () => {
@@ -19,7 +20,7 @@ export function ExpandButton({ className }: { className?: string }) {
 			tip="Expand (E)"
 			className={cn("text-gray-400", className)}
 		>
-			<a href={pathname || ""}>
+			<a href={pathname + "?" + searchParams?.toString() || ""}>
 				<BsArrowsAngleExpand size={20} />
 			</a>
 		</ToolTipComponent>

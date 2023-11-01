@@ -19,7 +19,7 @@ export default function useInSync({ markdown }: { markdown: string }) {
     const owner = useOwner(noteMeta.blogger?.id!)
 
     useEffect(() => {
-        if (pathname?.startsWith("/draft") && searchParams?.get("synced") === "false") {
+        if (searchParams?.get("synced") === "false") {
             setInSync(false)
             return
         }
