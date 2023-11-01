@@ -22,7 +22,7 @@ function SyncWarning({ markdown }: { markdown: string }) {
 	return (
 		<div className="flex gap-1 items-center">
 			<span>.</span>
-			<AlertTriangle size={14} />
+			<AlertTriangle size={14} className="text-rose-500" />
 			<span>The</span>
 			<Link
 				href={
