@@ -1,10 +1,8 @@
-import { getPost } from "@utils/getData";
 import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
-import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 import Toc from "@components/BlogPostComponents/TableOfContents";
+import { getPost } from "@utils/getData";
 import { parseFrontMatter } from "@utils/getResources";
-import { MemoExoticComponent } from "react";
 
 function BlogLayout({
 	postMeta,
@@ -13,9 +11,7 @@ function BlogLayout({
 }: {
 	postMeta: Partial<Awaited<ReturnType<typeof getPost>>>;
 	ToolbarComponent?: () => JSX.Element;
-	AuthorComponent:
-		| React.MemoExoticComponent<() => JSX.Element>
-		| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>);
+	AuthorComponent: Parameters<typeof Blog>["0"]["AuthorComponent"];
 }) {
 	const { post, markdown } = postMeta;
 	const { content, data } = parseFrontMatter(markdown || "");
@@ -28,11 +24,11 @@ function BlogLayout({
 				<Toc markdown={content} />
 			</div>
 			<BlogContainer
-				markdown={content}
+				content={content}
 				title={post?.title || data?.title || ""}
 			>
 				<Blog
-					content={content}
+					markdown={markdown}
 					title={post?.title || data?.title || ""}
 					description={post?.description || data?.description || ""}
 					created_by={post?.created_by}

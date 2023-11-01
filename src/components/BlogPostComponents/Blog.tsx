@@ -2,12 +2,14 @@ import { BlogProps } from "@/interfaces/BlogProps";
 import formatDate from "@utils/dateFormatter";
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { memo } from "react";
+import SyncWarning from "./SyncWarning";
+import { parseFrontMatter } from "@utils/getResources";
 
 const Blog = memo(
 	function Blog({
 		title,
 		description,
-		content,
+		markdown,
 		created_by,
 		published,
 		published_on,
@@ -17,8 +19,10 @@ const Blog = memo(
 	}: Partial<BlogProps> & {
 		AuthorComponent:
 			| React.MemoExoticComponent<() => JSX.Element>
-			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>);
+			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>)
+			| (() => JSX.Element);
 	}) {
+		const { content } = parseFrontMatter(markdown || "");
 		const { htmlAST } = mdToHast(content || "");
 		const blogJsx = transformer(htmlAST);
 
@@ -113,6 +117,7 @@ const Blog = memo(
 								? formatDate(created_at)
 								: formatDate(new Date().toDateString())}
 						</span>
+						<SyncWarning markdown={markdown || ""} />
 					</div>
 				</header>
 				<article className="" id="jsx">
@@ -124,7 +129,7 @@ const Blog = memo(
 	},
 	(prevProps, newProps) => {
 		return (
-			prevProps.content === newProps.content &&
+			prevProps.markdown === newProps.markdown &&
 			prevProps.title === newProps.title &&
 			prevProps.description === newProps.description
 		);

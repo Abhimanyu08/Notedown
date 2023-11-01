@@ -48,7 +48,6 @@ function TLDrawing({
 		}
 		svg.setAttribute("id", `svg-${persistanceKey}`);
 		svg.style.height = "100%";
-		console.log(svg);
 		container.replaceChildren(svg);
 		setPreview(true);
 	};

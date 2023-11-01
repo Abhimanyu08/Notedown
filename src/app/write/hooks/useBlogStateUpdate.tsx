@@ -67,7 +67,7 @@ function useBlogStateUpdate() {
 
 						// localStorage.setItem(localStorageDraftKey, markdown);
 						// if (!update.view.hasFocus) return;
-						const { data, content, frontMatterLength } =
+						const { data, frontMatterLength } =
 							parseFrontMatter(markdown);
 
 						startTransition(() => {
@@ -84,7 +84,7 @@ function useBlogStateUpdate() {
 								type: "set frontmatter length",
 								payload: frontMatterLength,
 							});
-							setBlogContent(content);
+							setBlogContent(markdown);
 						});
 						updateMarkdown(
 							documentDb,

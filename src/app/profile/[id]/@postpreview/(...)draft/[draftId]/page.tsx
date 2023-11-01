@@ -1,7 +1,6 @@
 "use client";
 import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
-import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewControls";
 import { useContext, useEffect } from "react";
@@ -25,12 +24,12 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 				title={blogData.data?.title}
 				description={blogData.data?.description}
 				language={blogData.data?.language}
-				content={blogData.content}
-				AuthorComponent={BlogAuthorClient}
+				markdown={blogData.content}
+				AuthorComponent={() => <></>}
 			/>
 			<PostPreviewControls
-				content={blogData.content}
-				draftId={params.draftId}
+				markdown={blogData.content}
+				postMeta={{ timestamp: params.draftId }}
 			/>
 		</div>
 	);

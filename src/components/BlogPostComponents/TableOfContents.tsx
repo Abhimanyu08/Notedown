@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { parseFrontMatter } from "@utils/getResources";
 import {
 	HeadingType,
 	createHeadingIdFromHeadingText,
@@ -6,6 +7,7 @@ import {
 } from "@utils/html2Jsx/transformer";
 
 const Toc = ({ markdown }: { markdown: string }) => {
+	const { content } = parseFrontMatter(markdown);
 	const { headingAST } = mdToHast(markdown);
 
 	return <HeadingNodeToDetailsTag headingNode={headingAST} />;

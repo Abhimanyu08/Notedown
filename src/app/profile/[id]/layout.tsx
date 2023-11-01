@@ -59,8 +59,8 @@ async function ProfilePostsLayout({
 
 			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
-					<div className="flex flex-col col-span-1 row-span-1 gap-4 p-4 pt-10">
-						<div className="flex justify-between px-2 col-span-1 mt-1 relative">
+					<div className="flex flex-col col-span-1 row-span-1 gap-4 pt-6 border-r-[1px] border-border">
+						<div className="flex justify-between px-4 col-span-1 mt-1 relative">
 							<SearchInput className="basis-1/2" />
 							<NewNoteButton />
 						</div>
@@ -76,7 +76,7 @@ async function ProfilePostsLayout({
 						>
 							<NormalChildrenLayout>
 								<NotOwnerOnlyStuff id={params.id}>
-									<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
+									<div className="flex flex-col gap-4 flex-initial overflow-y-auto ">
 										{Array.from(map.keys()).map((tag) => {
 											const posts = map.get(tag);
 											if (!posts || posts.length === 0)
@@ -107,7 +107,7 @@ async function ProfilePostsLayout({
 					</div>
 				</SearchProvider>
 				<PostPreviewLayout
-					className="col-start-2  col-span-2 h-full row-span-1 pt-10 relative border-l-[1px] border-gray-600 
+					className="col-start-2  col-span-2 h-full row-span-1 pt-10 relative  
 				overflow-y-auto
 		lg:scrollbar-thin 
 				scrollbar-track-black 

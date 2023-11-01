@@ -16,7 +16,7 @@ function Drafts() {
 
 	if (draftAndPostMap.size > 0) {
 		return (
-			<div className="flex flex-col gap-4 flex-initial overflow-y-auto">
+			<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3 ">
 				{Array.from(draftAndPostMap.keys()).map((tag) => {
 					if (tag === "notag") return;
 					const drafts =

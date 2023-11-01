@@ -2,10 +2,7 @@
 import { getPost } from "@utils/getData";
 import { Text } from "@codemirror/state";
 import Blog from "@components/BlogPostComponents/Blog";
-import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import makeLocalStorageDraftKey from "@utils/makeLocalStorageKey";
-import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
@@ -113,8 +110,8 @@ function EditorLayout({
 			>
 				<Blog
 					{...blogState.blogMeta}
-					content={blogContent}
-					AuthorComponent={BlogAuthorClient}
+					markdown={blogContent}
+					AuthorComponent={() => <></>}
 				/>
 			</div>
 		</div>

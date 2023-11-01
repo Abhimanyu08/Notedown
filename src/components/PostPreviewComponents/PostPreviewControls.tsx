@@ -4,29 +4,27 @@ import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
 import { ExpandButton } from "../ProfileComponents/ModalButtons";
 import Link from "next/link";
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
+import useOwner from "@/hooks/useOwner";
+import { getPost } from "@utils/getData";
 
 function PostPreviewControls({
-	content,
 	markdown,
-	postId,
-	draftId,
+	postMeta,
 }: {
-	content: string;
 	markdown: string;
-	postId?: number;
-	draftId?: string | null;
+	postMeta: Partial<Awaited<ReturnType<typeof getPost>>["post"]>;
 }) {
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
-	const { documentDb } = useContext(IndexedDbContext);
+	const { id: postId, timestamp: draftId } = postMeta;
 
 	const getEditLink = () => {
 		if (postId && draftId) {
@@ -40,28 +38,6 @@ function PostPreviewControls({
 		}
 		return null;
 	};
-
-	useEffect(() => {
-		if (!documentDb) return;
-		if (!markdown) return;
-		if (!draftId) return;
-
-		const markdownObjectStoreRequest = documentDb
-			.transaction("markdown", "readonly")
-			.objectStore("markdown")
-			.get(draftId);
-
-		markdownObjectStoreRequest.onsuccess = (e) => {
-			const { markdown: localMarkdown } = (
-				e.target as IDBRequest<{ timeStamp: string; markdown: string }>
-			).result;
-			if (localMarkdown !== markdown) {
-				console.log("Not in sync");
-				return;
-			}
-			console.log("In sync");
-		};
-	}, [documentDb, markdown, draftId]);
 
 	return (
 		<>
@@ -103,7 +79,7 @@ function PostPreviewControls({
 					`}
 				// onMouseLeave={() => setShowToc(false)}
 			>
-				<Toc markdown={content} />
+				<Toc markdown={markdown} />
 			</div>
 		</>
 	);

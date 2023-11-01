@@ -11,6 +11,12 @@ async function BlogAuthorServer({ createdBy }: { createdBy: string | null }) {
 		cookies,
 	});
 
+	const { data } = await supabase.auth.getUser();
+
+	if (data.user?.id === createdBy) {
+		return <></>;
+	}
+
 	if (createdBy) {
 		const { data } = await supabase
 			.from(SUPABASE_BLOGGER_TABLE)

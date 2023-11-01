@@ -62,6 +62,7 @@ async function Post({ params }: { params: PostParams }) {
 					language: post?.language,
 					imageFolder: post?.image_folder,
 					blogger: post?.bloggers as { id: string; name: string },
+					timeStamp: post.timestamp!,
 				}}
 				uploadedImages={imagesToUrls}
 				fileNames={fileNames}

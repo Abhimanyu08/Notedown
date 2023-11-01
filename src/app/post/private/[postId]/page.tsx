@@ -40,6 +40,8 @@ async function PrivatePost({ params }: { params: PostParams }) {
 					language: post?.language,
 					imageFolder: post?.image_folder,
 					blogger: post?.bloggers as { id: string; name: string },
+					timeStamp: post.timestamp!,
+					published: post.published,
 				}}
 				uploadedImages={imagesToUrls}
 				fileNames={fileNames}

@@ -30,6 +30,8 @@ export interface BlogStateInterface {
 		description: string | null;
 		language: string | null;
 		imageFolder: string | null;
+		timeStamp: string;
+		published: boolean;
 	}>;
 	uploadedImages: Record<string, string>;
 	uploadedFileNames?: string[];

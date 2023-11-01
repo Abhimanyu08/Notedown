@@ -1,7 +1,6 @@
 "use client";
 import BlogLayout from "@/app/post/components/BlogLayout";
 import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
-import BlogAuthorClient from "@components/BlogPostComponents/BlogAuthorClient";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
@@ -29,7 +28,7 @@ function Draft() {
 				post: { ...(blogData.data as any) },
 			}}
 			ToolbarComponent={DraftToolbar}
-			AuthorComponent={BlogAuthorClient}
+			AuthorComponent={() => <></>}
 		/>
 	);
 }

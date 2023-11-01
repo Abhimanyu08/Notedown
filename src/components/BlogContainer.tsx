@@ -13,10 +13,10 @@ import { ToolTipComponent } from "./ToolTipComponent";
 
 function BlogContainer({
 	children,
-	markdown,
+	content,
 	title,
 }: React.ComponentPropsWithoutRef<"div"> & {
-	markdown: string;
+	content: string;
 	title: string;
 }) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -29,9 +29,9 @@ function BlogContainer({
 	const [headingList, setHeadingList] = useState<HeadingType[]>([]);
 	const { scrollYProgress } = useScroll({ container: containerRef });
 	useEffect(() => {
-		if (!containerRef || !markdown) return;
+		if (!containerRef || !content) return;
 		const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
-		const { headingAST } = mdToHast(markdown);
+		const { headingAST } = mdToHast(content);
 		let { nameList, headingList: headinglist } =
 			makeHeadingListFromAst(headingAST);
 		setHeadingList(headinglist.slice(1));
@@ -75,7 +75,7 @@ function BlogContainer({
 		);
 
 		headings.forEach((hElem) => observer.observe(hElem));
-	}, [markdown]);
+	}, [content]);
 
 	useShortCut({
 		keys: ["H"],

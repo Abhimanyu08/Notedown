@@ -5,10 +5,8 @@ import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { headers, cookies } from "next/headers";
 import React from "react";
-import { ExpandButton } from "../ProfileComponents/ModalButtons";
 import { Database } from "@/interfaces/supabase";
 import PostPreviewControls from "./PostPreviewControls";
-import { parseFrontMatter } from "@utils/getResources";
 
 async function PostPreview({ postId }: { postId: string }) {
 	const supabase = createServerComponentSupabaseClient<Database>({
@@ -21,7 +19,6 @@ async function PostPreview({ postId }: { postId: string }) {
 		supabase
 	);
 
-	const { content } = parseFrontMatter(markdown);
 	return (
 		<div
 			className="flex flex-col items-center justify-center w-full relative
@@ -37,20 +34,16 @@ async function PostPreview({ postId }: { postId: string }) {
 					language: post.language as any,
 					imageFolder: post.image_folder,
 					blogger: post.bloggers as { id: string; name: string },
+					timeStamp: post.timestamp!,
 				}}
 			>
 				{/* <PublishModal publishPostAction={publishPostAction} /> */}
 				<Blog
 					{...post}
-					content={content}
+					markdown={markdown}
 					AuthorComponent={BlogAuthorServer}
 				/>
-				<PostPreviewControls
-					content={content}
-					markdown={markdown}
-					postId={post.id}
-					draftId={post.timestamp}
-				/>
+				<PostPreviewControls markdown={markdown} postMeta={post} />
 			</BlogContextProvider>
 		</div>
 	);

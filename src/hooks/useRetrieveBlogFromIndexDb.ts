@@ -8,32 +8,30 @@ export default function useRetrieveDraftFromIndexDb({ timeStamp }: { timeStamp: 
         ReturnType<typeof parseFrontMatter>
     >({ content: "", frontMatterLength: 0, data: {} });
     const { documentDb } = useContext(IndexedDbContext);
-    const [validKey, setValidKey] = useState("");
+    // const [validKey, setValidKey] = useState("");
+
+    // useEffect(() => {
+    //     if (!documentDb) return;
+
+    //     const key = `draft-${timeStamp}`;
+
+    //     const markdownObjectStoreRequest =
+    //         getMarkdownObjectStore(documentDb).getKey(key);
+
+    //     markdownObjectStoreRequest.onsuccess = (e) => {
+    //         const result = (e.target as IDBRequest<IDBValidKey>).result;
+    //         const validKey = result ? key : (timeStamp as string);
+    //         setValidKey(validKey);
+    //     };
+    //     markdownObjectStoreRequest.onerror = (e) => {
+    //         console.log("No key available of this name");
+    //     };
+    // }, [documentDb]);
 
     useEffect(() => {
         if (!documentDb) return;
-
-        const key = `draft-${timeStamp}`;
-
         const markdownObjectStoreRequest =
-            getMarkdownObjectStore(documentDb).getKey(key);
-
-        markdownObjectStoreRequest.onsuccess = (e) => {
-            console.log("here");
-            const result = (e.target as IDBRequest<IDBValidKey>).result;
-            console.log(result);
-            const validKey = result ? key : (timeStamp as string);
-            setValidKey(validKey);
-        };
-        markdownObjectStoreRequest.onerror = (e) => {
-            console.log("No key available of this name");
-        };
-    }, [documentDb]);
-
-    useEffect(() => {
-        if (!validKey || !documentDb) return;
-        const markdownObjectStoreRequest =
-            getMarkdownObjectStore(documentDb).get(validKey);
+            getMarkdownObjectStore(documentDb).get(timeStamp);
 
         markdownObjectStoreRequest.onsuccess = (e) => {
             const { markdown } = (e.target as IDBRequest<{ markdown: string }>)
@@ -41,7 +39,7 @@ export default function useRetrieveDraftFromIndexDb({ timeStamp }: { timeStamp: 
             const { data, content } = parseFrontMatter(markdown)
             setBlogData(p => ({ ...p, content, data }));
         };
-    }, [validKey]);
+    }, [timeStamp, documentDb]);
 
     return blogData
 }
