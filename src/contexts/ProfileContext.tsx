@@ -7,7 +7,7 @@ import React, {
 	useEffect,
 	useState,
 } from "react";
-import useRetrieveDrafts from "./_hooks/useRetrieveDrafts";
+import useRetrieveDrafts from "@/hooks/useRetrieveDrafts";
 
 export const ProfileContext = createContext<{
 	draftAndPostMap: Map<string, { drafts: RawObject[]; posts: Draft[] }>;

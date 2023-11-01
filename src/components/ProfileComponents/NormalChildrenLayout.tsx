@@ -1,12 +1,9 @@
 "use client";
-import PostComponent from "@components/PostComponent";
 import React, { useContext } from "react";
 import { SearchContext } from "./SearchProvider";
 import { SinglePostLoading } from "./SinglePostLoading";
-import { rawObjectToDraft } from "@utils/processDrafts";
 import PostDisplay from "@components/PostDisplay";
-import Divider from "@components/ui/divider";
-import { DraftsDisplay } from "@/app/profile/[id]/_components/DraftsDisplay";
+import { DraftsDisplay } from "@/app/profile/[id]/components/DraftsDisplay";
 import { postToDraft } from "@utils/postToDraft";
 
 function NormalChildrenLayout({

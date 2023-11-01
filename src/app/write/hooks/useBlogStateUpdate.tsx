@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState, useTransition } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/getResources";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 
 function useBlogStateUpdate() {

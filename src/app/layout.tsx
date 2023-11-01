@@ -7,7 +7,7 @@ import { cookies, headers } from "next/headers";
 import SupabaseProvider from "./appContext";
 import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
 import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
-import IndexedDbContextProvider from "@components/Contexts/IndexedDbContext";
+import IndexedDbContextProvider from "@/contexts/IndexedDbContext";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@components/ui/toaster";
 

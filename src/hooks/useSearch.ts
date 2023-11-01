@@ -1,6 +1,6 @@
 import { useSupabase } from "@/app/appContext";
 import { Database } from "@/interfaces/supabase";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { PostgrestError } from "@supabase/supabase-js";
 import { SEARCH_PRIVATE, SEARCH_PUBLC } from "@utils/constants";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";

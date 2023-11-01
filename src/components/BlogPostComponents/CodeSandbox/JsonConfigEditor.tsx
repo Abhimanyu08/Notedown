@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { EditorContext } from "@/app/write/components/EditorContext";
 import useRecoverSandpack from "@/hooks/useRecoverSandpackConfig";
 import useToggleVim from "@/hooks/useToggleVim";
 import { cn } from "@/lib/utils";
 import { StateEffect } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate, keymap } from "@codemirror/view";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import {
 	CodeBlock,
 	CodeBlockButton,

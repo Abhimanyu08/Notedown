@@ -1,6 +1,6 @@
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { useContext, useEffect, useState } from "react";
 
 export default function useRecoverImages({ imageNames }: { imageNames: string[] }) {

@@ -1,9 +1,9 @@
 "use client";
 import { useContext } from "react";
-import { ProfileContext } from "./_components/ProfileContext";
-import { TaggedDrafts } from "./_components/TaggedDrafts";
+import { ProfileContext } from "@/contexts/ProfileContext";
+import { TaggedDrafts } from "./components/TaggedDrafts";
 import PostsLoading from "./loading";
-import { DraftsDisplay } from "./_components/DraftsDisplay";
+import { DraftsDisplay } from "./components/DraftsDisplay";
 import PostDisplay from "@components/PostDisplay";
 import { Button } from "@components/ui/button";
 import Link from "next/link";

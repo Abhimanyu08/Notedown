@@ -43,7 +43,6 @@ export default function DrawingSvg({
 				`svgContainer-${persistanceKey}`
 			);
 			const svgElement = jsonToSvg(jsonString);
-			console.log(svgElement.style.width, svgElement.style.height);
 			const svgWidth = svgElement.width.baseVal.value;
 			const containerWidth = containerRef.current?.clientWidth || 0;
 
@@ -60,7 +59,6 @@ export default function DrawingSvg({
 
 	const onExpand = async () => {
 		const svg = document.getElementById(`svg-${persistanceKey}`);
-		console.log(svg);
 		if (expand) {
 			if (svg) {
 				svg.style.width = "";

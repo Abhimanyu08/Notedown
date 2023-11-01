@@ -1,6 +1,6 @@
 "use client";
 import ActionWrapper from "@components/ActionWrapper";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { MenubarItem } from "@components/ui/menubar";
 import {
 	getMarkdownObjectStore,
@@ -11,7 +11,7 @@ import { sendRevalidationRequest } from "@utils/sendRequest";
 import Link from "next/link";
 import { useContext, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { ProfileContext } from "./ProfileContext";
+import { ProfileContext } from "../../../../contexts/ProfileContext";
 import ActionModal from "@components/Modals/ActionModal";
 
 export function DraftActions({ draft }: { draft: Draft }) {

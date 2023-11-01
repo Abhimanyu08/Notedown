@@ -5,24 +5,28 @@ import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
 import { ExpandButton } from "../ProfileComponents/ModalButtons";
 import Link from "next/link";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 
 function PostPreviewControls({
 	content,
+	markdown,
 	postId,
 	draftId,
 }: {
 	content: string;
+	markdown: string;
 	postId?: number;
 	draftId?: string | null;
 }) {
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
+	const { documentDb } = useContext(IndexedDbContext);
 
 	const getEditLink = () => {
 		if (postId && draftId) {
@@ -36,6 +40,28 @@ function PostPreviewControls({
 		}
 		return null;
 	};
+
+	useEffect(() => {
+		if (!documentDb) return;
+		if (!markdown) return;
+		if (!draftId) return;
+
+		const markdownObjectStoreRequest = documentDb
+			.transaction("markdown", "readonly")
+			.objectStore("markdown")
+			.get(draftId);
+
+		markdownObjectStoreRequest.onsuccess = (e) => {
+			const { markdown: localMarkdown } = (
+				e.target as IDBRequest<{ timeStamp: string; markdown: string }>
+			).result;
+			if (localMarkdown !== markdown) {
+				console.log("Not in sync");
+				return;
+			}
+			console.log("In sync");
+		};
+	}, [documentDb, markdown, draftId]);
 
 	return (
 		<>

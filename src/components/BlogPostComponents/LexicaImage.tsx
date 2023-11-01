@@ -1,6 +1,6 @@
 "use client";
 import { EditorContext } from "@/app/write/components/EditorContext";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import ImageUploader from "@components/EditorComponents/ImageUploader";
 import { getImages } from "@utils/sendRequest";
 import { memo, useContext, useEffect, useState } from "react";

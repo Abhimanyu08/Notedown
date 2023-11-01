@@ -1,7 +1,7 @@
 import { useSupabase } from "@/app/appContext";
 import { EditorView } from "@codemirror/view";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { SUPABASE_FILES_BUCKET } from "@utils/constants";
 import { useContext, useEffect, useState } from "react";
 

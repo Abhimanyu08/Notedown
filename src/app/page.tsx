@@ -1,5 +1,5 @@
 "use client";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { NotLoggedInOptions } from "@components/Navbar/Options";
 import SideSheet from "@components/SideSheet";
 import { Button } from "@components/ui/button";

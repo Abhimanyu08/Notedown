@@ -1,4 +1,4 @@
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { RawObject, processNoTagDrafts } from "@utils/processDrafts";
 import { useContext, useState, useEffect, Dispatch, SetStateAction } from "react";

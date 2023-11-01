@@ -20,12 +20,10 @@ import { getUser } from "@utils/getData";
 import { Draft } from "@utils/processDrafts";
 import { cookies, headers } from "next/headers";
 import React from "react";
-import ProfileContextProvider from "./_components/ProfileContext";
-import { TaggedDrafts } from "./_components/TaggedDrafts";
+import ProfileContextProvider from "@/contexts/ProfileContext";
+import { TaggedDrafts } from "./components/TaggedDrafts";
 import { postToDraft } from "@utils/postToDraft";
 import PostDisplay from "@components/PostDisplay";
-import { m } from "framer-motion";
-import { Port_Lligat_Sans } from "next/font/google";
 
 async function ProfilePostsLayout({
 	children,

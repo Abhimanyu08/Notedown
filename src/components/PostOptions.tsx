@@ -20,7 +20,7 @@ import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
 import ActionModal from "./Modals/ActionModal";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { IndexedDbContext } from "./Contexts/IndexedDbContext";
+import { IndexedDbContext } from "../contexts/IndexedDbContext";
 import { IoMdShareAlt } from "react-icons/io";
 import ActionWrapper from "./ActionWrapper";
 import { useToast } from "./ui/use-toast";

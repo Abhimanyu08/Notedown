@@ -47,6 +47,7 @@ async function PostPreview({ postId }: { postId: string }) {
 				/>
 				<PostPreviewControls
 					content={content}
+					markdown={markdown}
 					postId={post.id}
 					draftId={post.timestamp}
 				/>

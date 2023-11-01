@@ -5,7 +5,7 @@ import { memo, useContext, useEffect, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import langToCodeMirrorExtension from "@utils/langToExtension";
 import { useSearchParams } from "next/navigation";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 
 // This component should be page diagnostic.
 

@@ -1,7 +1,7 @@
 import { useSupabase } from "@/app/appContext";
 import Post from "@/interfaces/Post";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { ALLOWED_LANGUAGES, SUPABASE_BLOGTAG_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";

@@ -18,11 +18,14 @@ export function CodeBlockButtons({
 	className,
 	language,
 	file,
-}: React.ComponentPropsWithoutRef<"div"> & { language: string; file: string }) {
+}: React.ComponentPropsWithoutRef<"div"> & {
+	language?: string;
+	file?: string;
+}) {
 	return (
 		<div className="flex justify-between">
 			<span className="border-2 border-b-0 py-1 px-3 font-mono text-sm rounded-t-md bg-[#15181c] text-cyan-400">
-				{file.includes(".") && language
+				{file?.includes(".") && language
 					? file
 					: `${file}${
 							langToExtension[

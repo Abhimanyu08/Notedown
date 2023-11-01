@@ -1,7 +1,7 @@
 "use client";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { cn } from "@/lib/utils";
-import { IndexedDbContext } from "@components/Contexts/IndexedDbContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
 import { processImageName } from "@utils/makeFolderName";
