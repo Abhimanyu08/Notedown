@@ -33,7 +33,10 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 				markdown={blogData.content}
 				postMeta={{
 					timestamp: params.draftId,
-					id: blogData.data.postId,
+					id:
+						blogData.data.postId ||
+						parseInt(searchParams?.get("postId") || "0") ||
+						undefined,
 				}}
 			/>
 		</div>

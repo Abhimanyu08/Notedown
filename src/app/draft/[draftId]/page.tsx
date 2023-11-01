@@ -5,7 +5,7 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
 
@@ -14,6 +14,7 @@ function Draft() {
 	const blogData = useRetrieveDraftFromIndexDb({
 		timeStamp: params!.draftId as string,
 	});
+	const searchParams = useSearchParams();
 	const { dispatch } = useContext(BlogContext);
 	useEffect(() => {
 		if (blogData) {
@@ -28,7 +29,13 @@ function Draft() {
 				post: { ...(blogData.data as any) },
 			}}
 			ToolbarComponent={() => (
-				<DraftToolbar postId={blogData.data.postId} />
+				<DraftToolbar
+					postId={
+						blogData.data.postId ||
+						parseInt(searchParams?.get("postId") || "0") ||
+						undefined
+					}
+				/>
 			)}
 			AuthorComponent={() => <></>}
 		/>
