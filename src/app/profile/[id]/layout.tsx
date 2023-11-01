@@ -76,7 +76,7 @@ async function ProfilePostsLayout({
 						>
 							<NormalChildrenLayout>
 								<NotOwnerOnlyStuff id={params.id}>
-									<div className="flex flex-col gap-4 flex-initial overflow-y-auto ">
+									<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
 										{Array.from(map.keys()).map((tag) => {
 											const posts = map.get(tag);
 											if (!posts || posts.length === 0)
