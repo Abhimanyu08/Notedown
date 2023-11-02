@@ -98,33 +98,42 @@ async function ProfilePostsLayout({
 										})}
 									</div>
 								</NotOwnerOnlyStuff>
-								<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
-									{Array.from(map.keys()).map((tag) => {
-										const posts = map.get(tag);
-										if (!posts || posts.length === 0)
-											return <></>;
-										return (
-											<TaggedDrafts tag={tag} key={tag}>
-												<PostDisplay
-													posts={posts}
-													tag={tag}
-												/>
 
-												<DraftsDisplay tag={tag} />
-											</TaggedDrafts>
-										);
-									})}
-
-									{children}
-								</div>
-
-								{/* {params.id === "anon" ? (
+								{params.id === "anon" ? (
 									children
 								) : (
 									<OwnerOnlyStuff id={params.id}>
-										{children}
+										<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
+											{Array.from(map.keys()).map(
+												(tag) => {
+													const posts = map.get(tag);
+													if (
+														!posts ||
+														posts.length === 0
+													)
+														return <></>;
+													return (
+														<TaggedDrafts
+															tag={tag}
+															key={tag}
+														>
+															<PostDisplay
+																posts={posts}
+																tag={tag}
+															/>
+
+															<DraftsDisplay
+																tag={tag}
+															/>
+														</TaggedDrafts>
+													);
+												}
+											)}
+
+											{children}
+										</div>
 									</OwnerOnlyStuff>
-								)} */}
+								)}
 							</NormalChildrenLayout>
 						</div>
 					</div>
