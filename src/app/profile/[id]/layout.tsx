@@ -98,7 +98,9 @@ async function ProfilePostsLayout({
 								</NotOwnerOnlyStuff>
 
 								{params.id === "anon" ? (
-									children
+									<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
+										children
+									</div>
 								) : (
 									<OwnerOnlyStuff id={params.id}>
 										<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
