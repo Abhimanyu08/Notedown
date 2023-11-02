@@ -13,7 +13,7 @@ async function layout({ children }: { children: React.ReactNode }) {
 
 	return (
 		<>
-			<SideSheet>
+			<SideSheet loggedIn={!!session}>
 				<Link
 					href={
 						session

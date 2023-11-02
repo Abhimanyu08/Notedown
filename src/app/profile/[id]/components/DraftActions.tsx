@@ -1,22 +1,18 @@
 "use client";
-import ActionWrapper from "@components/ActionWrapper";
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
+import ActionWrapper from "@components/ActionWrapper";
+import ActionModal from "@components/Modals/ActionModal";
 import { MenubarItem } from "@components/ui/menubar";
-import {
-	getMarkdownObjectStore,
-	getMarkdownObjectStoreTransaction,
-} from "@utils/indexDbFuncs";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { Draft } from "@utils/processDrafts";
-import { sendRevalidationRequest } from "@utils/sendRequest";
 import Link from "next/link";
 import { useContext, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { ProfileContext } from "../../../../contexts/ProfileContext";
-import ActionModal from "@components/Modals/ActionModal";
 
 export function DraftActions({ draft }: { draft: Draft }) {
 	const { documentDb } = useContext(IndexedDbContext);
-	const { setLoadDrafts } = useContext(ProfileContext);
+	const { setDraftAndPostMap } = useContext(ProfileContext);
 	const [isPending, startTransition] = useTransition();
 	const [startDelete, setStartDelete] = useState(false);
 
@@ -26,7 +22,29 @@ export function DraftActions({ draft }: { draft: Draft }) {
 
 		const deleteRequest = mdObjectStore.delete(timeStamp);
 		deleteRequest.onsuccess = () => {
-			setLoadDrafts(true);
+			setDraftAndPostMap((p) => {
+				const newMap = new Map(p);
+				if (!draft.tags || draft.tags.length === 0) {
+					const noTagEntities = newMap.get("notag");
+					noTagEntities!.drafts =
+						noTagEntities?.drafts.filter(
+							(d) => d.timeStamp !== draft.timeStamp
+						) || [];
+
+					newMap.set("notag", noTagEntities!);
+					return newMap;
+				}
+				for (let tag of draft.tags) {
+					const tagEntities = newMap.get(tag);
+					tagEntities!.drafts =
+						tagEntities?.drafts.filter(
+							(d) => d.timeStamp !== draft.timeStamp
+						) || [];
+
+					newMap.set(tag, tagEntities!);
+				}
+				return newMap;
+			});
 		};
 	};
 

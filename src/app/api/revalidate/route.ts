@@ -5,11 +5,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const path = searchParams.get('path')
     if (path) {
+        console.log(path)
         if (path.startsWith("/profile")) {
             revalidatePath(path, "layout")
-            return
+        } else {
+
+            revalidatePath(path, "page")
         }
-        revalidatePath(path, "page")
         return NextResponse.json({ revalidated: true, now: Date.now() })
     }
     return NextResponse.json({ revalidated: false, now: Date.now() })

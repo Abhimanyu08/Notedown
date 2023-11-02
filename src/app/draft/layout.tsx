@@ -14,7 +14,7 @@ async function DraftLayout({ children }: { children: React.ReactNode }) {
 
 	return (
 		<BlogContextProvider>
-			<SideSheet>
+			<SideSheet loggedIn={!!session}>
 				<Link
 					href={
 						session

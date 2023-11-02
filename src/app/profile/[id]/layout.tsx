@@ -24,6 +24,7 @@ import ProfileContextProvider from "@/contexts/ProfileContext";
 import { TaggedDrafts } from "./components/TaggedDrafts";
 import { postToDraft } from "@utils/postToDraft";
 import PostDisplay from "@components/PostDisplay";
+import { DraftsDisplay } from "./components/DraftsDisplay";
 
 async function ProfilePostsLayout({
 	children,
@@ -42,13 +43,15 @@ async function ProfilePostsLayout({
 		loggedInUserName = username || "";
 	}
 	const supabase = createServerComponentSupabaseClient({ headers, cookies });
+	const { data } = await supabase.auth.getUser();
+	const loggedIn = !!data.user;
 
 	const map = await getPostTagMap(supabase, params.id);
 
 	return (
 		<ProfileContextProvider tagToPostMap={map}>
-			<SideSheet>
-				{params.id === "anon" ? (
+			<SideSheet loggedIn={loggedIn}>
+				{!loggedIn ? (
 					<NotLoggedInOptions />
 				) : (
 					<LoggedInOptions
@@ -95,13 +98,33 @@ async function ProfilePostsLayout({
 										})}
 									</div>
 								</NotOwnerOnlyStuff>
-								{params.id === "anon" ? (
+								<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
+									{Array.from(map.keys()).map((tag) => {
+										const posts = map.get(tag);
+										if (!posts || posts.length === 0)
+											return <></>;
+										return (
+											<TaggedDrafts tag={tag} key={tag}>
+												<PostDisplay
+													posts={posts}
+													tag={tag}
+												/>
+
+												<DraftsDisplay tag={tag} />
+											</TaggedDrafts>
+										);
+									})}
+
+									{children}
+								</div>
+
+								{/* {params.id === "anon" ? (
 									children
 								) : (
 									<OwnerOnlyStuff id={params.id}>
 										{children}
 									</OwnerOnlyStuff>
-								)}
+								)} */}
 							</NormalChildrenLayout>
 						</div>
 					</div>

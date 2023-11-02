@@ -1,0 +1,1 @@
+alter table posts add column slug text unique default null;

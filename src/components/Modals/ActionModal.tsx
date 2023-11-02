@@ -23,8 +23,8 @@ function ActionModal({
 	if (visible) {
 		return (
 			<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-				<div className="flex flex-col items-center gap-2 text-center">
-					<div className="flex gap-2">
+				<div className="flex flex-col items-center gap-2 text-center ">
+					<div className="flex gap-2 flex-nowrap justify-center">
 						<span
 							className={`text-gray-300 capitalize ${
 								action === "delete" && "text-rose-500"
@@ -32,14 +32,18 @@ function ActionModal({
 						>
 							{action}
 						</span>
-						<span className="font-bold text-gray-100">
+						<span className="font-bold text-gray-100 max-w-[30%] truncate">
 							{postTitle}
 						</span>
 						{action === "delete" &&
 							(type === "post" ? (
-								<span>from server?</span>
+								<span className="text-sky-400">
+									from server?
+								</span>
 							) : (
-								<span>from the browser?</span>
+								<span className="text-amber-400">
+									from browser?
+								</span>
 							))}
 						<button
 							className="p-1 rounded-full hover:bg-gray-700"

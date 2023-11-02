@@ -33,7 +33,7 @@ function Home() {
 	}, [documentDb]);
 	return (
 		<>
-			<SideSheet>
+			<SideSheet loggedIn={false}>
 				<NotLoggedInOptions className="mt-2" />
 			</SideSheet>
 			<div

@@ -15,7 +15,7 @@ async function WriteLayout({ children }: { children: React.ReactNode }) {
 
 	return (
 		<EditorContextProvider>
-			<SideSheet>
+			<SideSheet loggedIn={!!session}>
 				<Link
 					href={
 						session

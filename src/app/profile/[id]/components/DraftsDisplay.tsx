@@ -1,15 +1,16 @@
 "use client";
-import { RawObject, rawObjectToDraft } from "@utils/processDrafts";
+import { ProfileContext } from "@/contexts/ProfileContext";
+import { useContext } from "react";
 import { SingleDraft } from "./SingleDraft";
 
-export function DraftsDisplay({
-	rawObjects,
-	tag,
-}: {
-	rawObjects: RawObject[];
-	tag?: string;
-}) {
-	const drafts = rawObjects.map((r) => rawObjectToDraft(r));
+export function DraftsDisplay({ tag }: { tag: string }) {
+	const { draftAndPostMap } = useContext(ProfileContext);
+
+	if (draftAndPostMap.size === 0) {
+		return <></>;
+	}
+
+	const drafts = draftAndPostMap.get(tag)!.drafts;
 	return (
 		<>
 			{drafts.map((draft) => {
