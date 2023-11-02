@@ -135,7 +135,9 @@ async function ProfilePostsLayout({
 							</NormalChildrenLayout>
 						</div>
 
-						<NewNoteButton />
+						<OwnerOnlyStuff id={params.id}>
+							<NewNoteButton />
+						</OwnerOnlyStuff>
 					</div>
 				</SearchProvider>
 				<PostPreviewLayout

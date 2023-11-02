@@ -10,6 +10,8 @@ import { useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
 import { ExpandButton } from "../ProfileComponents/ModalButtons";
+import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
+import useOwner from "@/hooks/useOwner";
 
 function PostPreviewControls({
 	markdown,
@@ -21,6 +23,7 @@ function PostPreviewControls({
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
 	const params = useParams();
+	const owner = useOwner(postMeta.created_by!);
 	const { id: postId, timestamp: draftId } = postMeta;
 
 	const getEditLink = () => {
@@ -50,7 +53,9 @@ function PostPreviewControls({
 				>
 					<BiBookContent size={24} />
 				</Button>
-				<ToolTipComponent tip="Edit">
+				<ToolTipComponent
+					tip={owner ? "Edit" : "Copy this note and edit"}
+				>
 					<Link
 						href={getEditLink() || ""}
 						prefetch={false}

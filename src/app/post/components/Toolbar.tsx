@@ -8,12 +8,14 @@ import { IoMdShareAlt } from "react-icons/io";
 import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
 import { AiFillEdit } from "react-icons/ai";
 import Link from "next/link";
+import useOwner from "@/hooks/useOwner";
 
 // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
 function Toolbar() {
 	const { blogState } = useContext(BlogContext);
 	const [linkCopied, setLinkCopied] = useState(false);
+	const owner = useOwner(blogState.blogMeta.blogger?.id);
 
 	// const [upvoted, setUpvoted] = useState<boolean | null>(null);
 	// const [upvotes, setUpvotes] = useState<number | null>(null);
@@ -92,7 +94,7 @@ function Toolbar() {
 				</span>
 			</ToolTipComponent>
 			<ToolTipComponent
-				tip="Edit markdown"
+				tip={owner ? "Edit" : "Copy this note and edit"}
 				className={`text-gray-400 hover:text-white active:scale-95`}
 			>
 				<Link
