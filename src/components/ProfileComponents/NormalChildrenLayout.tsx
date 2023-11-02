@@ -5,6 +5,7 @@ import { SinglePostLoading } from "./SinglePostLoading";
 import PostDisplay from "@components/PostDisplay";
 import { DraftsDisplay } from "@/app/profile/[id]/components/DraftsDisplay";
 import { postToDraft } from "@utils/postToDraft";
+import { SingleDraft } from "@/app/profile/[id]/components/SingleDraft";
 
 function NormalChildrenLayout({
 	children,
@@ -47,7 +48,14 @@ function NormalChildrenLayout({
 			return (
 				<div className="flex flex-col gap-4">
 					<PostDisplay posts={uploadedDrafts} />
-					<DraftsDisplay rawObjects={filteredDrafts} />
+					{filteredDrafts.map((draft) => (
+						<div
+							className="flex flex-col relative gap-3"
+							key={draft.timeStamp}
+						>
+							<SingleDraft draft={draft} />
+						</div>
+					))}
 				</div>
 			);
 		}
@@ -60,7 +68,18 @@ function NormalChildrenLayout({
 			);
 		}
 		if (draftSearchResults.length > 0) {
-			return <DraftsDisplay rawObjects={draftSearchResults} />;
+			return (
+				<>
+					{draftSearchResults.map((draft) => (
+						<div
+							className="flex flex-col relative gap-3"
+							key={draft.timeStamp}
+						>
+							<SingleDraft draft={draft} />
+						</div>
+					))}
+				</>
+			);
 		}
 	}
 

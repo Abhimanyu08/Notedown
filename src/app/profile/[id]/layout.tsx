@@ -63,10 +63,7 @@ async function ProfilePostsLayout({
 			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
 					<div className="flex flex-col col-span-1 row-span-1 gap-4 pt-6 border-r-[1px] border-border">
-						<div className="flex justify-between px-4 col-span-1 mt-1 relative">
-							<SearchInput className="basis-1/2" />
-							<NewNoteButton />
-						</div>
+						<SearchInput className="w-full px-5" />
 
 						<div className="h-[2px] bg-border col-span-1 mt-4"></div>
 						<div
@@ -75,6 +72,7 @@ async function ProfilePostsLayout({
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
 				px-2
+				grow
 				"
 						>
 							<NormalChildrenLayout>
@@ -136,6 +134,8 @@ async function ProfilePostsLayout({
 								)}
 							</NormalChildrenLayout>
 						</div>
+
+						<NewNoteButton />
 					</div>
 				</SearchProvider>
 				<PostPreviewLayout

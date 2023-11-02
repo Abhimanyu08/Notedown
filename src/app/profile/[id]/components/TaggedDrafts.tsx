@@ -30,31 +30,36 @@ export function TaggedDrafts({
 	if (searchParams && searchParams.has("tag")) {
 		searchTag = searchParams.get("tag");
 	}
-	if (tag === "notag") {
-		return (
-			<div
-				className={cn(
-					"gap-4 ml-1",
-					searchTag && searchTag !== tag ? "hidden" : ""
-				)}
-			>
-				{children}
-				{/* <DraftsDisplay rawObjects={drafts} tag={tag} />
-				<PostDisplay posts={posts} tag={tag} /> */}
-			</div>
-		);
-	}
+	// if (tag === "notag") {
+	// 	return (
+	// 		<div
+	// 			className={cn(
+	// 				"flex flex-col gap-3",
+	// 				searchTag && searchTag !== tag ? "hidden" : ""
+	// 			)}
+	// 		>
+	// 			{children}
+	// 			{/* <DraftsDisplay rawObjects={drafts} tag={tag} />
+	// 			<PostDisplay posts={posts} tag={tag} /> */}
+	// 		</div>
+	// 	);
+	// }
 
 	return (
 		<>
 			<details
-				open={searchTag === tag || false}
+				open={searchTag === tag || tag === "notag" || false}
 				className={cn(
 					"relative ",
 					searchTag && searchTag !== tag ? "hidden" : ""
 				)}
 			>
-				<summary className="text-lg font-serif font-bold cursor-pointer group/tag">
+				<summary
+					className={cn(
+						"text-lg font-serif marker:text-gray-400 font-bold cursor-pointer group/tag",
+						tag === "notag" && "hidden"
+					)}
+				>
 					{tag}
 					<ToolTipComponent
 						tip="Copy tag link"

@@ -4,7 +4,7 @@ import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { PostgrestError } from "@supabase/supabase-js";
 import { SEARCH_PRIVATE, SEARCH_PUBLC } from "@utils/constants";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { RawObject } from "@utils/processDrafts";
+import { Draft, RawObject, rawObjectToDraft } from "@utils/processDrafts";
 import { useContext, useEffect, useState } from "react";
 import useOwner from "./useOwner";
 import { useParams } from "next/navigation";
@@ -14,7 +14,7 @@ export default function useSearch(query: string) {
     const { supabase, session } = useSupabase()
     const [searching, setSearching] = useState(false)
     const [searchResults, setSearchResults] = useState<Database["public"]["Functions"]["search"]["Returns"]>([])
-    const [draftSearchResults, setDraftSearchResults] = useState<RawObject[]>([])
+    const [draftSearchResults, setDraftSearchResults] = useState<Draft[]>([])
     const [searchError, setSearchError] = useState<Error | PostgrestError | null>(null)
     const { documentDb } = useContext(IndexedDbContext)
     const owner = useOwner()
@@ -53,7 +53,7 @@ export default function useSearch(query: string) {
                     }
                     cursor.continue();
                 } else {
-                    setDraftSearchResults(results)
+                    setDraftSearchResults(results.map(r => rawObjectToDraft(r)))
                 }
             }
         }
