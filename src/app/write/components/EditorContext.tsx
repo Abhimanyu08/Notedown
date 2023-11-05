@@ -9,14 +9,13 @@ interface EditorStateInterface {
 	imagesToFiles: Record<string, File>;
 	imagesToUpload: string[];
 	canvasApps: Record<string, any>;
-	editingMarkdown: boolean;
 	frontMatterLength: number;
 	sandboxEditors: Record<string, EditorView>;
+	inSyncWithUploadedVersion: boolean;
 }
 interface DispatchObj {
 	type:
 		| "set editorView"
-		| "toggle markdown editor"
 		| "set previous uploaded doc"
 		| "set time stamp"
 		| "add image to files"
@@ -28,7 +27,8 @@ interface DispatchObj {
 		| "set frontmatter length"
 		| "set sandbox editor"
 		| "remove sandbox editor"
-		| "set document db";
+		| "set document db"
+		| "set in sync";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -40,9 +40,9 @@ const initialEditorState: EditorStateInterface = {
 	imagesToFiles: {},
 	imagesToUpload: [],
 	canvasApps: {},
-	editingMarkdown: false,
 	frontMatterLength: 0,
 	sandboxEditors: {},
+	inSyncWithUploadedVersion: false,
 };
 
 export const EditorContext = createContext<{
@@ -62,6 +62,12 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 					...state.canvasApps,
 					...(action.payload as Record<string, any>),
 				},
+			};
+
+		case "set in sync":
+			return {
+				...state,
+				inSyncWithUploadedVersion: action.payload as boolean,
 			};
 
 		case "set sandbox editor":
@@ -100,8 +106,6 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 				...state,
 				canvasApps: currentCanvasApps,
 			};
-		case "toggle markdown editor":
-			return { ...state, editingMarkdown: !state.editingMarkdown };
 		case "empty canvas apps":
 			return {
 				...state,

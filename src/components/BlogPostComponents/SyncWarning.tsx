@@ -19,6 +19,15 @@ function SyncWarning({ markdown }: { markdown: string }) {
 		return <></>;
 	}
 
+	if (pathname?.startsWith("/write") && !inSync) {
+		return (
+			<div className="flex gap-1 items-center">
+				<AlertTriangle size={14} className="text-rose-500" />
+				<span>The local and uploaded versions are not in sync</span>
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex gap-1 items-center">
 			<span>.</span>

@@ -44,8 +44,11 @@ function useBlogStateUpdate() {
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
 				constructor(view: EditorView) {
-					const { data, content, frontMatterLength } =
-						parseFrontMatter(view.state.sliceDoc());
+					const markdownText = view.state.doc;
+					const markdown = markdownText.sliceString(0);
+
+					const { data, frontMatterLength } =
+						parseFrontMatter(markdown);
 					blogStateDispatch({
 						type: "set blog meta",
 						payload: {
@@ -58,12 +61,22 @@ function useBlogStateUpdate() {
 						type: "set frontmatter length",
 						payload: frontMatterLength,
 					});
-					setBlogContent(content);
+					if (editorState.previousUploadedDoc) {
+						editorStateDispatch({
+							type: "set in sync",
+							payload:
+								!editorState.previousUploadedDoc.eq(
+									markdownText
+								),
+						});
+					}
+					setBlogContent(markdown);
 				}
 
 				update(update: ViewUpdate) {
 					if (update.docChanged) {
-						const markdown = update.state.sliceDoc();
+						const markdownText = update.state.doc;
+						const markdown = markdownText.sliceString(0);
 
 						// localStorage.setItem(localStorageDraftKey, markdown);
 						// if (!update.view.hasFocus) return;
@@ -84,6 +97,15 @@ function useBlogStateUpdate() {
 								type: "set frontmatter length",
 								payload: frontMatterLength,
 							});
+							if (editorState.previousUploadedDoc) {
+								editorStateDispatch({
+									type: "set in sync",
+									payload:
+										editorState.previousUploadedDoc.eq(
+											markdownText
+										),
+								});
+							}
 							setBlogContent(markdown);
 						});
 						updateMarkdown(

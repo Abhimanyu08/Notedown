@@ -30,6 +30,10 @@ function WriteToolbar({ content }: { content: string }) {
 			type: "set previous uploaded doc",
 			payload: currentEditorState.editorView!.state.doc,
 		});
+		dispatch({
+			type: "set in sync",
+			payload: true,
+		});
 	};
 	useEffect(() => {
 		if (uploadFinished) {
@@ -40,6 +44,15 @@ function WriteToolbar({ content }: { content: string }) {
 			});
 		}
 	}, [uploadFinished]);
+
+	// useEffect(() => {
+	// 	const uploadedMarkdown = editorState.previousUploadedDoc;
+	// 	if (!uploadedMarkdown) return;
+	// 	const writtenMarkdown = editorState.editorView?.state.doc;
+	// 	if (!writtenMarkdown) return;
+
+	// 	setInSync(uploadedMarkdown.eq(writtenMarkdown));
+	// }, [editorState]);
 
 	return (
 		<div className="flex absolute bottom-0 right-0 h-fit w-[55%] z-[400]  justify-center gap-32 px-10 items-center border-t-2  bg-secondary   border-border [&>*]:p-2">
@@ -55,13 +68,18 @@ function WriteToolbar({ content }: { content: string }) {
 					)}
 					{session?.user.id && (
 						<ToolTipComponent
-							tip="Upload changes"
+							tip={
+								editorState.inSyncWithUploadedVersion
+									? "No changes to upload"
+									: "Upload changes"
+							}
 							side="top"
 							align="center"
 						>
 							<button
-								className=" hover:text-gray-100 text-gray-400"
+								className=" hover:text-gray-100 text-gray-400 disabled:text-gray-700"
 								onClick={() => onUpload(editorState)}
+								disabled={editorState.inSyncWithUploadedVersion}
 							>
 								<FaFileUpload size={24} className="mt-1" />
 							</button>

@@ -6,7 +6,7 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { useContext, useEffect, useRef, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
-import WriteToolbar from "./OptionsToolbar";
+import WriteToolbar from "./WriteToolbar";
 import useBlogStateUpdate from "../hooks/useBlogStateUpdate";
 
 let initialMarkdownMeta =
