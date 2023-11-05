@@ -62,10 +62,10 @@ async function ProfilePostsLayout({
 
 			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
-					<div className="flex flex-col col-span-1 row-span-1 gap-4 pt-6 border-r-[1px] border-border">
+					<div className="flex flex-col col-span-1 row-span-1 pt-6 border-r-[1px] border-border">
 						<SearchInput className="w-full px-5" />
 
-						<div className="h-[2px] bg-border col-span-1 mt-4"></div>
+						<div className="h-[2px] bg-border col-span-1 my-4"></div>
 						<div
 							className="
 				lg:scrollbar-thin 
@@ -137,9 +137,13 @@ async function ProfilePostsLayout({
 							</NormalChildrenLayout>
 						</div>
 
-						<OwnerOnlyStuff id={params.id}>
+						{!loggedIn && params.id === "anon" ? (
 							<NewNoteButton />
-						</OwnerOnlyStuff>
+						) : (
+							<OwnerOnlyStuff id={params.id}>
+								<NewNoteButton />
+							</OwnerOnlyStuff>
+						)}
 					</div>
 				</SearchProvider>
 				<PostPreviewLayout

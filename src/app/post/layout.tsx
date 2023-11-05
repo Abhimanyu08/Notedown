@@ -1,3 +1,7 @@
+import {
+	LoggedInOptions,
+	NotLoggedInOptions,
+} from "@components/Navbar/Options";
 import SideSheet from "@components/SideSheet";
 import { Button } from "@components/ui/button";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
@@ -11,18 +15,11 @@ async function layout({ children }: { children: React.ReactNode }) {
 		data: { session },
 	} = await supabase.auth.getSession();
 
+	const loggedIn = !!session;
 	return (
 		<>
-			<SideSheet loggedIn={!!session}>
-				<Link
-					href={
-						session
-							? `/profile/${session.user.id}`
-							: `/profile/anon`
-					}
-				>
-					<Button>View all notes</Button>
-				</Link>
+			<SideSheet loggedIn={loggedIn}>
+				{loggedIn ? <LoggedInOptions /> : <NotLoggedInOptions />}
 			</SideSheet>
 			{children}
 		</>

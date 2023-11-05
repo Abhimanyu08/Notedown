@@ -87,7 +87,6 @@ function ProfileContextProvider({
 	}, [documentDb, tagToPostMap]);
 
 	useEffect(() => {
-		console.log(loadingDrafts, tagToDraftMap);
 		if (loadingDrafts) return;
 		// once loading drafts is finished, merge them with posts
 		const map: DraftAndPostMap = new Map();

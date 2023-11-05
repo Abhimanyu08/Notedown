@@ -9,13 +9,15 @@ import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
 import { AiFillEdit } from "react-icons/ai";
 import Link from "next/link";
 import useOwner from "@/hooks/useOwner";
+import { useToast } from "@components/ui/use-toast";
+import { User2 } from "lucide-react";
 
 // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
 function Toolbar() {
 	const { blogState } = useContext(BlogContext);
-	const [linkCopied, setLinkCopied] = useState(false);
 	const owner = useOwner(blogState.blogMeta.blogger?.id);
+	const { toast } = useToast();
 
 	// const [upvoted, setUpvoted] = useState<boolean | null>(null);
 	// const [upvotes, setUpvotes] = useState<number | null>(null);
@@ -79,19 +81,14 @@ function Toolbar() {
 					navigator.clipboard
 						.writeText(window.location.toString())
 						.then(() => {
-							setLinkCopied(true);
-							setTimeout(() => setLinkCopied(false), 2000);
+							toast({
+								title: "Link copied!!",
+								duration: 2000,
+							});
 						});
 				}}
 			>
 				<IoMdShareAlt size={30} />
-				<span
-					className={` normal-case absolute left-10 top-2 text-lime-400 ${
-						linkCopied ? "" : "hidden"
-					}`}
-				>
-					Link Copied!
-				</span>
 			</ToolTipComponent>
 			<ToolTipComponent
 				tip={owner ? "Edit" : "Copy this note and edit"}
@@ -106,6 +103,16 @@ function Toolbar() {
 					}
 				>
 					<AiFillEdit size={28} />
+				</Link>
+			</ToolTipComponent>
+			<ToolTipComponent
+				tip={`View all notes from ${
+					blogState.blogMeta.blogger?.name || " this author"
+				}`}
+				className={`text-gray-400 hover:text-white active:scale-95`}
+			>
+				<Link href={`/profile/${blogState.blogMeta.blogger?.id}`}>
+					<User2 />
 				</Link>
 			</ToolTipComponent>
 		</>

@@ -1,7 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export const handleSignIn = async (supabaseClient: SupabaseClient, provider: "github" | "google", redirectTo: string) => {
-    const hostname = window.location.hostname
     // let redirectUrl
     // if (hostname === "localhost") {
     //     redirectUrl = `http://localhost:3000/auth/callback`
