@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
         }
 
-        client.set(rateLimitKey, requestsTillNow + 1)
+        client.set(rateLimitKey, requestsTillNow + 1, { "EX": 60 })
     } else {
 
         client.set(rateLimitKey, 1, { "EX": 60 })
