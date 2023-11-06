@@ -20,12 +20,9 @@ export default function useInSync({ markdown }: { markdown: string }) {
     const [inSync, setInSync] = useState(true);
     const owner = useOwner(noteMeta.blogger?.id!)
 
-    // useEffect to check when a note being edited on /write is not synced
-
 
     //useEffect to check when a /post is not synced
     useEffect(() => {
-        if (!pathname?.startsWith("/post")) return
         if (searchParams?.get("synced") === "false") {
             setInSync(false)
             return

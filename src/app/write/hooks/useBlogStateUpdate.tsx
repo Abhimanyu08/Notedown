@@ -44,8 +44,7 @@ function useBlogStateUpdate() {
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
 				constructor(view: EditorView) {
-					const markdownText = view.state.doc;
-					const markdown = markdownText.sliceString(0);
+					const markdown = view.state.sliceDoc();
 
 					const { data, frontMatterLength } =
 						parseFrontMatter(markdown);
@@ -62,12 +61,11 @@ function useBlogStateUpdate() {
 						payload: frontMatterLength,
 					});
 					if (editorState.previousUploadedDoc) {
+						const previousMarkdown =
+							editorState.previousUploadedDoc.sliceString(0);
 						editorStateDispatch({
 							type: "set in sync",
-							payload:
-								!editorState.previousUploadedDoc.eq(
-									markdownText
-								),
+							payload: previousMarkdown === markdown,
 						});
 					}
 					setBlogContent(markdown);
@@ -75,8 +73,7 @@ function useBlogStateUpdate() {
 
 				update(update: ViewUpdate) {
 					if (update.docChanged) {
-						const markdownText = update.state.doc;
-						const markdown = markdownText.sliceString(0);
+						const markdown = update.state.sliceDoc();
 
 						// localStorage.setItem(localStorageDraftKey, markdown);
 						// if (!update.view.hasFocus) return;
@@ -98,12 +95,13 @@ function useBlogStateUpdate() {
 								payload: frontMatterLength,
 							});
 							if (editorState.previousUploadedDoc) {
+								const previousMarkdown =
+									editorState.previousUploadedDoc.sliceString(
+										0
+									);
 								editorStateDispatch({
 									type: "set in sync",
-									payload:
-										editorState.previousUploadedDoc.eq(
-											markdownText
-										),
+									payload: markdown === previousMarkdown,
 								});
 							}
 							setBlogContent(markdown);
