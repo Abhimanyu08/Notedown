@@ -10,9 +10,8 @@ export default async function prepareContainer(language: BlogProps["language"] |
         });
 
         if (resp.status !== 201) {
-            alert(resp.statusText);
 
-            return;
+            return new Error(resp.statusText);
         }
         const body: { containerId: string; } = await resp.json();
         return body.containerId

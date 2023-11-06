@@ -44,7 +44,6 @@ export async function POST(request: Request) {
 
     const redisResp = await client.get(rateLimitKey)
 
-    console.log("Redis response", redisResp)
 
     if (redisResp) {
         const requestsTillNow = parseInt(redisResp)
@@ -59,7 +58,7 @@ export async function POST(request: Request) {
 
         }
 
-        client.set(rateLimitKey, requestsTillNow + 1, { "EX": 20 })
+        client.set(rateLimitKey, requestsTillNow + 1)
     } else {
 
         client.set(rateLimitKey, 1, { "EX": 60 })

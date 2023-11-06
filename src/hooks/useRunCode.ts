@@ -90,6 +90,7 @@ export function useRunCode({
 			fileName: fileName as string,
 			language: language as any,
 		}).then((val) => {
+			if (val === "Too Many Requests") val += ", Limit: 5 requests every 30 seconds"
 			dispatch({ type: "set output", payload: { [block]: val } });
 
 			dispatch({ type: "set running block", payload: null });
