@@ -23,8 +23,6 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 		>
 			{/* <PublishModal publishPostAction={publishPostAction} /> */}
 			<Blog
-				title={blogData.data?.title}
-				description={blogData.data?.description}
 				language={blogData.data?.language}
 				markdown={blogData.content}
 				AuthorComponent={() => <></>}

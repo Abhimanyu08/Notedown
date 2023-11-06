@@ -35,8 +35,8 @@ export default function useRetrieveDraftFromIndexDb({ timeStamp }: { timeStamp: 
         markdownObjectStoreRequest.onsuccess = (e) => {
             const { markdown, postId } = (e.target as IDBRequest<{ markdown: string, postId?: number }>)
                 .result;
-            const { data, content } = parseFrontMatter(markdown)
-            setBlogData(p => ({ ...p, content, data: { ...data, postId: postId } }));
+            const { data } = parseFrontMatter(markdown)
+            setBlogData(p => ({ ...p, content: markdown, data: { ...data, postId: postId } }));
         };
     }, [timeStamp, documentDb]);
 

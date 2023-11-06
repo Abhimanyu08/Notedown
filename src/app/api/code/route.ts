@@ -58,10 +58,10 @@ export async function POST(request: Request) {
 
         }
 
-        client.set(rateLimitKey, requestsTillNow + 1, { "EX": 60 })
+        client.set(rateLimitKey, requestsTillNow + 1, { "EX": 30 })
     } else {
 
-        client.set(rateLimitKey, 1, { "EX": 60 })
+        client.set(rateLimitKey, 1, { "EX": 30 })
     }
 
     const bodyToSend = await request.json()
