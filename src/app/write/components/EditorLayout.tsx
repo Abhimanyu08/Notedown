@@ -30,12 +30,11 @@ function EditorLayout({
 				type: "set blog meta",
 				payload: {
 					id: post.id,
-					title: post.title,
-					description: post.description,
 					author: (post.bloggers as { id: string; name: string })
 						.name,
 					imageFolder: post.image_folder,
 					language: post.language,
+					slug: post.slug || undefined,
 				},
 			});
 			dispatch({
@@ -52,12 +51,6 @@ function EditorLayout({
 				payload: fileNames,
 			});
 		}
-		// } else {
-		// 	dispatch({
-		// 		type: "set previous uploaded doc",
-		// 		payload: initialMarkdown,
-		// 	});
-		// }
 	}, []);
 
 	useEffect(() => {

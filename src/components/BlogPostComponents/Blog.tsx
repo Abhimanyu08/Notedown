@@ -3,12 +3,10 @@ import formatDate from "@utils/dateFormatter";
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { memo } from "react";
 import SyncWarning from "./SyncWarning";
-import { parseFrontMatter } from "@utils/getResources";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 
 const Blog = memo(
 	function Blog({
-		title,
-		description,
 		markdown,
 		created_by,
 		published,
@@ -22,7 +20,8 @@ const Blog = memo(
 			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>)
 			| (() => JSX.Element);
 	}) {
-		const { content } = parseFrontMatter(markdown || "");
+		const { content, data } = parseFrontMatter(markdown || "");
+		const { title, description } = data;
 		const { htmlAST } = mdToHast(content || "");
 		const blogJsx = transformer(htmlAST);
 
@@ -128,11 +127,7 @@ const Blog = memo(
 		);
 	},
 	(prevProps, newProps) => {
-		return (
-			prevProps.markdown === newProps.markdown &&
-			prevProps.title === newProps.title &&
-			prevProps.description === newProps.description
-		);
+		return prevProps.markdown === newProps.markdown;
 	}
 );
 

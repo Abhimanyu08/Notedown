@@ -1,10 +1,9 @@
 import matter from "gray-matter";
-import { ALLOWED_LANGUAGES, DESCRIPTION_LENGTH, SUPABASE_FILES_BUCKET, TITLE_LENGTH } from "./constants";
-import { supabase } from "./supabaseClient";
+import { ALLOWED_LANGUAGES } from "./constants";
 
 
 export type FrontMatter =
-    { title?: string, description?: string, language?: typeof ALLOWED_LANGUAGES[number] | null, tags?: string[] }
+    { title?: string, description?: string, language?: typeof ALLOWED_LANGUAGES[number] | null, tags?: string[], slug?: string }
 
 
 export function parseFrontMatter(markdown: string): { data: FrontMatter, content: string, frontMatterLength: number } {
@@ -17,6 +16,10 @@ export function parseFrontMatter(markdown: string): { data: FrontMatter, content
         let content = fileMatter.content
 
         const frontMatterLength = markdown.length - content.length
+        const slug = data.slug
+        if (slug) {
+            data.slug = slug.split(" ").join("-")
+        }
 
         // html = resetCodeblocks(content, html)
         return { data: data as FrontMatter, content, frontMatterLength }
@@ -25,11 +28,3 @@ export function parseFrontMatter(markdown: string): { data: FrontMatter, content
     }
 
 }
-
-export async function getAllPostTitles(): Promise<string[]> {
-    const { data: posts, error } = await supabase.storage.from(SUPABASE_FILES_BUCKET).list();
-    if (!posts || error) return []
-    const titles = posts.map((post) => post.name.replace(/\.md$/, ''));
-    return titles
-}
-

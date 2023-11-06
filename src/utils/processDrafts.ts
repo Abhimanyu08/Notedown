@@ -1,11 +1,12 @@
 import formatDate from "./dateFormatter";
-import { FrontMatter, parseFrontMatter } from "./getResources";
+import { FrontMatter, parseFrontMatter } from "./parseFrontMatter";
 import { getMarkdownObjectStore } from "./indexDbFuncs";
 export type Draft = {
     timeStamp: string;
     date: string;
     postId?: string;
     published?: boolean
+    slug?: string
 } & FrontMatter;
 
 export type RawObject = { timeStamp: string, markdown: string, postId?: string }

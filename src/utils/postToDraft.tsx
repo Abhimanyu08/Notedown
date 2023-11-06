@@ -11,5 +11,6 @@ export function postToDraft(
 		description: post.description!,
 		postId: `${post.id}`!,
 		published: post.published,
+		slug: post.slug || undefined,
 	};
 }

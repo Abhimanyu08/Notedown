@@ -5,7 +5,7 @@ import { EditorView } from "codemirror";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState, useTransition } from "react";
 import { EditorContext } from "../components/EditorContext";
-import { parseFrontMatter } from "@utils/getResources";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 
@@ -48,14 +48,14 @@ function useBlogStateUpdate() {
 
 					const { data, frontMatterLength } =
 						parseFrontMatter(markdown);
-					blogStateDispatch({
-						type: "set blog meta",
-						payload: {
-							title: data?.title,
-							description: data?.description || undefined,
-							language: data?.language || undefined,
-						},
-					});
+					if (blogState.blogMeta.language !== data.language) {
+						blogStateDispatch({
+							type: "set blog meta",
+							payload: {
+								language: data?.language || undefined,
+							},
+						});
+					}
 					editorStateDispatch({
 						type: "set frontmatter length",
 						payload: frontMatterLength,
@@ -81,14 +81,14 @@ function useBlogStateUpdate() {
 							parseFrontMatter(markdown);
 
 						startTransition(() => {
-							blogStateDispatch({
-								type: "set blog meta",
-								payload: {
-									title: data?.title,
-									description: data?.description || undefined,
-									language: data?.language || undefined,
-								},
-							});
+							if (blogState.blogMeta.language !== data.language) {
+								blogStateDispatch({
+									type: "set blog meta",
+									payload: {
+										language: data?.language || undefined,
+									},
+								});
+							}
 
 							editorStateDispatch({
 								type: "set frontmatter length",

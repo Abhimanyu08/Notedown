@@ -2,14 +2,14 @@ import { useSupabase } from "@/app/appContext";
 import Post from "@/interfaces/Post";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
-import { ALLOWED_LANGUAGES, SUPABASE_BLOGTAG_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
+import { ALLOWED_LANGUAGES, SUPABASE_BLOGTAG_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_SLUGPOST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { tryNTimesSupabaseStorageFunction, tryNTimesSupabaseTableFunction } from "@utils/multipleTries";
 import editorToJsonFile from "@utils/processingTldrawings";
 import { sendRevalidationRequest } from "@utils/sendRequest";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
-import { parseFrontMatter } from "@utils/getResources";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 
 function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
     const mdObjectStore = getMarkdownObjectStore(db)
@@ -27,6 +27,7 @@ function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
 function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const [uploadFinished, setUploadFinished] = useState(false)
+    const [uploadError, setUploadError] = useState<Error | null>(null)
     const { editorState, dispatch: editorStateDispatch } = useContext(EditorContext)
     const { blogState, dispatch } = useContext(BlogContext)
     const { documentDb } = useContext(IndexedDbContext)
@@ -43,33 +44,33 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             let process = upload
             if (blogState.blogMeta.id) process = update
 
-            process().then((postId) => {
+            process().then((post) => {
                 setProgressMessage("Finished!")
                 afterUpload()
                 setUploadFinished(true)
 
+                console.log(post)
                 dispatch({
                     type: "set blog meta",
-                    payload: { id: postId },
+                    payload: { id: post.id, slug: post.slug || undefined },
                 });
 
                 if (documentDb) {
-                    updateIndexDbMarkdown(documentDb, editorState.timeStamp || "", postId)
+                    updateIndexDbMarkdown(documentDb, editorState.timeStamp || "", post.id)
                 }
                 sendRevalidationRequest(`/profile/${created_by}`)
-                sendRevalidationRequest(blogState.blogMeta.published ? `/post/${postId}` : `/post/private/${postId}`)
+                sendRevalidationRequest(blogState.blogMeta.published ? `/post/${post.id}` : `/post/private/${post.id}`)
                 setProgressMessage("Changes Uploaded");
 
             }).catch((e) => {
-                console.error(e)
                 alert((e as Error).message)
+                setUploadError(e)
                 setUploadFinished(true)
             })
 
         }
 
     }, [startUpload, documentDb])
-
 
     const prepareForUpload = () => {
         const markdown = editorState.editorView?.state.sliceDoc()
@@ -80,38 +81,78 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             language = null
         }
         const { data } = parseFrontMatter(markdown)
+        if (!isNaN(parseInt(data.slug || ""))) {
+            throw new Error("Posts's slug can't be an integer")
+        }
         return {
             title: data.title || "",
             description: data.description || "",
             language: data.language || null,
             tags: data.tags,
+            slug: data.slug,
             markdownFile
         }
     }
 
-
-
-    const uploadPostRow = async ({ title, description, language }: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
-        const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).insert({
+    const uploadPostRow = async ({ title, description, language, slug }: { title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null, slug?: string }) => {
+        const { data: newPost, error } = await supabase.from(SUPABASE_POST_TABLE).insert({
             title,
             description,
             language,
             created_by,
+            slug,
             timestamp: editorState.timeStamp
-        }).select("*"), 3);
+        }).select("id,slug").single()
+
+        if (error) {
+            console.error(error)
+
+            if (error.message === `duplicate key value violates unique constraint "posts_slug_key"`) {
+                throw new Error("Please choose a unique slug")
+            }
+            throw new Error(error.message)
+        }
 
         return newPost
     }
 
-    const updatePostRow = async ({ postId, title, description, language }: { postId: number, title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null }) => {
-        const [newPost] = await tryNTimesSupabaseTableFunction<Post>(() => supabase.from(SUPABASE_POST_TABLE).update({
+    const updatePostRow = async ({ postId, title, description, language, slug }: { postId: number, title: string, description: string, language: typeof ALLOWED_LANGUAGES[number] | null, slug?: string }) => {
+        const { data: newPost, error } = await supabase.from(SUPABASE_POST_TABLE).update({
             title,
             description,
             language,
-        }).eq("id", postId).select("id,title,description,language,published"), 3);
+            slug
+        }).eq("id", postId).select("id,slug").single();
 
+        if (error) {
+            console.error(error)
+            throw new Error(error.message)
+        }
 
         return newPost
+    }
+
+    const uploadSlugPostRow = async ({ postId, slug }: { postId: number, slug: string }) => {
+        const previousActiveSlug = blogState.blogMeta.slug
+        console.log(previousActiveSlug)
+
+        if (previousActiveSlug && slug !== previousActiveSlug) {
+            const { } = await supabase.from(SUPABASE_SLUGPOST_TABLE).update({ active: false }).eq("slug", previousActiveSlug).select("id")
+        }
+
+
+        const { error } = await supabase.from(SUPABASE_SLUGPOST_TABLE).insert({
+            postid: postId,
+            slug,
+            active: true
+        }).select("id")
+        if (error) {
+            // threw error because the user is updating a previous slug  
+
+            const { } = await supabase.from(SUPABASE_SLUGPOST_TABLE).update({
+                active: true
+            }).eq("slug", slug)
+        }
     }
 
     const uploadTags = async ({ tags }: { tags: string[] }) => {
@@ -149,7 +190,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         const { data } = await supabase.from(SUPABASE_BLOGTAG_TABLE).select("tag_id, blog_id").match({ blog_id: postId })
         if (data) {
             const rowsToDelete = data.filter((d) => !(tagIds.includes(d.tag_id!)))
-            console.log(rowsToDelete)
             for (let { blog_id, tag_id } of rowsToDelete) {
                 await supabase.from(SUPABASE_BLOGTAG_TABLE).delete().match({ blog_id, tag_id })
             }
@@ -233,13 +273,17 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     const upload = async () => {
 
-        setProgressMessage("preparing for upload")
+        setProgressMessage("Preparing for upload")
         const postMeta = prepareForUpload()
-
-        console.log(postMeta)
-        setProgressMessage("Uploading markdown file")
         const post = await uploadPostRow(postMeta)
 
+
+        if (postMeta.slug) {
+
+            await uploadSlugPostRow({ postId: post.id, slug: postMeta.slug })
+        }
+
+        setProgressMessage("Uploading markdown file")
         await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
 
         const tags = postMeta.tags
@@ -257,17 +301,23 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
         await finalUpdateToPost({ postId: post.id, postMeta })
 
-        return post.id
+        return post
     }
 
     const update = async () => {
         const postId = blogState.blogMeta.id!
-        setProgressMessage("preparing for update")
+        setProgressMessage("Preparing for update")
         const postMeta = prepareForUpload()
 
-        setProgressMessage("updating post row")
+
+
+        setProgressMessage("Updating post row")
         //update the post row in the table to have new title,description,language etc.
-        await updatePostRow({ postId, ...postMeta })
+        const post = await updatePostRow({ postId, ...postMeta })
+        if (postMeta.slug) {
+            console.log(postMeta.slug)
+            await uploadSlugPostRow({ postId, slug: postMeta.slug })
+        }
         const tags = postMeta.tags
 
         if (tags) {
@@ -279,11 +329,11 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             await deleteBlogTags({ postId, tagIds: [] })
         }
         // upload new markdown file for the blog post
-        setProgressMessage("updating markdown file")
+        setProgressMessage("Updating markdown file")
         await uploadPostMarkdownFile({ postId, markdownFile: postMeta.markdownFile })
 
         //delete the images that need to be deleted
-        setProgressMessage("deleting redundant images")
+        setProgressMessage("Deleting redundant images")
         await deleteRedundantImages({ postId })
 
         //upload image files that need to be uploaded
@@ -300,7 +350,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         //     revalidatePath("/profile/[id]/posts/(...)post/[postId]");
         // }
         //done
-        return postId
+        return post
     }
 
     const afterUpload = () => {
@@ -323,7 +373,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
 
     }
 
-    return { uploadFinished, progressMessage }
+    return { uploadFinished, uploadError, progressMessage }
 
 }
 

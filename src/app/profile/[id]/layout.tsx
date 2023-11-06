@@ -169,7 +169,7 @@ async function getPostTagMap(supabase: SupabaseClient, id: string) {
 		const { data: tagsData } = await supabase
 			.from(SUPABASE_TAGS_TABLE)
 			.select(
-				"tag_name, posts(id,title,description,created_at,timestamp,published)"
+				"tag_name, posts(id,title,description,created_at,timestamp,published,slug)"
 			)
 			.match({ created_by: id });
 
@@ -196,23 +196,14 @@ async function getPostTagMap(supabase: SupabaseClient, id: string) {
 
 		const { data: postWithoutTags } = await supabase
 			.from(SUPABASE_POST_TABLE)
-			.select("id,title,description,created_at,timestamp,published")
+			.select("id,title,description,created_at,timestamp,published,slug")
 			.match({ created_by: id })
 			.not("id", "in", `(${postWithTagIds.join(",")})`);
 
 		if (postWithoutTags) {
 			map.set(
 				"notag",
-				postWithoutTags.map((p) => {
-					return {
-						date: p.created_at,
-						timeStamp: p.timestamp,
-						title: p.title,
-						description: p.description,
-						postId: p.id,
-						published: p.published,
-					};
-				})
+				postWithoutTags.map((p) => postToDraft(p))
 			);
 		}
 	}

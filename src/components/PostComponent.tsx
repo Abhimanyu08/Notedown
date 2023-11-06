@@ -13,7 +13,15 @@ export interface PostComponentProps {
 }
 
 const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
-	const { postId: id, title, description, date, timeStamp, published } = post;
+	const {
+		postId: id,
+		title,
+		description,
+		date,
+		timeStamp,
+		published,
+		slug,
+	} = post;
 
 	return (
 		<div className="relative">
@@ -28,7 +36,11 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 			<Link
 				href={
 					published
-						? `/post/${id}?tagpreview=${tag}`
+						? slug
+							? `/post/${slug}?tagpreview=${tag}`
+							: `/post/${id}?tagpreview=${tag}`
+						: slug
+						? `/post/private/${slug}?tagpreview=${tag}`
 						: `/post/private/${id}?tagpreview=${tag}`
 				}
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "

@@ -6,7 +6,7 @@ const nextConfig = {
 		domains: ["newnblwzrgvnhplztbua.supabase.co", "localhost"],
 	},
 	typescript: {
-		ignoreBuildErrors: true,
+		// ignoreBuildErrors: true,
 	},
 };
 

@@ -20,27 +20,27 @@ function WriteToolbar({ content }: { content: string }) {
 	const { toast } = useToast();
 	const { session } = useSupabase();
 
-	const { uploadFinished, progressMessage } = useUploadPost({
+	const { uploadFinished, uploadError, progressMessage } = useUploadPost({
 		startUpload,
 	});
 
-	const onUpload = async (currentEditorState: typeof editorState) => {
+	const onUpload = () => {
 		setStartUpload(true);
-		dispatch({
-			type: "set previous uploaded doc",
-			payload: currentEditorState.editorView!.state.doc,
-		});
-		dispatch({
-			type: "set in sync",
-			payload: true,
-		});
 	};
 	useEffect(() => {
-		if (uploadFinished) {
-			setStartUpload(false);
+		setStartUpload(false);
+		if (uploadFinished && !uploadError) {
 			toast({
 				title: "Note uploaded!",
 				duration: 2000,
+			});
+			dispatch({
+				type: "set previous uploaded doc",
+				payload: editorState.editorView!.state.doc,
+			});
+			dispatch({
+				type: "set in sync",
+				payload: true,
 			});
 		}
 	}, [uploadFinished]);
@@ -78,8 +78,8 @@ function WriteToolbar({ content }: { content: string }) {
 						>
 							<button
 								className=" hover:text-gray-100 text-gray-400 disabled:text-gray-700"
-								onClick={() => onUpload(editorState)}
-								disabled={editorState.inSyncWithUploadedVersion}
+								onClick={() => onUpload()}
+								// disabled={editorState.inSyncWithUploadedVersion}
 							>
 								<FaFileUpload size={24} className="mt-1" />
 							</button>

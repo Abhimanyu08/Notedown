@@ -1,0 +1,2 @@
+ALTER TABLE slugpost
+ADD COLUMN active BOOLEAN;

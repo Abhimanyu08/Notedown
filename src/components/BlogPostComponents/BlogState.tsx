@@ -24,14 +24,15 @@ export interface BlogStateInterface {
 	containerId: string | null;
 	blogMeta: Partial<{
 		id: number;
-		title: string;
+		// title: string;
 		author: string;
 		blogger: { id: string; name: string };
-		description: string | null;
+		// description: string | null;
 		language: string | null;
 		imageFolder: string | null;
 		timeStamp: string;
 		published: boolean;
+		slug: string;
 	}>;
 	uploadedImages: Record<string, string>;
 	uploadedFileNames?: string[];
@@ -144,14 +145,14 @@ const reducer: Reducer<BlogStateInterface, DispatchObj> = (state, action) => {
 			};
 		}
 		case "set blog meta":
-			if (
-				!hasBlogMetaChanged(state.blogMeta, {
-					...state.blogMeta,
-					...(action.payload as BlogStateInterface["blogMeta"]),
-				})
-			) {
-				return state;
-			}
+			// if (
+			// 	!hasBlogMetaChanged(state.blogMeta, {
+			// 		...state.blogMeta,
+			// 		...(action.payload as BlogStateInterface["blogMeta"]),
+			// 	})
+			// ) {
+			// 	return state;
+			// }
 			return {
 				...state,
 				blogMeta: {
@@ -223,14 +224,14 @@ function BlogContextProvider({
 
 export default BlogContextProvider;
 
-function hasBlogMetaChanged(
-	prevMeta: BlogStateInterface["blogMeta"],
-	newMeta: BlogStateInterface["blogMeta"]
-) {
-	return (
-		prevMeta.id !== newMeta.id ||
-		prevMeta.title !== newMeta.title ||
-		prevMeta.description !== newMeta.description ||
-		prevMeta.language !== newMeta.language
-	);
-}
+// function hasBlogMetaChanged(
+// 	prevMeta: BlogStateInterface["blogMeta"],
+// 	newMeta: BlogStateInterface["blogMeta"]
+// ) {
+// 	return (
+// 		prevMeta.id !== newMeta.id ||
+// 		prevMeta.title !== newMeta.title ||
+// 		prevMeta.description !== newMeta.description ||
+// 		prevMeta.language !== newMeta.language
+// 	);
+// }

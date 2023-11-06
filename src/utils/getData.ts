@@ -98,9 +98,9 @@ export const getPost = async (postId: string, supabaseClient: SupabaseClient) =>
     const { data: post, error } = await supabaseClient
         .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
         .select(
-            "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name)"
+            "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name),slug"
         )
-        .match({ id: postId })
+        .or(`id.eq.${isNaN(parseInt(postId)) ? 0 : postId},slug.eq.${postId}`)
         .single();
 
     if (error || !post) {

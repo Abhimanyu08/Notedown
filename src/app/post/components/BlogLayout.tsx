@@ -2,7 +2,7 @@ import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getPost } from "@utils/getData";
-import { parseFrontMatter } from "@utils/getResources";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 
 function BlogLayout({
 	postMeta,

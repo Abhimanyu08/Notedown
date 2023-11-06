@@ -1,6 +1,6 @@
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
-import { parseFrontMatter } from "@utils/getResources";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { useContext, useEffect, useState } from "react";
 
