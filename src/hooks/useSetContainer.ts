@@ -20,7 +20,7 @@ export default function useSetContainer() {
 			}
 			if (containerId instanceof Error) {
 				toast({
-					title: containerId.message,
+					title: "Please login to execute code",
 					variant: "destructive"
 				})
 				setPreparingContainer(false)

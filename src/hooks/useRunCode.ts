@@ -90,7 +90,7 @@ export function useRunCode({
 			fileName: fileName as string,
 			language: language as any,
 		}).then((val) => {
-			if (val === "Too Many Requests") val += ", Limit: 5 requests every 30 seconds"
+			if (val === "Limit exceeded") val += ", Limit: 5 requests every 30 seconds"
 			dispatch({ type: "set output", payload: { [block]: val } });
 
 			dispatch({ type: "set running block", payload: null });
@@ -130,7 +130,7 @@ async function runCodeRequest({
 		const resp = await sendRequestToRceServer(...params);
 
 		if (resp.status !== 201) {
-			return resp.statusText;
+			return "Limit exceeded";
 		}
 		const { output } = (await resp.json()) as { output: string };
 

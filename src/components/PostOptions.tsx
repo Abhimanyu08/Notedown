@@ -30,11 +30,13 @@ export function PostActions({
 	postId,
 	postTitle,
 	timeStamp,
+	slug,
 }: {
 	published: boolean;
 	postId: number;
 	postTitle: string;
 	timeStamp?: string;
+	slug?: string;
 }) {
 	const owner = useOwner();
 	const [takenAction, setTakenAction] = useState<
@@ -134,7 +136,7 @@ export function PostActions({
 											navigator.clipboard.writeText(
 												window.location.origin +
 													"/post/" +
-													postId
+													(slug || postId)
 											);
 											toast({
 												title: "Link copied!!",

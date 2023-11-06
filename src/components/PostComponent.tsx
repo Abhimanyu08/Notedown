@@ -31,6 +31,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 					postId: parseInt(id!),
 					postTitle: title!,
 					timeStamp,
+					slug,
 				}}
 			/>
 			<Link
