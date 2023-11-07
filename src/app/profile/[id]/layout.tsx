@@ -25,6 +25,31 @@ import { TaggedDrafts } from "./components/TaggedDrafts";
 import { postToDraft } from "@utils/postToDraft";
 import PostDisplay from "@components/PostDisplay";
 import { DraftsDisplay } from "./components/DraftsDisplay";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { id: string };
+}): Promise<Metadata | undefined> {
+	let { name } = (await getUser(params.id))!;
+
+	return {
+		title: name,
+		description: `${name || "Anon"}'s public notes`,
+		openGraph: {
+			title: name || "Anon",
+			description: `${name || "Anon"}'s public notes`,
+			type: "article",
+			url: `https://notedown.art/profile/${params.id}`,
+		},
+		twitter: {
+			card: "summary",
+			title: name || "Anon",
+			description: `${name || "Anon"}'s public notes`,
+		},
+	};
+}
 
 async function ProfilePostsLayout({
 	children,
