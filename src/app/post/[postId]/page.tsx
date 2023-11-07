@@ -13,11 +13,22 @@ export async function generateMetadata({
 }: {
 	params: PostParams;
 }): Promise<Metadata | undefined> {
-	const { data } = await supabase
-		.from(SUPABASE_POST_TABLE)
-		.select("title, description, bloggers(name), published_on")
-		.eq("id", params.postId)
-		.single();
+	let data: any;
+	if (isNaN(parseInt(params.postId))) {
+		const resp = await supabase
+			.from(SUPABASE_POST_TABLE)
+			.select("title, description, bloggers(name), published_on")
+			.eq("slug", params.postId)
+			.single();
+		data = resp.data;
+	} else {
+		const resp = await supabase
+			.from(SUPABASE_POST_TABLE)
+			.select("title, description, bloggers(name), published_on")
+			.eq("id", params.postId)
+			.single();
+		data = resp.data;
+	}
 	if (!data) return;
 
 	const { title, description } = data;
