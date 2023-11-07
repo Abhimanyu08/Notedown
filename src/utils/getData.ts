@@ -1,10 +1,11 @@
 import 'server-only';
 import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { cache } from "react";
-import { SupabaseClient } from '@supabase/supabase-js';
+import { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@utils/supabaseClient';
 import { checkDataLength } from './postTypeToFetcher';
 import { Database } from '@/interfaces/supabase';
+import PostWithBlogger from '@/interfaces/PostWithBlogger';
 
 export const getUser = async (id: string) => {
 
@@ -94,17 +95,37 @@ export const getUpvotes = cache(async (idArray: number[]) => {
 })
 
 
-export const getPost = async (postId: string, supabaseClient: SupabaseClient) => {
-    const { data: post, error } = await supabaseClient
-        .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
-        .select(
-            "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name),slug"
-        )
-        .or(`id.eq.${isNaN(parseInt(postId)) ? 0 : postId},slug.eq.${postId}`)
-        .single();
 
-    if (error || !post) {
-        throw new Error(error.message || "post not found")
+export const getPost = async (postIdOrSlug: string, supabaseClient: SupabaseClient) => {
+
+    let post: PostWithBlogger | null
+    let postMetaError: PostgrestError | null
+    if (isNaN(parseInt(postIdOrSlug))) {
+
+        const { data, error } = await supabaseClient
+            .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
+            .select(
+                "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name),slug"
+            )
+            .eq("slug", postIdOrSlug)
+            .single();
+        post = data
+        postMetaError = error
+    } else {
+
+        const { data, error } = await supabaseClient
+            .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
+            .select(
+                "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name),slug"
+            )
+            .eq("id", postIdOrSlug)
+            .single();
+        post = data
+        postMetaError = error
+    }
+
+    if (postMetaError || !post) {
+        throw new Error(postMetaError?.message || "post not found")
     }
 
     const filename = post.filename;

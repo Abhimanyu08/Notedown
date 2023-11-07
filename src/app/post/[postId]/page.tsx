@@ -8,8 +8,6 @@ import Toolbar from "../components/Toolbar";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 
-export const revalidate = 60 * 60 * 24 * 365 * 10;
-
 export async function generateMetadata({
 	params,
 }: {
