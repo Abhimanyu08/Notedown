@@ -1,41 +1,18 @@
-"use client";
-import { IndexedDbContext } from "@/contexts/IndexedDbContext";
-import { NotLoggedInOptions } from "@components/Navbar/Options";
+import {
+	LoggedInOptions,
+	NotLoggedInOptions,
+} from "@components/Navbar/Options";
 import SideSheet from "@components/SideSheet";
 import { Button } from "@components/ui/button";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
-import { useContext, useEffect } from "react";
-import { useSupabase } from "./appContext";
-import { usePathname, useRouter } from "next/navigation";
 
 function Home() {
-	const { session } = useSupabase();
-	const { documentDb } = useContext(IndexedDbContext);
-	const router = useRouter();
-	const pathname = usePathname();
-
-	useEffect(() => {
-		if (!documentDb) return;
-
-		const markdownObjectStore = getMarkdownObjectStore(
-			documentDb,
-			"readonly"
-		);
-		if (pathname === "/" && !session) {
-			const countReq = markdownObjectStore.count();
-			countReq.onsuccess = () => {
-				if (countReq.result > 0) {
-					router.push("/profile/anon");
-				}
-			};
-		}
-	}, [documentDb]);
 	return (
 		<>
-			<SideSheet loggedIn={false}>
-				<NotLoggedInOptions className="mt-2" />
-			</SideSheet>
+			<SideSheet
+				notLoggedInChildren={<NotLoggedInOptions />}
+				loggedInChildren={<LoggedInOptions />}
+			/>
 			<div
 				className="self-center w-2/3 aspect-video overflow-hidden  my-auto border-border border-2 rounded-sm"
 				id="demo-container"

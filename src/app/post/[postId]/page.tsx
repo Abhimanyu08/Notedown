@@ -3,7 +3,6 @@ import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { supabase } from "@utils/supabaseClient";
 import { Metadata } from "next";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
-import { redirect } from "next/navigation";
 import BlogLayout from "../components/BlogLayout";
 import Toolbar from "../components/Toolbar";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";

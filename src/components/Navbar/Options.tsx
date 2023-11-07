@@ -1,5 +1,6 @@
 "use client";
 import { useSupabase } from "@/app/appContext";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import useOwner from "@/hooks/useOwner";
 import { Database } from "@/interfaces/supabase";
 import { cn } from "@/lib/utils";
@@ -15,9 +16,10 @@ import {
 } from "@components/ui/sheet";
 import { useToast } from "@components/ui/use-toast";
 import { handleLogout, handleSignIn } from "@utils/handleAuth";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useContext, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 
 export function NotLoggedInOptions({
@@ -25,6 +27,26 @@ export function NotLoggedInOptions({
 }: React.ComponentPropsWithoutRef<"div">) {
 	const pathname = usePathname();
 	const { supabase } = useSupabase();
+	const { session } = useSupabase();
+	const { documentDb } = useContext(IndexedDbContext);
+	const router = useRouter();
+
+	useEffect(() => {
+		if (!documentDb) return;
+
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		if (pathname === "/" && !session) {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
+	}, [documentDb]);
 
 	return (
 		<div className={cn("flex flex-col gap-2 mt-4", className)}>

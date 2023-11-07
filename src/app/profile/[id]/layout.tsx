@@ -50,15 +50,14 @@ async function ProfilePostsLayout({
 
 	return (
 		<ProfileContextProvider tagToPostMap={map}>
-			<SideSheet loggedIn={loggedIn}>
-				{!loggedIn ? (
-					<NotLoggedInOptions />
-				) : (
+			<SideSheet
+				loggedInChildren={
 					<LoggedInOptions
 						{...{ name: loggedInName, username: loggedInUserName }}
 					/>
-				)}
-			</SideSheet>
+				}
+				notLoggedInChildren={<NotLoggedInOptions />}
+			/>
 
 			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
