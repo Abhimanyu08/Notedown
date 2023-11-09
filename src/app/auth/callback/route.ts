@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
-    console.log(searchParams.get("next"), request.url)
     const code = searchParams.get('code')
     const next = searchParams.get('next') ?? '/'
 
@@ -13,6 +12,7 @@ export async function GET(request: NextRequest) {
         const supabase = createSupabaseServerClient(cookies)
         const url = request.nextUrl.clone()
         url.pathname = next
+        url.search = ""
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
             return NextResponse.redirect(url)
