@@ -13,27 +13,27 @@ import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { usePathname, useRouter } from "next/navigation";
 
 function Home() {
-	const { session } = useSupabase();
-	const { documentDb } = useContext(IndexedDbContext);
-	const router = useRouter();
-	const pathname = usePathname();
+	// const { session } = useSupabase();
+	// const { documentDb } = useContext(IndexedDbContext);
+	// const router = useRouter();
+	// const pathname = usePathname();
 
-	useEffect(() => {
-		if (!documentDb) return;
+	// useEffect(() => {
+	// 	if (!documentDb) return;
 
-		const markdownObjectStore = getMarkdownObjectStore(
-			documentDb,
-			"readonly"
-		);
-		if (pathname === "/" && !session) {
-			const countReq = markdownObjectStore.count();
-			countReq.onsuccess = () => {
-				if (countReq.result > 0) {
-					router.push("/profile/anon");
-				}
-			};
-		}
-	}, [documentDb]);
+	// 	const markdownObjectStore = getMarkdownObjectStore(
+	// 		documentDb,
+	// 		"readonly"
+	// 	);
+	// 	if (pathname === "/" && !session) {
+	// 		const countReq = markdownObjectStore.count();
+	// 		countReq.onsuccess = () => {
+	// 			if (countReq.result > 0) {
+	// 				router.push("/profile/anon");
+	// 			}
+	// 		};
+	// 	}
+	// }, [documentDb]);
 
 	return (
 		<>
@@ -66,10 +66,16 @@ function Home() {
 						className="w-full h-full"
 					></iframe>
 				</div>
-				<div className="flex self-center">
+				<div className="flex self-center items-center gap-2">
 					<Link href="/write">
 						<Button className="w-40 bg-gray-200 hover:bg-gray-500">
 							Start Writing
+						</Button>
+					</Link>
+					<span>Or</span>
+					<Link href="/post/javascript-experiments">
+						<Button className="w-fit bg-gray-200 hover:bg-gray-500">
+							View a sample note written by me
 						</Button>
 					</Link>
 				</div>
