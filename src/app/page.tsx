@@ -13,35 +13,30 @@ import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { usePathname, useRouter } from "next/navigation";
 
 function Home() {
-	// const { session } = useSupabase();
-	// const { documentDb } = useContext(IndexedDbContext);
-	// const router = useRouter();
-	// const pathname = usePathname();
+	const { session } = useSupabase();
+	const { documentDb } = useContext(IndexedDbContext);
+	const router = useRouter();
+	const pathname = usePathname();
 
-	// useEffect(() => {
-	// 	if (!documentDb) return;
+	useEffect(() => {
+		if (!documentDb) return;
 
-	// 	const markdownObjectStore = getMarkdownObjectStore(
-	// 		documentDb,
-	// 		"readonly"
-	// 	);
-	// 	if (pathname === "/" && !session) {
-	// 		const countReq = markdownObjectStore.count();
-	// 		countReq.onsuccess = () => {
-	// 			if (countReq.result > 0) {
-	// 				router.push("/profile/anon");
-	// 			}
-	// 		};
-	// 	}
-	// }, [documentDb]);
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		if (pathname === "/" && !session) {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
+	}, [documentDb]);
 
 	return (
 		<>
-			{/* <SideSheet
-				notLoggedInChildren={<NotLoggedInOptions />}
-				loggedInChildren={<LoggedInOptions />}
-			/> */}
-
 			<div className="flex flex-col h-full w-full justify-between p-10 self-center">
 				<div className="self-center text-center">
 					<h1 className="text-3xl">
