@@ -1,4 +1,4 @@
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { LogIn, Menu } from "lucide-react";
 import { cookies, headers } from "next/headers";
@@ -14,10 +14,8 @@ async function SideSheet({
 }) {
 	let userPresent = loggedIn;
 	if (typeof userPresent !== "boolean") {
-		const supabase = createServerComponentSupabaseClient({
-			headers,
-			cookies,
-		});
+		const supabase = createSupabaseServerClient(cookies);
+
 		const {
 			data: { session },
 		} = await supabase.auth.getSession();

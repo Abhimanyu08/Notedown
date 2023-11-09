@@ -1,12 +1,64 @@
-import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs'
-import { SUPABASE_POST_TABLE, SUPABASE_SLUGPOST_TABLE } from '@utils/constants'
-import { NextRequest, NextResponse } from 'next/server'
+
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 import { Database } from './interfaces/supabase'
+import { SUPABASE_POST_TABLE, SUPABASE_SLUGPOST_TABLE } from '@utils/constants'
 
 export async function middleware(req: NextRequest) {
-    const res = NextResponse.next()
-    const supabase = createMiddlewareSupabaseClient<Database>({ req, res })
+    let res = NextResponse.next({
+        request: {
+            headers: req.headers,
+        },
+    })
+
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                get(name: string) {
+                    return req.cookies.get(name)?.value
+                },
+                set(name: string, value: string, options: CookieOptions) {
+                    req.cookies.set({
+                        name,
+                        value,
+                        ...options,
+                    })
+                    res = NextResponse.next({
+                        request: {
+                            headers: req.headers,
+                        },
+                    })
+                    res.cookies.set({
+                        name,
+                        value,
+                        ...options,
+                    })
+                },
+                remove(name: string, options: CookieOptions) {
+                    req.cookies.set({
+                        name,
+                        value: '',
+                        ...options,
+                    })
+                    res = NextResponse.next({
+                        request: {
+                            headers: req.headers,
+                        },
+                    })
+                    res.cookies.set({
+                        name,
+                        value: '',
+                        ...options,
+                    })
+                },
+            },
+        }
+    )
+
     const { data } = await supabase.auth.getSession()
+
     const pathname = req.nextUrl.pathname
     if (data.session?.user) {
         if (pathname === "/" || pathname === "/profile/anon") {

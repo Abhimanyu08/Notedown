@@ -2,14 +2,14 @@ import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import SideSheet from "@components/SideSheet";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { BookOpen } from "lucide-react";
 import { headers, cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
 
 async function DraftLayout({ children }: { children: React.ReactNode }) {
-	const supabase = createServerComponentSupabaseClient({ headers, cookies });
+	const supabase = createSupabaseServerClient(cookies);
 	const {
 		data: { session },
 	} = await supabase.auth.getSession();

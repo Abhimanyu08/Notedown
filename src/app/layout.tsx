@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import "@/styles/xterm.css";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Metadata } from "next";
 import { Petrona, Nunito_Sans, IBM_Plex_Mono } from "next/font/google";
 import { cookies, headers } from "next/headers";
@@ -10,6 +9,7 @@ import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanva
 import IndexedDbContextProvider from "@/contexts/IndexedDbContext";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@components/ui/toaster";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 
 const serif = Petrona({
 	subsets: ["latin"],
@@ -59,10 +59,7 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const supabase = createServerComponentSupabaseClient({
-		headers,
-		cookies,
-	});
+	const supabase = createSupabaseServerClient(cookies);
 
 	const {
 		data: { session },

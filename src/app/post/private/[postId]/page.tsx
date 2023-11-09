@@ -1,6 +1,5 @@
 import { getPost } from "@utils/getData";
 import { Database } from "@/interfaces/supabase";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE } from "@utils/constants";
 import { revalidatePath } from "next/cache";
 import { NextParsedUrlQuery } from "next/dist/server/request-meta";
@@ -11,16 +10,14 @@ import { parseFrontMatter } from "@utils/parseFrontMatter";
 import PrivateToolbar from "../../components/PrivateToolbar";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 
 interface PostParams extends NextParsedUrlQuery {
 	postId: string;
 }
 
 async function PrivatePost({ params }: { params: PostParams }) {
-	const supabase = createServerComponentSupabaseClient<Database>({
-		headers,
-		cookies,
-	});
+	const supabase = createSupabaseServerClient(cookies);
 
 	const { post, markdown, imagesToUrls, fileNames } = await getPost(
 		params.postId,

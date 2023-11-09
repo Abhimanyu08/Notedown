@@ -1,6 +1,7 @@
+import { Database } from "@/interfaces/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export const handleSignIn = async (supabaseClient: SupabaseClient, provider: "github" | "google", redirectTo: string) => {
+export const handleSignIn = async (supabaseClient: SupabaseClient<Database>, provider: "github" | "google", redirectTo: string) => {
     // let redirectUrl
     // if (hostname === "localhost") {
     //     redirectUrl = `http://localhost:3000/auth/callback`
@@ -12,7 +13,8 @@ export const handleSignIn = async (supabaseClient: SupabaseClient, provider: "gi
         {
             provider,
             options: {
-                redirectTo: redirectTo
+                redirectTo: `${location.origin}/auth/callback?next=${redirectTo}`,
+
             }
 
         },

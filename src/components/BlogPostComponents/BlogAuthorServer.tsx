@@ -1,15 +1,13 @@
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_BLOGGER_TABLE } from "@utils/constants";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { cookies, headers } from "next/headers";
 import Link from "next/link";
 
 async function BlogAuthorServer({ createdBy }: { createdBy: string | null }) {
 	// const [author, setAuthor] = useState("");
 	// const { session } = useSupabase();
-	const supabase = createServerComponentSupabaseClient({
-		headers,
-		cookies,
-	});
+
+	const supabase = createSupabaseServerClient(cookies);
 
 	const { data } = await supabase.auth.getUser();
 

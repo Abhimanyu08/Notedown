@@ -11,10 +11,6 @@ import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
 import SearchInput from "@components/ProfileComponents/SearchInput";
 import SearchProvider from "@components/ProfileComponents/SearchProvider";
 import SideSheet from "@components/SideSheet";
-import {
-	SupabaseClient,
-	createServerComponentSupabaseClient,
-} from "@supabase/auth-helpers-nextjs";
 import { SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { getUser } from "@utils/getData";
 import { Draft } from "@utils/processDrafts";
@@ -26,12 +22,16 @@ import { postToDraft } from "@utils/postToDraft";
 import PostDisplay from "@components/PostDisplay";
 import { DraftsDisplay } from "./components/DraftsDisplay";
 import { Metadata } from "next";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Database } from "@/interfaces/supabase";
 
 export async function generateMetadata({
 	params,
 }: {
 	params: { id: string };
 }): Promise<Metadata | undefined> {
+	if (params.id === "anon") return;
 	let { name } = (await getUser(params.id))!;
 
 	return {
@@ -67,7 +67,7 @@ async function ProfilePostsLayout({
 		loggedInName = name || "";
 		loggedInUserName = username || "";
 	}
-	const supabase = createServerComponentSupabaseClient({ headers, cookies });
+	const supabase = createSupabaseServerClient(cookies);
 	const { data } = await supabase.auth.getUser();
 	const loggedIn = !!data.user;
 
@@ -187,7 +187,7 @@ async function ProfilePostsLayout({
 	);
 }
 
-async function getPostTagMap(supabase: SupabaseClient, id: string) {
+async function getPostTagMap(supabase: SupabaseClient<Database>, id: string) {
 	const map = new Map<string, Draft[]>();
 	if (id !== "anon") {
 		const { data: tagsData } = await supabase
@@ -197,22 +197,19 @@ async function getPostTagMap(supabase: SupabaseClient, id: string) {
 			)
 			.match({ created_by: id });
 
-		const postWithTagIds = [];
+		const postWithTagIds: number[] = [];
 		if (tagsData) {
 			for (let tagData of tagsData) {
 				if (tagData.posts) {
 					const posts = tagData.posts;
 					if (Array.isArray(posts)) {
 						map.set(
-							tagData.tag_name,
+							tagData.tag_name!,
 							posts.map((p) => {
 								postWithTagIds.push(p.id);
 								return postToDraft(p);
 							})
 						);
-					} else {
-						postWithTagIds.push(posts.id);
-						map.set(tagData.tag_name, [postToDraft(posts)]);
 					}
 				}
 			}

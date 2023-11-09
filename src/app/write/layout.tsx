@@ -1,14 +1,14 @@
 import { ToolTipComponent } from "@components/ToolTipComponent";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { BookOpen } from "lucide-react";
 import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import React from "react";
 import BlogContextProvider from "../../components/BlogPostComponents/BlogState";
 import EditorContextProvider from "./components/EditorContext";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 
 async function WriteLayout({ children }: { children: React.ReactNode }) {
-	const supabase = createServerComponentSupabaseClient({ headers, cookies });
+	const supabase = createSupabaseServerClient(cookies);
 	const {
 		data: { session },
 	} = await supabase.auth.getSession();

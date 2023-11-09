@@ -1,18 +1,13 @@
-import { getPost } from "@utils/getData";
 import Blog from "@components/BlogPostComponents/Blog";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import { headers, cookies } from "next/headers";
-import React from "react";
-import { Database } from "@/interfaces/supabase";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
+import { getPost } from "@utils/getData";
+import { cookies } from "next/headers";
 import PostPreviewControls from "./PostPreviewControls";
 
 async function PostPreview({ postId }: { postId: string }) {
-	const supabase = createServerComponentSupabaseClient<Database>({
-		headers,
-		cookies,
-	});
+	const supabase = createSupabaseServerClient(cookies);
 
 	const { post, markdown, imagesToUrls, fileNames } = await getPost(
 		postId,

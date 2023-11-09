@@ -1,17 +1,16 @@
 "use server"
 import { revalidatePath } from "next/cache";
 import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET } from "../utils/constants";
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 
 // function getPostActions(supabase: SupabaseClient) {
 
 
 export async function publishPostAction(postId: number) {
-    const supabase = createServerComponentSupabaseClient({
+    const supabase = createSupabaseServerClient(
         cookies,
-        headers
-    })
+    )
     await supabase
         .from(SUPABASE_POST_TABLE)
         .update({
@@ -24,10 +23,9 @@ export async function publishPostAction(postId: number) {
 }
 
 export async function unpublishPostAction(postId: number) {
-    const supabase = createServerComponentSupabaseClient({
+    const supabase = createSupabaseServerClient(
         cookies,
-        headers
-    })
+    )
     await supabase
         .from(SUPABASE_POST_TABLE)
         .update({
@@ -40,10 +38,9 @@ export async function unpublishPostAction(postId: number) {
 }
 
 export async function deletePostAction(postId: number) {
-    const supabase = createServerComponentSupabaseClient({
+    const supabase = createSupabaseServerClient(
         cookies,
-        headers
-    })
+    )
     const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
         .delete()
