@@ -15,9 +15,9 @@ export default function useRecoverSandpack({ persistanceKey }: { persistanceKey:
 
     useEffect(() => {
         // if this config file exists in database download it and then put the config string in jsoneditor
-        if (session && session.user && blogState.uploadedFileNames?.includes(`${persistanceKey}.json`)) {
-            const { id } = blogState.blogMeta;
-            const fileName = `${session?.user?.id}/${id}/${persistanceKey}.json`;
+        if (blogState.uploadedFileNames?.includes(`${persistanceKey}.json`)) {
+            const { id, blogger } = blogState.blogMeta;
+            const fileName = `${blogger?.id}/${id}/${persistanceKey}.json`;
 
             supabase.storage
                 .from(SUPABASE_FILES_BUCKET)

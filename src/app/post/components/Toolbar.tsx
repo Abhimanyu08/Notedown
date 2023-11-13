@@ -90,21 +90,24 @@ function Toolbar() {
 			>
 				<IoMdShareAlt size={30} />
 			</ToolTipComponent>
-			<ToolTipComponent
-				tip={owner ? "Edit" : "Copy this note and edit"}
-				className={`text-gray-400 hover:text-white active:scale-95`}
-			>
-				<Link
-					href={
-						`/write/${blogState.blogMeta.id}` +
-						(blogState.blogMeta.timeStamp
-							? `?draft=${blogState.blogMeta.timeStamp}`
-							: "")
-					}
+
+			{owner && (
+				<ToolTipComponent
+					tip="Edit"
+					className={`text-gray-400 hover:text-white active:scale-95`}
 				>
-					<AiFillEdit size={28} />
-				</Link>
-			</ToolTipComponent>
+					<Link
+						href={
+							`/write/${blogState.blogMeta.id}` +
+							(blogState.blogMeta.timeStamp
+								? `?draft=${blogState.blogMeta.timeStamp}`
+								: "")
+						}
+					>
+						<AiFillEdit size={28} />
+					</Link>
+				</ToolTipComponent>
+			)}
 			<ToolTipComponent
 				tip={`View all notes from ${
 					blogState.blogMeta.blogger?.name || " this author"
