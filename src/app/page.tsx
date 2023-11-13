@@ -88,47 +88,37 @@ function Home() {
 	}, [ytplayer]);
 
 	useEffect(() => {
-		let player: any; // Define the player variable
+		let player: any;
 
-		// Callback function called when the API is ready
 		(window as any).onYouTubeIframeAPIReady = () => {
-			// Initialize and create the YouTube player
 			player = new (window as any).YT.Player("demo", {
-				videoId: "Uz4LdXfLims", // Replace with your video's ID
-				playerVars: {
-					// Any additional player parameters can be added here
-				},
-				events: {
-					// You can define event handlers here (e.g., onReady, onStateChange)
-				},
+				videoId: "Uz4LdXfLims",
 			});
 
 			setPlayer(player);
-
-			// You can access the player object here for further control
 		};
 	}, []);
-	// const { session } = useSupabase();
-	// const { documentDb } = useContext(IndexedDbContext);
-	// const router = useRouter();
-	// const pathname = usePathname();
+	const { session } = useSupabase();
+	const { documentDb } = useContext(IndexedDbContext);
+	const router = useRouter();
+	const pathname = usePathname();
 
-	// useEffect(() => {
-	// 	if (!documentDb) return;
+	useEffect(() => {
+		if (!documentDb) return;
 
-	// 	const markdownObjectStore = getMarkdownObjectStore(
-	// 		documentDb,
-	// 		"readonly"
-	// 	);
-	// 	if (pathname === "/" && !session) {
-	// 		const countReq = markdownObjectStore.count();
-	// 		countReq.onsuccess = () => {
-	// 			if (countReq.result > 0) {
-	// 				router.push("/profile/anon");
-	// 			}
-	// 		};
-	// 	}
-	// }, [documentDb]);
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		if (pathname === "/" && !session) {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
+	}, [documentDb]);
 
 	return (
 		<>
