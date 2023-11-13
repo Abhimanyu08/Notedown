@@ -92,7 +92,9 @@ async function ProfilePostsLayout({
 						<div className="h-[2px] bg-border col-span-1 my-4"></div>
 						<div
 							className="
-				
+				lg:scrollbar-thin 
+				scrollbar-track-black 
+				scrollbar-thumb-slate-700
 				px-2
 				grow
 				"
@@ -187,11 +189,7 @@ async function ProfilePostsLayout({
 
 function TaggedDraftContainer({ children }: { children: React.ReactNode }) {
 	return (
-		<div
-			className="flex flex-col gap-4 h-full overflow-y-auto px-3 lg:scrollbar-thin 
-				scrollbar-track-black 
-				scrollbar-thumb-slate-700"
-		>
+		<div className="flex flex-col gap-4 h-full overflow-y-auto px-3">
 			{children}
 		</div>
 	);
