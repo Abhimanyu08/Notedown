@@ -11,30 +11,36 @@ export async function publishPostAction(postId: number) {
     const supabase = createSupabaseServerClient(
         cookies,
     )
-    await supabase
+    const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
         .update({
             published: true,
             published_on: new Date().toISOString(),
         })
-        .match({ id: postId });
+        .match({ id: postId }).select("created_by").single();
 
-    revalidatePath("/profile/[id]", "layout");
+    if (data) {
+
+        revalidatePath(`/profile/${data.created_by}`, "layout");
+    }
 }
 
 export async function unpublishPostAction(postId: number) {
     const supabase = createSupabaseServerClient(
         cookies,
     )
-    await supabase
+    const { data } = await supabase
         .from(SUPABASE_POST_TABLE)
         .update({
             published: false,
         })
-        .match({ id: postId });
+        .match({ id: postId }).select("created_by").single();
 
 
-    revalidatePath("/profile/[id]", "layout");
+    if (data) {
+
+        revalidatePath(`/profile/${data.created_by}`, "layout");
+    }
 }
 
 export async function deletePostAction(postId: number) {
@@ -77,7 +83,7 @@ export async function deletePostAction(postId: number) {
                 .from(SUPABASE_IMAGE_BUCKET)
                 .remove(imageNames);
         }
-        revalidatePath("/profile/[id]", "layout");
+        revalidatePath(`/profile/${data.created_by}`, "layout");
     }
 }
 
