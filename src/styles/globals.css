@@ -391,3 +391,7 @@ tbody td {
 .tlui-menu-zone__controls {
 	display: none;
 }
+
+.features svg {
+	margin-left: 4px;
+}

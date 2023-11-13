@@ -17,7 +17,7 @@ export function createSupabaseServerClient(cookies: () => ReadonlyRequestCookies
                     cookieStore.set({ name, value, ...options })
                 },
                 remove(name: string, options: CookieOptions) {
-                    cookieStore.set({ name, value: '', ...options })
+                    cookieStore.set({ name, ...options })
                 },
             },
         }
