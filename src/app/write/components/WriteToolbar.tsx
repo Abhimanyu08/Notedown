@@ -93,8 +93,8 @@ function WriteToolbar({ content }: { content: string }) {
 					</Button>
 					<div
 						className={`h-fit absolute bottom-full py-4 px-5 bg-secondary right-0  border-border border-2  w-[400px] max-h-[450px] overflow-auto z-[1000]
-						${showToc ? "opacity-100" : "opacity-0"}
-						transition-opacity duration-200
+						${showToc ? "visible" : "invisible"}
+						rounded-t-md
 					`}
 						// onMouseLeave={() => setShowToc(false)}
 					>

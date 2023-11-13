@@ -8,7 +8,7 @@ import {
 
 const Toc = ({ markdown }: { markdown: string }) => {
 	const { content } = parseFrontMatter(markdown);
-	const { headingAST } = mdToHast(markdown);
+	const { headingAST } = mdToHast(content);
 
 	return <HeadingNodeToDetailsTag headingNode={headingAST} />;
 };
