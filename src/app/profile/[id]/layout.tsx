@@ -101,7 +101,7 @@ async function ProfilePostsLayout({
 						>
 							<NormalChildrenLayout>
 								<NotOwnerOnlyStuff id={params.id}>
-									<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
+									<TaggedDraftContainer>
 										{Array.from(map.keys()).map((tag) => {
 											const posts = map.get(tag);
 											if (!posts || posts.length === 0)
@@ -118,16 +118,16 @@ async function ProfilePostsLayout({
 												</TaggedDrafts>
 											);
 										})}
-									</div>
+									</TaggedDraftContainer>
 								</NotOwnerOnlyStuff>
 
 								{params.id === "anon" ? (
-									<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
+									<TaggedDraftContainer>
 										{children}
-									</div>
+									</TaggedDraftContainer>
 								) : (
 									<OwnerOnlyStuff id={params.id}>
-										<div className="flex flex-col gap-4 flex-initial overflow-y-auto px-3">
+										<TaggedDraftContainer>
 											{Array.from(map.keys()).map(
 												(tag) => {
 													const posts = map.get(tag);
@@ -155,7 +155,7 @@ async function ProfilePostsLayout({
 											)}
 
 											{children}
-										</div>
+										</TaggedDraftContainer>
 									</OwnerOnlyStuff>
 								)}
 							</NormalChildrenLayout>
@@ -184,6 +184,14 @@ async function ProfilePostsLayout({
 				</PostPreviewLayout>
 			</div>
 		</ProfileContextProvider>
+	);
+}
+
+function TaggedDraftContainer({ children }: { children: React.ReactNode }) {
+	return (
+		<div className="flex flex-col gap-4 h-full overflow-y-auto px-3">
+			{children}
+		</div>
 	);
 }
 
