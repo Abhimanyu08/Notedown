@@ -112,12 +112,12 @@ function CodesandboxWithEditor({
 					>
 						Edit Config
 					</Button>
-					{sandpackProps && (
-						<CustomSandpack
-							{...sandpackProps}
-							persistanceKey={persistanceKey}
-						/>
-					)}
+					<CustomSandpack
+						{...(sandpackProps as any)}
+						options={sandpackProps?.options || {}}
+						template={sandpackProps?.template || "static"}
+						persistanceKey={persistanceKey}
+					/>
 				</div>
 				<JsonConfigEditor
 					className={`${!editConfig ? "hidden" : ""}`}

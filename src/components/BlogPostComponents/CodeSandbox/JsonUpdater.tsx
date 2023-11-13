@@ -1,13 +1,19 @@
 import { useActiveCode, useSandpack } from "@codesandbox/sandpack-react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { JsonEditorContext } from "./CodesandboxWithEditor";
 import { SandpackConfigType } from "./types";
 import { EditorContext } from "@/app/write/components/EditorContext";
 
-function JsonUpdater({ persistanceKey }: { persistanceKey: string }) {
+function JsonUpdater({
+	persistanceKey,
+	template,
+}: {
+	persistanceKey: string;
+	template: string;
+}) {
 	const { sandpack } = useSandpack();
 	const { jsonEditorView, sandpackProps } = useContext(JsonEditorContext);
-	const { editorState } = useContext(EditorContext);
+	const [currentTemplate, setCurrentTemplate] = useState(template);
 
 	const { activeFile, files } = sandpack;
 	const { code } = useActiveCode();
@@ -15,9 +21,11 @@ function JsonUpdater({ persistanceKey }: { persistanceKey: string }) {
 	useEffect(() => {
 		if (sandpackProps && jsonEditorView) {
 			let propsCopy = JSON.parse(jsonEditorView.state.sliceDoc());
-			// codefiles[activeFile] = code;
-			// propsCopy.files = codefiles;
-			propsCopy.files[activeFile] = files[activeFile].code;
+			if (currentTemplate !== template) {
+				propsCopy.files = {};
+			} else {
+				propsCopy.files[activeFile] = files[activeFile].code;
+			}
 			const newConfig = JSON.stringify(propsCopy, null, 2);
 
 			jsonEditorView.dispatch({
@@ -29,8 +37,9 @@ function JsonUpdater({ persistanceKey }: { persistanceKey: string }) {
 					},
 				],
 			});
+			setCurrentTemplate(template);
 		}
-	}, [code]);
+	}, [code, template]);
 
 	return <></>;
 }

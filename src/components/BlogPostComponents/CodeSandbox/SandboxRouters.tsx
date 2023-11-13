@@ -4,11 +4,9 @@ import { usePathname } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 
-const CodesandboxWithEditor = lazy(() => import("./CodesandboxWithEditor"));
 const CustomSandpack = lazy(() => import("./CustomSandpack"));
 //  Todo
 function SandboxRouter({ persistanceKey }: { persistanceKey: string }) {
-	const pathname = usePathname();
 	const [downloading, setDownloading] = useState(false);
 	const jsonConfigString = useRecoverSandpack({ persistanceKey });
 
@@ -17,15 +15,6 @@ function SandboxRouter({ persistanceKey }: { persistanceKey: string }) {
 			setDownloading(false);
 		}
 	}, [jsonConfigString]);
-
-	if (pathname?.startsWith("/write")) {
-		return (
-			<CodesandboxWithEditor
-				persistanceKey={persistanceKey}
-				key={persistanceKey}
-			/>
-		);
-	}
 
 	if (downloading || !jsonConfigString) {
 		return (

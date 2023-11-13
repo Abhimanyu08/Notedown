@@ -92,6 +92,7 @@ async function ProfilePostsLayout({
 						<div className="h-[2px] bg-border col-span-1 my-4"></div>
 						<div
 							className="
+							overflow-y-auto
 				lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
@@ -188,11 +189,7 @@ async function ProfilePostsLayout({
 }
 
 function TaggedDraftContainer({ children }: { children: React.ReactNode }) {
-	return (
-		<div className="flex flex-col gap-4 h-full overflow-y-auto px-3">
-			{children}
-		</div>
-	);
+	return <div className="flex flex-col gap-4 px-3">{children}</div>;
 }
 
 async function getPostTagMap(supabase: SupabaseClient<Database>, id: string) {

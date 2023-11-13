@@ -54,7 +54,10 @@ function CustomSandpack(
 			theme={theme}
 		>
 			{pathname?.includes("/write") && (
-				<JsonUpdater persistanceKey={props.persistanceKey} />
+				<JsonUpdater
+					persistanceKey={props.persistanceKey}
+					template={props.template}
+				/>
 			)}
 			<div
 				className={cn(

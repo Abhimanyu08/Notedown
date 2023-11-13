@@ -4,6 +4,9 @@ import { usePathname } from "next/navigation";
 import Latex from "react-latex";
 
 const SandboxRouter = lazy(() => import("./CodeSandbox/SandboxRouters"));
+const CodesandboxWithEditor = lazy(
+	() => import("./CodeSandbox/CodesandboxWithEditor")
+);
 
 const DrawingSvg = lazy(() => import("./DrawingSvg"));
 
@@ -41,6 +44,14 @@ function CodeWord({ code }: { code: string }) {
 	if (sandboxRegex.test(code)) {
 		const regexArray = sandboxRegex.exec(code)!;
 		const persistanceKey = regexArray.at(1)!;
+		if (pathname?.startsWith("/write")) {
+			return (
+				<CodesandboxWithEditor
+					persistanceKey={persistanceKey}
+					key={persistanceKey}
+				/>
+			);
+		}
 
 		return <SandboxRouter persistanceKey={persistanceKey} />;
 	}
