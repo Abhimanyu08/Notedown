@@ -30,26 +30,27 @@ const sans = Nunito_Sans({
 	display: "swap",
 	variable: "--font-sans",
 	style: ["normal", "italic"],
-	weight: ["400", "700", "300", "200"],
+	weight: ["400", "700", "300"],
 });
 
 export const metadata: Metadata = {
 	title: "Notedown",
-	description: "Web based note-taking app for developers and researchers",
+	description: "Markdown based note-taking app with useful embeddings.",
 	icons: {
 		icon: "/icon.png",
 	},
 	twitter: {
 		title: "Notedown",
-		description: "Web based note-taking app for developers and researchers",
+		description: "Markdown based note-taking app with useful embeddings.",
 		card: "summary",
+		site: "https://notedown.art",
 	},
 	openGraph: {
 		url: "https://notedown.art",
 		type: "website",
 		title: "Notedown",
 		siteName: "Notedown",
-		description: "Web based note-taking app for developers and researchers",
+		description: "Markdown based note-taking app with useful embeddings.",
 	},
 };
 

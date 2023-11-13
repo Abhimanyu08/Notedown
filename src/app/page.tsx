@@ -1,24 +1,18 @@
 "use client";
 import {
-	LoggedInOptions,
-	NotLoggedInOptions,
-} from "@components/Navbar/Options";
-import SideSheet from "@components/SideSheet";
-import { Button } from "@components/ui/button";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import Link from "next/link";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useSupabase } from "./appContext";
-import { IndexedDbContext } from "@/contexts/IndexedDbContext";
-import { usePathname, useRouter } from "next/navigation";
-import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import Script from "next/script";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { cn } from "@/lib/utils";
+import { Button } from "@components/ui/button";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { useSupabase } from "./appContext";
 
 const videoCheckpoints: { title: string; content: string; time: number }[] = [
 	{
@@ -114,35 +108,35 @@ function Home() {
 			// You can access the player object here for further control
 		};
 	}, []);
-	const { session } = useSupabase();
-	const { documentDb } = useContext(IndexedDbContext);
-	const router = useRouter();
-	const pathname = usePathname();
+	// const { session } = useSupabase();
+	// const { documentDb } = useContext(IndexedDbContext);
+	// const router = useRouter();
+	// const pathname = usePathname();
 
-	useEffect(() => {
-		if (!documentDb) return;
+	// useEffect(() => {
+	// 	if (!documentDb) return;
 
-		const markdownObjectStore = getMarkdownObjectStore(
-			documentDb,
-			"readonly"
-		);
-		if (pathname === "/" && !session) {
-			const countReq = markdownObjectStore.count();
-			countReq.onsuccess = () => {
-				if (countReq.result > 0) {
-					router.push("/profile/anon");
-				}
-			};
-		}
-	}, [documentDb]);
+	// 	const markdownObjectStore = getMarkdownObjectStore(
+	// 		documentDb,
+	// 		"readonly"
+	// 	);
+	// 	if (pathname === "/" && !session) {
+	// 		const countReq = markdownObjectStore.count();
+	// 		countReq.onsuccess = () => {
+	// 			if (countReq.result > 0) {
+	// 				router.push("/profile/anon");
+	// 			}
+	// 		};
+	// 	}
+	// }, [documentDb]);
 
 	return (
 		<>
 			<div className="flex flex-col h-full w-full justify-between p-10 self-center">
 				<div className="self-center text-center">
-					<h1 className="text-3xl">
-						A simple **markdown** based _note-taking app_ with
-						useful embeddings :)
+					<h1 className="text-3xl text-indigo-400 font-bold">
+						A simple markdown based note-taking app with useful
+						embeddings :)
 					</h1>
 					{/* <p className="w-full text-sm mt-4 text-gray-400">
 						Your notes will be stored locally in your browser. Only
@@ -151,7 +145,19 @@ function Home() {
 					</p> */}
 				</div>
 				<div className="flex w-full grow overflow-hidden items-center justify-center">
-					<div className="flex flex-col p-10 items-start max-h-full  basis-2/5">
+					<div
+						className="self-center basis-3/5 aspect-video border-[4px] border-gray-600 overflow-hidden rounded-md"
+						id="demo-container"
+					>
+						<iframe
+							id="demo"
+							src="https://www.youtube.com/embed/Uz4LdXfLims?enablejsapi=1"
+							title="YouTube video player"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							className="h-full w-full rounded-md"
+						></iframe>
+					</div>
+					<div className="flex flex-col p-14  items-start max-h-full  basis-2/5 ">
 						<Accordion
 							type="single"
 							collapsible
@@ -165,13 +171,15 @@ function Home() {
 											<AccordionItem
 												value={title}
 												onClick={() => {
-													setFeature(title);
 													setTimeout(
-														() =>
+														() => {
+															setFeature(title);
 															ytplayer.seekTo(
 																time,
 																true
-															),
+															);
+														},
+
 														0
 													);
 												}}
@@ -179,10 +187,10 @@ function Home() {
 											>
 												<AccordionTrigger
 													className={cn(
-														" text-left ",
+														" text-left text-gray-200",
 														feature === title
-															? "text-gray-200 text-lg italic font-semibold"
-															: "text-gray-400"
+															? "text-lg italic font-semibold"
+															: ""
 													)}
 												>
 													{title}
@@ -202,18 +210,6 @@ function Home() {
 						<p>Add Images</p>
 						<p>Non-executable code snippets</p> */}
 					</div>
-					<div
-						className="self-center basis-3/5 aspect-video overflow-hidden border-border border-2 rounded-sm"
-						id="demo-container"
-					>
-						<iframe
-							id="demo"
-							src="https://www.youtube.com/embed/Uz4LdXfLims?enablejsapi=1"
-							title="YouTube video player"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-							className="h-full w-full"
-						></iframe>
-					</div>
 				</div>
 				<div className="flex self-center items-center gap-2">
 					<Link href="/write">
@@ -232,73 +228,5 @@ function Home() {
 		</>
 	);
 }
-
-// function Feature({
-// 	title,
-// 	content,
-// 	value,
-// 	onClick
-// }: {
-// 	title: string;
-// 	content: string;
-// 	value: string;
-// 	onClick: () => void
-// }) {
-// 	return (
-// 		<AccordionItem value={value} onClick={onClick}>
-// 			<AccordionTrigger className="text-lg italic">
-// 				{title}
-// 			</AccordionTrigger>
-// 			<AccordionContent>{content}</AccordionContent>
-// 		</AccordionItem>
-// 	);
-// }
-
-// function Runcode({}:{}) {
-// 	return (
-// 		<Feature
-// 			title={"Write and run code"}
-// 			content={"Yes.It adheres to the WAI-ARIA design pattern"}
-// 			value="item-1"
-// 		/>
-// 	);
-// }
-// function Draw() {
-// 	return (
-// 		<Feature
-// 			title={"Draw diagrams using tldraw"}
-// 			content={"Yes.It adheres to the WAI-ARIA design pattern"}
-// 			value="item-2"
-// 		/>
-// 	);
-// }
-// function Sandbox() {
-// 	return (
-// 		<Feature
-// 			title={"Embed code sandboxed"}
-// 			content={"Yes.It adheres to the WAI-ARIA design pattern"}
-// 			value="item-3"
-// 		/>
-// 	);
-// }
-// function AddImages() {
-// 	return (
-// 		<Feature
-// 			title={"Add Images"}
-// 			content={"Yes.It adheres to the WAI-ARIA design pattern"}
-// 			value="item-4"
-// 		/>
-// 	);
-// }
-
-// function Codesnippets() {
-// 	return (
-// 		<Feature
-// 			title={"Code snippets"}
-// 			content={"Yes.It adheres to the WAI-ARIA design pattern"}
-// 			value="item-5"
-// 		/>
-// 	);
-// }
 
 export default Home;
