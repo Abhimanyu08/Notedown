@@ -54,9 +54,10 @@ export async function deletePostAction(postId: number) {
         .select("filename, image_folder, published,created_by")
         .single();
 
-    const userId = (await supabase.auth.getSession()).data.session?.user.id
 
     if (data) {
+
+        const userId = data.created_by
         const imageFolder = data.image_folder || `${userId}/${postId}`
         const { data: files } = await supabase.storage
             .from(SUPABASE_FILES_BUCKET)
