@@ -30,7 +30,7 @@ const sans = Nunito_Sans({
 	display: "swap",
 	variable: "--font-sans",
 	style: ["normal", "italic"],
-	weight: ["400", "700", "300"],
+	weight: ["400", "700", "300", "200"],
 });
 
 export const metadata: Metadata = {
