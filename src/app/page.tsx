@@ -71,21 +71,21 @@ function Home() {
 	const [ytplayer, setPlayer] = useState<any>();
 	const [feature, setFeature] = useState(videoCheckpoints[0].title);
 
-	const interval = useMemo(() => {
-		if (!ytplayer) return;
-		setInterval(() => {
-			const time = ytplayer.getCurrentTime();
-			const featureOnDisplay = videoCheckpoints.find((f, i) => {
-				const previousTime = f.time;
-				const nextTime =
-					videoCheckpoints.at(i + 1)?.time ||
-					Number.POSITIVE_INFINITY;
-				return time >= previousTime && time < nextTime;
-			})!;
+	// const interval = useMemo(() => {
+	// 	if (!ytplayer) return;
+	// 	setInterval(() => {
+	// 		const time = ytplayer.getCurrentTime();
+	// 		const featureOnDisplay = videoCheckpoints.find((f, i) => {
+	// 			const previousTime = f.time;
+	// 			const nextTime =
+	// 				videoCheckpoints.at(i + 1)?.time ||
+	// 				Number.POSITIVE_INFINITY;
+	// 			return time >= previousTime && time < nextTime;
+	// 		})!;
 
-			setFeature(featureOnDisplay.title);
-		}, 1000);
-	}, [ytplayer]);
+	// 		setFeature(featureOnDisplay.title);
+	// 	}, 1000);
+	// }, [ytplayer]);
 
 	useEffect(() => {
 		let player: any;
