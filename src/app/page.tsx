@@ -62,8 +62,14 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 	{
 		title: "Upload your note to sync across devices",
 		content:
-			"Every note you write is entirely local by default, including it's markdown, images. You only need to upload it if you want to sync your note across devices. Uploaded notes stay private by default, i.e only you can access them on any device (after signing in) at the url /post/private/[slug]. You can choose to publish if you want to allow others access to your note. Once public, your note will be available for anyone to read at /post/[slug]",
+			"Every note you write is entirely local by default, including it's markdown, images. You only need to upload it if you want to sync your note across devices. Uploaded notes stay private by default, i.e only you can access them on any device (after signing in) at the url /post/private/[slug].",
 		time: 154,
+	},
+	{
+		title: "Publish in a single click",
+		time: 175,
+		content:
+			" You can publish any uploaded note with a single click. Once public, your note will be available for anyone to read at /post/[slug].",
 	},
 ];
 
