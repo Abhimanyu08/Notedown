@@ -13,6 +13,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useSupabase } from "./appContext";
+import Script from "next/script";
 
 const videoCheckpoints: { title: string; content: string; time: number }[] = [
 	{
@@ -75,7 +76,6 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 
 function Home() {
 	const [ytplayer, setPlayer] = useState<any>();
-	const [feature, setFeature] = useState(videoCheckpoints[0].title);
 
 	// const interval = useMemo(() => {
 	// 	if (!ytplayer) return;
@@ -92,6 +92,27 @@ function Home() {
 	// 		setFeature(featureOnDisplay.title);
 	// 	}, 1000);
 	// }, [ytplayer]);
+	// const { session } = useSupabase();
+	// const { documentDb } = useContext(IndexedDbContext);
+	// const router = useRouter();
+	// const pathname = usePathname();
+
+	// useEffect(() => {
+	// 	if (!documentDb) return;
+
+	// 	const markdownObjectStore = getMarkdownObjectStore(
+	// 		documentDb,
+	// 		"readonly"
+	// 	);
+	// 	if (pathname === "/" && !session) {
+	// 		const countReq = markdownObjectStore.count();
+	// 		countReq.onsuccess = () => {
+	// 			if (countReq.result > 0) {
+	// 				router.push("/profile/anon");
+	// 			}
+	// 		};
+	// 	}
+	// }, [documentDb]);
 
 	useEffect(() => {
 		let player: any;
@@ -104,33 +125,11 @@ function Home() {
 			setPlayer(player);
 		};
 	}, []);
-	const { session } = useSupabase();
-	const { documentDb } = useContext(IndexedDbContext);
-	const router = useRouter();
-	const pathname = usePathname();
-
-	useEffect(() => {
-		if (!documentDb) return;
-
-		const markdownObjectStore = getMarkdownObjectStore(
-			documentDb,
-			"readonly"
-		);
-		if (pathname === "/" && !session) {
-			const countReq = markdownObjectStore.count();
-			countReq.onsuccess = () => {
-				if (countReq.result > 0) {
-					router.push("/profile/anon");
-				}
-			};
-		}
-	}, [documentDb]);
-
 	return (
 		<>
 			<div className="flex flex-col h-full w-full justify-between p-10 self-center">
 				<div className="self-center text-center">
-					<h1 className="text-3xl text-indigo-400 font-bold">
+					<h1 className="text-3xl text-gray-300 font-semibold font-serif">
 						A simple markdown based note-taking app with useful
 						embeddings :)
 					</h1>
@@ -150,6 +149,7 @@ function Home() {
 							src="https://www.youtube.com/embed/Uz4LdXfLims?enablejsapi=1"
 							title="YouTube video player"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowFullScreen
 							className="h-full w-full rounded-md"
 						></iframe>
 					</div>
@@ -158,7 +158,6 @@ function Home() {
 							type="single"
 							collapsible
 							className="w-full overflow-y-auto p-5"
-							value={feature}
 						>
 							{videoCheckpoints.map(
 								({ title, content, time }) => {
@@ -167,26 +166,16 @@ function Home() {
 											<AccordionItem
 												value={title}
 												onClick={() => {
-													setTimeout(
-														() => {
-															setFeature(title);
-															ytplayer.seekTo(
-																time,
-																true
-															);
-														},
-
-														0
-													);
+													ytplayer.seekTo(time, true);
 												}}
-												className="border-0 w-full features"
+												className={cn(
+													"border-0 w-full features",
+													"data-[state=open]:text-lg"
+												)}
 											>
 												<AccordionTrigger
 													className={cn(
-														" text-left text-gray-200",
-														feature === title
-															? "text-lg italic font-semibold"
-															: ""
+														" text-left  text-gray-200"
 													)}
 												>
 													{title}
@@ -215,7 +204,7 @@ function Home() {
 					</Link>
 					<span>Or</span>
 					<Link href="/post/demo">
-						<Button className="w-fit bg-gray-200 hover:bg-gray-500">
+						<Button className="w-fit " variant={"outline"}>
 							View a sample note
 						</Button>
 					</Link>
