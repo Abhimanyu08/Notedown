@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useContext } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { BlogContext } from "../../../components/BlogPostComponents/BlogState";
+import { BookOpen } from "lucide-react";
 
 function PrivateToolbar() {
 	const { blogState } = useContext(BlogContext);
@@ -24,6 +25,15 @@ function PrivateToolbar() {
 					}
 				>
 					<AiFillEdit size={28} />
+				</Link>
+			</ToolTipComponent>
+
+			<ToolTipComponent
+				tip={`View all notes`}
+				className={`text-gray-400 hover:text-white active:scale-95`}
+			>
+				<Link href={`/profile/${blogState.blogMeta.blogger?.id}`}>
+					<BookOpen />
 				</Link>
 			</ToolTipComponent>
 		</>

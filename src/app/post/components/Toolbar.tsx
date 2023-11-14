@@ -10,7 +10,7 @@ import { AiFillEdit } from "react-icons/ai";
 import Link from "next/link";
 import useOwner from "@/hooks/useOwner";
 import { useToast } from "@components/ui/use-toast";
-import { User2 } from "lucide-react";
+import { BookOpen, User2 } from "lucide-react";
 
 // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
@@ -115,7 +115,7 @@ function Toolbar() {
 				className={`text-gray-400 hover:text-white active:scale-95`}
 			>
 				<Link href={`/profile/${blogState.blogMeta.blogger?.id}`}>
-					<User2 />
+					<BookOpen />
 				</Link>
 			</ToolTipComponent>
 		</>
