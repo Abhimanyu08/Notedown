@@ -105,22 +105,22 @@ function Home() {
 	const router = useRouter();
 	const pathname = usePathname();
 
-	// useEffect(() => {
-	// 	if (!documentDb) return;
+	useEffect(() => {
+		if (!documentDb) return;
 
-	// 	const markdownObjectStore = getMarkdownObjectStore(
-	// 		documentDb,
-	// 		"readonly"
-	// 	);
-	// 	if (pathname === "/" && !session) {
-	// 		const countReq = markdownObjectStore.count();
-	// 		countReq.onsuccess = () => {
-	// 			if (countReq.result > 0) {
-	// 				router.push("/profile/anon");
-	// 			}
-	// 		};
-	// 	}
-	// }, [documentDb]);
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		if (pathname === "/" && !session) {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
+	}, [documentDb]);
 
 	useEffect(() => {
 		let player: any;
