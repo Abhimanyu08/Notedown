@@ -76,43 +76,51 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 
 function Home() {
 	const [ytplayer, setPlayer] = useState<any>();
+	const [featureInterval, setFeatureInterval] = useState<NodeJS.Timer | null>(
+		null
+	);
+	const [feature, setFeature] = useState(videoCheckpoints[0].title);
 
-	// const interval = useMemo(() => {
-	// 	if (!ytplayer) return;
-	// 	setInterval(() => {
-	// 		const time = ytplayer.getCurrentTime();
-	// 		const featureOnDisplay = videoCheckpoints.find((f, i) => {
-	// 			const previousTime = f.time;
-	// 			const nextTime =
-	// 				videoCheckpoints.at(i + 1)?.time ||
-	// 				Number.POSITIVE_INFINITY;
-	// 			return time >= previousTime && time < nextTime;
-	// 		})!;
+	useEffect(() => {
+		if (!ytplayer) return;
+		if (featureInterval) return;
+		const interval = setInterval(() => {
+			const time = ytplayer.getCurrentTime();
+			const featureOnDisplay = videoCheckpoints.find((f, i) => {
+				const previousTime = f.time;
+				const nextTime =
+					videoCheckpoints.at(i + 1)?.time ||
+					Number.POSITIVE_INFINITY;
+				return time >= previousTime && time < nextTime;
+			})!;
 
-	// 		setFeature(featureOnDisplay.title);
-	// 	}, 1000);
-	// }, [ytplayer]);
-	// const { session } = useSupabase();
-	// const { documentDb } = useContext(IndexedDbContext);
-	// const router = useRouter();
-	// const pathname = usePathname();
+			setFeature(featureOnDisplay.title);
+		}, 1000);
 
-	// useEffect(() => {
-	// 	if (!documentDb) return;
+		setFeatureInterval(interval);
+	}, [ytplayer, featureInterval]);
 
-	// 	const markdownObjectStore = getMarkdownObjectStore(
-	// 		documentDb,
-	// 		"readonly"
-	// 	);
-	// 	if (pathname === "/" && !session) {
-	// 		const countReq = markdownObjectStore.count();
-	// 		countReq.onsuccess = () => {
-	// 			if (countReq.result > 0) {
-	// 				router.push("/profile/anon");
-	// 			}
-	// 		};
-	// 	}
-	// }, [documentDb]);
+	const { session } = useSupabase();
+	const { documentDb } = useContext(IndexedDbContext);
+	const router = useRouter();
+	const pathname = usePathname();
+
+	useEffect(() => {
+		if (!documentDb) return;
+
+		const markdownObjectStore = getMarkdownObjectStore(
+			documentDb,
+			"readonly"
+		);
+		if (pathname === "/" && !session) {
+			const countReq = markdownObjectStore.count();
+			countReq.onsuccess = () => {
+				if (countReq.result > 0) {
+					router.push("/profile/anon");
+				}
+			};
+		}
+	}, [documentDb]);
 
 	useEffect(() => {
 		let player: any;
@@ -158,6 +166,7 @@ function Home() {
 							type="single"
 							collapsible
 							className="w-full overflow-y-auto p-5"
+							value={feature}
 						>
 							{videoCheckpoints.map(
 								({ title, content, time }) => {
@@ -166,7 +175,20 @@ function Home() {
 											<AccordionItem
 												value={title}
 												onClick={() => {
+													if (featureInterval)
+														clearInterval(
+															featureInterval
+														);
+
 													ytplayer.seekTo(time, true);
+													setFeature(title);
+													setTimeout(
+														() =>
+															setFeatureInterval(
+																null
+															),
+														1000
+													);
 												}}
 												className={cn(
 													"border-0 w-full features",
