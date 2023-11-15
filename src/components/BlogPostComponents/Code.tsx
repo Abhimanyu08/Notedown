@@ -147,7 +147,7 @@ function Code({
 	return (
 		<CodeBlock className="mt-2">
 			<CodeBlockButtons
-				file={file}
+				file={file || "main"}
 				language={language || ""}
 				themeClasses={editorView?.themeClasses}
 			>

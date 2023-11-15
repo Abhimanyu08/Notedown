@@ -15,6 +15,7 @@ export function EditorThemeCombobox({
 
 	useEffect(() => {
 		if (!start) return;
+		if (!value) return;
 		const { editorView, frontMatterLength } = editorState;
 		const lineMeta = editorView?.state.doc.lineAt(
 			start + frontMatterLength - 1
@@ -34,7 +35,13 @@ export function EditorThemeCombobox({
 		});
 	}, [value]);
 
-	return <Combobox items={themes} type="Themes" {...{ value, setValue }} />;
+	return (
+		<Combobox
+			items={themes}
+			type="Editor themes"
+			{...{ value, setValue }}
+		/>
+	);
 }
 
 const themes = [

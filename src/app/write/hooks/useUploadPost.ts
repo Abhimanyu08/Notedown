@@ -61,7 +61,9 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                     updateIndexDbMarkdown(documentDb, editorState.timeStamp || "", post.id)
                 }
                 sendRevalidationRequest(`/profile/${created_by}`)
-                sendRevalidationRequest(blogState.blogMeta.published ? `/post/${post.id}` : `/post/private/${post.id}`)
+                const revalidationPath = "/post" + (blogState.blogMeta.published ? "" : "/private") + "/" + (blogState.blogMeta.slug ?? blogState.blogMeta.id)
+                console.log(revalidationPath)
+                sendRevalidationRequest(revalidationPath)
                 setProgressMessage("Changes Uploaded");
 
             }).catch((e) => {

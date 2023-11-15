@@ -203,56 +203,34 @@ const tagToJsx: TagToJsx = {
 		let codeNode = node.children[0] as HtmlAstElement;
 		let code = (codeNode.children[0] as Text)?.value || "";
 
-		const className = codeNode.properties?.className;
+		const className = codeNode.properties?.className || [""];
 		const blockMetaString =
-			className &&
-			/language-(.*)/.exec((className as string[])[0])?.at(1);
+			/language-(.*)/.exec((className as string[])[0])?.at(1) || "";
 
 		const { start, end } = getStartEndFromNode(codeNode);
-		if (typeof blockMetaString === "string") {
-			const arr = blockMetaString.split("&");
-			// arr = ["lang=javascript","theme=dark","sln=true"]
-			const blockMeta: Record<string, string | boolean> = {};
+		const arr = blockMetaString.split("&");
+		// arr = ["lang=javascript","theme=dark","sln=true"]
+		const blockMeta: Record<string, string | boolean> = {};
 
-			arr.forEach((bm) => {
-				const matcharr = /(.*?)=(.*)/.exec(bm);
-				const key = matcharr?.at(1);
-				let val: boolean | string | undefined = matcharr?.at(2);
-				if (key === "sln") val = val === "true" ? true : false;
-				if (key !== undefined && val !== undefined)
-					blockMeta[key] = val;
-			});
-			if (Object.hasOwn(blockMeta, "file")) {
-				BLOCK_NUMBER += 1;
-				return (
-					<Code
-						code={code}
-						key={BLOCK_NUMBER}
-						blockNumber={BLOCK_NUMBER}
-						{...{
-							start: start + blockMetaString.length + 4,
-							end: end - 4,
-						}}
-						file={blockMeta.file as string}
-						theme={blockMeta.theme?.toString()}
-					/>
-				);
-			}
-			if (
-				["lang", "sln", "theme"].every((i) =>
-					Object.hasOwn(blockMeta, i)
-				)
-			) {
-				return (
-					<NonExecutableCodeblock
-						code={code}
-						language={blockMeta.lang as string}
-						showLineNumbers={blockMeta.sln as boolean}
-						theme={blockMeta.theme as string}
-						start={start}
-					/>
-				);
-			}
+		arr.forEach((bm) => {
+			const matcharr = /(.*?)=(.*)/.exec(bm);
+			const key = matcharr?.at(1);
+			let val: boolean | string | undefined = matcharr?.at(2);
+			if (key === "sln") val = val === "true" ? true : false;
+			if (key !== undefined && val !== undefined) blockMeta[key] = val;
+		});
+		if (
+			["lang", "sln", "theme"].every((i) => Object.hasOwn(blockMeta, i))
+		) {
+			return (
+				<NonExecutableCodeblock
+					code={code}
+					language={blockMeta.lang as string}
+					showLineNumbers={blockMeta.sln as boolean}
+					theme={blockMeta.theme as string}
+					start={start}
+				/>
+			);
 		}
 
 		BLOCK_NUMBER += 1;
@@ -262,6 +240,8 @@ const tagToJsx: TagToJsx = {
 				key={BLOCK_NUMBER}
 				blockNumber={BLOCK_NUMBER}
 				{...{ start: start + 4, end: end - 4 }}
+				file={(blockMeta.file as any) || ""}
+				theme={(blockMeta.theme as any) || ""}
 			/>
 		);
 	},

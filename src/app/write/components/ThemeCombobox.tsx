@@ -16,6 +16,7 @@ export function ThemeCombobox({
 
 	useEffect(() => {
 		if (!start) return;
+		if (!value) return;
 		const { editorView, frontMatterLength } = editorState;
 		const lineMeta = editorView?.state.doc.lineAt(
 			start + frontMatterLength
