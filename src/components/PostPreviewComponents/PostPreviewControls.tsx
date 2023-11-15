@@ -76,7 +76,7 @@ function PostPreviewControls({
 			</div>
 			<div
 				className={`h-fit fixed py-4 px-5 bg-secondary right-12 top-[45%]  border-border border-2  w-[400px] max-h-[450px] overflow-auto z-[1000]
-						${showToc ? "opacity-100" : "opacity-0"}
+						${showToc ? "opacity-100 visible" : "opacity-0 invisible"}
 						transition-opacity duration-200
 					`}
 				// onMouseLeave={() => setShowToc(false)}
