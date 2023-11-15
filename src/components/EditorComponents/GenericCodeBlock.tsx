@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 export function CodeBlock({
 	children,
 	className,
-}: React.ComponentPropsWithoutRef<"div"> & { editorView: EditorView | null }) {
+}: React.ComponentPropsWithoutRef<"div">) {
 	return (
 		<div className={cn("flex flex-col w-full ", className)}>{children}</div>
 	);
