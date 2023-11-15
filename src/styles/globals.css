@@ -139,13 +139,13 @@ body {
 		line-height: 1.625;
 		text-align: left;
 	} */
-	div.cm-content {
+	/* div.cm-content {
 		font-size: 1rem;
 	}
 
 	div.cm-content[data-language="markdown"] {
 		font-size: 0.9rem;
-	}
+	} */
 
 	.katex-html {
 		font-size: 15.75px;
@@ -276,10 +276,10 @@ body {
 	height: 500px;
 }
 
-#markdown-textarea .cm-editor {
+/* #markdown-textarea .cm-editor {
 	border-color: rgba(255, 255, 255, 0.3);
 	border-width: 1px;
-}
+} */
 
 button:where(.tool) {
 	display: flex;

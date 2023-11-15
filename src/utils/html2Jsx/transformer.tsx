@@ -234,6 +234,7 @@ const tagToJsx: TagToJsx = {
 							end: end - 4,
 						}}
 						file={blockMeta.file as string}
+						theme={blockMeta.theme?.toString()}
 					/>
 				);
 			}

@@ -18,9 +18,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 // import languages from "@utils/syntaxhighlighter/availableLanguages";
-import availableLanguages from "@utils/syntaxhighlighter/availableLanguages";
-import themes from "@utils/syntaxhighlighter/availableThemes";
-import availableThemes from "@utils/syntaxhighlighter/availableThemes";
 
 export function Combobox({
 	items,
@@ -62,8 +59,8 @@ export function Combobox({
 						{items.map((item) => (
 							<CommandItem
 								key={item}
-								onSelect={(currentValue: string) => {
-									setValue(currentValue);
+								onSelect={() => {
+									setValue(item);
 									setOpen(false);
 								}}
 							>

@@ -1,15 +1,18 @@
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
+import { useEditor } from "@tldraw/tldraw";
 import { langToExtension } from "@utils/constants";
-import React from "react";
+import themeToExtension from "@utils/themeToExtension";
+import { EditorView } from "codemirror";
+import React, { useEffect, useState } from "react";
 
 export function CodeBlock({
 	children,
 	className,
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div"> & { editorView: EditorView | null }) {
 	return (
-		<div className={cn("flex flex-col w-full", className)}>{children}</div>
+		<div className={cn("flex flex-col w-full ", className)}>{children}</div>
 	);
 }
 
@@ -18,19 +21,22 @@ export function CodeBlockButtons({
 	className,
 	language,
 	file,
+	themeClasses,
 }: React.ComponentPropsWithoutRef<"div"> & {
 	language?: string;
 	file?: string;
+	themeClasses?: string;
 }) {
 	return (
 		<div
 			className={cn(
-				"flex ",
-				file && language ? "justify-between" : "justify-end"
+				themeClasses,
+				"flex flex-row justify-between w-full border-2 items-center border-border border-b-0 py-1 px-3 rounded-t-md ",
+				className
 			)}
 		>
 			{file && language && (
-				<span className="border-2 border-b-0 py-1 px-3 font-mono text-sm rounded-t-md bg-[#15181c] text-cyan-400">
+				<span className="text-sm">
 					{file?.includes(".") && language
 						? file
 						: `${file}${
@@ -40,14 +46,7 @@ export function CodeBlockButtons({
 						  }`}
 				</span>
 			)}
-			<div
-				className={cn(
-					"flex flex-row gap-10 w-fit  border-2  border-b-0 border-border bg-[#15181c] py-1 px-3 rounded-t-md",
-					className
-				)}
-			>
-				{children}
-			</div>
+			<div className="flex gap-8 items-center">{children}</div>
 		</div>
 	);
 }
@@ -69,7 +68,7 @@ export const CodeBlockButton = ({
 			side="top"
 			align="center"
 			className={cn(
-				"text-cyan-400 hover:scale-110  py-0 active:scale-90 flex items-center",
+				"hover:scale-110  py-0 active:scale-90 flex items-center",
 				className
 			)}
 			onClick={onClick}

@@ -2,19 +2,16 @@
 "use client";
 import {
 	MouseEventHandler,
+	lazy,
 	memo,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
-import { BsPencilFill, BsPlayFill } from "react-icons/bs";
-import { FcUndo } from "react-icons/fc";
-import { MdHideImage, MdImage } from "react-icons/md";
-import { SiVim } from "react-icons/si";
-import { BsEraserFill } from "react-icons/bs";
 
 import useEditor from "../../hooks/useEditor";
 
+import { DiVim } from "react-icons/di";
 import useSyncHook from "@/hooks/useSyncHook";
 import useToggleVim from "@/hooks/useToggleVim";
 import { StateEffect } from "@codemirror/state";
@@ -26,6 +23,18 @@ import {
 	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
 import useTerminal from "./Terminal";
+import {
+	ChevronRightSquare,
+	Eraser,
+	Pen,
+	Terminal as TerminalIcon,
+	Undo2,
+} from "lucide-react";
+import { usePathname } from "next/navigation";
+const EditorThemeCombobox = lazy(
+	() => import("@/app/write/components/EditorThemeCombobox")
+);
+
 interface CodeProps {
 	code: string;
 	blockNumber: number;
@@ -33,18 +42,28 @@ interface CodeProps {
 	start: number;
 	end: number;
 	file?: string;
+	theme?: string;
 }
 
-function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
+function Code({
+	code,
+	blockNumber,
+	start,
+	end,
+	file = "main",
+	theme,
+}: CodeProps) {
 	const { blogState, dispatch } = useContext(BlogContext);
 	const { language } = blogState.blogMeta;
 
 	const [openShell, setOpenShell] = useState(false);
 
+	const pathname = usePathname();
 	const { editorView } = useEditor({
 		language: language!,
 		code,
 		editorParentId: `codearea-${blockNumber}`,
+		theme,
 	});
 	const { toggleVim, vimEnabled: vimEnabledLocally } = useToggleVim({
 		editorView,
@@ -126,32 +145,37 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 	};
 
 	return (
-		<CodeBlock className="mt-2">
-			<CodeBlockButtons file={file} language={language || ""}>
+		<CodeBlock className="mt-2" editorView={editorView}>
+			<CodeBlockButtons
+				file={file}
+				language={language || ""}
+				themeClasses={editorView?.themeClasses}
+			>
 				<CodeBlockButton
 					onClick={onRunCode}
 					tip="Run Code (Shift+Enter)"
 				>
-					<BsPlayFill size={16} />
+					<ChevronRightSquare size={16} />
 				</CodeBlockButton>
 				<CodeBlockButton
 					onClick={onWriteCode}
 					tip="Write code to file without running"
 				>
-					<BsPencilFill size={11} />
+					<Pen size={15} />
 				</CodeBlockButton>
-				<CodeBlockButton onClick={onUndo} tip="back to original code">
-					<FcUndo className="text-cyan-400" />
-				</CodeBlockButton>
+				{!pathname?.startsWith("/write") && (
+					<CodeBlockButton
+						onClick={onUndo}
+						tip="back to original code"
+					>
+						<Undo2 size={16} />
+					</CodeBlockButton>
+				)}
 				<CodeBlockButton
 					onClick={() => setOpenShell((prev) => !prev)}
 					tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
 				>
-					{openShell ? (
-						<MdImage className="text-cyan-400" />
-					) : (
-						<MdHideImage className="text-cyan-400" />
-					)}
+					<TerminalIcon size={16} />
 				</CodeBlockButton>
 				<CodeBlockButton
 					tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
@@ -159,23 +183,22 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 						dispatch({ type: "toggle vim", payload: null });
 					}}
 				>
-					<SiVim
+					<DiVim
 						className={`${
 							blogState.vimEnabled ? "text-lime-400" : ""
 						}`}
-						size={14}
+						size={16}
 					/>
 				</CodeBlockButton>
 				<CodeBlockButton
 					onClick={() => terminal.clear()}
 					tip="Clear console"
-					className="text-cyan-400"
 				>
-					<BsEraserFill size={16} className="" />
+					<Eraser size={16} />
 				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div
-				className="w-full border-2 border-border rounded-sm rounded-se-none rounded-ss-none"
+				className="w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none"
 				id={`codearea-${blockNumber}`}
 				onDoubleClick={() => {
 					// if (setRunningBlock) setRunningBlock(blockNumber);
@@ -195,6 +218,11 @@ function Code({ code, blockNumber, start, end, file = "main" }: CodeProps) {
 				id={`terminal-${blockNumber}`}
 				key={`terminal-${blockNumber}`}
 			></div>
+			{pathname?.startsWith("/write") && (
+				<div className="self-center flex gap-2 w-fit mt-2">
+					<EditorThemeCombobox start={start} theme={theme || ""} />
+				</div>
+			)}
 		</CodeBlock>
 	);
 }
