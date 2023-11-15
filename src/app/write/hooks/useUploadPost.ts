@@ -10,6 +10,7 @@ import { sendRevalidationRequest } from "@utils/sendRequest";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/parseFrontMatter";
+import { useToast } from "@components/ui/use-toast";
 
 function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
     const mdObjectStore = getMarkdownObjectStore(db)
@@ -32,6 +33,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     const { blogState, dispatch } = useContext(BlogContext)
     const { documentDb } = useContext(IndexedDbContext)
     const [progressMessage, setProgressMessage] = useState("")
+    const { toast } = useToast()
 
     const { supabase, session } = useSupabase()
     const created_by = session?.user?.id
@@ -63,7 +65,12 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 setProgressMessage("Changes Uploaded");
 
             }).catch((e) => {
-                alert((e as Error).message)
+                toast({
+                    title: (e as Error).message,
+                    duration: 2000,
+                    variant: "destructive"
+                }
+                )
                 setUploadError(e)
                 setUploadFinished(true)
             })

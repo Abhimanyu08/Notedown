@@ -5,7 +5,6 @@ import { SingleDraft } from "./SingleDraft";
 
 export function DraftsDisplay({ tag }: { tag: string }) {
 	const { draftAndPostMap } = useContext(ProfileContext);
-	console.log(tag, draftAndPostMap);
 
 	if (draftAndPostMap.size === 0) {
 		return <></>;
