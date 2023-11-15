@@ -3,11 +3,20 @@ import { useParams, usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { motion } from "framer-motion";
 
-function PostOnPreviewColor({ postId, tag }: { postId: number; tag?: string }) {
+function PostOnPreviewColor({
+	postId,
+	tag,
+	slug,
+}: {
+	postId: number;
+	tag?: string;
+	slug?: string;
+}) {
 	const params = useParams();
 	const searchParams = useSearchParams();
 	const onPreview =
-		parseInt(params?.postId as string) === postId &&
+		(parseInt(params?.postId as string) === postId ||
+			slug === params?.postId) &&
 		searchParams?.get("tagpreview") === tag;
 	if (!onPreview) return <></>;
 	return (

@@ -56,7 +56,7 @@ export function TaggedDrafts({
 			>
 				<summary
 					className={cn(
-						"text-lg font-serif marker:text-gray-400 font-bold cursor-pointer group/tag",
+						"font-serif marker:text-gray-400 text-gray-100 text-lg cursor-pointer group/tag",
 						tag === "notag" && "hidden"
 					)}
 				>
@@ -79,7 +79,12 @@ export function TaggedDrafts({
 					</ToolTipComponent>
 				</summary>
 
-				<div className="border-l-2 border-border ml-1 mt-3 pl-4 gap-3 flex flex-col">
+				<div
+					className={cn(
+						"border-l-2 border-border ml-4 mt-3 pl-4 gap-3 flex flex-col",
+						tag === "notag" && "ml-1 border-l-0 pl-0"
+					)}
+				>
 					{/* <DraftsDisplay rawObjects={drafts} tag={tag} />
 				<PostDisplay posts={posts} tag={tag} /> */}
 					{children}

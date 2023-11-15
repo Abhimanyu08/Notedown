@@ -46,7 +46,11 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 				}
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
 			>
-				<PostOnPreviewColor postId={parseInt(id!)} tag={tag} />
+				<PostOnPreviewColor
+					postId={parseInt(id!)}
+					tag={tag}
+					slug={slug}
+				/>
 
 				<PostTitle
 					{...{

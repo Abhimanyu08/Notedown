@@ -84,9 +84,9 @@ async function ProfilePostsLayout({
 				notLoggedInChildren={<NotLoggedInOptions />}
 			/>
 
-			<div className="grid grid-cols-3 w-full h-screen grid-rows-1 ">
+			<div className="grid grid-cols-10 w-full h-screen grid-rows-1 ">
 				<SearchProvider>
-					<div className="flex flex-col col-span-1 row-span-1 pt-6 border-r-[1px] border-border">
+					<div className="flex flex-col col-span-3 row-span-1 pt-6 border-r-[1px] border-border">
 						<SearchInput className="w-full px-5" />
 
 						<div className="h-[2px] bg-border col-span-1 my-4"></div>
@@ -172,7 +172,7 @@ async function ProfilePostsLayout({
 					</div>
 				</SearchProvider>
 				<PostPreviewLayout
-					className="col-start-2  col-span-2 h-full row-span-1 pt-10 relative  
+					className="col-span-7 h-full row-span-1 pt-10 relative  
 				overflow-y-auto
 		lg:scrollbar-thin 
 				scrollbar-track-black 
