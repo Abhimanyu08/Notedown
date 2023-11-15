@@ -145,7 +145,7 @@ function Code({
 	};
 
 	return (
-		<CodeBlock className="mt-2" editorView={editorView}>
+		<CodeBlock className="mt-2">
 			<CodeBlockButtons
 				file={file}
 				language={language || ""}
