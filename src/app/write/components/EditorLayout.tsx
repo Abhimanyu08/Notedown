@@ -10,7 +10,7 @@ import WriteToolbar from "./WriteToolbar";
 import useBlogStateUpdate from "../hooks/useBlogStateUpdate";
 
 let initialMarkdownMeta =
-	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "python"\ntags: []\n---\n\n';
+	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "javascript"\ntags: []\nslug: ""\n---\n\n';
 
 function EditorLayout({
 	post,

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Compartment, StateEffect } from "@codemirror/state";
 import { ViewPlugin, ViewUpdate } from "@codemirror/view";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
@@ -18,6 +19,8 @@ function useBlogStateUpdate() {
 	const { documentDb } = useContext(IndexedDbContext);
 	const [indexMdStoreKey, setIndexMdStoreKey] = useState("");
 	const searchParams = useSearchParams();
+	const [localSyncCompartment, setLocalSyncCompartment] =
+		useState<Compartment>();
 	const [_, startTransition] = useTransition();
 
 	useEffect(() => {
@@ -40,6 +43,57 @@ function useBlogStateUpdate() {
 	}, []);
 
 	useEffect(() => {
+		//this state plugin will handle syncing the markdown locally to indexstorage
+		if (!documentDb || !indexMdStoreKey || !editorState.editorView) return;
+
+		if (!editorState.syncLocally) {
+			if (localSyncCompartment) {
+				// stop syncing & delete the record from object store
+				editorState.editorView.dispatch({
+					effects: localSyncCompartment.reconfigure([]),
+				});
+				const mdObjectStore = getMarkdownObjectStore(documentDb);
+				mdObjectStore.delete(indexMdStoreKey);
+			}
+			return;
+		}
+		const compartment = new Compartment();
+		setLocalSyncCompartment(compartment);
+		const stateUpdatePlugin = ViewPlugin.fromClass(
+			class {
+				update(update: ViewUpdate) {
+					if (update.docChanged) {
+						const markdown = update.state.sliceDoc();
+
+						// localStorage.setItem(localStorageDraftKey, markdown);
+						// if (!update.view.hasFocus) return;
+
+						const { data } = parseFrontMatter(markdown);
+						if (editorState.syncLocally) {
+							updateMarkdown(
+								documentDb,
+								indexMdStoreKey,
+								markdown,
+								data.tags
+							);
+						}
+					}
+				}
+			}
+		);
+		editorState.editorView.dispatch({
+			effects: StateEffect.appendConfig.of(
+				compartment.of(stateUpdatePlugin.extension)
+			),
+		});
+	}, [
+		editorState.syncLocally,
+		indexMdStoreKey,
+		documentDb,
+		editorState.editorView,
+	]);
+
+	useEffect(() => {
 		if (!editorState.editorView || !documentDb || !indexMdStoreKey) return;
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
@@ -60,14 +114,7 @@ function useBlogStateUpdate() {
 						type: "set frontmatter length",
 						payload: frontMatterLength,
 					});
-					if (editorState.previousUploadedDoc) {
-						const previousMarkdown =
-							editorState.previousUploadedDoc.sliceString(0);
-						editorStateDispatch({
-							type: "set in sync",
-							payload: previousMarkdown === markdown,
-						});
-					}
+
 					setBlogContent(markdown);
 				}
 
@@ -94,24 +141,9 @@ function useBlogStateUpdate() {
 								type: "set frontmatter length",
 								payload: frontMatterLength,
 							});
-							if (editorState.previousUploadedDoc) {
-								const previousMarkdown =
-									editorState.previousUploadedDoc.sliceString(
-										0
-									);
-								editorStateDispatch({
-									type: "set in sync",
-									payload: markdown === previousMarkdown,
-								});
-							}
+
 							setBlogContent(markdown);
 						});
-						updateMarkdown(
-							documentDb,
-							indexMdStoreKey,
-							markdown,
-							data.tags
-						);
 					}
 				}
 			}
@@ -119,6 +151,7 @@ function useBlogStateUpdate() {
 		editorState.editorView.dispatch({
 			effects: StateEffect.appendConfig.of(stateUpdatePlugin.extension),
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [editorState.editorView, indexMdStoreKey, documentDb]);
 
 	return blogContent;

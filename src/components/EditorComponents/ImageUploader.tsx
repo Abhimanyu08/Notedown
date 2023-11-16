@@ -7,6 +7,7 @@ import { Button } from "@components/ui/button";
 import { processImageName } from "@utils/makeFolderName";
 import React, { ChangeEventHandler, useContext } from "react";
 import { BiImageAdd } from "react-icons/bi";
+import { Input } from "@components/ui/input";
 
 function ImageUploader({
 	className,
@@ -87,18 +88,33 @@ function ImageUploader({
 	return (
 		<div
 			className={cn(
-				"flex w-full justify-center py-1 items-center my-10 border-t-[1px] border-b-[1px] border-border",
+				"flex w-full justify-center py-10 items-center my-10 border-t-[1px] border-b-[1px] border-border",
 				className
 			)}
 		>
-			<input
+			<Input
 				type="file"
 				onChange={onImageSelect}
 				// id="gallery-input"
 				accept="image/*"
-				className="file:my-2  file:px-4 file:text-gray-400 file:rounded-md file:bg-black file:border-[1px] file:border-gray-200 file:hover:bg-gray-800 file:active:scale-95"
-				multiple
+				className="hidden"
+				id={`upload-images-${end}`}
 			/>
+			<Button
+				className="text-sm bg-black self-end border-border border-[1px] mb-2 text-gray-400 hover:text-white hover:scale-100"
+				variant={"outline"}
+				size={"lg"}
+			>
+				{/* <Button className="border-border border-[1px] text-gray-400 hover:text-white hover:scale-100"> */}
+				<label
+					className="flex items-center gap-2"
+					htmlFor={`upload-images-${end}`}
+				>
+					<BiImageAdd size={12} />
+					<span>Upload Images</span>
+				</label>
+				{/* </Button> */}
+			</Button>
 		</div>
 	);
 }

@@ -11,6 +11,8 @@ import { EditorContext } from "./EditorContext";
 import { VscLoading } from "react-icons/vsc";
 import { useToast } from "@components/ui/use-toast";
 import { useSupabase } from "@/app/appContext";
+import { Switch } from "@components/ui/switch";
+import { Label } from "@components/ui/label";
 
 function WriteToolbar({ content }: { content: string }) {
 	const [showToc, setShowToc] = useState(false);
@@ -38,10 +40,6 @@ function WriteToolbar({ content }: { content: string }) {
 				type: "set previous uploaded doc",
 				payload: editorState.editorView!.state.doc,
 			});
-			dispatch({
-				type: "set in sync",
-				payload: true,
-			});
 		}
 	}, [uploadFinished]);
 
@@ -55,7 +53,7 @@ function WriteToolbar({ content }: { content: string }) {
 	// }, [editorState]);
 
 	return (
-		<div className="flex absolute bottom-0 right-0 h-fit w-[55%] z-[400]  justify-center gap-32 px-10 items-center border-t-2  bg-secondary   border-border [&>*]:p-2">
+		<div className="flex absolute bottom-0 right-0 h-fit w-[55%] z-[400]  justify-between px-14 items-center border-t-2  bg-secondary   border-border [&>*]:p-2">
 			{progressMessage && !uploadFinished ? (
 				<div className="flex items-center gap-4 m-2">
 					<VscLoading className="animate-spin" />
@@ -67,30 +65,47 @@ function WriteToolbar({ content }: { content: string }) {
 						<EnableRceButton side="top" />
 					)}
 					{session?.user.id && (
-						<ToolTipComponent
-							tip={
-								editorState.inSyncWithUploadedVersion
-									? "No changes to upload"
-									: "Upload changes"
-							}
-							side="top"
-							align="center"
+						// <ToolTipComponent
+						// 	tip={
+						// 		editorState.inSyncWithUploadedVersion
+						// 			? "No changes to upload"
+						// 			: "Upload changes"
+						// 	}
+						// 	side="top"
+						// 	align="center"
+						// >
+						<button
+							className=" hover:text-gray-100 text-gray-400 disabled:text-gray-700"
+							onClick={() => onUpload()}
+							// disabled={editorState.inSyncWithUploadedVersion}
 						>
-							<button
-								className=" hover:text-gray-100 text-gray-400 disabled:text-gray-700"
-								onClick={() => onUpload()}
-								// disabled={editorState.inSyncWithUploadedVersion}
-							>
-								<FaFileUpload size={24} className="mt-1" />
-							</button>
-						</ToolTipComponent>
+							<FaFileUpload size={23} className="" />
+						</button>
 					)}
 					<Button
 						className="bg-transparent hover:bg-transparent hover:text-gray-100 text-gray-400 "
 						onClick={() => setShowToc((p) => !p)}
 					>
-						<BiBookContent size={24} />
+						<BiBookContent size={25} />
 					</Button>
+					<div className="flex items-center gap-1 hover:text-gray-100 text-gray-400 ">
+						<Switch
+							id="sync locally"
+							checked={editorState.syncLocally}
+							onCheckedChange={() =>
+								dispatch({
+									type: "sync locally",
+									payload: null,
+								})
+							}
+							className="scale-90 data-[state=checked]:hover:bg-primary  data-[state=checked]:bg-gray-400"
+						/>
+						<Label htmlFor="sync locally" className="text-sm">
+							{editorState.syncLocally
+								? "Local syncing: On"
+								: "Local syncing: Off"}
+						</Label>
+					</div>
 					<div
 						className={`h-fit absolute bottom-full py-4 px-5 bg-secondary right-0  border-border border-2  w-[400px] max-h-[450px] overflow-auto z-[1000]
 						${showToc ? "visible" : "invisible"}

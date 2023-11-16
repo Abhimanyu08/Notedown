@@ -34,11 +34,11 @@ function ShowLnSwitch({
 	return (
 		<div className="flex items-center space-x-2">
 			<Switch
-				id="airplane-mode"
+				id="show line numbers"
 				checked={showLineNumbers}
 				onCheckedChange={onChange}
 			/>
-			<Label htmlFor="airplane-mode">Show line numbers</Label>
+			<Label htmlFor="show line numbers">Show line numbers</Label>
 		</div>
 	);
 }

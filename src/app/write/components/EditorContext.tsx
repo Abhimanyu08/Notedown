@@ -11,7 +11,7 @@ interface EditorStateInterface {
 	canvasApps: Record<string, any>;
 	frontMatterLength: number;
 	sandboxEditors: Record<string, EditorView>;
-	inSyncWithUploadedVersion: boolean;
+	syncLocally: boolean;
 }
 interface DispatchObj {
 	type:
@@ -28,7 +28,7 @@ interface DispatchObj {
 		| "set sandbox editor"
 		| "remove sandbox editor"
 		| "set document db"
-		| "set in sync";
+		| "sync locally";
 
 	payload: EditorStateInterface[keyof EditorStateInterface] | string;
 }
@@ -42,7 +42,7 @@ const initialEditorState: EditorStateInterface = {
 	canvasApps: {},
 	frontMatterLength: 0,
 	sandboxEditors: {},
-	inSyncWithUploadedVersion: false,
+	syncLocally: true,
 };
 
 export const EditorContext = createContext<{
@@ -64,10 +64,10 @@ const reducer: Reducer<EditorStateInterface, DispatchObj> = (state, action) => {
 				},
 			};
 
-		case "set in sync":
+		case "sync locally":
 			return {
 				...state,
-				inSyncWithUploadedVersion: action.payload as boolean,
+				syncLocally: (action.payload as boolean) ?? !state.syncLocally,
 			};
 
 		case "set sandbox editor":

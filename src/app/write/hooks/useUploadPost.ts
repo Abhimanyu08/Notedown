@@ -19,6 +19,7 @@ function updateIndexDbMarkdown(db: IDBDatabase, key: string, postId: number) {
 
     mdReq.onsuccess = () => {
         const previousData = mdReq.result
+        if (!previousData) return
         previousData.postId = postId
 
         mdObjectStore.put(previousData)

@@ -41,10 +41,13 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 			.get(key);
 
 		markdownObjectStoreRequest.onsuccess = (e) => {
-			const { markdown } = (
-				e.target as IDBRequest<{ timeStamp: string; markdown: string }>
-			).result;
-			if (editorView.state.sliceDoc() !== markdown) {
+			try {
+				const { markdown } = (
+					e.target as IDBRequest<{
+						timeStamp: string;
+						markdown: string;
+					}>
+				).result;
 				editorView.dispatch({
 					changes: [
 						{
@@ -54,6 +57,8 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 						},
 					],
 				});
+			} catch {
+				dispatch({ type: "sync locally", payload: false });
 			}
 		};
 	}, [editorView, documentDb]);
