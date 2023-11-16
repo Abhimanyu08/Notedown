@@ -69,17 +69,20 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 				if (markdown !== initialMarkdown && params?.postId) {
 					setInSyncWithUploadedVersion(false);
 					dispatch({ type: "sync locally", payload: false });
+
+					setLocalMarkdown(markdown);
+					return;
 				}
-				setLocalMarkdown(markdown);
-				// editorView.dispatch({
-				// 	changes: [
-				// 		{
-				// 			from: 0,
-				// 			to: editorView.state.doc.length,
-				// 			insert: markdown,
-				// 		},
-				// 	],
-				// });
+
+				editorView.dispatch({
+					changes: [
+						{
+							from: 0,
+							to: editorView.state.doc.length,
+							insert: markdown,
+						},
+					],
+				});
 			} catch {
 				dispatch({ type: "sync locally", payload: false });
 			}
