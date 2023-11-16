@@ -3,6 +3,7 @@ import {
 	HtmlAstElement,
 	getStartEndFromNode,
 } from "@utils/html2Jsx/transformer";
+import { usePathname } from "next/navigation";
 import React, { lazy } from "react";
 const ImageWithCaption = lazy(
 	() => import("@components/BlogPostComponents/ImageWithCaption")
@@ -16,6 +17,7 @@ const ImageUploader = lazy(
 );
 function ImageHandler({ node }: { node: HtmlAstElement }) {
 	const { alt, src } = node.properties as { alt: string; src: string };
+	const pathname = usePathname();
 
 	let { end } = getStartEndFromNode(node);
 	if (src.split(",").length > 1) {
@@ -36,7 +38,10 @@ function ImageHandler({ node }: { node: HtmlAstElement }) {
 		return <LexicaImage alt={alt} key={alt} end={end} />;
 	}
 
-	return <ImageUploader {...{ end }} />;
+	if (pathname?.startsWith("/write")) {
+		return <ImageUploader {...{ end }} />;
+	}
+	return <></>;
 }
 
 export default ImageHandler;

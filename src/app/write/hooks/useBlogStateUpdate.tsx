@@ -61,6 +61,20 @@ function useBlogStateUpdate() {
 		setLocalSyncCompartment(compartment);
 		const stateUpdatePlugin = ViewPlugin.fromClass(
 			class {
+				constructor(view: EditorView) {
+					const markdown = view.state.sliceDoc();
+
+					// localStorage.setItem(localStorageDraftKey, markdown);
+					// if (!update.view.hasFocus) return;
+
+					const { data } = parseFrontMatter(markdown);
+					updateMarkdown(
+						documentDb!,
+						indexMdStoreKey,
+						markdown,
+						data.tags
+					);
+				}
 				update(update: ViewUpdate) {
 					if (update.docChanged) {
 						const markdown = update.state.sliceDoc();
@@ -69,14 +83,12 @@ function useBlogStateUpdate() {
 						// if (!update.view.hasFocus) return;
 
 						const { data } = parseFrontMatter(markdown);
-						if (editorState.syncLocally) {
-							updateMarkdown(
-								documentDb,
-								indexMdStoreKey,
-								markdown,
-								data.tags
-							);
-						}
+						updateMarkdown(
+							documentDb,
+							indexMdStoreKey,
+							markdown,
+							data.tags
+						);
 					}
 				}
 			}

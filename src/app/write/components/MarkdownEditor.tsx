@@ -4,14 +4,31 @@ import EditorHelperComponent from "@components/EditorHelperComponent";
 import { memo, useContext, useEffect, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import langToCodeMirrorExtension from "@utils/langToExtension";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 // This component should be page diagnostic.
 
 function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	const { dispatch, editorState } = useContext(EditorContext);
 	const { documentDb } = useContext(IndexedDbContext);
+	const [inSyncWithUploadedVersion, setInSyncWithUploadedVersion] =
+		useState(true);
+	const [localMarkdown, setLocalMarkdown] = useState("");
+	const params = useParams();
 
 	const { editorView } = useEditor({
 		language: "markdown",
@@ -46,17 +63,23 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 					e.target as IDBRequest<{
 						timeStamp: string;
 						markdown: string;
+						postId: any;
 					}>
 				).result;
-				editorView.dispatch({
-					changes: [
-						{
-							from: 0,
-							to: editorView.state.doc.length,
-							insert: markdown,
-						},
-					],
-				});
+				if (markdown !== initialMarkdown && params?.postId) {
+					setInSyncWithUploadedVersion(false);
+					dispatch({ type: "sync locally", payload: false });
+				}
+				setLocalMarkdown(markdown);
+				// editorView.dispatch({
+				// 	changes: [
+				// 		{
+				// 			from: 0,
+				// 			to: editorView.state.doc.length,
+				// 			insert: markdown,
+				// 		},
+				// 	],
+				// });
 			} catch {
 				dispatch({ type: "sync locally", payload: false });
 			}
@@ -65,6 +88,63 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 
 	return (
 		<>
+			{!inSyncWithUploadedVersion && (
+				<AlertDialog open={!inSyncWithUploadedVersion}>
+					<AlertDialogContent>
+						<AlertDialogHeader>
+							<AlertDialogTitle className="flex gap-2 items-center">
+								<AlertTriangle
+									size={14}
+									className="text-rose-500"
+								/>
+								Local and uploaded versions not in sync
+							</AlertDialogTitle>
+							<AlertDialogDescription>
+								Markdowns of uploaded and local versions of this
+								note are different. You can choose to ignore
+								this warning and continue editing the local
+								version or you can replace the current local
+								version with the uploaded one
+							</AlertDialogDescription>
+						</AlertDialogHeader>
+						<AlertDialogFooter>
+							<AlertDialogCancel
+								onClick={() => {
+									if (!editorState.editorView) return;
+									dispatch({
+										type: "sync locally",
+										payload: true,
+									});
+									editorState.editorView.dispatch({
+										changes: [
+											{
+												from: 0,
+												to: editorState.editorView.state
+													.doc.length,
+												insert: localMarkdown,
+											},
+										],
+									});
+									setInSyncWithUploadedVersion(true);
+								}}
+							>
+								Ignore
+							</AlertDialogCancel>
+							<AlertDialogAction
+								onClick={() => {
+									setInSyncWithUploadedVersion(true);
+									dispatch({
+										type: "sync locally",
+										payload: true,
+									});
+								}}
+							>
+								Replace local with uploaded version
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
+			)}
 			<EditorHelperComponent />
 			<div
 				className={`flex-initial pb-20 lg:pb-0 overflow-y-auto  w-full`}
