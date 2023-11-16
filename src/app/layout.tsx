@@ -72,7 +72,6 @@ export default async function RootLayout({
 			lang="en"
 			className={`dark ${serif.variable} ${sans.variable} ${mono.variable}`}
 		>
-			<Script src="https://www.youtube.com/iframe_api" />
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black ">
 				<Toaster />
 				<SupabaseProvider session={session}>

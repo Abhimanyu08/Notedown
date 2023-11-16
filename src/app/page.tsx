@@ -80,6 +80,7 @@ function Home() {
 		null
 	);
 	const [feature, setFeature] = useState(videoCheckpoints[0].title);
+	const [scriptLoaded, setScriptLoaded] = useState(false);
 
 	useEffect(() => {
 		if (!ytplayer) return;
@@ -123,6 +124,7 @@ function Home() {
 	}, [documentDb]);
 
 	useEffect(() => {
+		if (!scriptLoaded) return;
 		let player: any;
 
 		(window as any).onYouTubeIframeAPIReady = () => {
@@ -132,9 +134,14 @@ function Home() {
 
 			setPlayer(player);
 		};
-	}, []);
+	}, [scriptLoaded]);
 	return (
 		<>
+			<Script
+				src="https://www.youtube.com/iframe_api"
+				strategy="lazyOnload"
+				onLoad={() => setScriptLoaded(true)}
+			/>
 			<div className="flex flex-col h-full w-full justify-between p-10 self-center">
 				<div className="self-center text-center">
 					<h1 className="text-3xl text-gray-300 font-semibold font-serif">
