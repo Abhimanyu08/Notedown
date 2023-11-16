@@ -53,17 +53,17 @@ function PostPreviewControls({
 				>
 					<BiBookContent size={24} />
 				</Button>
-				<ToolTipComponent
-					tip={owner ? "Edit" : "Copy this note and edit"}
-				>
-					<Link
-						href={getEditLink() || ""}
-						prefetch={false}
-						className="flex gap-2 items-center text-gray-400 hover:text-white"
-					>
-						<AiFillEdit className="inline" size={24} />{" "}
-					</Link>
-				</ToolTipComponent>
+				{owner && (
+					<ToolTipComponent tip={"Edit"}>
+						<Link
+							href={getEditLink() || ""}
+							prefetch={false}
+							className="flex gap-2 items-center text-gray-400 hover:text-white"
+						>
+							<AiFillEdit className="inline" size={24} />{" "}
+						</Link>
+					</ToolTipComponent>
+				)}
 				<ToolTipComponent
 					tip="Close preview"
 					onClick={() => {
