@@ -14,16 +14,22 @@ const Blog = memo(
 		created_at,
 		extraClasses,
 		AuthorComponent,
+		children,
 	}: Partial<BlogProps> & {
 		AuthorComponent:
 			| React.MemoExoticComponent<() => JSX.Element>
 			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>)
 			| (() => JSX.Element);
+
+		children?: React.ReactNode;
 	}) {
 		const { content, data } = parseFrontMatter(markdown || "");
 		const { title, description } = data;
-		const { htmlAST } = mdToHast(content || "");
-		const blogJsx = transformer(htmlAST);
+		let blogJsx = <></>;
+		if (!children) {
+			const { htmlAST } = mdToHast(content || "");
+			blogJsx = transformer(htmlAST);
+		}
 
 		return (
 			<div
@@ -120,7 +126,7 @@ const Blog = memo(
 					</div>
 				</header>
 				<article className="" id="jsx">
-					{blogJsx}
+					{children ? children : blogJsx}
 				</article>
 			</div>
 			// </BlogContext.Provider>

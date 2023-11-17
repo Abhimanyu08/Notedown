@@ -113,16 +113,20 @@ export interface HtmlAstElement extends Element {
 	tagName: HtmlTagName;
 }
 
-export function defaultTagToJsx(node: HtmlAstElement) {
+export function defaultTagToJsx(
+	node: HtmlAstElement,
+	tagToJsxConverter = tagToJsx
+) {
 	return React.createElement(
 		node.tagName,
 		node.properties,
-		node.children.map((child) => transformer(child))
+		node.children.map((child) => transformer(child, tagToJsxConverter))
 	);
 }
 
 export function transformer(
-	node: ReturnType<typeof mdToHast>["htmlAST"]
+	node: ReturnType<typeof mdToHast>["htmlAST"],
+	tagToJsxConverter = tagToJsx
 	// parent?: HtmlNode
 ): JSX.Element {
 	if (node.type === "root") {
@@ -130,7 +134,9 @@ export function transformer(
 		footNotes = [];
 		return (
 			<main>
-				{node.children.map((child) => transformer(child))}
+				{node.children.map((child) =>
+					transformer(child, tagToJsxConverter)
+				)}
 
 				{footNotes.length > 0 && <Footers footNotes={footNotes} />}
 			</main>
@@ -140,24 +146,28 @@ export function transformer(
 		return <>{node.value}</>;
 	}
 	if (node.type === "element") {
-		if (tagToJsx[node.tagName as HtmlTagName]) {
-			return tagToJsx[node.tagName as HtmlTagName]!(
-				node as HtmlAstElement
+		if (Object.hasOwn(tagToJsxConverter, node.tagName)) {
+			return tagToJsxConverter[node.tagName as HtmlTagName]!(
+				node as HtmlAstElement,
+				tagToJsxConverter
 			);
 		}
-		return defaultTagToJsx(node as HtmlAstElement);
+		return defaultTagToJsx(node as HtmlAstElement, tagToJsxConverter);
 	}
 
 	return <></>;
 }
 
 type TagToJsx = {
-	[k in keyof HTMLElementTagNameMap]?: (node: HtmlAstElement) => JSX.Element;
+	[k in keyof HTMLElementTagNameMap]?: (
+		node: HtmlAstElement,
+		tagToJsxConverter: TagToJsx
+	) => JSX.Element;
 };
 
 type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-const tagToJsx: TagToJsx = {
+export const tagToJsx: TagToJsx = {
 	...(() => {
 		let headingToRenderers: Partial<Record<HeadTags, TagToJsx["h1"]>> = {};
 		for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {

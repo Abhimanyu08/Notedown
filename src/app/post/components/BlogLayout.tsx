@@ -2,6 +2,8 @@ import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { getPost } from "@utils/getData";
+import { tagToJsxConverterWithContext } from "@utils/html2Jsx/minimalJsxConverter";
+import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { parseFrontMatter } from "@utils/parseFrontMatter";
 
 function BlogLayout({
@@ -15,6 +17,14 @@ function BlogLayout({
 }) {
 	const { post, markdown } = postMeta;
 	const { content, data } = parseFrontMatter(markdown || "");
+
+	const tagToJsx = tagToJsxConverterWithContext({
+		fileNamesToUrls: postMeta.imagesToUrls!,
+	});
+
+	const { htmlAST } = mdToHast(content || "");
+	const blogJsx = transformer(htmlAST, tagToJsx);
+
 	return (
 		<div className="grow flex flex-row min-h-0 relative pt-20">
 			<div
@@ -29,13 +39,12 @@ function BlogLayout({
 			>
 				<Blog
 					markdown={markdown}
-					title={post?.title || data?.title || ""}
-					description={post?.description || data?.description || ""}
 					created_by={post?.created_by}
-					language={post?.language || data?.language || ("" as any)}
 					extraClasses="mx-auto"
 					AuthorComponent={AuthorComponent}
-				/>
+				>
+					{blogJsx}
+				</Blog>
 			</BlogContainer>
 			{/* </div> */}
 			<div className="hidden lg:flex lg:flex-col lg:basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
