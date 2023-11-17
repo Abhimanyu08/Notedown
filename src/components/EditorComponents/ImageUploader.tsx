@@ -99,6 +99,7 @@ function ImageUploader({
 				accept="image/*"
 				className="hidden"
 				id={`upload-images-${end}`}
+				multiple
 			/>
 			<Button
 				className="text-sm bg-black self-end border-border border-[1px] mb-2 text-gray-400 hover:text-white hover:scale-100"
