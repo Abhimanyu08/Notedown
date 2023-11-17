@@ -8,9 +8,7 @@ import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
 import WriteToolbar from "./WriteToolbar";
 import useBlogStateUpdate from "../hooks/useBlogStateUpdate";
-
-let initialMarkdownMeta =
-	'---\ntitle: "Your Title"\ndescription: "Your Description"\nlanguage: "javascript"\ntags: []\nslug: ""\n---\n\n';
+import { initialMarkdownMeta } from "@utils/constants";
 
 function EditorLayout({
 	post,

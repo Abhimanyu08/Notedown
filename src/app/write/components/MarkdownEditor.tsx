@@ -57,15 +57,9 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 			.objectStore("markdown")
 			.get(key);
 
-		markdownObjectStoreRequest.onsuccess = (e) => {
+		markdownObjectStoreRequest.onsuccess = (e: any) => {
 			try {
-				const { markdown } = (
-					e.target as IDBRequest<{
-						timeStamp: string;
-						markdown: string;
-						postId: any;
-					}>
-				).result;
+				const { markdown } = e.target?.result as { markdown: string };
 				if (markdown !== initialMarkdown && params?.postId) {
 					setInSyncWithUploadedVersion(false);
 					dispatch({ type: "sync locally", payload: false });

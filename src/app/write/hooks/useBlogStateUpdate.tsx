@@ -9,6 +9,7 @@ import { EditorContext } from "../components/EditorContext";
 import { parseFrontMatter } from "@utils/parseFrontMatter";
 import { IndexedDbContext } from "@/contexts/IndexedDbContext";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
+import { initialMarkdownMeta } from "@utils/constants";
 
 function useBlogStateUpdate() {
 	//This hook takes care of updating the blog state on every keypress of user on the editor
@@ -64,11 +65,9 @@ function useBlogStateUpdate() {
 				constructor(view: EditorView) {
 					const markdown = view.state.sliceDoc();
 
-					// localStorage.setItem(localStorageDraftKey, markdown);
-					// if (!update.view.hasFocus) return;
-
+					if (markdown === initialMarkdownMeta) return; //don't sync in local storage when user hasn't made any change
 					const { data } = parseFrontMatter(markdown);
-					updateMarkdown(
+					updateMarkdownInIndexDb(
 						documentDb!,
 						indexMdStoreKey,
 						markdown,
@@ -83,7 +82,7 @@ function useBlogStateUpdate() {
 						// if (!update.view.hasFocus) return;
 
 						const { data } = parseFrontMatter(markdown);
-						updateMarkdown(
+						updateMarkdownInIndexDb(
 							documentDb,
 							indexMdStoreKey,
 							markdown,
@@ -169,7 +168,7 @@ function useBlogStateUpdate() {
 	return blogContent;
 }
 
-function updateMarkdown(
+function updateMarkdownInIndexDb(
 	db: IDBDatabase,
 	key: string,
 	markdown: string,
