@@ -31,7 +31,26 @@ let languageCompartment = new Compartment();
 const langToCodeMirrorExtension = async (lang: typeof ALLOWED_LANGUAGES[number] | "markdown" | "json"): Promise<Extension> => {
     switch (lang) {
         case "javascript":
-            const { javascript, esLint } = await import("@codemirror/lang-javascript")
+            const { javascript: js, esLint } = await import("@codemirror/lang-javascript")
+
+            const jsConfig = {
+                // eslint configuration
+                parserOptions: {
+                    ecmaVersion: 2023,
+                    sourceType: "module",
+                },
+                env: {
+                    node: true,
+                },
+                rules: {
+                    semi: ["error", "never"],
+                },
+            };
+            return languageCompartment.of([js(), linter(esLint(new eslint.Linter(), jsConfig))])
+
+
+        case "typescript":
+            const { javascript } = await import("@codemirror/lang-javascript")
 
             const fsMap = await createDefaultMapFromCDN(
                 { target: ts.ScriptTarget.ES2022 },

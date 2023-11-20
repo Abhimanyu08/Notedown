@@ -17,13 +17,14 @@ export const SEARCH_UPVOTED_POSTS_FUNCTION = "search_upvotes"
 export const SEARCH_PUBLC = "public_search"
 export const SEARCH_PRIVATE = "private_search"
 export const FILE_CHANGE_LIMIT = 5
-export const ALLOWED_LANGUAGES = ["python", "javascript", "rust", "go"] as const
+export const ALLOWED_LANGUAGES = ["python", "javascript", "rust", "go", "typescript"] as const
 export const LOCAL_MARKDOWN_KEY = "rce-markdown"
-export const langToExtension = {
+export const langToExtension: Record<typeof ALLOWED_LANGUAGES[number], string> = {
     python: ".py",
     javascript: ".js",
     rust: ".rs",
-    go: ".go"
+    go: ".go",
+    typescript: ".ts"
 } as const
 export const sleep = async (s: number) => new Promise((res) => setTimeout(res, s * 1000))
 export const initialMarkdownMeta =
