@@ -16,6 +16,8 @@ import MinimalCode from "@components/BlogPostComponents/MinimalComponents/Minima
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import Latex from "react-latex";
 import MinimalDrawingSvg from "@components/BlogPostComponents/MinimalComponents/MinimalSvgDrawing";
+import SandboxRouter from "@components/BlogPostComponents/CodeSandbox/SandboxRouters";
+import MinimalCodeSandbox from "@components/BlogPostComponents/MinimalComponents/MinimalCodeSandbox";
 let BLOCK_NUMBER = 0;
 
 export function tagToJsxConverterWithContext({
@@ -253,27 +255,27 @@ export function tagToJsxConverterWithContext({
 				if (!imageFolder) return <></>;
 
 				return (
-					<MinimalDrawingSvg
-						{...{ persistanceKey, caption, imageFolder }}
-					/>
+					<Suspense fallback={<p>Loading svg</p>}>
+						<MinimalDrawingSvg
+							{...{ persistanceKey, caption, imageFolder }}
+						/>
+					</Suspense>
 				);
 			}
 
-			// const sandboxRegex = /<sandbox id=(\d+)\/>/;
-			// if (sandboxRegex.test(code)) {
-			// 	const regexArray = sandboxRegex.exec(code)!;
-			// 	const persistanceKey = regexArray.at(1)!;
-			// 	if (pathname?.startsWith("/write")) {
-			// 		return (
-			// 			<CodesandboxWithEditor
-			// 				persistanceKey={persistanceKey}
-			// 				key={persistanceKey}
-			// 			/>
-			// 		);
-			// 	}
+			const sandboxRegex = /<sandbox id=(\d+)\/>/;
+			if (sandboxRegex.test(code)) {
+				const regexArray = sandboxRegex.exec(code)!;
+				const persistanceKey = regexArray.at(1)!;
+				if (!imageFolder) return;
 
-			// 	return <SandboxRouter persistanceKey={persistanceKey} />;
-			// }
+				return (
+					<MinimalCodeSandbox
+						imageFolder={imageFolder}
+						persistanceKey={persistanceKey}
+					/>
+				);
+			}
 			return <></>;
 		},
 	};

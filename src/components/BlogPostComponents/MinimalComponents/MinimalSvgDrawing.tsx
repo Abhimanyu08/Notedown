@@ -1,11 +1,7 @@
-import { useSupabase } from "@/app/appContext";
 import { cn } from "@/lib/utils";
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { SUPABASE_FILES_BUCKET } from "@utils/constants";
 import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { cookies } from "next/headers";
-import React from "react";
-import { VscLoading } from "react-icons/vsc";
 
 export default async function MinimalDrawingSvg({
 	persistanceKey,
@@ -32,46 +28,6 @@ export default async function MinimalDrawingSvg({
 
 	if (!svgJson) return <></>;
 	const svgElement = jsonToSvg(svgJson);
-
-	// useEffect(() => {
-	// 	if (svgMounted) return;
-
-	// 	getFileData(persistanceKey).then((jsonString) => {
-	// 		if (!jsonString) {
-	// 			setSvgMounted(true);
-	// 			return;
-	// 		}
-	// 		const containerElem = document.getElementById(
-	// 			`svgContainer-${persistanceKey}`
-	// 		);
-	// 		const svgElement = jsonToSvg(jsonString);
-	// 		const svgWidth = svgElement.width.baseVal.value;
-	// 		const containerWidth = containerRef.current?.clientWidth || 0;
-
-	// 		if (svgWidth > containerWidth) {
-	// 			svgElement.style.width = "100%";
-	// 		}
-	// 		svgElement.setAttribute("id", `svg-${persistanceKey}`);
-	// 		svgElement.style.height = "100%";
-
-	// 		containerElem?.replaceChildren(svgElement);
-	// 		setSvgMounted(true);
-	// 	});
-	// }, []);
-
-	// const onExpand = async () => {
-	// 	const svg = document.getElementById(`svg-${persistanceKey}`);
-	// 	if (expand) {
-	// 		if (svg) {
-	// 			svg.style.width = "";
-	// 		}
-	// 		setExpand(false);
-
-	// 		return;
-	// 	}
-	// 	if (svg) svg.style.width = "100%";
-	// 	setExpand(true);
-	// };
 
 	return (
 		<div
@@ -110,7 +66,7 @@ function jsonToSvg(svgJson: string) {
 				continue;
 			}
 
-			attributes[dashesToCameCase(key)] = value;
+			attributes[dashesToCamelCase(key)] = value;
 		}
 	}
 
@@ -122,7 +78,7 @@ function jsonToSvg(svgJson: string) {
 	);
 }
 
-function dashesToCameCase(property: string) {
+function dashesToCamelCase(property: string) {
 	return property
 		.split("-")
 		.map((p, i) => (i === 0 ? p : p[0].toUpperCase() + p.slice(1)))
@@ -134,7 +90,7 @@ function formatStyle(style: string) {
 	const matches = style.matchAll(regex);
 	const styleProp: Record<string, string> = {};
 	for (let match of Array.from(matches)) {
-		const key = dashesToCameCase(match.at(1)!);
+		const key = dashesToCamelCase(match.at(1)!);
 		const value = match.at(2)!.trim();
 		styleProp[key] = value;
 	}
