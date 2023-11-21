@@ -29,7 +29,8 @@ export function tagToJsxConverterWithContext({
 	imageFolder?: string;
 
 	language?: (typeof ALLOWED_LANGUAGES)[number];
-}): typeof tagToJsx {
+}): { tagToJsx: typeof tagToJsx; footNotes: { id: number; node: any }[] } {
+	let footNotes: { id: number; node: any }[] = [];
 	const t2J: typeof tagToJsx = {
 		...tagToJsx,
 		img: (node) => {
@@ -87,34 +88,37 @@ export function tagToJsxConverterWithContext({
 			}
 
 			//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
-			// if (
-			// 	node.children[0].type === "text" &&
-			// 	/^\[(\d+)\]:/.test(node.children[0].value)
-			// ) {
-			// 	//This is a footnote
-			// 	const firstChild = node.children[0].value;
-			// 	const footnoteId = firstChild.match(/^\[(\d+)\]/)?.at(1);
-			// 	const remainingTextOfFirstChild = firstChild
-			// 		.match(/^\[\d+\]:(.*)/)
-			// 		?.at(1);
+			if (
+				node.children[0].type === "text" &&
+				/^\[(\d+)\]:/.test(node.children[0].value)
+			) {
+				//This is a footnote
+				const firstChild = node.children[0].value;
+				const footnoteId = firstChild.match(/^\[(\d+)\]/)?.at(1);
+				const remainingTextOfFirstChild = firstChild
+					.match(/^\[\d+\]:(.*)/)
+					?.at(1);
 
-			// 	const newFirstChild: Text = {
-			// 		type: "text",
-			// 		value: remainingTextOfFirstChild || "",
-			// 	};
+				const newFirstChild: Text = {
+					type: "text",
+					value: remainingTextOfFirstChild || "",
+				};
 
-			// 	const newPNode: HtmlAstElement = {
-			// 		type: "element",
-			// 		tagName: "span",
-			// 		properties: {
-			// 			id: `footnote-${footnoteId}`,
-			// 			className: "footnote-reference",
-			// 		},
-			// 		children: [newFirstChild, ...node.children.slice(1)],
-			// 	};
-			// 	footNotes.push({ id: parseInt(footnoteId || "0"), node: newPNode });
-			// 	return <></>;
-			// }
+				const newPNode: HtmlAstElement = {
+					type: "element",
+					tagName: "span",
+					properties: {
+						id: `footnote-${footnoteId}`,
+						className: "footnote-reference",
+					},
+					children: [newFirstChild, ...node.children.slice(1)],
+				};
+				footNotes.push({
+					id: parseInt(footnoteId || "0"),
+					node: newPNode,
+				});
+				return <></>;
+			}
 
 			let nodesBeforeImage = [];
 			let i = 0;
@@ -267,7 +271,7 @@ export function tagToJsxConverterWithContext({
 			if (sandboxRegex.test(code)) {
 				const regexArray = sandboxRegex.exec(code)!;
 				const persistanceKey = regexArray.at(1)!;
-				if (!imageFolder) return;
+				if (!imageFolder) return <></>;
 
 				return (
 					<MinimalCodeSandbox
@@ -280,5 +284,5 @@ export function tagToJsxConverterWithContext({
 		},
 	};
 
-	return t2J;
+	return { tagToJsx: t2J, footNotes: footNotes };
 }

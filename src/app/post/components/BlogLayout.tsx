@@ -1,5 +1,6 @@
 import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
+import Footers from "@components/BlogPostComponents/Footers";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import { getPost } from "@utils/getData";
@@ -19,7 +20,7 @@ function BlogLayout({
 	const { post, markdown } = postMeta;
 	const { content, data } = parseFrontMatter(markdown || "");
 
-	const tagToJsx = tagToJsxConverterWithContext({
+	const { tagToJsx, footNotes } = tagToJsxConverterWithContext({
 		fileNamesToUrls: postMeta.imagesToUrls!,
 		language: post?.language as
 			| (typeof ALLOWED_LANGUAGES)[number]
@@ -49,6 +50,8 @@ function BlogLayout({
 					AuthorComponent={AuthorComponent}
 				>
 					{blogJsx}
+
+					{footNotes.length > 0 && <Footers footNotes={footNotes} />}
 				</Blog>
 			</BlogContainer>
 			{/* </div> */}
