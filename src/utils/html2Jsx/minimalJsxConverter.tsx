@@ -1,10 +1,18 @@
-import React from "react";
-import { HtmlAstElement, tagToJsx, transformer } from "./transformer";
+import React, { Suspense } from "react";
+import {
+	HtmlAstElement,
+	getStartEndFromNode,
+	tagToJsx,
+	transformer,
+} from "./transformer";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-
 import { Text } from "hast";
-import Ptag from "@components/BlogPostComponents/Ptag";
+
+import MinimalCarousel from "@components/BlogPostComponents/MinimalComponents/MinimalCarousel";
+import Code from "@components/BlogPostComponents/Code";
+import MinimalNonExCodeblock from "@components/BlogPostComponents/MinimalComponents/MinimalNonExCodeblock";
+let BLOCK_NUMBER = 0;
 
 export function tagToJsxConverterWithContext({
 	fileNamesToUrls,
@@ -14,11 +22,19 @@ export function tagToJsxConverterWithContext({
 	const t2J: typeof tagToJsx = {
 		...tagToJsx,
 		img: (node) => {
-			console.log("image tag being handled by minimal jsx converter");
 			const { alt, src } = node.properties as {
 				alt: string;
 				src: string;
 			};
+			if (src.split(",").length > 1) {
+				return (
+					<MinimalCarousel
+						src={src}
+						alt={alt}
+						fileNamesToUrls={fileNamesToUrls}
+					/>
+				);
+			}
 			const completeSrc = fileNamesToUrls[src];
 
 			return (
@@ -132,6 +148,67 @@ export function tagToJsxConverterWithContext({
 			}
 
 			return <p>{node.children.map((c) => transformer(c, converter))}</p>;
+		},
+
+		pre: (node) => {
+			let codeNode = node.children[0] as HtmlAstElement;
+			let code = (codeNode.children[0] as Text)?.value || "";
+
+			const className = codeNode.properties?.className || [""];
+			const blockMetaString =
+				/language-(.*)/.exec((className as string[])[0])?.at(1) || "";
+
+			const { start, end } = getStartEndFromNode(codeNode);
+			const arr = blockMetaString.split("&");
+			// arr = ["lang=javascript","theme=dark","sln=true"]
+			const blockMeta: Record<string, string | boolean> = {};
+
+			arr.forEach((bm) => {
+				const matcharr = /(.*?)=(.*)/.exec(bm);
+				const key = matcharr?.at(1);
+				let val: boolean | string | undefined = matcharr?.at(2);
+				if (key === "sln") val = val === "true" ? true : false;
+				if (key !== undefined && val !== undefined)
+					blockMeta[key] = val;
+			});
+			if (
+				["lang", "sln", "theme"].every((i) =>
+					Object.hasOwn(blockMeta, i)
+				)
+			) {
+				console.log(blockMeta);
+				return (
+					// <Suspense
+					// 	fallback={
+					// 		<pre>
+					// 			<code>{code}</code>
+					// 		</pre>
+					// 	}
+					// >
+					<MinimalNonExCodeblock
+						code={code}
+						language={blockMeta.lang as string}
+						showLineNumbers={blockMeta.sln as boolean}
+						theme={blockMeta.theme as string}
+					/>
+					// </Suspense>
+				);
+			}
+
+			BLOCK_NUMBER += 1;
+			return (
+				<Code
+					code={code}
+					key={BLOCK_NUMBER}
+					blockNumber={BLOCK_NUMBER}
+					{...{
+						start: start + blockMetaString.length + 4,
+						end: end - 4,
+					}}
+					file={(blockMeta.file as any) || ""}
+					theme={(blockMeta.theme as any) || ""}
+				/>
+			);
 		},
 	};
 

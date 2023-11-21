@@ -26,6 +26,12 @@
 			}
 		]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"src/components/BlogPostComponents/MinimalComponents"
+	],
 	"exclude": ["node_modules", "src/pages/api/og.tsx"]
 }
