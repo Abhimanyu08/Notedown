@@ -24,6 +24,7 @@ function BlogLayout({
 		language: post?.language as
 			| (typeof ALLOWED_LANGUAGES)[number]
 			| undefined,
+		imageFolder: post?.image_folder || undefined,
 	});
 
 	const { htmlAST } = mdToHast(content || "");

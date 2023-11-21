@@ -33,6 +33,7 @@ function EditorLayout({
 					imageFolder: post.image_folder,
 					language: post.language,
 					slug: post.slug || undefined,
+					published: post.published,
 				},
 			});
 			dispatch({

@@ -14,13 +14,17 @@ import Code from "@components/BlogPostComponents/Code";
 import MinimalNonExCodeblock from "@components/BlogPostComponents/MinimalComponents/MinimalNonExCodeblock";
 import MinimalCode from "@components/BlogPostComponents/MinimalComponents/MinimalCode";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
+import Latex from "react-latex";
+import MinimalDrawingSvg from "@components/BlogPostComponents/MinimalComponents/MinimalSvgDrawing";
 let BLOCK_NUMBER = 0;
 
 export function tagToJsxConverterWithContext({
 	fileNamesToUrls,
 	language,
+	imageFolder,
 }: {
 	fileNamesToUrls: Record<string, string>;
+	imageFolder?: string;
 
 	language?: (typeof ALLOWED_LANGUAGES)[number];
 }): typeof tagToJsx {
@@ -228,6 +232,49 @@ export function tagToJsxConverterWithContext({
 					theme={(blockMeta.theme as any) || ""}
 				/>
 			);
+		},
+		code: (node) => {
+			const child = node.children[0] as Text;
+			// we are constraining the code elements to only contain plain strings.
+			let code = child.value;
+			if (!code) return <code></code>;
+			// if (code.startsWith("$") && code.endsWith("$")) {
+			// 	return <Latex>{code}</Latex>;
+			// }
+			if (code.startsWith("~~") && code.endsWith("~~")) {
+				return <del>{code.slice(2, code.length - 2)}</del>;
+			}
+			const drawRegex =
+				/<draw id=(\d+) caption="(.*?)"( dark=(true|false))?\/>/;
+			if (drawRegex.test(code)) {
+				const regexArray = drawRegex.exec(code)!;
+				const persistanceKey = regexArray.at(1)!;
+				const caption = regexArray.at(2) || "";
+				if (!imageFolder) return <></>;
+
+				return (
+					<MinimalDrawingSvg
+						{...{ persistanceKey, caption, imageFolder }}
+					/>
+				);
+			}
+
+			// const sandboxRegex = /<sandbox id=(\d+)\/>/;
+			// if (sandboxRegex.test(code)) {
+			// 	const regexArray = sandboxRegex.exec(code)!;
+			// 	const persistanceKey = regexArray.at(1)!;
+			// 	if (pathname?.startsWith("/write")) {
+			// 		return (
+			// 			<CodesandboxWithEditor
+			// 				persistanceKey={persistanceKey}
+			// 				key={persistanceKey}
+			// 			/>
+			// 		);
+			// 	}
+
+			// 	return <SandboxRouter persistanceKey={persistanceKey} />;
+			// }
+			return <></>;
 		},
 	};
 
