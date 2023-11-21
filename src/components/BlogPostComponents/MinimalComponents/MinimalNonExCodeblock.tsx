@@ -1,6 +1,7 @@
+import CopycodeButton from "@components/CopycodeButton";
 import React from "react";
 
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 
 async function MinimalNonExCodeblock({
 	code,
@@ -22,7 +23,7 @@ async function MinimalNonExCodeblock({
 		await import(`react-syntax-highlighter/dist/esm/styles/prism/${theme}`)
 	).default;
 
-	await new Promise((res) => setTimeout(res, 4000));
+	SyntaxHighlighter.registerLanguage(language, importedLanguage.default);
 
 	return (
 		<div
@@ -34,21 +35,7 @@ lg:scrollbar-thin
 				scrollbar-thumb-slate-700
 		"
 		>
-			{/* <button
-					className="absolute top-4 right-4 p-1 rounded-md bg-black/70 opacity-0 group-hover:opacity-100"
-					onClick={() => {
-						navigator.clipboard
-							.writeText(code)
-							.then(() => setCopied(true));
-					}}
-				>
-					{" "}
-					{copied ? (
-						<BiCheck size={20} className="text-gray-100" />
-					) : (
-						<MdContentCopy size={20} className="text-gray-100" />
-					)}
-				</button> */}
+			<CopycodeButton code={code} />
 			<SyntaxHighlighter
 				language={language}
 				style={importedTheme}

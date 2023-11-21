@@ -1,6 +1,7 @@
 import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import Toc from "@components/BlogPostComponents/TableOfContents";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
 import { getPost } from "@utils/getData";
 import { tagToJsxConverterWithContext } from "@utils/html2Jsx/minimalJsxConverter";
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
@@ -20,6 +21,9 @@ function BlogLayout({
 
 	const tagToJsx = tagToJsxConverterWithContext({
 		fileNamesToUrls: postMeta.imagesToUrls!,
+		language: post?.language as
+			| (typeof ALLOWED_LANGUAGES)[number]
+			| undefined,
 	});
 
 	const { htmlAST } = mdToHast(content || "");

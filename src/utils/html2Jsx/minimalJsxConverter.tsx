@@ -12,12 +12,17 @@ import { Text } from "hast";
 import MinimalCarousel from "@components/BlogPostComponents/MinimalComponents/MinimalCarousel";
 import Code from "@components/BlogPostComponents/Code";
 import MinimalNonExCodeblock from "@components/BlogPostComponents/MinimalComponents/MinimalNonExCodeblock";
+import MinimalCode from "@components/BlogPostComponents/MinimalComponents/MinimalCode";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
 let BLOCK_NUMBER = 0;
 
 export function tagToJsxConverterWithContext({
 	fileNamesToUrls,
+	language,
 }: {
 	fileNamesToUrls: Record<string, string>;
+
+	language?: (typeof ALLOWED_LANGUAGES)[number];
 }): typeof tagToJsx {
 	const t2J: typeof tagToJsx = {
 		...tagToJsx,
@@ -176,35 +181,49 @@ export function tagToJsxConverterWithContext({
 					Object.hasOwn(blockMeta, i)
 				)
 			) {
-				console.log(blockMeta);
 				return (
-					// <Suspense
-					// 	fallback={
-					// 		<pre>
-					// 			<code>{code}</code>
-					// 		</pre>
-					// 	}
-					// >
-					<MinimalNonExCodeblock
-						code={code}
-						language={blockMeta.lang as string}
-						showLineNumbers={blockMeta.sln as boolean}
-						theme={blockMeta.theme as string}
-					/>
-					// </Suspense>
+					<Suspense
+						fallback={
+							<pre>
+								<code>{code}</code>
+							</pre>
+						}
+					>
+						<MinimalNonExCodeblock
+							code={code}
+							language={blockMeta.lang as string}
+							showLineNumbers={blockMeta.sln as boolean}
+							theme={blockMeta.theme as string}
+						/>
+					</Suspense>
+				);
+			}
+			if (!language) {
+				return (
+					<Suspense
+						fallback={
+							<pre>
+								<code>{code}</code>
+							</pre>
+						}
+					>
+						<MinimalNonExCodeblock
+							code={code}
+							language={"javascript"}
+							showLineNumbers={false}
+							theme={"coldark-dark"}
+						/>
+					</Suspense>
 				);
 			}
 
 			BLOCK_NUMBER += 1;
 			return (
-				<Code
+				<MinimalCode
 					code={code}
 					key={BLOCK_NUMBER}
+					language={language!}
 					blockNumber={BLOCK_NUMBER}
-					{...{
-						start: start + blockMetaString.length + 4,
-						end: end - 4,
-					}}
 					file={(blockMeta.file as any) || ""}
 					theme={(blockMeta.theme as any) || ""}
 				/>

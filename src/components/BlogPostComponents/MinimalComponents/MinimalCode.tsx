@@ -2,17 +2,13 @@
 "use client";
 import {
 	MouseEventHandler,
-	lazy,
 	memo,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
 
-import useEditor from "../../hooks/useEditor";
-
-import { DiVim } from "react-icons/di";
-import useSyncHook from "@/hooks/useSyncHook";
+import useEditor from "@/hooks/useEditor";
 import useToggleVim from "@/hooks/useToggleVim";
 import { StateEffect } from "@codemirror/state";
 import { keymap } from "@codemirror/view";
@@ -22,7 +18,7 @@ import {
 	CodeBlockButton,
 	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
-import useTerminal from "./Terminal";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
 import {
 	ChevronRightSquare,
 	Eraser,
@@ -30,35 +26,29 @@ import {
 	Terminal as TerminalIcon,
 	Undo2,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
-const EditorThemeCombobox = lazy(
-	() => import("@/app/write/components/EditorThemeCombobox")
-);
+import { DiVim } from "react-icons/di";
+import useTerminal from "../Terminal";
 
-interface CodeProps {
+interface MinimalCodeProps {
 	code: string;
 	blockNumber: number;
 	//These start and end number are the start and end positions of this code block in markdown
-	start: number;
-	end: number;
+	language: string;
 	file?: string;
 	theme?: string;
 }
 
-function Code({
+function MinimalCode({
 	code,
 	blockNumber,
-	start,
-	end,
 	file = "main",
 	theme,
-}: CodeProps) {
+	language,
+}: MinimalCodeProps) {
 	const { blogState, dispatch } = useContext(BlogContext);
-	const { language } = blogState.blogMeta;
 
 	const [openShell, setOpenShell] = useState(false);
 
-	const pathname = usePathname();
 	const { editorView } = useEditor({
 		language: language!,
 		code,
@@ -70,11 +60,6 @@ function Code({
 	});
 
 	const terminal = useTerminal({ blockNumber });
-	useSyncHook({
-		editorView,
-		startOffset: start,
-		endOffset: end,
-	});
 
 	useEffect(() => {
 		if (!editorView) return;
@@ -144,68 +129,59 @@ function Code({
 		});
 	};
 
-	if (!language) {
-		return (
-			<pre>
-				Please specify a language in frontmatter like so -
-				<code>{`language: "javascript"`}</code>
-			</pre>
-		);
-	}
-
 	return (
 		<CodeBlock className="mt-2">
-			<CodeBlockButtons
-				file={file || "main"}
-				language={language || ""}
-				themeClasses={editorView?.themeClasses}
-			>
-				<CodeBlockButton
-					onClick={onRunCode}
-					tip="Run Code (Shift+Enter)"
+			{editorView && (
+				<CodeBlockButtons
+					file={file || "main"}
+					language={language || ""}
+					themeClasses={editorView?.themeClasses}
 				>
-					<ChevronRightSquare size={16} />
-				</CodeBlockButton>
-				<CodeBlockButton
-					onClick={onWriteCode}
-					tip="Write code to file without running"
-				>
-					<Pen size={15} />
-				</CodeBlockButton>
-				{!pathname?.startsWith("/write") && (
+					<CodeBlockButton
+						onClick={onRunCode}
+						tip="Run Code (Shift+Enter)"
+					>
+						<ChevronRightSquare size={16} />
+					</CodeBlockButton>
+					<CodeBlockButton
+						onClick={onWriteCode}
+						tip="Write code to file without running"
+					>
+						<Pen size={15} />
+					</CodeBlockButton>
 					<CodeBlockButton
 						onClick={onUndo}
 						tip="back to original code"
 					>
 						<Undo2 size={16} />
 					</CodeBlockButton>
-				)}
-				<CodeBlockButton
-					onClick={() => setOpenShell((prev) => !prev)}
-					tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
-				>
-					<TerminalIcon size={16} />
-				</CodeBlockButton>
-				<CodeBlockButton
-					tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
-					onClick={() => {
-						dispatch({ type: "toggle vim", payload: null });
-					}}
-				>
-					<DiVim
-						className={`${
-							blogState.vimEnabled ? "text-lime-400" : ""
-						}`}
-						size={16}
-					/>
-				</CodeBlockButton>
-				<CodeBlockButton
-					onClick={() => terminal.clear()}
-					tip="Clear console"
-				>
-					<Eraser size={16} />
-				</CodeBlockButton>
-			</CodeBlockButtons>
+					<CodeBlockButton
+						onClick={() => setOpenShell((prev) => !prev)}
+						tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
+					>
+						<TerminalIcon size={16} />
+					</CodeBlockButton>
+					<CodeBlockButton
+						tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
+						onClick={() => {
+							dispatch({ type: "toggle vim", payload: null });
+						}}
+					>
+						<DiVim
+							className={`${
+								blogState.vimEnabled ? "text-lime-400" : ""
+							}`}
+							size={16}
+						/>
+					</CodeBlockButton>
+					<CodeBlockButton
+						onClick={() => terminal.clear()}
+						tip="Clear console"
+					>
+						<Eraser size={16} />
+					</CodeBlockButton>
+				</CodeBlockButtons>
+			)}
 			<div
 				className="w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none"
 				id={`codearea-${blockNumber}`}
@@ -216,7 +192,11 @@ function Code({
 						payload: blockNumber,
 					});
 				}}
-			></div>
+			>
+				<pre>
+					<code>{code}</code>
+				</pre>
+			</div>
 
 			{/* <Terminal {...{ blockNumber, openShell }} /> */}
 			{/* ----------------Terminal----------------- */}
@@ -227,13 +207,8 @@ function Code({
 				id={`terminal-${blockNumber}`}
 				key={`terminal-${blockNumber}`}
 			></div>
-			{pathname?.startsWith("/write") && (
-				<div className="self-center flex gap-2 w-fit mt-2">
-					<EditorThemeCombobox start={start} theme={theme || ""} />
-				</div>
-			)}
 		</CodeBlock>
 	);
 }
 
-export default memo(Code);
+export default memo(MinimalCode);
