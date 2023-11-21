@@ -1,8 +1,10 @@
 "use client";
-import BlogLayout from "@/app/post/components/BlogLayout";
 import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
+import BlogContainer from "@components/BlogContainer";
+import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
+import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
@@ -23,12 +25,26 @@ function Draft() {
 	}, [blogData]);
 
 	return (
-		<BlogLayout
-			postMeta={{
-				markdown: blogData.content,
-				post: { ...(blogData.data as any) },
-			}}
-			ToolbarComponent={() => (
+		<div className="grow flex flex-row min-h-0 relative pt-20">
+			<div
+				className={`lg:basis-1/5 hidden flex-col overflow-y-auto justify-start lg:flex px-4 
+					`}
+			>
+				<Toc markdown={blogData.content} />
+			</div>
+			<BlogContainer
+				content={blogData.content}
+				title={blogData?.data.title || ""}
+			>
+				<Blog
+					markdown={blogData.content}
+					language={blogData.data.language}
+					extraClasses="mx-auto"
+					AuthorComponent={() => <></>}
+				/>
+			</BlogContainer>
+			{/* </div> */}
+			<div className="hidden lg:flex lg:flex-col lg:basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">
 				<DraftToolbar
 					postId={
 						blogData.data.postId ||
@@ -36,9 +52,8 @@ function Draft() {
 						undefined
 					}
 				/>
-			)}
-			AuthorComponent={() => <></>}
-		/>
+			</div>
+		</div>
 	);
 }
 

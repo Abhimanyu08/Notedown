@@ -111,7 +111,7 @@ function JsonConfigEditor({
 
 	return (
 		<CodeBlock className={cn("w-full", className)}>
-			<CodeBlockButtons>
+			<CodeBlockButtons themeClasses={jsonEditorView?.themeClasses}>
 				<CodeBlockButton
 					tip={
 						error
@@ -144,7 +144,7 @@ function JsonConfigEditor({
 			</CodeBlockButtons>
 			<div
 				className={cn(
-					"w-full border-2  border-border rounded-sm rounded-se-none",
+					"w-full border-2  border-border rounded-sm rounded-t-none",
 					minimize && "h-10 overflow-hidden"
 				)}
 				id={`sandbox_${persistanceKey}`}

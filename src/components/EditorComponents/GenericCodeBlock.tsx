@@ -32,7 +32,8 @@ export function CodeBlockButtons({
 			className={cn(
 				themeClasses,
 				"flex flex-row justify-between w-full border-2 items-center border-border border-b-0 py-1 px-3 rounded-t-md ",
-				className
+				className,
+				!file && "justify-end"
 			)}
 		>
 			{file && language && (
