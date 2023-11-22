@@ -419,7 +419,7 @@ export const createHeadingIdFromHeadingText = (headingText: string) => {
 	return headingText.split(" ").join("-");
 };
 
-const extractTextFromChildren = (
+export const extractTextFromChildren = (
 	children: ReturnType<typeof fromMarkdown>["children"]
 ): string => {
 	const textArray = children?.map((c) => {

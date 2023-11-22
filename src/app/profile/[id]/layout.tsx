@@ -63,7 +63,9 @@ async function ProfilePostsLayout({
 	let loggedInName = "",
 		loggedInUserName = "";
 	if (params.id !== "anon") {
-		let { name, username } = (await getUser(params.id))!;
+		let userDetails = (await getUser(params.id))!;
+		if (!userDetails) return;
+		const { name, username } = userDetails;
 		loggedInName = name || "";
 		loggedInUserName = username || "";
 	}

@@ -4,13 +4,21 @@ import Image from "next/image";
 import { Suspense } from "react";
 import {
 	HtmlAstElement,
-	getStartEndFromNode,
+	createHeadingIdFromHeadingText,
+	extractTextFromChildren,
 	tagToJsx,
 	transformer,
 } from "./transformer";
 
+import MinimalLatex from "@components/BlogPostComponents/MinimalComponents/MinimalLatex";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import React from "react";
+const MinimalHeadingCopyButton = React.lazy(
+	() =>
+		import(
+			"@components/BlogPostComponents/MinimalComponents/MinimalHeadingCopyButton"
+		)
+);
 
 const ExpandableImageContainer = React.lazy(
 	() =>
@@ -48,6 +56,8 @@ const MinimalDrawingSvg = React.lazy(
 );
 let BLOCK_NUMBER = 0;
 
+type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
 export function tagToJsxConverterWithContext({
 	fileNamesToUrls,
 	language,
@@ -61,6 +71,39 @@ export function tagToJsxConverterWithContext({
 	let footNotes: { id: number; node: any }[] = [];
 	const t2J: typeof tagToJsx = {
 		...tagToJsx,
+		...(() => {
+			let headingToRenderers: Partial<
+				Record<HeadTags, (typeof tagToJsx)["h1"]>
+			> = {};
+			for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
+				headingToRenderers[heading as HeadTags] = (node) => {
+					const headingChildren = node.children;
+					const headingText = extractTextFromChildren(
+						headingChildren as any
+					);
+					const headingId =
+						createHeadingIdFromHeadingText(headingText);
+					return React.createElement(
+						node.tagName,
+						{
+							id: headingId,
+							className:
+								"group prose flex items-center prose-code:text-xl prose-code:mx-1",
+						},
+
+						[
+							...node.children.map((c) => transformer(c)),
+							<MinimalHeadingCopyButton
+								key={headingId}
+								headingId={headingId}
+							/>,
+						]
+					);
+				};
+			}
+			return headingToRenderers;
+		})(),
+
 		img: (node) => {
 			const { alt, src } = node.properties as {
 				alt: string;
@@ -196,7 +239,6 @@ export function tagToJsxConverterWithContext({
 			const blockMetaString =
 				/language-(.*)/.exec((className as string[])[0])?.at(1) || "";
 
-			const { start, end } = getStartEndFromNode(codeNode);
 			const arr = blockMetaString.split("&");
 			// arr = ["lang=javascript","theme=dark","sln=true"]
 			const blockMeta: Record<string, string | boolean> = {};
@@ -267,9 +309,9 @@ export function tagToJsxConverterWithContext({
 			// we are constraining the code elements to only contain plain strings.
 			let code = child.value;
 			if (!code) return <code></code>;
-			// if (code.startsWith("$") && code.endsWith("$")) {
-			// 	return <Latex>{code}</Latex>;
-			// }
+			if (code.startsWith("$") && code.endsWith("$")) {
+				<MinimalLatex code={code} />;
+			}
 			if (code.startsWith("~~") && code.endsWith("~~")) {
 				return <del>{code.slice(2, code.length - 2)}</del>;
 			}
@@ -303,7 +345,7 @@ export function tagToJsxConverterWithContext({
 					/>
 				);
 			}
-			return <></>;
+			return <code>{code}</code>;
 		},
 	};
 

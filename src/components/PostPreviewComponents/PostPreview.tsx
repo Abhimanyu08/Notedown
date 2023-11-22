@@ -5,6 +5,11 @@ import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { getPost } from "@utils/getData";
 import { cookies } from "next/headers";
 import PostPreviewControls from "./PostPreviewControls";
+import { ALLOWED_LANGUAGES } from "@utils/constants";
+import { tagToJsxConverterWithContext } from "@utils/html2Jsx/minimalJsxConverter";
+import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
+import Footers from "@components/BlogPostComponents/Footers";
 
 async function PostPreview({ postId }: { postId: string }) {
 	const supabase = createSupabaseServerClient(cookies);
@@ -13,6 +18,19 @@ async function PostPreview({ postId }: { postId: string }) {
 		postId,
 		supabase
 	);
+
+	const { content, data } = parseFrontMatter(markdown || "");
+
+	const { tagToJsx, footNotes } = tagToJsxConverterWithContext({
+		fileNamesToUrls: imagesToUrls!,
+		language: post?.language as
+			| (typeof ALLOWED_LANGUAGES)[number]
+			| undefined,
+		imageFolder: `${post?.created_by}/${post?.id}`,
+	});
+
+	const { htmlAST } = mdToHast(content || "");
+	const blogJsx = transformer(htmlAST, tagToJsx);
 
 	return (
 		<div
@@ -36,7 +54,11 @@ async function PostPreview({ postId }: { postId: string }) {
 					{...post}
 					markdown={markdown}
 					AuthorComponent={BlogAuthorServer}
-				/>
+				>
+					{blogJsx}
+
+					{footNotes.length > 0 && <Footers footNotes={footNotes} />}
+				</Blog>
 				<PostPreviewControls markdown={markdown} postMeta={post} />
 			</BlogContextProvider>
 		</div>
