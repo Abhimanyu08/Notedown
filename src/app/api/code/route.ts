@@ -5,9 +5,9 @@ import { createClient } from "redis";
 let client: Awaited<
 	ReturnType<ReturnType<typeof createClient>["connect"]>
 > | null = null;
-const supabase = createSupabaseServerClient(cookies);
 
 export async function POST(request: Request) {
+	const supabase = createSupabaseServerClient(cookies);
 	const { data } = await supabase.auth.getUser();
 
 	const userId = data.user?.id;
