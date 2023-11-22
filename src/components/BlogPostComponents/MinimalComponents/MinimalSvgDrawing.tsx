@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { SUPABASE_FILES_BUCKET } from "@utils/constants";
 import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { cookies } from "next/headers";
+import ExpandableSvgContainer from "./ExpandableSvgContainer";
 
 export default async function MinimalDrawingSvg({
 	persistanceKey,
@@ -30,22 +31,10 @@ export default async function MinimalDrawingSvg({
 	const svgElement = jsonToSvg(svgJson);
 
 	return (
-		<div
-			className={cn(
-				"flex  flex-col w-full h-auto items-center justify-center z-[600]"
-			)}
-		>
-			<div
-				className={cn(
-					"flex w-full justify-center items-center gap-5 ",
-					" [&>*]:cursor-zoom-in"
-				)}
-				id={`svgContainer-${persistanceKey}`}
-			>
-				{svgElement}
-			</div>
+		<>
+			<ExpandableSvgContainer>{svgElement}</ExpandableSvgContainer>
 			<figcaption className="text-center italic">{caption}</figcaption>
-		</div>
+		</>
 	);
 }
 
