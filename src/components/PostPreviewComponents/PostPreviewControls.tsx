@@ -5,7 +5,7 @@ import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
 import { getPost } from "@utils/getData";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
@@ -25,6 +25,7 @@ function PostPreviewControls({
 	const params = useParams();
 	const owner = useOwner(postMeta.created_by!);
 	const { id: postId, timestamp: draftId } = postMeta;
+	const pathname = usePathname();
 
 	const getEditLink = () => {
 		if (postId && draftId) {
@@ -53,7 +54,7 @@ function PostPreviewControls({
 				>
 					<BiBookContent size={24} />
 				</Button>
-				{owner && (
+				{(owner || pathname?.startsWith("/draft")) && (
 					<ToolTipComponent tip={"Edit"}>
 						<Link
 							href={getEditLink() || ""}

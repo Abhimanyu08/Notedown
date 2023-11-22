@@ -6,15 +6,62 @@ import { linter, lintGutter } from "@codemirror/lint"
 import { StreamLanguage } from "@codemirror/language"
 
 
+import { autocompletion } from "@codemirror/autocomplete"
 
 import * as eslint from "eslint-linter-browserify";
+
+import {
+    createDefaultMapFromCDN,
+    createSystem,
+    createVirtualTypeScriptEnvironment,
+} from "@typescript/vfs";
+import ts from "typescript"
+
+import {
+    tsLinter,
+    tsHover,
+    tsAutocomplete,
+    tsSync,
+} from '@valtown/codemirror-ts';
+
+
 
 
 let languageCompartment = new Compartment();
 const langToCodeMirrorExtension = async (lang: typeof ALLOWED_LANGUAGES[number] | "markdown" | "json"): Promise<Extension> => {
     switch (lang) {
         case "javascript":
-            const { javascript, esLint } = await import("@codemirror/lang-javascript")
+            const { javascript: js, esLint } = await import("@codemirror/lang-javascript")
+
+            const jsConfig = {
+                // eslint configuration
+                parserOptions: {
+                    ecmaVersion: 2023,
+                    sourceType: "module",
+                },
+                env: {
+                    node: true,
+                },
+                rules: {
+                    semi: ["error", "never"],
+                },
+            };
+            return languageCompartment.of([js(), linter(esLint(new eslint.Linter(), jsConfig))])
+
+
+        case "typescript":
+            const { javascript } = await import("@codemirror/lang-javascript")
+
+            const fsMap = await createDefaultMapFromCDN(
+                { target: ts.ScriptTarget.ES2022 },
+                "3.7.3",
+                true,
+                ts,
+            );
+            const system = createSystem(fsMap);
+            const compilerOpts = {};
+            const env = createVirtualTypeScriptEnvironment(system, [], ts, compilerOpts);
+            const path = 'index.ts'
 
             const config = {
                 // eslint configuration
@@ -29,7 +76,9 @@ const langToCodeMirrorExtension = async (lang: typeof ALLOWED_LANGUAGES[number] 
                     semi: ["error", "never"],
                 },
             };
-            return languageCompartment.of([javascript({ jsx: true, typescript: true }), linter(esLint(new eslint.Linter(), config))])
+            return [languageCompartment.of(javascript({ jsx: true, typescript: true })), tsSync({ env, path }), tsLinter({ env, path }), autocompletion({
+                override: [tsAutocomplete({ env, path })]
+            }), tsHover({ env, path })]
         case "python":
             const { python } = await import("@codemirror/lang-python")
             return languageCompartment.of(python())
