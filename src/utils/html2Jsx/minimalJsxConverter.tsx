@@ -1,23 +1,51 @@
-import React, { Suspense } from "react";
+import { cn } from "@/lib/utils";
+import { Text } from "hast";
+import Image from "next/image";
+import { Suspense } from "react";
 import {
 	HtmlAstElement,
 	getStartEndFromNode,
 	tagToJsx,
 	transformer,
 } from "./transformer";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { Text } from "hast";
 
-import MinimalCarousel from "@components/BlogPostComponents/MinimalComponents/MinimalCarousel";
-import Code from "@components/BlogPostComponents/Code";
-import MinimalNonExCodeblock from "@components/BlogPostComponents/MinimalComponents/MinimalNonExCodeblock";
-import MinimalCode from "@components/BlogPostComponents/MinimalComponents/MinimalCode";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
-import Latex from "react-latex";
-import MinimalDrawingSvg from "@components/BlogPostComponents/MinimalComponents/MinimalSvgDrawing";
-import SandboxRouter from "@components/BlogPostComponents/CodeSandbox/SandboxRouters";
-import MinimalCodeSandbox from "@components/BlogPostComponents/MinimalComponents/MinimalCodeSandbox";
+import React from "react";
+
+const ExpandableImageContainer = React.lazy(
+	() =>
+		import(
+			"@components/BlogPostComponents/MinimalComponents/ExpandableImageContainer"
+		)
+);
+
+const MinimalCarousel = React.lazy(
+	() =>
+		import(
+			"@components/BlogPostComponents/MinimalComponents/MinimalCarousel"
+		)
+);
+const MinimalCode = React.lazy(
+	() => import("@components/BlogPostComponents/MinimalComponents/MinimalCode")
+);
+const MinimalCodeSandbox = React.lazy(
+	() =>
+		import(
+			"@components/BlogPostComponents/MinimalComponents/MinimalCodeSandbox"
+		)
+);
+const MinimalNonExCodeblock = React.lazy(
+	() =>
+		import(
+			"@components/BlogPostComponents/MinimalComponents/MinimalNonExCodeblock"
+		)
+);
+const MinimalDrawingSvg = React.lazy(
+	() =>
+		import(
+			"@components/BlogPostComponents/MinimalComponents/MinimalSvgDrawing"
+		)
+);
 let BLOCK_NUMBER = 0;
 
 export function tagToJsxConverterWithContext({
@@ -50,27 +78,22 @@ export function tagToJsxConverterWithContext({
 			const completeSrc = fileNamesToUrls[src];
 
 			return (
-				<div className="flex flex-col">
-					<div className="w-4/5 mx-auto relative">
-						<figure className="w-full mb-4 mx-auto">
-							<Image
-								src={completeSrc}
-								alt={alt}
-								width={1440}
-								height={1080}
-								className="cursor-zoom-in"
-							/>
-							<figcaption
-								className={cn(
-									"text-center italic",
-									alt ? "" : "invisible"
-								)}
-							>
-								{alt || "hello"}
-							</figcaption>
-						</figure>
-					</div>
-				</div>
+				<ExpandableImageContainer>
+					<Image
+						src={completeSrc}
+						alt={alt}
+						width={1440}
+						height={1080}
+					/>
+					<figcaption
+						className={cn(
+							"text-center italic",
+							alt ? "" : "invisible"
+						)}
+					>
+						{alt || "hello"}
+					</figcaption>
+				</ExpandableImageContainer>
 			);
 		},
 
