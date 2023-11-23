@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 		if (redisResp) {
 			const requestsTillNow = parseInt(redisResp);
 			if (requestsTillNow === 5) {
-				return Response.json("Rate limit exceeded, Maximum of requests every 15 seconds", {
+				return Response.json("Rate limit exceeded, Maximum 5 requests every 15 seconds", {
 					status: 429,
 					headers: {
 						"X-RateLimit-Limit": "5",
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
 			client.set(rateLimitKey, requestsTillNow + 1, { EX: 15 });
 		} else {
-			client.set(rateLimitKey, 1, { EX: 30 });
+			client.set(rateLimitKey, 1, { EX: 15 });
 		}
 	}
 
