@@ -20,7 +20,9 @@ import {
 } from "@components/EditorComponents/GenericCodeBlock";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import {
+	Check,
 	ChevronRightSquare,
+	Copy,
 	Eraser,
 	Pen,
 	Terminal as TerminalIcon,
@@ -48,6 +50,7 @@ function MinimalCode({
 	const { blogState, dispatch } = useContext(BlogContext);
 
 	const [openShell, setOpenShell] = useState(false);
+	const [copied, setCopied] = useState(false);
 
 	const { editorView } = useEditor({
 		language: language!,
@@ -179,6 +182,19 @@ function MinimalCode({
 						tip="Clear console"
 					>
 						<Eraser size={16} />
+					</CodeBlockButton>
+					<CodeBlockButton
+						onClick={() =>
+							navigator.clipboard
+								.writeText(editorView?.state.sliceDoc() || "")
+								.then(() => setCopied(true))
+								.then(() =>
+									setTimeout(() => setCopied(false), 2000)
+								)
+						}
+						tip="Copy code"
+					>
+						{copied ? <Check size={16} /> : <Copy size={16} />}
 					</CodeBlockButton>
 				</CodeBlockButtons>
 			)}

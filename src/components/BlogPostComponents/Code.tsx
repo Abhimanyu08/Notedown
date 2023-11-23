@@ -24,7 +24,9 @@ import {
 } from "@components/EditorComponents/GenericCodeBlock";
 import useTerminal from "./Terminal";
 import {
+	Check,
 	ChevronRightSquare,
+	Copy,
 	Eraser,
 	Pen,
 	Terminal as TerminalIcon,
@@ -58,6 +60,7 @@ function Code({
 	const { language } = blogState.blogMeta;
 
 	const [openShell, setOpenShell] = useState(false);
+	const [copied, setCopied] = useState(false);
 
 	const pathname = usePathname();
 	const { editorView } = useEditor({
@@ -205,6 +208,20 @@ function Code({
 					tip="Clear console"
 				>
 					<Eraser size={16} />
+				</CodeBlockButton>
+
+				<CodeBlockButton
+					onClick={() =>
+						navigator.clipboard
+							.writeText(editorView?.state.sliceDoc() || "")
+							.then(() => setCopied(true))
+							.then(() =>
+								setTimeout(() => setCopied(false), 2000)
+							)
+					}
+					tip="Copy code"
+				>
+					{copied ? <Check size={16} /> : <Copy size={16} />}
 				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div

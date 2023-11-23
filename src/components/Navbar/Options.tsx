@@ -116,37 +116,6 @@ export function LoggedInOptions({
 							ref={nameRef}
 						/>
 					</div>
-					{/* <div className="grid grid-cols-4 items-center gap-4">
-							<Label htmlFor="username" className="text-right">
-								Title
-							</Label>
-							<Input
-								id="title"
-								defaultValue={notebook_title || undefined}
-								className="col-span-3"
-								placeholder="A title for your note collection"
-								ref={titleRef}
-							/>
-						</div> */}
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="username" className="text-right">
-							Username
-						</Label>
-						<Input
-							id="username"
-							defaultValue={username || undefined}
-							className="col-span-3"
-							placeholder="Claim a username"
-							ref={userNameRef}
-						/>
-					</div>
-					{userNameError && (
-						<div className="grid grid-cols-4 gap-4">
-							<span className="col-start-2 col-span-3 text-xs text-red-400">
-								Already taken. Please enter another username
-							</span>
-						</div>
-					)}
 				</div>
 
 				<SheetFooter>
