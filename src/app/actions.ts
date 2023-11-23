@@ -1,7 +1,7 @@
 "use server"
 import { revalidatePath } from "next/cache";
 import { SUPABASE_POST_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET } from "../utils/constants";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 
 // function getPostActions(supabase: SupabaseClient) {
@@ -21,7 +21,7 @@ export async function publishPostAction(postId: number) {
 
     if (data) {
 
-        revalidatePath(`/profile/${data.created_by}`, "layout");
+        revalidatePath(`/notebook/${data.created_by}`, "layout");
     }
 }
 
@@ -39,7 +39,7 @@ export async function unpublishPostAction(postId: number) {
 
     if (data) {
 
-        revalidatePath(`/profile/${data.created_by}`, "layout");
+        revalidatePath(`/notebook/${data.created_by}`, "layout");
     }
 }
 
@@ -84,7 +84,7 @@ export async function deletePostAction(postId: number) {
                 .from(SUPABASE_IMAGE_BUCKET)
                 .remove(imageNames);
         }
-        revalidatePath(`/profile/${data.created_by}`, "layout");
+        revalidatePath(`/notebook/${data.created_by}`, "layout");
     }
 }
 

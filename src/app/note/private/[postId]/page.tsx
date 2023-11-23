@@ -24,7 +24,7 @@ async function PrivatePost({ params }: { params: PostParams }) {
 		supabase
 	);
 	if (post.published) {
-		redirect(`/post/${post.id}`);
+		redirect(`/note/${post.id}`);
 	}
 
 	return (

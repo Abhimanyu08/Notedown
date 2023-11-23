@@ -24,7 +24,7 @@ async function BlogAuthorServer({ createdBy }: { createdBy: string | null }) {
 		if (data) {
 			return (
 				<Link
-					href={`/profile/${createdBy}`}
+					href={`/notebook/${createdBy}`}
 					className="underline underline-offset-2 hover:italic decoration-black dark:decoration-gray-400"
 				>
 					{data.name || "Anon"}

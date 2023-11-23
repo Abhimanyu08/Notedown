@@ -3,9 +3,8 @@ import React, { useContext } from "react";
 import { SearchContext } from "./SearchProvider";
 import { SinglePostLoading } from "./SinglePostLoading";
 import PostDisplay from "@components/PostDisplay";
-import { DraftsDisplay } from "@/app/profile/[id]/components/DraftsDisplay";
 import { postToDraft } from "@utils/postToDraft";
-import { SingleDraft } from "@/app/profile/[id]/components/SingleDraft";
+import { SingleDraft } from "@/app/notebook/[id]/components/SingleDraft";
 
 function NormalChildrenLayout({
 	children,

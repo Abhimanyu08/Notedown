@@ -5,8 +5,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const path = searchParams.get('path')
     if (path) {
-        console.log(path)
-        if (path.startsWith("/profile")) {
+        if (path.startsWith("/notebook")) {
             revalidatePath(path, "layout")
         } else {
 

@@ -69,7 +69,7 @@ export function TaggedDrafts({
 							navigator.clipboard
 								.writeText(
 									window.location.origin +
-										`/profile/${params?.id}` +
+										`/notebook/${params?.id}` +
 										`?tag=${tag}`
 								)
 								.then(() => setCopied(true));

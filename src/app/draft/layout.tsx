@@ -23,8 +23,8 @@ async function DraftLayout({ children }: { children: React.ReactNode }) {
 				<Link
 					href={
 						session
-							? `/profile/${session.user.id}`
-							: `/profile/anon`
+							? `/notebook/${session.user.id}`
+							: `/notebook/anon`
 					}
 				>
 					<BookOpen />

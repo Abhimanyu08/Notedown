@@ -63,14 +63,14 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 	{
 		title: "Upload your note to sync across devices",
 		content:
-			"Every note you write is entirely local by default, including it's markdown, images. You only need to upload it if you want to sync your note across devices. Uploaded notes stay private by default, i.e only you can access them on any device (after signing in) at the url /post/private/[slug].",
+			"Every note you write is entirely local by default, including it's markdown, images. You only need to upload it if you want to sync your note across devices. Uploaded notes stay private by default, i.e only you can access them on any device (after signing in) at the url /note/private/[slug].",
 		time: 166,
 	},
 	{
 		title: "Publish in a single click",
 		time: 186,
 		content:
-			" You can publish any uploaded note with a single click. Once public, your note will be available for anyone to read at /post/[slug].",
+			" You can publish any uploaded note with a single click. Once public, your note will be available for anyone to read at /note/[slug].",
 	},
 ];
 
@@ -117,7 +117,7 @@ function Home() {
 			const countReq = markdownObjectStore.count();
 			countReq.onsuccess = () => {
 				if (countReq.result > 0) {
-					router.push("/profile/anon");
+					router.push("/notebook/anon");
 				}
 			};
 		}
@@ -232,7 +232,7 @@ function Home() {
 						</Button>
 					</Link>
 					<span>Or</span>
-					<Link href="/post/demo">
+					<Link href="/note/demo">
 						<Button className="w-fit " variant={"outline"}>
 							View a sample note
 						</Button>

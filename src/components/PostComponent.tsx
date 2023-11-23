@@ -38,11 +38,11 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 				href={
 					published
 						? slug
-							? `/post/${slug}?tagpreview=${tag}`
-							: `/post/${id}?tagpreview=${tag}`
+							? `/note/${slug}?tagpreview=${tag}`
+							: `/note/${id}?tagpreview=${tag}`
 						: slug
-						? `/post/private/${slug}?tagpreview=${tag}`
-						: `/post/private/${id}?tagpreview=${tag}`
+						? `/note/private/${slug}?tagpreview=${tag}`
+						: `/note/private/${id}?tagpreview=${tag}`
 				}
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
 			>

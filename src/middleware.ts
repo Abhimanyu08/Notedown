@@ -11,6 +11,25 @@ export async function middleware(req: NextRequest) {
         },
     })
 
+    const pathname = req.nextUrl.pathname
+    if (pathname.startsWith("/profile")) {
+        const url = req.nextUrl.clone()
+
+        const profileId = pathname.split("/").at(-1)
+        // url.basePath = "/notebook"
+        url.pathname = "/notebook" + "/" + profileId
+        return NextResponse.redirect(url)
+    }
+    if (pathname.startsWith("/post")) {
+
+        const url = req.nextUrl.clone()
+        const noteId = pathname.split("/").slice(2).join("/")
+        // url.basePath = "/notebook"
+        url.pathname = "/note" + "/" + noteId
+        return NextResponse.redirect(url)
+    }
+
+
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -59,16 +78,15 @@ export async function middleware(req: NextRequest) {
 
     const { data } = await supabase.auth.getSession()
 
-    const pathname = req.nextUrl.pathname
     if (data.session?.user) {
-        if (pathname === "/" || pathname === "/profile/anon") {
+        if (pathname === "/" || pathname === "/notebook/anon") {
             const url = req.nextUrl.clone()
-            url.pathname = `/profile/${data.session.user.id}`
+            url.pathname = `/notebook/${data.session.user.id}`
             return NextResponse.redirect(url)
         }
     }
 
-    if (pathname.startsWith("/post")) {
+    if (pathname.startsWith("/note")) {
         const postIdOrSlug = pathname.split("/").at(-1)!
         if (!isNaN(parseInt(postIdOrSlug))) {
             //post/1 or /post/private/1

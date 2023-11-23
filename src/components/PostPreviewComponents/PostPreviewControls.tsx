@@ -68,7 +68,7 @@ function PostPreviewControls({
 				<ToolTipComponent
 					tip="Close preview"
 					onClick={() => {
-						router.push(`/profile/${params?.id}`);
+						router.push(`/notebook/${params?.id}`);
 					}}
 					className=" text-gray-400 hover:text-white active:scale-95"
 				>

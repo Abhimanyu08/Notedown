@@ -61,8 +61,8 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 if (documentDb) {
                     updateIndexDbMarkdown(documentDb, editorState.timeStamp || "", post.id)
                 }
-                sendRevalidationRequest(`/profile/${created_by}`)
-                const revalidationPath = "/post" + (blogState.blogMeta.published ? "" : "/private") + "/" + (blogState.blogMeta.slug ?? post.id)
+                sendRevalidationRequest(`/notebook/${created_by}`)
+                const revalidationPath = "/note" + (blogState.blogMeta.published ? "" : "/private") + "/" + (blogState.blogMeta.slug ?? post.id)
                 console.log(revalidationPath)
                 sendRevalidationRequest(revalidationPath)
                 setProgressMessage("Changes Uploaded");
@@ -356,10 +356,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         await uploadSandboxes({ postId: postId })
 
         setProgressMessage("Finished updating!")
-        // if (published) {
-        //     revalidatePath("/profile/[id]/posts/(...)post/[postId]");
-        // }
-        //done
         return post
     }
 

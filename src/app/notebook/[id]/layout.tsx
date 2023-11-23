@@ -41,7 +41,7 @@ export async function generateMetadata({
 			title: name || "Anon",
 			description: `${name || "Anon"}'s public notes`,
 			type: "article",
-			url: `https://notedown.art/profile/${params.id}`,
+			url: `https://notedown.art/notebook/${params.id}`,
 		},
 		twitter: {
 			card: "summary",

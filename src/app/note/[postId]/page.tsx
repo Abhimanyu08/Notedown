@@ -40,7 +40,7 @@ export async function generateMetadata({
 			description: description || "",
 			type: "article",
 			publishedTime: data.published_on!,
-			url: `https://notedown.art/post/${params.postId}`,
+			url: `https://notedown.art/note/${params.postId}`,
 		},
 		twitter: {
 			card: "summary",

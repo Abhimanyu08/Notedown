@@ -135,7 +135,7 @@ export function PostActions({
 										onClick={() => {
 											navigator.clipboard.writeText(
 												window.location.origin +
-													"/post/" +
+													"/note/" +
 													(slug || postId)
 											);
 											toast({

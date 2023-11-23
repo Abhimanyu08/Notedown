@@ -15,7 +15,7 @@ function PostPreviewLayout({
 
 	return (
 		<>
-			{(pathname?.startsWith("/post") ||
+			{(pathname?.startsWith("/note/") ||
 				pathname?.startsWith("/draft")) && (
 				<div key={pathname} className={cn(className)}>
 					{children}

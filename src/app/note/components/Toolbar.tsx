@@ -114,7 +114,7 @@ function Toolbar() {
 				}`}
 				className={`text-gray-400 hover:text-white active:scale-95`}
 			>
-				<Link href={`/profile/${blogState.blogMeta.blogger?.id}`}>
+				<Link href={`/notebook/${blogState.blogMeta.blogger?.id}`}>
 					<BookOpen />
 				</Link>
 			</ToolTipComponent>

@@ -53,17 +53,17 @@ function SyncWarning({ markdown }: { markdown: string }) {
 			<span>and</span>
 			<Link
 				href={
-					pathname?.startsWith("/post")
+					pathname?.startsWith("/note")
 						? pathname
 						: searchParams?.get("public") === "false"
-						? `/post/private/${searchParams.get(
+						? `/note/private/${searchParams.get(
 								"postId"
 						  )}?synced=false`
-						: `/post/${searchParams?.get("postId")}?synced=false`
+						: `/note/${searchParams?.get("postId")}?synced=false`
 				}
 				className={cn(
 					"underline hover:italic",
-					pathname?.startsWith("/post") ? "text-gray-100" : ""
+					pathname?.startsWith("/note") ? "text-gray-100" : ""
 				)}
 			>
 				uploaded
