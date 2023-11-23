@@ -9,7 +9,6 @@ let client: Awaited<
 export async function POST(request: Request) {
 
 	const host = request.headers.get("host")
-	console.log(host)
 
 	if (!host?.startsWith("localhost")) {
 
@@ -21,7 +20,6 @@ export async function POST(request: Request) {
 		if (!userId) {
 			return Response.json("Please log in to execute code", {
 				status: 400,
-				statusText: "Please login to execute code",
 			});
 		}
 
@@ -42,7 +40,7 @@ export async function POST(request: Request) {
 		if (redisResp) {
 			const requestsTillNow = parseInt(redisResp);
 			if (requestsTillNow === 5) {
-				return Response.json("Rate limit exceeded", {
+				return Response.json("Rate limit exceeded, Maximum of requests every 15 seconds", {
 					status: 429,
 					headers: {
 						"X-RateLimit-Limit": "5",
@@ -51,24 +49,38 @@ export async function POST(request: Request) {
 				});
 			}
 
-			client.set(rateLimitKey, requestsTillNow + 1, { EX: 30 });
+			client.set(rateLimitKey, requestsTillNow + 1, { EX: 15 });
 		} else {
 			client.set(rateLimitKey, 1, { EX: 30 });
 		}
 	}
 
 	const bodyToSend = await request.json();
+
+	const controller = new AbortController();
+	setTimeout(() => controller.abort(), 5000);
+
 	const resp = await fetch(process.env.NEXT_PUBLIC_DOCKER_SERVER!, {
 		method: request.method,
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(bodyToSend),
-	});
+		signal: controller.signal
+	}).catch((err) => err.message);
+
+	if (resp === "This operation was aborted") {
+
+		return new Response("This request took too long to run, aborting", {
+			status: 504,
+		});
+	}
+
 	const body = await resp.json();
 
+
 	if (!body) {
-		return new Response("", {
+		return new Response(resp.statusText, {
 			status: resp.status,
 			headers: { "content-type": "application/json" },
 		});

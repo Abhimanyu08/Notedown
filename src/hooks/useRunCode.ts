@@ -90,12 +90,19 @@ export function useRunCode({
 			fileName: fileName as string,
 			language: language as any,
 		}).then((val) => {
-			if (val === "Limit exceeded") val += ", Limit: 5 requests every 30 seconds"
 			dispatch({ type: "set output", payload: { [block]: val } });
 
 			dispatch({ type: "set running block", payload: null });
 			dispatch({ type: "set writing block", payload: null });
 			dispatch({ type: "toggle running request", payload: null });
+		}).catch((e) => {
+
+			dispatch({ type: "set output", payload: { [block]: e.message } });
+
+			dispatch({ type: "set running block", payload: null });
+			dispatch({ type: "set writing block", payload: null });
+			dispatch({ type: "toggle running request", payload: null });
+
 		});
 	}, [blogState.runningBlock, blogState.writingBlock]);
 }
@@ -126,25 +133,18 @@ async function runCodeRequest({
 		"POST",
 		{ language, containerId, code, fileName, run },
 	];
-	try {
-		const resp = await sendRequestToRceServer(...params);
+	const resp = await sendRequestToRceServer(...params);
 
-		if (resp.status !== 201) {
-			return "Limit exceeded";
-		}
-		const { output } = (await resp.json()) as { output: string };
+	if (resp.status !== 201) {
 
-		// try {
-		// 	sessionStorage.setItem(code, output);
-		// } catch { }
-
-		return output;
-	} catch (e) {
-		if ((e as any).name === "AbortError") {
-			return "Code running request aborted after 10 seconds";
-			// Handle abort here
-		} else {
-			return "Unexpected Error";
-		}
+		const respText = await resp.text()
+		throw new Error(respText)
 	}
+	const { output } = (await resp.json()) as { output: string };
+
+	// try {
+	// 	sessionStorage.setItem(code, output);
+	// } catch { }
+
+	return output;
 }
