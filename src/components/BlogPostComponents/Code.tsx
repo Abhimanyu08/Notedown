@@ -31,6 +31,7 @@ import {
 	Undo2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 const EditorThemeCombobox = lazy(
 	() => import("@/app/write/components/EditorThemeCombobox")
 );
@@ -221,14 +222,16 @@ function Code({
 			{/* <Terminal {...{ blockNumber, openShell }} /> */}
 			{/* ----------------Terminal----------------- */}
 			<div
-				className={`not-prose border-[1px] border-white/50 rounded-sm z-10  mt-2 bg-black pl-2 pb-1 overflow-y-auto ${
-					openShell ? "" : "hidden"
-				} `}
+				className={cn(
+					"not-prose border-[1px] border-white/50 rounded-sm z-10  mt-2 bg-black pl-2 pb-1 overflow-y-auto ",
+					!openShell && "hidden",
+					"custom-terminal"
+				)}
 				id={`terminal-${blockNumber}`}
 				key={`terminal-${blockNumber}`}
 			></div>
 			{pathname?.startsWith("/write") && (
-				<div className="self-center flex gap-2 w-fit mt-2">
+				<div className="self-center flex gap-2 w-fit mt-2 ">
 					<EditorThemeCombobox start={start} theme={theme || ""} />
 				</div>
 			)}

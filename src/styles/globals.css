@@ -395,3 +395,7 @@ tbody td {
 .features svg {
 	margin-left: 4px;
 }
+
+.custom-terminal {
+	resize: vertical;
+}

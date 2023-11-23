@@ -12,17 +12,17 @@ export async function sendRequestToRceServer(
 ) {
 	// const controller = new AbortController();
 	// setTimeout(() => controller.abort(), 10000);
-	if (window.location.hostname === "localhost") {
-		const resp = fetch("http://localhost:5000", {
-			method,
-			mode: "cors",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(body),
-		});
-		return resp;
-	}
+	// if (window.location.hostname === "localhost") {
+	// 	const resp = fetch("http://localhost:5000", {
+	// 		method,
+	// 		mode: "cors",
+	// 		headers: {
+	// 			"Content-Type": "application/json",
+	// 		},
+	// 		body: JSON.stringify(body),
+	// 	});
+	// 	return resp;
+	// }
 
 	// const resp = await fetch(`/api/sendReqApiRoute`, {
 	//     method,
