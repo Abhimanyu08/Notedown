@@ -165,6 +165,7 @@ function Home() {
 							title="YouTube video player"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							allowFullScreen
+							loading="lazy"
 							className="h-full w-full rounded-md"
 						></iframe>
 					</div>
