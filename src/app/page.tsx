@@ -81,6 +81,11 @@ function Home() {
 	);
 	const [feature, setFeature] = useState(videoCheckpoints[0].title);
 	const [scriptLoaded, setScriptLoaded] = useState(false);
+	const [addIframe, setAddIframe] = useState(false);
+
+	useEffect(() => {
+		setAddIframe(true);
+	}, []);
 
 	useEffect(() => {
 		if (!ytplayer) return;
@@ -106,44 +111,26 @@ function Home() {
 	const router = useRouter();
 	const pathname = usePathname();
 
-	useEffect(() => {
-		if (!documentDb) return;
+	// useEffect(() => {
+	// 	if (!documentDb) return;
 
-		const markdownObjectStore = getMarkdownObjectStore(
-			documentDb,
-			"readonly"
-		);
-		if (pathname === "/" && !session) {
-			const countReq = markdownObjectStore.count();
-			countReq.onsuccess = () => {
-				if (countReq.result > 0) {
-					router.push("/notebook/anon");
-				}
-			};
-		}
-	}, [documentDb]);
+	// 	const markdownObjectStore = getMarkdownObjectStore(
+	// 		documentDb,
+	// 		"readonly"
+	// 	);
+	// 	if (pathname === "/" && !session) {
+	// 		const countReq = markdownObjectStore.count();
+	// 		countReq.onsuccess = () => {
+	// 			if (countReq.result > 0) {
+	// 				router.push("/notebook/anon");
+	// 			}
+	// 		};
+	// 	}
+	// }, [documentDb]);
 
 	useEffect(() => {
 		if (!scriptLoaded) return;
 		let player: any;
-
-		const iframeElement = document.createElement("iframe");
-		const iframeAttributes = {
-			id: "demo-iframe",
-			src: "https://www.youtube.com/embed/AHnrZucgBBM?enablejsapi=1",
-			title: "YouTube video player",
-			allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-			allowFullScreen: true,
-			className: "h-full w-full rounded-md",
-		};
-
-		for (let [key, val] of Object.entries(iframeAttributes)) {
-			iframeElement.setAttribute(key, val.toString());
-		}
-
-		document
-			.getElementById("demo-container")
-			?.replaceChildren(iframeElement);
 
 		(window as any).onYouTubeIframeAPIReady = () => {
 			player = new (window as any).YT.Player("demo-iframe", {
@@ -176,7 +163,18 @@ function Home() {
 					<div
 						className="self-center basis-3/5 aspect-video border-[4px] border-gray-600 overflow-hidden rounded-md"
 						id="demo-container"
-					></div>
+					>
+						{addIframe && (
+							<iframe
+								id="demo-iframe"
+								src="https://www.youtube.com/embed/AHnrZucgBBM?enablejsapi=1"
+								title="YouTube video player"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								allowFullScreen
+								className="h-full w-full rounded-md"
+							></iframe>
+						)}
+					</div>
 					<div className="flex flex-col p-14  items-start max-h-full  basis-2/5 ">
 						<Accordion
 							type="single"

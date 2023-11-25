@@ -399,8 +399,3 @@ tbody td {
 .custom-terminal {
 	resize: vertical;
 }
-
-#demo-iframe {
-	width: 100%;
-	height: 100%;
-}
