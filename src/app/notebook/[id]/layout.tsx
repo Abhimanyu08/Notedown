@@ -8,11 +8,15 @@ import { getUser } from "@utils/getData";
 import { Metadata } from "next";
 import React from "react";
 
+type LayoutProps = {
+	children: React.ReactNode;
+	postpreview: React.ReactNode;
+	params: { id: string };
+};
+
 export async function generateMetadata({
 	params,
-}: {
-	params: { id: string };
-}): Promise<Metadata | undefined> {
+}: LayoutProps): Promise<Metadata | undefined> {
 	if (params.id === "anon") return;
 	let { name } = (await getUser(params.id))!;
 
@@ -37,11 +41,7 @@ async function ProfilePostsLayout({
 	children,
 	postpreview,
 	params,
-}: {
-	children: React.ReactNode;
-	postpreview: React.ReactNode;
-	params: { id: string };
-}) {
+}: LayoutProps) {
 	let loggedInName = "",
 		loggedInUserName = "";
 	if (params.id !== "anon") {
