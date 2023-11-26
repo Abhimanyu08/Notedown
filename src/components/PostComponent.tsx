@@ -1,4 +1,3 @@
-import SearchResult from "@/interfaces/SearchResult";
 import { cn } from "@/lib/utils";
 import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
@@ -6,6 +5,7 @@ import PostOnPreviewColor from "./PostOnPreviewColor";
 import { PostActions } from "./PostOptions";
 import PostTitle from "./PostTitle";
 import { Draft } from "@utils/processDrafts";
+import OwnerOnlyStuff from "./ProfileComponents/OwnerOnlyStuff";
 
 export interface PostComponentProps {
 	post: Partial<Draft>;

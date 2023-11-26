@@ -57,7 +57,12 @@ async function PostPreview({ postId }: { postId: string }) {
 				>
 					{blogJsx}
 
-					{footNotes.length > 0 && <Footers footNotes={footNotes} />}
+					{footNotes.length > 0 && (
+						<Footers
+							footNotes={footNotes}
+							tagToJsxConverter={tagToJsx}
+						/>
+					)}
 				</Blog>
 				<PostPreviewControls markdown={markdown} postMeta={post} />
 			</BlogContextProvider>

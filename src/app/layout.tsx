@@ -75,13 +75,9 @@ export default async function RootLayout({
 			<body className="flex flex-col h-screen w-full bg-gray-200 dark:bg-black ">
 				<Toaster />
 				<SupabaseProvider session={session}>
-					<ExpandedImageProvider>
-						<ExpandedCanvasProvider>
-							<IndexedDbContextProvider>
-								{children}
-							</IndexedDbContextProvider>
-						</ExpandedCanvasProvider>
-					</ExpandedImageProvider>
+					<IndexedDbContextProvider>
+						{children}
+					</IndexedDbContextProvider>
 				</SupabaseProvider>
 				<Analytics />
 			</body>

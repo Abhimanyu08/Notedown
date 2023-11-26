@@ -51,7 +51,12 @@ function BlogLayout({
 				>
 					{blogJsx}
 
-					{footNotes.length > 0 && <Footers footNotes={footNotes} />}
+					{footNotes.length > 0 && (
+						<Footers
+							footNotes={footNotes}
+							tagToJsxConverter={tagToJsx}
+						/>
+					)}
 				</Blog>
 			</BlogContainer>
 			{/* </div> */}

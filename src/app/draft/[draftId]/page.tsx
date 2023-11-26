@@ -6,6 +6,9 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
+import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
+import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
@@ -41,7 +44,13 @@ function Draft() {
 					language={blogData.data.language}
 					extraClasses="mx-auto"
 					AuthorComponent={() => <></>}
-				/>
+				>
+					{transformer(
+						mdToHast(parseFrontMatter(blogData.content).content)
+							.htmlAST,
+						tagToJsx
+					)}
+				</Blog>
 			</BlogContainer>
 			{/* </div> */}
 			<div className="hidden lg:flex lg:flex-col lg:basis-1/5  gap-10 text-black dark:text-white pl-10 mt-20">

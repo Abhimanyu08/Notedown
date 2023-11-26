@@ -9,6 +9,9 @@ import MarkdownEditor from "./MarkdownEditor";
 import WriteToolbar from "./WriteToolbar";
 import useBlogStateUpdate from "../hooks/useBlogStateUpdate";
 import { initialMarkdownMeta } from "@utils/constants";
+import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
+import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 
 function EditorLayout({
 	post,
@@ -104,7 +107,12 @@ function EditorLayout({
 					{...blogState.blogMeta}
 					markdown={blogContent}
 					AuthorComponent={() => <></>}
-				/>
+				>
+					{transformer(
+						mdToHast(parseFrontMatter(blogContent).content).htmlAST,
+						tagToJsx
+					)}
+				</Blog>
 			</div>
 		</div>
 	);

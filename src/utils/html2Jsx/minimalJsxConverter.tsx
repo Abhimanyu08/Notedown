@@ -5,14 +5,16 @@ import { Suspense } from "react";
 import {
 	HtmlAstElement,
 	createHeadingIdFromHeadingText,
+	defaultTagToJsx,
 	extractTextFromChildren,
-	tagToJsx,
 	transformer,
 } from "./transformer";
 
 import MinimalLatex from "@components/BlogPostComponents/MinimalComponents/MinimalLatex";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import React from "react";
+import { TagToJsx } from "./TagToJsx";
+import getYoutubeEmbedLink from "@utils/getYoutubeEmbedLink";
 const MinimalHeadingCopyButton = React.lazy(
 	() =>
 		import(
@@ -67,14 +69,12 @@ export function tagToJsxConverterWithContext({
 	imageFolder?: string;
 
 	language?: (typeof ALLOWED_LANGUAGES)[number];
-}): { tagToJsx: typeof tagToJsx; footNotes: { id: number; node: any }[] } {
+}): { tagToJsx: TagToJsx; footNotes: { id: number; node: any }[] } {
 	let footNotes: { id: number; node: any }[] = [];
-	const t2J: typeof tagToJsx = {
-		...tagToJsx,
+	const t2J: TagToJsx = {
 		...(() => {
-			let headingToRenderers: Partial<
-				Record<HeadTags, (typeof tagToJsx)["h1"]>
-			> = {};
+			let headingToRenderers: Partial<Record<HeadTags, TagToJsx["h1"]>> =
+				{};
 			for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
 				headingToRenderers[heading as HeadTags] = (node) => {
 					const headingChildren = node.children;
@@ -92,7 +92,7 @@ export function tagToJsxConverterWithContext({
 						},
 
 						[
-							...node.children.map((c) => transformer(c)),
+							...node.children.map((c) => transformer(c, t2J)),
 							<MinimalHeadingCopyButton
 								key={headingId}
 								headingId={headingId}
@@ -138,6 +138,57 @@ export function tagToJsxConverterWithContext({
 					</figcaption>
 				</ExpandableImageContainer>
 			);
+		},
+
+		a: (node) => {
+			const { href } = node.properties as { href: string };
+			const linkText = node.children;
+
+			if (
+				linkText.length === 0 &&
+				(href.startsWith("https://www.youtube.com") ||
+					href.startsWith("https://youtu.be"))
+			) {
+				return (
+					<iframe
+						className="w-full youtube"
+						src={getYoutubeEmbedLink(href)}
+						title="YouTube video player"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowFullScreen
+					></iframe>
+				);
+			}
+
+			// let newAttributes = { ...node.attributes };
+
+			// node.attributes = newAttributes;
+
+			const footNoteRegex = /\^(\d+)/;
+			if (
+				linkText.length === 1 &&
+				linkText[0].type === "text" &&
+				!href &&
+				footNoteRegex.test(linkText[0].value)
+			) {
+				const footNoteId = linkText[0].value
+					.match(footNoteRegex)
+					?.at(1);
+				let properties = { href: `#footnote-${footNoteId}` };
+				return (
+					<sup
+						id={`footnote-referrer-${footNoteId}`}
+						className=" text-blue-400 pl-[4px]  hover:underline"
+					>
+						{React.createElement("a", properties, footNoteId)}
+					</sup>
+				);
+			}
+			if (!href.startsWith("#")) {
+				// newAttributes = { ...node.attributes, target: "_blank" };
+				node.properties!["target"] = "_blank";
+			}
+			return defaultTagToJsx(node);
 		},
 
 		p: (node, converter) => {

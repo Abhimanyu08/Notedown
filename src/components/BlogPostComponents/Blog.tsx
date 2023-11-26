@@ -25,11 +25,11 @@ const Blog = memo(
 	}) {
 		const { content, data } = parseFrontMatter(markdown || "");
 		const { title, description } = data;
-		let blogJsx = <></>;
-		if (!children) {
-			const { htmlAST } = mdToHast(content || "");
-			blogJsx = transformer(htmlAST);
-		}
+		// let blogJsx = <></>;
+		// if (!children) {
+		// 	const { htmlAST } = mdToHast(content || "");
+		// 	blogJsx = transformer(htmlAST);
+		// }
 
 		return (
 			<div
@@ -126,7 +126,7 @@ const Blog = memo(
 					</div>
 				</header>
 				<article className="" id="jsx">
-					{children ? children : blogJsx}
+					{children}
 				</article>
 			</div>
 			// </BlogContext.Provider>

@@ -103,6 +103,7 @@ function Toolbar() {
 								? `?draft=${blogState.blogMeta.timeStamp}`
 								: "")
 						}
+						prefetch={false}
 					>
 						<AiFillEdit size={28} />
 					</Link>

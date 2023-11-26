@@ -1,10 +1,13 @@
+import { TagToJsx } from "@utils/html2Jsx/TagToJsx";
 import { HtmlAstElement, transformer } from "@utils/html2Jsx/transformer";
 import React from "react";
 
 function Footers({
 	footNotes,
+	tagToJsxConverter,
 }: {
 	footNotes: { id: number; node: HtmlAstElement }[];
+	tagToJsxConverter: TagToJsx;
 }) {
 	return (
 		<div id="footer-section">
@@ -22,7 +25,7 @@ function Footers({
 									{footNote.id}.
 								</a>
 							</span>
-							{transformer(footNote.node)}
+							{transformer(footNote.node, tagToJsxConverter)}
 						</li>
 					);
 				})}

@@ -9,6 +9,7 @@ import {
 } from "@utils/html2Jsx/transformer";
 import { usePathname } from "next/navigation";
 import React, { useContext } from "react";
+import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
 
 function Ptag({ element }: { element: HtmlAstElement }) {
 	const pathname = usePathname();
@@ -38,7 +39,7 @@ function Ptag({ element }: { element: HtmlAstElement }) {
 				}
 			}}
 		>
-			{element.children.map((child) => transformer(child))}
+			{element.children.map((child) => transformer(child, tagToJsx))}
 		</p>
 	);
 }
