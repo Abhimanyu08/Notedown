@@ -2,15 +2,12 @@ import "@/styles/globals.css";
 import "@/styles/xterm.css";
 import { Metadata } from "next";
 import { Petrona, Nunito_Sans, IBM_Plex_Mono } from "next/font/google";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import SupabaseProvider from "./appContext";
-import ExpandedImageProvider from "@components/BlogPostComponents/ExpandedImage/ExpandedImageProvider";
-import ExpandedCanvasProvider from "@components/BlogPostComponents/ExpandedCanvas/ExpandedCanvasProvider";
 import IndexedDbContextProvider from "@/contexts/IndexedDbContext";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@components/ui/toaster";
 import { createSupabaseServerClient } from "@utils/createSupabaseClients";
-import Script from "next/script";
 
 const serif = Petrona({
 	subsets: ["latin"],

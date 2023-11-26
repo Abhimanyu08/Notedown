@@ -82,7 +82,7 @@ export function TaggedDrafts({
 				<div
 					className={cn(
 						"border-l-2 border-border ml-4 mt-3 pl-4 gap-3 flex flex-col",
-						tag === "notag" && "ml-1 border-l-0 pl-0"
+						tag === "notag" && "ml-0 border-l-0 pl-0"
 					)}
 				>
 					{/* <DraftsDisplay rawObjects={drafts} tag={tag} />

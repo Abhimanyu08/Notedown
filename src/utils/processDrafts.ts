@@ -7,6 +7,7 @@ export type Draft = {
     postId?: string;
     published?: boolean
     slug?: string
+    created_by?: string
 } & FrontMatter;
 
 export type RawObject = { timeStamp: string, markdown: string, postId?: string }

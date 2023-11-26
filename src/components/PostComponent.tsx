@@ -5,7 +5,9 @@ import PostOnPreviewColor from "./PostOnPreviewColor";
 import { PostActions } from "./PostOptions";
 import PostTitle from "./PostTitle";
 import { Draft } from "@utils/processDrafts";
-import OwnerOnlyStuff from "./ProfileComponents/OwnerOnlyStuff";
+import OwnerOnlyStuff, {
+	NotOwnerOnlyStuff,
+} from "./ProfileComponents/OwnerOnlyStuff";
 
 export interface PostComponentProps {
 	post: Partial<Draft>;
@@ -21,6 +23,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 		timeStamp,
 		published,
 		slug,
+		created_by,
 	} = post;
 
 	return (
@@ -60,16 +63,18 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 				/>
 				<div className="flex gap-2 items-center text-xs text-gray-400">
 					<span className="">{date && formatDate(date)}</span>
-					<span
-						className={cn(
-							"rounded-lg px-1 text-xs underline underline-offset-2",
-							published
-								? "decoration-emerald-700"
-								: "decoration-rose-700"
-						)}
-					>
-						{published ? "public" : "private"}
-					</span>
+					<OwnerOnlyStuff id={created_by!}>
+						<span
+							className={cn(
+								"rounded-lg px-1 text-xs underline underline-offset-2",
+								published
+									? "decoration-emerald-700"
+									: "decoration-rose-700"
+							)}
+						>
+							{published ? "public" : "private"}
+						</span>
+					</OwnerOnlyStuff>
 				</div>
 			</Link>
 		</div>
