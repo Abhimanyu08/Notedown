@@ -3,6 +3,9 @@ import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewControls";
+import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
+import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
+import { parseFrontMatter } from "@utils/parseFrontMatter";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 
@@ -26,7 +29,13 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 				language={blogData.data?.language}
 				markdown={blogData.content}
 				AuthorComponent={() => <></>}
-			/>
+			>
+				{transformer(
+					mdToHast(parseFrontMatter(blogData.content).content)
+						.htmlAST,
+					tagToJsx
+				)}
+			</Blog>
 			<PostPreviewControls
 				markdown={blogData.content}
 				postMeta={{

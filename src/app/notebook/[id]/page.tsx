@@ -66,7 +66,7 @@ async function Page({
 					const query = formData.get("query");
 					redirect(`/notebook/${params.id}?q=${query}`);
 				}}
-				className="flex gap-2 px-7"
+				className="flex gap-2 px-6"
 			>
 				<Input type="text" name="query" placeholder="Search" />
 

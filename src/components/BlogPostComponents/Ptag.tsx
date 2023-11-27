@@ -16,7 +16,7 @@ function Ptag({ element }: { element: HtmlAstElement }) {
 	const editorContext = useContext(EditorContext);
 
 	if (!pathname?.startsWith("/write")) {
-		return defaultTagToJsx(element);
+		return defaultTagToJsx(element, tagToJsx);
 	}
 
 	const { start } = getStartEndFromNode(element);
