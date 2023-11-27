@@ -99,7 +99,6 @@ export const tagToJsx: TagToJsx = {
 		return (
 			<Code
 				code={code}
-				key={this.BLOCK_NUMBER}
 				blockNumber={this.BLOCK_NUMBER}
 				{...{ start: start + blockMetaString.length + 4, end: end - 4 }}
 				file={(blockMeta.file as any) || ""}

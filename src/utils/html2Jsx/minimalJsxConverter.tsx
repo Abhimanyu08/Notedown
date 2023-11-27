@@ -347,7 +347,6 @@ export function tagToJsxConverterWithContext({
 			return (
 				<MinimalCode
 					code={code}
-					key={this.BLOCK_NUMBER}
 					language={language!}
 					blockNumber={this.BLOCK_NUMBER}
 					file={(blockMeta.file as any) || ""}
