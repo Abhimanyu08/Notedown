@@ -17,10 +17,9 @@ import {
 import { TagToJsx } from "./TagToJsx";
 import React from "react";
 
-let BLOCK_NUMBER = 0;
-
 export const tagToJsx: TagToJsx = {
 	footnotes: [],
+	BLOCK_NUMBER: 0,
 	...(() => {
 		let headingToRenderers: Partial<Record<HeadTags, TagToJsx["h1"]>> = {};
 		for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
@@ -62,7 +61,7 @@ export const tagToJsx: TagToJsx = {
 	hr: () => {
 		return <hr />;
 	},
-	pre: (node) => {
+	pre(node) {
 		let codeNode = node.children[0] as HtmlAstElement;
 		let code = (codeNode.children[0] as Text)?.value || "";
 
@@ -96,12 +95,12 @@ export const tagToJsx: TagToJsx = {
 			);
 		}
 
-		BLOCK_NUMBER += 1;
+		this.BLOCK_NUMBER += 1;
 		return (
 			<Code
 				code={code}
-				key={BLOCK_NUMBER}
-				blockNumber={BLOCK_NUMBER}
+				key={this.BLOCK_NUMBER}
+				blockNumber={this.BLOCK_NUMBER}
 				{...{ start: start + blockMetaString.length + 4, end: end - 4 }}
 				file={(blockMeta.file as any) || ""}
 				theme={(blockMeta.theme as any) || ""}

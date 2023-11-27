@@ -52,7 +52,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 afterUpload()
                 setUploadFinished(true)
 
-                console.log(post)
                 dispatch({
                     type: "set blog meta",
                     payload: { id: post.id, slug: post.slug || undefined },
@@ -63,7 +62,6 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
                 }
                 sendRevalidationRequest(`/notebook/${created_by}`)
                 const revalidationPath = "/note" + (blogState.blogMeta.published ? "" : "/private") + "/" + (blogState.blogMeta.slug ?? post.id)
-                console.log(revalidationPath)
                 sendRevalidationRequest(revalidationPath)
                 setProgressMessage("Changes Uploaded");
 

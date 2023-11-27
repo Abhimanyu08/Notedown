@@ -118,6 +118,7 @@ export function transformer(
 ): JSX.Element {
 	if (node.type === "root") {
 		tagToJsxConverter.footnotes = [];
+		tagToJsxConverter.BLOCK_NUMBER = 0;
 		return (
 			<main>
 				{node.children.map((child) =>

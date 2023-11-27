@@ -56,7 +56,6 @@ const MinimalDrawingSvg = React.lazy(
 			"@components/BlogPostComponents/MinimalComponents/MinimalSvgDrawing"
 		)
 );
-let BLOCK_NUMBER = 0;
 
 type HeadTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -103,6 +102,7 @@ export function tagToJsxConverterWithContext({
 			return headingToRenderers;
 		})(),
 
+		BLOCK_NUMBER: 0,
 		img: (node) => {
 			const { alt, src } = node.properties as {
 				alt: string;
@@ -282,7 +282,7 @@ export function tagToJsxConverterWithContext({
 			return <p>{node.children.map((c) => transformer(c, converter))}</p>;
 		},
 
-		pre: (node) => {
+		pre(node) {
 			let codeNode = node.children[0] as HtmlAstElement;
 			let code = (codeNode.children[0] as Text)?.value || "";
 
@@ -343,13 +343,13 @@ export function tagToJsxConverterWithContext({
 				);
 			}
 
-			BLOCK_NUMBER += 1;
+			this.BLOCK_NUMBER += 1;
 			return (
 				<MinimalCode
 					code={code}
-					key={BLOCK_NUMBER}
+					key={this.BLOCK_NUMBER}
 					language={language!}
-					blockNumber={BLOCK_NUMBER}
+					blockNumber={this.BLOCK_NUMBER}
 					file={(blockMeta.file as any) || ""}
 					theme={(blockMeta.theme as any) || ""}
 				/>
