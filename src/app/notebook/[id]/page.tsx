@@ -13,12 +13,13 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_TAGS_TABLE, SUPABASE_POST_TABLE } from "@utils/constants";
 import { postToDraft } from "@utils/postToDraft";
 import { Draft } from "@utils/processDrafts";
-import { supabase } from "@utils/supabaseClient";
 import { Database } from "@/interfaces/supabase";
 import DraftSearch from "./components/DraftSearch";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Link from "next/link";
+import { createSupabaseServerClient } from "@utils/createSupabaseClients";
+import { cookies } from "next/headers";
 
 async function Page({
 	params,
@@ -27,7 +28,8 @@ async function Page({
 	params: { id: string };
 	searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-	console.log(searchParams);
+	const supabase = createSupabaseServerClient(cookies);
+
 	const searchQuery = searchParams?.["q"] as string;
 	let SearchResultJsx: JSX.Element | null = null;
 

@@ -1,3 +1,4 @@
+import { ToolTipComponent } from "@components/ToolTipComponent";
 import { TagToJsx } from "@utils/html2Jsx/TagToJsx";
 import { HtmlAstElement, transformer } from "@utils/html2Jsx/transformer";
 import React from "react";
@@ -17,13 +18,13 @@ function Footers({
 					return (
 						<li className="flex gap-2 " key={footNote.id}>
 							<span className="hover:underline text-gray-100 hover:text-white">
-								<a
-									href={`#footnote-referrer-${footNote.id}`}
-									className="tooltip tooltip-top"
-									data-tip="Back to content"
-								>
-									{footNote.id}.
-								</a>
+								<ToolTipComponent tip="Back to content">
+									<a
+										href={`#footnote-referrer-${footNote.id}`}
+									>
+										{footNote.id}.
+									</a>
+								</ToolTipComponent>
 							</span>
 							{transformer(footNote.node, tagToJsxConverter)}
 						</li>

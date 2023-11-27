@@ -21,7 +21,7 @@ async function PostPreview({ postId }: { postId: string }) {
 
 	const { content, data } = parseFrontMatter(markdown || "");
 
-	const { tagToJsx, footNotes } = tagToJsxConverterWithContext({
+	const tagToJsx = tagToJsxConverterWithContext({
 		fileNamesToUrls: imagesToUrls!,
 		language: post?.language as
 			| (typeof ALLOWED_LANGUAGES)[number]
@@ -57,9 +57,9 @@ async function PostPreview({ postId }: { postId: string }) {
 				>
 					{blogJsx}
 
-					{footNotes.length > 0 && (
+					{tagToJsx.footnotes!.length > 0 && (
 						<Footers
-							footNotes={footNotes}
+							footNotes={tagToJsx.footnotes!}
 							tagToJsxConverter={tagToJsx}
 						/>
 					)}

@@ -12,6 +12,7 @@ import { initialMarkdownMeta } from "@utils/constants";
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
 import { parseFrontMatter } from "@utils/parseFrontMatter";
+import Footers from "@components/BlogPostComponents/Footers";
 
 function EditorLayout({
 	post,
@@ -111,6 +112,12 @@ function EditorLayout({
 					{transformer(
 						mdToHast(parseFrontMatter(blogContent).content).htmlAST,
 						tagToJsx
+					)}
+					{tagToJsx.footnotes && tagToJsx.footnotes.length > 0 && (
+						<Footers
+							footNotes={tagToJsx.footnotes}
+							tagToJsxConverter={tagToJsx}
+						/>
 					)}
 				</Blog>
 			</div>

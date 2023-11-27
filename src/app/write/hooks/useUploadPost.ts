@@ -110,7 +110,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             description,
             language,
             created_by,
-            slug,
+            slug: slug || undefined,
             timestamp: editorState.timeStamp
         }).select("id,slug").single()
 
@@ -143,8 +143,8 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
 
     const uploadSlugPostRow = async ({ postId, slug }: { postId: number, slug: string }) => {
+        if (!slug) return
         const previousActiveSlug = blogState.blogMeta.slug
-        console.log(previousActiveSlug)
 
         if (previousActiveSlug && slug !== previousActiveSlug) {
             const { } = await supabase.from(SUPABASE_SLUGPOST_TABLE).update({ active: false }).eq("slug", previousActiveSlug).select("id")

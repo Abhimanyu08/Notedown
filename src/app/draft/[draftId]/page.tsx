@@ -4,6 +4,7 @@ import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
+import Footers from "@components/BlogPostComponents/Footers";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
@@ -49,6 +50,12 @@ function Draft() {
 						mdToHast(parseFrontMatter(blogData.content).content)
 							.htmlAST,
 						tagToJsx
+					)}
+					{tagToJsx.footnotes!.length > 0 && (
+						<Footers
+							footNotes={tagToJsx.footnotes!}
+							tagToJsxConverter={tagToJsx}
+						/>
 					)}
 				</Blog>
 			</BlogContainer>

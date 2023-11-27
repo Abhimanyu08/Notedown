@@ -5,4 +5,6 @@ export type TagToJsx = {
 		node: HtmlAstElement,
 		tagToJsxConverter: TagToJsx
 	) => JSX.Element;
-};
+} & { footnotes?: FootNote[] };
+
+type FootNote = { id: number; node: any };

@@ -6,7 +6,6 @@ import { toHast } from "mdast-util-to-hast";
 import React from "react";
 import { visit } from "unist-util-visit";
 import { TagToJsx } from "./TagToJsx";
-let footNotes: { id: number; node: any }[] = [];
 
 const attributes: (typeof defaultSchema)["attributes"] = {
 	"*": ["className", "dataStartoffset", "dataEndoffset"],
@@ -118,6 +117,7 @@ export function transformer(
 	// parent?: HtmlNode
 ): JSX.Element {
 	if (node.type === "root") {
+		tagToJsxConverter.footnotes = [];
 		return (
 			<main>
 				{node.children.map((child) =>

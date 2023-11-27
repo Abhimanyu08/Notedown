@@ -2,6 +2,7 @@
 import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import Footers from "@components/BlogPostComponents/Footers";
 import PostPreviewControls from "@components/PostPreviewComponents/PostPreviewControls";
 import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
@@ -34,6 +35,12 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 					mdToHast(parseFrontMatter(blogData.content).content)
 						.htmlAST,
 					tagToJsx
+				)}
+				{tagToJsx.footnotes!.length > 0 && (
+					<Footers
+						footNotes={tagToJsx.footnotes!}
+						tagToJsxConverter={tagToJsx}
+					/>
 				)}
 			</Blog>
 			<PostPreviewControls

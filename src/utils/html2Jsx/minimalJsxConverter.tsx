@@ -69,8 +69,7 @@ export function tagToJsxConverterWithContext({
 	imageFolder?: string;
 
 	language?: (typeof ALLOWED_LANGUAGES)[number];
-}): { tagToJsx: TagToJsx; footNotes: { id: number; node: any }[] } {
-	let footNotes: { id: number; node: any }[] = [];
+}): TagToJsx {
 	const t2J: TagToJsx = {
 		...(() => {
 			let headingToRenderers: Partial<Record<HeadTags, TagToJsx["h1"]>> =
@@ -191,7 +190,7 @@ export function tagToJsxConverterWithContext({
 			return defaultTagToJsx(node);
 		},
 
-		p: (node, converter) => {
+		p(node, converter) {
 			// let firstWord = "";
 			if (node.children.length == 0) return <></>;
 
@@ -205,16 +204,17 @@ export function tagToJsxConverterWithContext({
 			}
 
 			//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
+			const footNoteRegex = /^(\d+):(.*)/;
 			if (
 				node.children[0].type === "text" &&
-				/^\[(\d+)\]:/.test(node.children[0].value)
+				footNoteRegex.test(node.children[0].value)
 			) {
 				//This is a footnote
 				const firstChild = node.children[0].value;
-				const footnoteId = firstChild.match(/^\[(\d+)\]/)?.at(1);
+				const footnoteId = firstChild.match(footNoteRegex)?.at(1);
 				const remainingTextOfFirstChild = firstChild
-					.match(/^\[\d+\]:(.*)/)
-					?.at(1);
+					.match(footNoteRegex)
+					?.at(2);
 
 				const newFirstChild: Text = {
 					type: "text",
@@ -230,7 +230,7 @@ export function tagToJsxConverterWithContext({
 					},
 					children: [newFirstChild, ...node.children.slice(1)],
 				};
-				footNotes.push({
+				this.footnotes!.push({
 					id: parseInt(footnoteId || "0"),
 					node: newPNode,
 				});
@@ -400,5 +400,5 @@ export function tagToJsxConverterWithContext({
 		},
 	};
 
-	return { tagToJsx: t2J, footNotes: footNotes };
+	return t2J;
 }

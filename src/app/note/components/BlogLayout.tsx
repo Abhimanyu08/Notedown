@@ -20,7 +20,7 @@ function BlogLayout({
 	const { post, markdown } = postMeta;
 	const { content, data } = parseFrontMatter(markdown || "");
 
-	const { tagToJsx, footNotes } = tagToJsxConverterWithContext({
+	const tagToJsx = tagToJsxConverterWithContext({
 		fileNamesToUrls: postMeta.imagesToUrls!,
 		language: post?.language as
 			| (typeof ALLOWED_LANGUAGES)[number]
@@ -51,9 +51,9 @@ function BlogLayout({
 				>
 					{blogJsx}
 
-					{footNotes.length > 0 && (
+					{tagToJsx.footnotes!.length > 0 && (
 						<Footers
-							footNotes={footNotes}
+							footNotes={tagToJsx.footnotes!}
 							tagToJsxConverter={tagToJsx}
 						/>
 					)}

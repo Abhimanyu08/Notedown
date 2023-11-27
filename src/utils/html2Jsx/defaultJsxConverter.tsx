@@ -20,6 +20,7 @@ import React from "react";
 let BLOCK_NUMBER = 0;
 
 export const tagToJsx: TagToJsx = {
+	footnotes: [],
 	...(() => {
 		let headingToRenderers: Partial<Record<HeadTags, TagToJsx["h1"]>> = {};
 		for (let heading of ["h1", "h2", "h3", "h4", "h5", "h6"]) {
@@ -157,7 +158,7 @@ export const tagToJsx: TagToJsx = {
 		return defaultTagToJsx(node);
 	},
 
-	p: (node) => {
+	p(node) {
 		// let firstWord = "";
 		if (node.children.length == 0) return <></>;
 
@@ -171,34 +172,38 @@ export const tagToJsx: TagToJsx = {
 		}
 
 		//we need to handle the case where image tags are under p -> <p> some text before image <img src alt> some text after image</p> because react throws the warning that p tags can't contain divs inside them
-		// if (
-		// 	node.children[0].type === "text" &&
-		// 	/^\[(\d+)\]:/.test(node.children[0].value)
-		// ) {
-		// 	//This is a footnote
-		// 	const firstChild = node.children[0].value;
-		// 	const footnoteId = firstChild.match(/^\[(\d+)\]/)?.at(1);
-		// 	const remainingTextOfFirstChild = firstChild
-		// 		.match(/^\[\d+\]:(.*)/)
-		// 		?.at(1);
+		const footNoteRegex = /^(\d+):(.*)/;
+		if (
+			node.children[0].type === "text" &&
+			footNoteRegex.test(node.children[0].value)
+		) {
+			//This is a footnote
+			const firstChild = node.children[0].value;
+			const footnoteId = firstChild.match(footNoteRegex)?.at(1);
+			const remainingTextOfFirstChild = firstChild
+				.match(footNoteRegex)
+				?.at(2);
 
-		// 	const newFirstChild: Text = {
-		// 		type: "text",
-		// 		value: remainingTextOfFirstChild || "",
-		// 	};
+			const newFirstChild: Text = {
+				type: "text",
+				value: remainingTextOfFirstChild || "",
+			};
 
-		// 	const newPNode: HtmlAstElement = {
-		// 		type: "element",
-		// 		tagName: "span",
-		// 		properties: {
-		// 			id: `footnote-${footnoteId}`,
-		// 			className: "footnote-reference",
-		// 		},
-		// 		children: [newFirstChild, ...node.children.slice(1)],
-		// 	};
-		// 	footNotes.push({ id: parseInt(footnoteId || "0"), node: newPNode });
-		// 	return <></>;
-		// }
+			const newPNode: HtmlAstElement = {
+				type: "element",
+				tagName: "span",
+				properties: {
+					id: `footnote-${footnoteId}`,
+					className: "footnote-reference",
+				},
+				children: [newFirstChild, ...node.children.slice(1)],
+			};
+			this.footnotes!.push({
+				id: parseInt(footnoteId || "0"),
+				node: newPNode,
+			});
+			return <></>;
+		}
 
 		let nodesBeforeImage = [];
 		let i = 0;
