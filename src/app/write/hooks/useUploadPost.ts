@@ -108,7 +108,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             description,
             language,
             created_by,
-            slug: slug || undefined,
+            slug: slug || null,
             timestamp: editorState.timeStamp
         }).select("id,slug").single()
 
@@ -129,7 +129,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             title,
             description,
             language,
-            slug: slug || undefined
+            slug: slug || null
         }).eq("id", postId).select("id,slug").single();
 
         if (error) {
@@ -140,8 +140,9 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         return newPost
     }
 
-    const uploadSlugPostRow = async ({ postId, slug }: { postId: number, slug: string }) => {
+    const uploadSlugPostRow = async ({ postId, slug }: { postId: number, slug?: string }) => {
         const previousActiveSlug = blogState.blogMeta.slug
+        console.log("Previous active slug", previousActiveSlug)
 
         if (previousActiveSlug && slug !== previousActiveSlug) {
             const { } = await supabase.from(SUPABASE_SLUGPOST_TABLE).update({ active: false }).eq("slug", previousActiveSlug).select("id")
@@ -322,10 +323,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
         setProgressMessage("Updating post row")
         //update the post row in the table to have new title,description,language etc.
         const post = await updatePostRow({ postId, ...postMeta })
-        if (postMeta.slug) {
-            console.log(postMeta.slug)
-            await uploadSlugPostRow({ postId, slug: postMeta.slug })
-        }
+        await uploadSlugPostRow({ postId, slug: postMeta.slug })
         const tags = postMeta.tags
 
         if (tags) {

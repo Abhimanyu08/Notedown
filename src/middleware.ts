@@ -97,7 +97,6 @@ export async function middleware(req: NextRequest) {
                 return res
             }
             const newPathname = pathname.split("/").slice(0, -1).join("/") + "/" + slug
-            console.log(newPathname)
             const url = req.nextUrl.clone()
             url.pathname = newPathname
             return NextResponse.redirect(url)
@@ -114,12 +113,15 @@ export async function middleware(req: NextRequest) {
         const { data: postData } = await supabase.from(SUPABASE_POST_TABLE).select("slug").eq("id", data.postid).single()
         if (postData?.slug) {
             const newPathname = pathname.split("/").slice(0, -1).join("/") + "/" + postData.slug
-            console.log(newPathname)
             const url = req.nextUrl.clone()
             url.pathname = newPathname
             return NextResponse.redirect(url)
         }
-        return res
+
+        const newPathname = pathname.split("/").slice(0, -1).join("/") + "/" + data.postid
+        const url = req.nextUrl.clone()
+        url.pathname = newPathname
+        return NextResponse.redirect(url)
     }
     return res
 }
