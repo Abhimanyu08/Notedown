@@ -1,7 +1,7 @@
 import { Input } from "@components/ui/input";
 import Drafts from "./components/Drafts";
 import { redirect } from "next/navigation";
-import PostDisplay from "@components/PostDisplay";
+import PostDisplay from "@components/PostComponents/PostDisplay";
 import NewNoteButton from "@components/ProfileComponents/NewPostButton";
 import OwnerOnlyStuff, {
 	NotOwnerOnlyStuff,

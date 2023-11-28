@@ -1,7 +1,7 @@
 "use client";
 import { Draft, RawObject } from "@utils/processDrafts";
 import { DraftsDisplay } from "./DraftsDisplay";
-import PostDisplay from "@components/PostDisplay";
+import PostDisplay from "@components/PostComponents/PostDisplay";
 import { useParams, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";

@@ -42,13 +42,15 @@ async function ProfilePostsLayout({
 	postpreview,
 	params,
 }: LayoutProps) {
+	console.log("Post preview type ======================>", params);
 	return (
 		<>
 			<div className="grid grid-cols-10 w-full h-screen grid-rows-1 ">
 				<div className="flex flex-col col-span-3 row-span-1 pt-6 border-r-[1px] border-border">
 					{children}
 				</div>
-				{/* <PostPreviewLayout
+
+				<div
 					className="col-span-7 h-full row-span-1 pt-10 relative  
 				overflow-y-auto
 		lg:scrollbar-thin 
@@ -57,9 +59,9 @@ async function ProfilePostsLayout({
 				scroll-smooth
 	
 				"
-				> */}
-				{postpreview}
-				{/* </PostPreviewLayout> */}
+				>
+					{postpreview}
+				</div>
 			</div>
 		</>
 	);

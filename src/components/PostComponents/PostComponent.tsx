@@ -1,20 +1,19 @@
 import { cn } from "@/lib/utils";
 import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
-import PostOnPreviewColor from "./PostOnPreviewColor";
-import { PostActions } from "./PostOptions";
-import PostTitle from "./PostTitle";
+import PostOnPreviewColor from "../PostComponents/PostOnPreviewColor";
+import { PostActions } from "../PostComponents/PostOptions";
+import PostTitle from "../PostComponents/PostTitle";
 import { Draft } from "@utils/processDrafts";
-import OwnerOnlyStuff, {
-	NotOwnerOnlyStuff,
-} from "./ProfileComponents/OwnerOnlyStuff";
+import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
+import ModifiedPostLink from "./ModifiedPostLink";
 
 export interface PostComponentProps {
 	post: Partial<Draft>;
 	tag?: string;
 }
 
-const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
+const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 	const {
 		postId: id,
 		title,
@@ -37,7 +36,7 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 					slug,
 				}}
 			/>
-			<Link
+			<ModifiedPostLink
 				href={
 					published
 						? slug
@@ -76,9 +75,9 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, tag }) => {
 						</span>
 					</OwnerOnlyStuff>
 				</div>
-			</Link>
+			</ModifiedPostLink>
 		</div>
 	);
 };
 
-export default PostComponent;
+export default Post;

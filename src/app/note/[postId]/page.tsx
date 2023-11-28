@@ -54,7 +54,7 @@ interface PostParams extends NextParsedUrlQuery {
 	postId: string;
 }
 
-async function Post({ params }: { params: PostParams }) {
+async function Note({ params }: { params: PostParams }) {
 	const { post, markdown, imagesToUrls, fileNames } = await getPost(
 		params.postId,
 		supabase
@@ -81,4 +81,4 @@ async function Post({ params }: { params: PostParams }) {
 	);
 }
 
-export default Post;
+export default Note;

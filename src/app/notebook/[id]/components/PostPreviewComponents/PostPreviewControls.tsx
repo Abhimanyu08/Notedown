@@ -9,7 +9,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
-import { ExpandButton } from "../ProfileComponents/ModalButtons";
+import { ExpandButton } from "../../../../../components/ProfileComponents/ModalButtons";
 import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
 import useOwner from "@/hooks/useOwner";
 
@@ -67,10 +67,10 @@ function PostPreviewControls({
 				)}
 				<ToolTipComponent
 					tip="Close preview"
-					onClick={() => {
-						router.push(`/notebook/${params?.id}`);
-					}}
 					className=" text-gray-400 hover:text-white active:scale-95"
+					onClick={() => {
+						router.back();
+					}}
 				>
 					<AiFillCloseCircle size={24} />
 				</ToolTipComponent>

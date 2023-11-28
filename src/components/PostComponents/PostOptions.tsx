@@ -18,12 +18,12 @@ import { useContext, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { SlOptions } from "react-icons/sl";
 import { TbNews, TbNewsOff } from "react-icons/tb";
-import ActionModal from "./Modals/ActionModal";
+import ActionModal from "../Modals/ActionModal";
 import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { IndexedDbContext } from "../contexts/IndexedDbContext";
+import { IndexedDbContext } from "../../contexts/IndexedDbContext";
 import { IoMdShareAlt } from "react-icons/io";
-import ActionWrapper from "./ActionWrapper";
-import { useToast } from "./ui/use-toast";
+import ActionWrapper from "../ActionWrapper";
+import { useToast } from "../ui/use-toast";
 
 export function PostActions({
 	published,
