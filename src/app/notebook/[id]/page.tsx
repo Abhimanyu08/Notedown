@@ -20,6 +20,12 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@utils/createSupabaseClients";
 import { cookies } from "next/headers";
+import { getUser } from "@utils/getData";
+import {
+	LoggedInOptions,
+	NotLoggedInOptions,
+} from "@components/Navbar/Options";
+import SideSheet from "@components/SideSheet";
 
 async function Page({
 	params,
@@ -30,6 +36,15 @@ async function Page({
 }) {
 	const supabase = createSupabaseServerClient(cookies);
 
+	let loggedInName = "",
+		loggedInUserName = "";
+	if (params.id !== "anon") {
+		let userDetails = (await getUser(params.id))!;
+		if (!userDetails) return;
+		const { name, username } = userDetails;
+		loggedInName = name || "";
+		loggedInUserName = username || "";
+	}
 	const searchQuery = searchParams?.["q"] as string;
 	let SearchResultJsx: JSX.Element | null = null;
 
@@ -61,33 +76,42 @@ async function Page({
 
 	const map = await getPostTagMap(supabase, params.id);
 	return (
-		<ProfileContextProvider tagToPostMap={map}>
-			<form
-				action={async (formData) => {
-					"use server";
-					const query = formData.get("query");
-					redirect(`/notebook/${params.id}?q=${query}`);
-				}}
-				className="flex gap-2 px-6"
-			>
-				<Input type="text" name="query" placeholder="Search" />
+		<>
+			<SideSheet
+				loggedInChildren={
+					<LoggedInOptions
+						{...{ name: loggedInName, username: loggedInUserName }}
+					/>
+				}
+				notLoggedInChildren={<NotLoggedInOptions />}
+			/>
+			<ProfileContextProvider tagToPostMap={map}>
+				<form
+					action={async (formData) => {
+						"use server";
+						const query = formData.get("query");
+						redirect(`/notebook/${params.id}?q=${query}`);
+					}}
+					className="flex gap-2 px-6"
+				>
+					<Input type="text" name="query" placeholder="Search" />
 
-				{SearchResultJsx && (
-					<ToolTipComponent
-						tip="Clear search results"
-						side="bottom"
-						type="submit"
-					>
-						<Link href={`/notebook/${params.id}?q`}>
-							<AiFillCloseCircle size={20} />
-						</Link>
-					</ToolTipComponent>
-				)}
-			</form>
+					{SearchResultJsx && (
+						<ToolTipComponent
+							tip="Clear search results"
+							side="bottom"
+							type="submit"
+						>
+							<Link href={`/notebook/${params.id}?q`}>
+								<AiFillCloseCircle size={20} />
+							</Link>
+						</ToolTipComponent>
+					)}
+				</form>
 
-			<div className="h-[2px] bg-border col-span-1 my-4"></div>
-			<div
-				className="
+				<div className="h-[2px] bg-border col-span-1 my-4"></div>
+				<div
+					className="
 							overflow-y-auto
 				lg:scrollbar-thin 
 				scrollbar-track-black 
@@ -95,29 +119,10 @@ async function Page({
 				px-2
 				grow
 				"
-			>
-				{SearchResultJsx}
-				<div className={`${SearchResultJsx ? "hidden" : ""}`}>
-					<NotOwnerOnlyStuff id={params.id}>
-						<TaggedDraftContainer>
-							{Array.from(map.keys()).map((tag) => {
-								const posts = map.get(tag);
-								if (!posts || posts.length === 0) return <></>;
-								return (
-									<TaggedDrafts tag={tag} key={tag}>
-										<PostDisplay posts={posts} tag={tag} />
-									</TaggedDrafts>
-								);
-							})}
-						</TaggedDraftContainer>
-					</NotOwnerOnlyStuff>
-
-					{params.id === "anon" ? (
-						<TaggedDraftContainer>
-							<Drafts />
-						</TaggedDraftContainer>
-					) : (
-						<OwnerOnlyStuff id={params.id}>
+				>
+					{SearchResultJsx}
+					<div className={`${SearchResultJsx ? "hidden" : ""}`}>
+						<NotOwnerOnlyStuff id={params.id}>
 							<TaggedDraftContainer>
 								{Array.from(map.keys()).map((tag) => {
 									const posts = map.get(tag);
@@ -129,27 +134,51 @@ async function Page({
 												posts={posts}
 												tag={tag}
 											/>
-
-											<DraftsDisplay tag={tag} />
 										</TaggedDrafts>
 									);
 								})}
+							</TaggedDraftContainer>
+						</NotOwnerOnlyStuff>
 
+						{params.id === "anon" ? (
+							<TaggedDraftContainer>
 								<Drafts />
 							</TaggedDraftContainer>
-						</OwnerOnlyStuff>
-					)}
-				</div>
-			</div>
+						) : (
+							<OwnerOnlyStuff id={params.id}>
+								<TaggedDraftContainer>
+									{Array.from(map.keys()).map((tag) => {
+										const posts = map.get(tag);
+										if (!posts || posts.length === 0)
+											return <></>;
+										return (
+											<TaggedDrafts tag={tag} key={tag}>
+												<PostDisplay
+													posts={posts}
+													tag={tag}
+												/>
 
-			{params.id === "anon" ? (
-				<NewNoteButton />
-			) : (
-				<OwnerOnlyStuff id={params.id}>
+												<DraftsDisplay tag={tag} />
+											</TaggedDrafts>
+										);
+									})}
+
+									<Drafts />
+								</TaggedDraftContainer>
+							</OwnerOnlyStuff>
+						)}
+					</div>
+				</div>
+
+				{params.id === "anon" ? (
 					<NewNoteButton />
-				</OwnerOnlyStuff>
-			)}
-		</ProfileContextProvider>
+				) : (
+					<OwnerOnlyStuff id={params.id}>
+						<NewNoteButton />
+					</OwnerOnlyStuff>
+				)}
+			</ProfileContextProvider>
+		</>
 	);
 
 	// return (
