@@ -35,6 +35,7 @@ function EditorLayout({
 					author: (post.bloggers as { id: string; name: string })
 						.name,
 					imageFolder: post.image_folder,
+					blogger: post.bloggers as any,
 					language: post.language,
 					slug: post.slug || undefined,
 					published: post.published,
