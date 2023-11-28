@@ -43,25 +43,23 @@ function TLDrawing({
 		const svgWidth = svg.width.baseVal.value;
 		const containerWidth = containerRef.current?.clientWidth || 0;
 
-		if (svgWidth > containerWidth) {
-			svg.style.width = "100%";
-		}
+		svg.style.width = "100%";
 		svg.setAttribute("id", `svg-${persistanceKey}`);
 		svg.style.height = "100%";
 		container.replaceChildren(svg);
 		setPreview(true);
 	};
 
-	const onExpand = async () => {
-		const svg = document.getElementById(`svg-${persistanceKey}`);
-		if (expand) {
-			if (svg) svg.style.width = "";
-			setExpand(false);
-			return;
-		}
-		if (svg) svg.style.width = "100%";
-		setExpand(true);
-	};
+	// const onExpand = async () => {
+	// 	const svg = document.getElementById(`svg-${persistanceKey}`);
+	// 	if (expand) {
+	// 		if (svg) svg.style.width = "";
+	// 		setExpand(false);
+	// 		return;
+	// 	}
+	// 	if (svg) svg.style.width = "100%";
+	// 	setExpand(true);
+	// };
 
 	return (
 		<div className="flex flex-col relative" ref={containerRef}>
@@ -74,14 +72,14 @@ function TLDrawing({
 			</Button>
 			<div
 				className={cn(
-					"w-full",
+					"w-full aspect-[4/3]",
 					expand
 						? "fixed top-0 left-0 h-full p-10 [&>*]:cursor-zoom-out bg-black/80  overflow-auto z-[500]"
 						: " [&>*]:cursor-zoom-in flex flex-col items-center absolute top-10 left-0",
 
 					!preview && "hidden"
 				)}
-				onClick={onExpand}
+				onClick={() => setExpand((p) => !p)}
 				id={`svgpreview-${persistanceKey}`}
 			></div>
 			<div

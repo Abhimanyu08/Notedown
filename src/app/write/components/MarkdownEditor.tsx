@@ -105,7 +105,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 						<AlertDialogFooter>
-							<AlertDialogAction
+							<AlertDialogCancel
 								onClick={() => {
 									setInSyncWithUploadedVersion(true);
 									dispatch({
@@ -115,8 +115,8 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 								}}
 							>
 								Replace local with uploaded version
-							</AlertDialogAction>
-							<AlertDialogCancel
+							</AlertDialogCancel>
+							<AlertDialogAction
 								onClick={() => {
 									if (!editorState.editorView) return;
 									dispatch({
@@ -137,7 +137,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 								}}
 							>
 								Edit local version
-							</AlertDialogCancel>
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>

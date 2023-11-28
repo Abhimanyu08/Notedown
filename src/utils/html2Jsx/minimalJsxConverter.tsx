@@ -360,7 +360,7 @@ export function tagToJsxConverterWithContext({
 			let code = child.value;
 			if (!code) return <code></code>;
 			if (code.startsWith("$") && code.endsWith("$")) {
-				<MinimalLatex code={code} />;
+				return <MinimalLatex code={code} />;
 			}
 			if (code.startsWith("~~") && code.endsWith("~~")) {
 				return <del>{code.slice(2, code.length - 2)}</del>;
