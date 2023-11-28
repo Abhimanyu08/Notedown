@@ -141,13 +141,13 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
     }
 
     const uploadSlugPostRow = async ({ postId, slug }: { postId: number, slug: string }) => {
-        if (!slug) return
         const previousActiveSlug = blogState.blogMeta.slug
 
         if (previousActiveSlug && slug !== previousActiveSlug) {
             const { } = await supabase.from(SUPABASE_SLUGPOST_TABLE).update({ active: false }).eq("slug", previousActiveSlug).select("id")
         }
 
+        if (!slug) return
 
         const { error } = await supabase.from(SUPABASE_SLUGPOST_TABLE).insert({
             postid: postId,
