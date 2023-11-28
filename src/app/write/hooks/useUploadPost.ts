@@ -129,7 +129,7 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             title,
             description,
             language,
-            slug
+            slug: slug || undefined
         }).eq("id", postId).select("id,slug").single();
 
         if (error) {
