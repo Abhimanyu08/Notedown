@@ -100,7 +100,7 @@ export function PostActions({
 				onClose={() => setTakenAction("")}
 			/>
 			{owner && (
-				<ActionWrapper postId={postId} slug={slug}>
+				<ActionWrapper>
 					<MenubarItem className="">
 						<Link
 							href={

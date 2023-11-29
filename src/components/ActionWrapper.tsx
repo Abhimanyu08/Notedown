@@ -31,36 +31,7 @@ function ClosePreviewButton() {
 	);
 }
 
-function ActionWrapper({
-	children,
-	postId,
-	slug,
-	draftId,
-}: {
-	children: React.ReactNode;
-	postId?: number;
-	slug?: string;
-	draftId?: string;
-}) {
-	const pathname = usePathname();
-	const params = useParams();
-
-	if (!pathname?.startsWith("/notebook")) {
-		if (params?.draftId && draftId) {
-			if (draftId !== params.draftId) return null;
-			return <ClosePreviewButton />;
-		}
-		if (params?.postId) {
-			if (
-				parseInt(params.postId as string) !== postId &&
-				params.postId !== slug
-			)
-				return null;
-			return <ClosePreviewButton />;
-		}
-		return null;
-	}
-
+function ActionWrapper({ children }: { children: React.ReactNode }) {
 	return (
 		<Menubar
 			className={cn(
