@@ -7,18 +7,66 @@ import {
 	MenubarTrigger,
 } from "./ui/menubar";
 import { SlOptions } from "react-icons/sl";
-import { usePathname, useSelectedLayoutSegment } from "next/navigation";
+import {
+	useParams,
+	usePathname,
+	useSelectedLayoutSegment,
+} from "next/navigation";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
+import { ToolTipComponent } from "./ToolTipComponent";
+import Link from "next/link";
 
-function ActionWrapper({ children }: { children: React.ReactNode }) {
+function ClosePreviewButton() {
+	return (
+		<ToolTipComponent
+			tip="Close preview"
+			className="
+			absolute top-3 right-3 w-fit h-fit bg-gray-400 text-black rounded-full p-1 z-1000"
+		>
+			<Link href={`/note/null`} prefetch={false} replace={true}>
+				<X size={12} />
+			</Link>
+		</ToolTipComponent>
+	);
+}
+
+function ActionWrapper({
+	children,
+	postId,
+	slug,
+	draftId,
+}: {
+	children: React.ReactNode;
+	postId?: number;
+	slug?: string;
+	draftId?: string;
+}) {
 	const pathname = usePathname();
+	const params = useParams();
+
+	if (!pathname?.startsWith("/notebook")) {
+		if (params?.draftId && draftId) {
+			if (draftId !== params.draftId) return null;
+			return <ClosePreviewButton />;
+		}
+		if (params?.postId) {
+			if (
+				parseInt(params.postId as string) !== postId &&
+				params.postId !== slug
+			)
+				return null;
+			return <ClosePreviewButton />;
+		}
+		return null;
+	}
+
 	return (
 		<Menubar
 			className={cn(
 				`absolute top-3 right-3 w-fit h-fit border-none
 					rounded-md bg-transparent hover:bg-secondary
-			`,
-				!pathname?.startsWith("/notebook") && "hidden"
+			`
 			)}
 		>
 			<MenubarMenu>

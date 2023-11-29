@@ -6,7 +6,7 @@ import { Button } from "@components/ui/button";
 import { getPost } from "@utils/getData";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
 import { ExpandButton } from "../../../../../components/ProfileComponents/ModalButtons";
@@ -41,7 +41,7 @@ function PostPreviewControls({
 
 	return (
 		<>
-			<div className="flex flex-col items-center fixed gap-3 right-0 top-[45%]  bg-secondary opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
+			<div className="flex flex-col items-center fixed gap-3 right-0 top-[45%] bg-transparent opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
 				<ExpandButton
 					className="
 				text-gray-400 hover:text-white active:scale-95"
@@ -64,14 +64,6 @@ function PostPreviewControls({
 						</Link>
 					</ToolTipComponent>
 				)}
-				<ToolTipComponent
-					tip="Close preview"
-					className=" text-gray-400 hover:text-white active:scale-95"
-				>
-					<Link href={`/note/null`}>
-						<AiFillCloseCircle size={24} />
-					</Link>
-				</ToolTipComponent>
 			</div>
 			<div
 				className={`h-fit fixed py-4 px-5 bg-secondary right-12 top-[45%]  border-border border-2  w-[400px] max-h-[450px] overflow-auto z-[1000]

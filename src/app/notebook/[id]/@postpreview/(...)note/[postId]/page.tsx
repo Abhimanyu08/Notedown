@@ -1,9 +1,9 @@
 import PostPreview from "@/app/notebook/[id]/components/PostPreviewComponents/PostPreview";
-import { redirect } from "next/navigation";
+import { redirect, permanentRedirect, RedirectType } from "next/navigation";
 
 function PostModal({ params }: { params: { id: string; postId: string } }) {
 	if (params.postId === "null") {
-		redirect(`/notebook/${params.id}`);
+		permanentRedirect(`/notebook/${params.id}`, RedirectType.replace);
 	}
 	return <PostPreview postId={params.postId} />;
 }

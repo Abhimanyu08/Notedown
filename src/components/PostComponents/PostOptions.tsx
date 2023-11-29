@@ -100,7 +100,7 @@ export function PostActions({
 				onClose={() => setTakenAction("")}
 			/>
 			{owner && (
-				<ActionWrapper>
+				<ActionWrapper postId={postId} slug={slug}>
 					<MenubarItem className="">
 						<Link
 							href={
@@ -115,58 +115,48 @@ export function PostActions({
 							<span>Edit</span>
 						</Link>
 					</MenubarItem>
-					{!pathname?.includes("post") && (
-						<>
-							{published ? (
-								<>
-									<MenubarItem
-										onClick={() =>
-											setTakenAction("unpublish")
-										}
-									>
-										<TbNewsOff
-											className="inline"
-											size={15}
-										/>{" "}
-										<span>Unpublish</span>
-									</MenubarItem>
-
-									<MenubarItem
-										onClick={() => {
-											navigator.clipboard.writeText(
-												window.location.origin +
-													"/note/" +
-													(slug || postId)
-											);
-											toast({
-												title: "Link copied!!",
-												duration: 2000,
-											});
-										}}
-									>
-										<IoMdShareAlt
-											className="inline"
-											size={15}
-										/>{" "}
-										<span>Share</span>
-									</MenubarItem>
-								</>
-							) : (
+					<>
+						{published ? (
+							<>
 								<MenubarItem
-									onClick={() => setTakenAction("publish")}
+									onClick={() => setTakenAction("unpublish")}
 								>
-									<TbNews className="inline" size={15} />
-									<span>Publish</span>
+									<TbNewsOff className="inline" size={15} />{" "}
+									<span>Unpublish</span>
 								</MenubarItem>
-							)}
+
+								<MenubarItem
+									onClick={() => {
+										navigator.clipboard.writeText(
+											window.location.origin +
+												"/note/" +
+												(slug || postId)
+										);
+										toast({
+											title: "Link copied!!",
+											duration: 2000,
+										});
+									}}
+								>
+									<IoMdShareAlt
+										className="inline"
+										size={15}
+									/>{" "}
+									<span>Share</span>
+								</MenubarItem>
+							</>
+						) : (
 							<MenubarItem
-								onClick={() => setTakenAction("delete")}
+								onClick={() => setTakenAction("publish")}
 							>
-								<AiFillDelete className="inline" size={15} />{" "}
-								Delete
+								<TbNews className="inline" size={15} />
+								<span>Publish</span>
 							</MenubarItem>
-						</>
-					)}
+						)}
+						<MenubarItem onClick={() => setTakenAction("delete")}>
+							<AiFillDelete className="inline" size={15} /> Delete
+						</MenubarItem>
+					</>
 				</ActionWrapper>
 			)}
 		</>

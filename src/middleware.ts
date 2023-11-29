@@ -1,8 +1,7 @@
 
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
-import { Database } from './interfaces/supabase'
 import { SUPABASE_POST_TABLE, SUPABASE_SLUGPOST_TABLE } from '@utils/constants'
+import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(req: NextRequest) {
     let res = NextResponse.next({
@@ -12,6 +11,7 @@ export async function middleware(req: NextRequest) {
     })
 
     const pathname = req.nextUrl.pathname
+
     if (pathname.startsWith("/profile")) {
         const url = req.nextUrl.clone()
 
