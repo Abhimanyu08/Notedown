@@ -1,17 +1,17 @@
 "use client";
+import useOwner from "@/hooks/useOwner";
+import { cn } from "@/lib/utils";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
 import { getPost } from "@utils/getData";
 import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { AiFillEdit } from "react-icons/ai";
 import { BiBookContent } from "react-icons/bi";
-import { ExpandButton } from "../../../../../components/ProfileComponents/ModalButtons";
-import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
-import useOwner from "@/hooks/useOwner";
+import { BsArrowsAngleExpand } from "react-icons/bs";
 
 function PostPreviewControls({
 	markdown,
@@ -21,7 +21,7 @@ function PostPreviewControls({
 	postMeta: Partial<Awaited<ReturnType<typeof getPost>>["post"]>;
 }) {
 	const [showToc, setShowToc] = useState(false);
-	const router = useRouter();
+	const searchParams = useSearchParams();
 	const owner = useOwner(postMeta.created_by!);
 	const { id: postId, timestamp: draftId, created_by } = postMeta;
 	const pathname = usePathname();
@@ -42,10 +42,22 @@ function PostPreviewControls({
 	return (
 		<>
 			<div className="flex flex-col items-center fixed gap-3 right-0 top-[45%] bg-transparent opacity-40 hover:opacity-100  w-fit border-r-0  border-[1px] border-border [&>*]:p-2">
-				<ExpandButton
-					className="
-				text-gray-400 hover:text-white active:scale-95"
-				/>
+				<ToolTipComponent
+					tip="Expand (E)"
+					className={cn(
+						"				text-gray-400 hover:text-white active:scale-95"
+					)}
+				>
+					<Link
+						href={
+							searchParams?.has("note")
+								? `/note/${searchParams.get("note")}`
+								: `/draft/${searchParams?.get("draft")}`
+						}
+					>
+						<BsArrowsAngleExpand size={20} />
+					</Link>
+				</ToolTipComponent>
 				<EnableRceButton />
 				<Button
 					className="bg-transparent hover:text-gray-100 text-gray-400 hover:bg-transparent"

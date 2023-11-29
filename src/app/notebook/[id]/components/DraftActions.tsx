@@ -64,7 +64,7 @@ export function DraftActions({ draft }: { draft: Draft }) {
 				key={draft.timeStamp}
 				type="draft"
 			/>
-			<ActionWrapper>
+			<ActionWrapper draftId={draft.timeStamp}>
 				<MenubarItem className="">
 					<Link
 						href={`/write?draft=${draft.timeStamp}`}

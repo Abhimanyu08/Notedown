@@ -10,28 +10,59 @@ import { SlOptions } from "react-icons/sl";
 import {
 	useParams,
 	usePathname,
-	useSelectedLayoutSegment,
+	useRouter,
+	useSearchParams,
 } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { ToolTipComponent } from "./ToolTipComponent";
 import Link from "next/link";
 
 function ClosePreviewButton() {
+	const router = useRouter();
+	const params = useParams();
 	return (
 		<ToolTipComponent
 			tip="Close preview"
 			className="
 			absolute top-3 right-3 w-fit h-fit bg-gray-400 text-black rounded-full p-1 z-1000"
+			onClick={() =>
+				router.replace(`/notebook/${params?.id}`, { shallow: true })
+			}
 		>
-			<Link href={`/note/null`} prefetch={false} replace={true}>
-				<X size={12} />
-			</Link>
+			<X size={12} />
 		</ToolTipComponent>
 	);
 }
 
-function ActionWrapper({ children }: { children: React.ReactNode }) {
+function ActionWrapper({
+	children,
+	postId,
+	slug,
+	draftId,
+}: {
+	children: React.ReactNode;
+	postId?: number;
+	slug?: string;
+	draftId?: string;
+}) {
+	const searchParams = useSearchParams();
+
+	if (searchParams?.has("note") || searchParams?.has("draft")) {
+		const draftParam = searchParams.get("draft");
+		const noteParam = searchParams.get("note");
+		if (draftParam && draftId) {
+			if (draftId !== draftParam) return null;
+			return <ClosePreviewButton />;
+		}
+		if (noteParam) {
+			if (parseInt(noteParam as string) !== postId && noteParam !== slug)
+				return null;
+			return <ClosePreviewButton />;
+		}
+		return null;
+	}
+
 	return (
 		<Menubar
 			className={cn(

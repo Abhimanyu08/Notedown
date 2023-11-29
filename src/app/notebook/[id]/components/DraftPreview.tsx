@@ -1,7 +1,9 @@
 "use client";
 import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import Blog from "@components/BlogPostComponents/Blog";
-import { BlogContext } from "@components/BlogPostComponents/BlogState";
+import BlogContextProvider, {
+	BlogContext,
+} from "@components/BlogPostComponents/BlogState";
 import Footers from "@components/BlogPostComponents/Footers";
 import PostPreviewControls from "@/app/notebook/[id]/components/PostPreviewComponents/PostPreviewControls";
 import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
@@ -9,6 +11,7 @@ import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { parseFrontMatter } from "@utils/parseFrontMatter";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
+import EditorContextProvider from "@/app/write/components/EditorContext";
 
 function DraftPreview({ params }: { params: { draftId: string } }) {
 	const blogData = useRetrieveDraftFromIndexDb({ timeStamp: params.draftId });

@@ -12,16 +12,18 @@ function PostOnPreviewColor({
 	tag?: string;
 	slug?: string;
 }) {
-	const params = useParams();
 	const searchParams = useSearchParams();
 
-	const paramId = (params?.postId as string) || null;
+	let onPreview = false;
+	if (searchParams?.has("note")) {
+		const noteId = searchParams.get("note") as any;
+		if (noteId == postId || noteId === slug) {
+			if (tag === searchParams.get("tag")) {
+				onPreview = true;
+			}
+		}
+	}
 
-	if (!paramId) return <></>;
-
-	const onPreview =
-		(parseInt(paramId) === postId || slug === paramId) &&
-		searchParams?.get("tagpreview") === tag;
 	if (!onPreview) return <></>;
 	return (
 		<motion.div

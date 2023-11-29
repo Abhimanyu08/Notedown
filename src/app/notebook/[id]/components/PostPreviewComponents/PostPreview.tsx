@@ -19,7 +19,7 @@ async function PostPreview({ postId }: { postId: string }) {
 		supabase
 	);
 
-	const { content, data } = parseFrontMatter(markdown || "");
+	const { content } = parseFrontMatter(markdown || "");
 
 	const tagToJsx = tagToJsxConverterWithContext({
 		fileNamesToUrls: imagesToUrls!,

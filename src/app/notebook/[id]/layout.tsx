@@ -1,16 +1,9 @@
-import {
-	LoggedInOptions,
-	NotLoggedInOptions,
-} from "@components/Navbar/Options";
-import PostPreviewLayout from "@components/ProfileComponents/PostPreviewLayout";
-import SideSheet from "@components/SideSheet";
 import { getUser } from "@utils/getData";
 import { Metadata } from "next";
 import React from "react";
 
 type LayoutProps = {
 	children: React.ReactNode;
-	postpreview: React.ReactNode;
 	params: { id: string };
 };
 
@@ -18,7 +11,7 @@ export async function generateMetadata({
 	params,
 }: LayoutProps): Promise<Metadata | undefined> {
 	if (params.id === "anon") return;
-	let { name } = (await getUser(params.id))!;
+	let name = (await getUser(params.id))?.name;
 
 	return {
 		title: name,
@@ -37,26 +30,11 @@ export async function generateMetadata({
 	};
 }
 
-async function ProfilePostsLayout({ children, postpreview }: LayoutProps) {
+async function ProfilePostsLayout({ children }: LayoutProps) {
 	return (
 		<>
 			<div className="grid grid-cols-10 w-full h-screen grid-rows-1 ">
-				<div className="flex flex-col col-span-3 row-span-1 pt-6 border-r-[1px] border-border">
-					{children}
-				</div>
-
-				<div
-					className="col-span-7 h-full row-span-1 pt-10 relative  
-				overflow-y-auto
-		lg:scrollbar-thin 
-				scrollbar-track-black 
-				scrollbar-thumb-slate-700
-				scroll-smooth
-	
-				"
-				>
-					{postpreview}
-				</div>
+				{children}
 			</div>
 		</>
 	);

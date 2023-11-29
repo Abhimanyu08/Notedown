@@ -7,6 +7,7 @@ import BlogLayout from "../components/BlogLayout";
 import Toolbar from "../components/Toolbar";
 import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import BlogAuthorServer from "@components/BlogPostComponents/BlogAuthorServer";
+import { redirect } from "next/navigation";
 
 export async function generateMetadata({
 	params,
@@ -55,30 +56,34 @@ interface PostParams extends NextParsedUrlQuery {
 }
 
 async function Note({ params }: { params: PostParams }) {
-	const { post, markdown, imagesToUrls, fileNames } = await getPost(
-		params.postId,
-		supabase
-	);
+	try {
+		const { post, markdown, imagesToUrls, fileNames } = await getPost(
+			params.postId,
+			supabase
+		);
 
-	return (
-		<BlogContextProvider
-			blogMeta={{
-				id: post?.id,
-				language: post?.language,
-				imageFolder: post?.image_folder,
-				blogger: post?.bloggers as { id: string; name: string },
-				timeStamp: post.timestamp!,
-			}}
-			uploadedImages={imagesToUrls}
-			fileNames={fileNames}
-		>
-			<BlogLayout
-				postMeta={{ post, markdown, imagesToUrls, fileNames }}
-				ToolbarComponent={Toolbar}
-				AuthorComponent={BlogAuthorServer}
-			/>
-		</BlogContextProvider>
-	);
+		return (
+			<BlogContextProvider
+				blogMeta={{
+					id: post?.id,
+					language: post?.language,
+					imageFolder: post?.image_folder,
+					blogger: post?.bloggers as { id: string; name: string },
+					timeStamp: post.timestamp!,
+				}}
+				uploadedImages={imagesToUrls}
+				fileNames={fileNames}
+			>
+				<BlogLayout
+					postMeta={{ post, markdown, imagesToUrls, fileNames }}
+					ToolbarComponent={Toolbar}
+					AuthorComponent={BlogAuthorServer}
+				/>
+			</BlogContextProvider>
+		);
+	} catch {
+		redirect(`/note/private/${params.postId}`);
+	}
 }
 
 export default Note;

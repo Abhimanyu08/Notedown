@@ -36,15 +36,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 				}}
 			/>
 			<Link
-				href={
-					published
-						? slug
-							? `/note/${slug}?tagpreview=${tag}`
-							: `/note/${id}?tagpreview=${tag}`
-						: slug
-						? `/note/private/${slug}?tagpreview=${tag}`
-						: `/note/private/${id}?tagpreview=${tag}`
-				}
+				href={`/notebook/${created_by}?note=${slug || id}&tag=${tag}`}
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
 			>
 				<PostOnPreviewColor

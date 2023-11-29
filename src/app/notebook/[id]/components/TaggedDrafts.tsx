@@ -27,7 +27,12 @@ export function TaggedDrafts({
 	}, [copied]);
 
 	let searchTag = null;
-	if (searchParams && searchParams.has("tag")) {
+	if (
+		searchParams &&
+		searchParams.has("tag") &&
+		!searchParams.has("note") &&
+		!searchParams.has("draft")
+	) {
 		searchTag = searchParams.get("tag");
 	}
 	// if (tag === "notag") {

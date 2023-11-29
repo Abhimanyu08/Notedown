@@ -9,10 +9,16 @@ export function DraftOnPreviewIndicator({
 	draftId: string;
 	tag?: string;
 }) {
-	const params = useParams();
 	const searchParams = useSearchParams();
-	const onPreview =
-		params?.draftId === draftId && searchParams?.get("tagpreview") === tag;
+	let onPreview = false;
+	if (searchParams?.has("draft")) {
+		const draftParam = searchParams.get("draft") as any;
+		if (draftParam == draftId) {
+			if (tag === searchParams.get("tag")) {
+				onPreview = true;
+			}
+		}
+	}
 	if (!onPreview) return <></>;
 	return (
 		<motion.div
