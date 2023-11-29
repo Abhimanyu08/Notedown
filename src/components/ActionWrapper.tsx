@@ -12,21 +12,28 @@ import {
 	MenubarMenu,
 	MenubarTrigger,
 } from "./ui/menubar";
+import Link from "next/link";
 
 function ClosePreviewButton() {
-	const router = useRouter();
 	const params = useParams();
+	const searchParams = useSearchParams();
 	return (
 		<ToolTipComponent
 			tip="Close preview"
 			className="
 			absolute top-3 right-3 w-fit h-fit bg-gray-400 text-black rounded-full p-1 z-1000"
-			onClick={() =>
-				router.replace(`/notebook/${params?.id}`, { shallow: true })
-			}
 			side="right"
 		>
-			<X size={12} />
+			<Link
+				href={
+					`/notebook/${params?.id}` +
+					(searchParams?.has("showtag")
+						? `?showtag=${searchParams?.get("showtag")}`
+						: "")
+				}
+			>
+				<X size={12} />
+			</Link>
 		</ToolTipComponent>
 	);
 }

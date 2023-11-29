@@ -6,6 +6,7 @@ import { PostActions } from "../PostComponents/PostOptions";
 import PostTitle from "../PostComponents/PostTitle";
 import { Draft } from "@utils/processDrafts";
 import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
+import PostLink from "./PostLink";
 
 export interface PostComponentProps {
 	post: Partial<Draft>;
@@ -36,9 +37,11 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 					tag: tag!,
 				}}
 			/>
-			<Link
-				href={`/notebook/${created_by}?note=${slug || id}&tag=${tag}`}
+			<PostLink
 				className="flex flex-col gap-2 group py-2 first:pt-0 px-2  rounded-md "
+				slug={slug}
+				tag={tag}
+				id={id}
 			>
 				<PostOnPreviewColor
 					postId={parseInt(id!)}
@@ -67,7 +70,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 						</span>
 					</OwnerOnlyStuff>
 				</div>
-			</Link>
+			</PostLink>
 		</div>
 	);
 };

@@ -2,7 +2,7 @@
 import { Draft, RawObject } from "@utils/processDrafts";
 import { DraftsDisplay } from "./DraftsDisplay";
 import PostDisplay from "@components/PostComponents/PostDisplay";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BiCheck, BiLink } from "react-icons/bi";
@@ -19,6 +19,7 @@ export function TaggedDrafts({
 }) {
 	const searchParams = useSearchParams();
 	const params = useParams();
+	const pathname = usePathname();
 	const [copied, setCopied] = useState(false);
 	useEffect(() => {
 		if (copied) {
@@ -27,13 +28,8 @@ export function TaggedDrafts({
 	}, [copied]);
 
 	let searchTag = null;
-	if (
-		searchParams &&
-		searchParams.has("tag") &&
-		!searchParams.has("note") &&
-		!searchParams.has("draft")
-	) {
-		searchTag = searchParams.get("tag");
+	if (searchParams && searchParams.has("showtag")) {
+		searchTag = searchParams.get("showtag");
 	}
 	// if (tag === "notag") {
 	// 	return (
@@ -75,7 +71,7 @@ export function TaggedDrafts({
 								.writeText(
 									window.location.origin +
 										`/notebook/${params?.id}` +
-										`?tag=${tag}`
+										`?showtag=${tag}`
 								)
 								.then(() => setCopied(true));
 						}}
@@ -100,7 +96,7 @@ export function TaggedDrafts({
 					className="px-3 py-1 mt-4 w-fit self-center"
 					variant={"secondary"}
 				>
-					<Link href={window.location.toString().split("?")[0]}>
+					<Link shallow={true} href={pathname!}>
 						View all notes
 					</Link>
 				</Button>

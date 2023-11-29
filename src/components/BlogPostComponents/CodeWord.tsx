@@ -1,6 +1,6 @@
 "use client";
 import { lazy, memo } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Latex from "react-latex";
 
 const SandboxRouter = lazy(() => import("./CodeSandbox/SandboxRouters"));
@@ -13,6 +13,7 @@ const DrawingSvg = lazy(() => import("./DrawingSvg"));
 const TLDrawing = lazy(() => import("./TLDrawing"));
 function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 
 	if (code.startsWith("$") && code.endsWith("$")) {
 		return <Latex>{code}</Latex>;
@@ -26,7 +27,7 @@ function CodeWord({ code }: { code: string }) {
 		const persistanceKey = regexArray.at(1)!;
 		const caption = regexArray.at(2) || "";
 		const dark = regexArray.at(4);
-		if (pathname?.startsWith("/write") || pathname?.startsWith("/draft")) {
+		if (pathname?.startsWith("/write") || searchParams?.has("draft")) {
 			return (
 				<TLDrawing
 					persistanceKey={persistanceKey}
