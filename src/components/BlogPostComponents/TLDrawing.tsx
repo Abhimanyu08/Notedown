@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Editor, Tldraw, useLocalStorageState } from "@tldraw/tldraw";
 import { BsArrowsAngleExpand } from "react-icons/bs";
-import { ExpandedCanvasContext } from "./ExpandedCanvas/ExpandedCanvasProvider";
 import { Button } from "@components/ui/button";
 import { tldrawEditorToSVG } from "@utils/processingTldrawings";
 
@@ -21,7 +20,6 @@ function TLDrawing({
 	dark?: boolean;
 }) {
 	const { dispatch: EditorStateDispatch } = useContext(EditorContext);
-	const { setPersistanceKey } = useContext(ExpandedCanvasContext);
 	const [editor, setEditor] = useState<Editor>();
 	const [preview, setPreview] = useState(false);
 	const [expand, setExpand] = useState(false);
@@ -113,10 +111,6 @@ function TLDrawing({
 							? "hover:bg-white text-white hover:text-black"
 							: "hover:bg-black text-black hover:text-white "
 					)}
-					onClick={() => {
-						if (setPersistanceKey)
-							setPersistanceKey(persistanceKey);
-					}}
 				>
 					<BsArrowsAngleExpand size={20} />
 				</ToolTipComponent>

@@ -4,7 +4,7 @@ import useRecoverImages from "@/hooks/useRecoverImages";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { lazy, memo, useContext, useEffect, useState } from "react";
-import { ExpandedImageContext } from "./ExpandedImage/ExpandedImageProvider";
+import ExapandableCarouselContainer from "./MinimalComponents/ExapandableCarouselContainer";
 
 const ImageUploader = lazy(
 	() => import("@components/EditorComponents/ImageUploader")
@@ -21,7 +21,6 @@ function Carousel({
 	const { dispatch } = useContext(EditorContext);
 	const [imageSrcs, setImagesrcs] = useState<string[]>([]);
 	const [captions, setCaptions] = useState<string[]>([]);
-	const { setImageUrl } = useContext(ExpandedImageContext);
 	const pathname = usePathname();
 	const imageUrls = useRecoverImages({
 		imageNames: imageNamesString.split(","),
@@ -56,60 +55,64 @@ function Carousel({
 	// w-[${100 * images.length}%]
 	// w-1/${images.length}
 	return (
-		<div className="flex flex-col">
+		<>
 			{pathname?.startsWith("/write") && (
-				<ImageUploader add={true} end={end} />
+				<div className="flex w-full justify-end">
+					<ImageUploader add={true} end={end} />
+				</div>
 			)}
-			<div
-				className="w-4/5 mx-auto h-[500px] overflow-x-auto
+
+			<ExapandableCarouselContainer>
+				<div
+					className="w-4/5 mx-auto h-[500px] overflow-x-auto
 		lg:scrollbar-thin 
 				scrollbar-track-black 
 				scrollbar-thumb-slate-700
 				relative
 				not-prose
 		"
-				onScroll={(e) => {
-					const { left: pl, right: pr } =
-						e.currentTarget.getBoundingClientRect();
-					const children =
-						e.currentTarget.querySelectorAll("div > figure");
+					onScroll={(e) => {
+						const { left: pl, right: pr } =
+							e.currentTarget.getBoundingClientRect();
+						const children =
+							e.currentTarget.querySelectorAll("div > figure");
 
-					Array.from(children).forEach((child) => {
-						const { left: cl, right: cr } =
-							child.getBoundingClientRect();
+						Array.from(children).forEach((child) => {
+							const { left: cl, right: cr } =
+								child.getBoundingClientRect();
 
-						if (cr - pl < 100) {
-							if (child.classList.contains("opacity-100")) {
-								child.classList.replace(
-									"opacity-100",
-									"opacity-0"
-								);
+							if (cr - pl < 100) {
+								if (child.classList.contains("opacity-100")) {
+									child.classList.replace(
+										"opacity-100",
+										"opacity-0"
+									);
+								}
+								return;
 							}
-							return;
-						}
-						if (pr - cl > 100) {
-							if (child.classList.contains("opacity-0")) {
-								child.classList.replace(
-									"opacity-0",
-									"opacity-100"
-								);
+							if (pr - cl > 100) {
+								if (child.classList.contains("opacity-0")) {
+									child.classList.replace(
+										"opacity-0",
+										"opacity-100"
+									);
+								}
+								return;
 							}
-							return;
-						}
-						if (pr - cl < 100) {
-							if (child.classList.contains("opacity-100")) {
-								child.classList.replace(
-									"opacity-100",
-									"opacity-0"
-								);
+							if (pr - cl < 100) {
+								if (child.classList.contains("opacity-100")) {
+									child.classList.replace(
+										"opacity-100",
+										"opacity-0"
+									);
+								}
 							}
-						}
-					});
-				}}
-			>
-				{imageSrcs.map((image, idx) => (
-					<figure
-						className={`
+						});
+					}}
+				>
+					{imageSrcs.map((image, idx) => (
+						<figure
+							className={`
 
 						w-full
 						h-full
@@ -119,32 +122,30 @@ function Carousel({
 						${idx === 0 ? "opacity-100" : "opacity-0"}
 						transition-opacity duration-500
 				`}
-						key={image}
-						style={{
-							transform: `translateX(${100 * idx}%)`,
-						}}
-					>
-						<div className="grow relative">
-							<Image
-								src={image}
-								alt={captions[idx] || ""}
-								fill
-								style={{ objectFit: "contain" }}
-								onClick={() =>
-									setImageUrl && setImageUrl(image)
-								}
-								className="cursor-zoom-in"
-							/>
-						</div>
-						<figcaption
-							className={`text-center italic text-gray-400 mt-2 text-[0.875em]`}
+							key={image}
+							style={{
+								transform: `translateX(${100 * idx}%)`,
+							}}
 						>
-							{captions.at(idx) || ""}
-						</figcaption>
-					</figure>
-				))}
-			</div>
-		</div>
+							<div className="grow relative">
+								<Image
+									src={image}
+									alt={captions[idx] || ""}
+									fill
+									style={{ objectFit: "contain" }}
+									className="cursor-zoom-in"
+								/>
+							</div>
+							<figcaption
+								className={`text-center italic text-gray-400 mt-2 text-[0.875em]`}
+							>
+								{captions.at(idx) || ""}
+							</figcaption>
+						</figure>
+					))}
+				</div>
+			</ExapandableCarouselContainer>
+		</>
 	);
 }
 
