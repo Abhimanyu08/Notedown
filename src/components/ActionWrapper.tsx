@@ -1,22 +1,17 @@
 "use client";
+import useOwner from "@/hooks/useOwner";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
+import { SlOptions } from "react-icons/sl";
+import { ToolTipComponent } from "./ToolTipComponent";
 import {
 	Menubar,
 	MenubarContent,
 	MenubarMenu,
 	MenubarTrigger,
 } from "./ui/menubar";
-import { SlOptions } from "react-icons/sl";
-import {
-	useParams,
-	usePathname,
-	useRouter,
-	useSearchParams,
-} from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Search, X } from "lucide-react";
-import { ToolTipComponent } from "./ToolTipComponent";
-import Link from "next/link";
 
 function ClosePreviewButton() {
 	const router = useRouter();
@@ -29,6 +24,7 @@ function ClosePreviewButton() {
 			onClick={() =>
 				router.replace(`/notebook/${params?.id}`, { shallow: true })
 			}
+			side="right"
 		>
 			<X size={12} />
 		</ToolTipComponent>
@@ -37,18 +33,24 @@ function ClosePreviewButton() {
 
 function ActionWrapper({
 	children,
+	tag,
 	postId,
 	slug,
 	draftId,
 }: {
 	children: React.ReactNode;
+
+	tag: string;
 	postId?: number;
 	slug?: string;
 	draftId?: string;
 }) {
 	const searchParams = useSearchParams();
 
+	const owner = useOwner();
+
 	if (searchParams?.has("note") || searchParams?.has("draft")) {
+		if (searchParams.get("tag") !== tag) return null;
 		const draftParam = searchParams.get("draft");
 		const noteParam = searchParams.get("note");
 		if (draftParam && draftId) {
@@ -62,6 +64,7 @@ function ActionWrapper({
 		}
 		return null;
 	}
+	if (!owner) return null;
 
 	return (
 		<Menubar

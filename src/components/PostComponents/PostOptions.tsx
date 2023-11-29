@@ -29,16 +29,17 @@ export function PostActions({
 	published,
 	postId,
 	postTitle,
+	tag,
 	timeStamp,
 	slug,
 }: {
 	published: boolean;
 	postId: number;
 	postTitle: string;
+	tag: string;
 	timeStamp?: string;
 	slug?: string;
 }) {
-	const owner = useOwner();
 	const [takenAction, setTakenAction] = useState<
 		"publish" | "delete" | "unpublish" | ""
 	>("");
@@ -99,66 +100,59 @@ export function PostActions({
 				visible={takenAction === "unpublish"}
 				onClose={() => setTakenAction("")}
 			/>
-			{owner && (
-				<ActionWrapper postId={postId} slug={slug}>
-					<MenubarItem className="">
-						<Link
-							href={
-								timeStamp
-									? `/write/${postId}?draft=${timeStamp}`
-									: `/write/${postId}`
-							}
-							prefetch={false}
-							className="flex gap-2 items-center"
-						>
-							<AiFillEdit className="inline" size={15} />{" "}
-							<span>Edit</span>
-						</Link>
-					</MenubarItem>
-					<>
-						{published ? (
-							<>
-								<MenubarItem
-									onClick={() => setTakenAction("unpublish")}
-								>
-									<TbNewsOff className="inline" size={15} />{" "}
-									<span>Unpublish</span>
-								</MenubarItem>
-
-								<MenubarItem
-									onClick={() => {
-										navigator.clipboard.writeText(
-											window.location.origin +
-												"/note/" +
-												(slug || postId)
-										);
-										toast({
-											title: "Link copied!!",
-											duration: 2000,
-										});
-									}}
-								>
-									<IoMdShareAlt
-										className="inline"
-										size={15}
-									/>{" "}
-									<span>Share</span>
-								</MenubarItem>
-							</>
-						) : (
+			<ActionWrapper postId={postId} slug={slug} tag={tag!}>
+				<MenubarItem className="">
+					<Link
+						href={
+							timeStamp
+								? `/write/${postId}?draft=${timeStamp}`
+								: `/write/${postId}`
+						}
+						prefetch={false}
+						className="flex gap-2 items-center"
+					>
+						<AiFillEdit className="inline" size={15} />{" "}
+						<span>Edit</span>
+					</Link>
+				</MenubarItem>
+				<>
+					{published ? (
+						<>
 							<MenubarItem
-								onClick={() => setTakenAction("publish")}
+								onClick={() => setTakenAction("unpublish")}
 							>
-								<TbNews className="inline" size={15} />
-								<span>Publish</span>
+								<TbNewsOff className="inline" size={15} />{" "}
+								<span>Unpublish</span>
 							</MenubarItem>
-						)}
-						<MenubarItem onClick={() => setTakenAction("delete")}>
-							<AiFillDelete className="inline" size={15} /> Delete
+
+							<MenubarItem
+								onClick={() => {
+									navigator.clipboard.writeText(
+										window.location.origin +
+											"/note/" +
+											(slug || postId)
+									);
+									toast({
+										title: "Link copied!!",
+										duration: 2000,
+									});
+								}}
+							>
+								<IoMdShareAlt className="inline" size={15} />{" "}
+								<span>Share</span>
+							</MenubarItem>
+						</>
+					) : (
+						<MenubarItem onClick={() => setTakenAction("publish")}>
+							<TbNews className="inline" size={15} />
+							<span>Publish</span>
 						</MenubarItem>
-					</>
-				</ActionWrapper>
-			)}
+					)}
+					<MenubarItem onClick={() => setTakenAction("delete")}>
+						<AiFillDelete className="inline" size={15} /> Delete
+					</MenubarItem>
+				</>
+			</ActionWrapper>
 		</>
 	);
 }

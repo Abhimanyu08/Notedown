@@ -23,7 +23,7 @@ function PostPreviewControls({
 	const [showToc, setShowToc] = useState(false);
 	const searchParams = useSearchParams();
 	const owner = useOwner(postMeta.created_by!);
-	const { id: postId, timestamp: draftId, created_by } = postMeta;
+	const { id: postId, timestamp: draftId } = postMeta;
 	const pathname = usePathname();
 
 	const getEditLink = () => {

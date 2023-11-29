@@ -13,7 +13,7 @@ export function SingleDraft({ draft, tag }: SingleDraftProp) {
 	return (
 		<div className="flex flex-col group p-2 relative ">
 			<DraftOnPreviewIndicator draftId={draft.timeStamp} tag={tag} />
-			<DraftActions draft={draft} />
+			<DraftActions draft={draft} tag={tag!} />
 			<Link
 				href={`/notebook/${params?.id}?draft=${draft.timeStamp}&tag=${tag}`}
 				className=""

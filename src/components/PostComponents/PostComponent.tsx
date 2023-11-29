@@ -33,6 +33,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 					postTitle: title!,
 					timeStamp,
 					slug,
+					tag: tag!,
 				}}
 			/>
 			<Link

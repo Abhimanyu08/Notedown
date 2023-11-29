@@ -10,7 +10,7 @@ import { useContext, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { ProfileContext } from "../../../../contexts/ProfileContext";
 
-export function DraftActions({ draft }: { draft: Draft }) {
+export function DraftActions({ draft, tag }: { draft: Draft; tag: string }) {
 	const { documentDb } = useContext(IndexedDbContext);
 	const { setDraftAndPostMap } = useContext(ProfileContext);
 	const [isPending, startTransition] = useTransition();
@@ -64,7 +64,7 @@ export function DraftActions({ draft }: { draft: Draft }) {
 				key={draft.timeStamp}
 				type="draft"
 			/>
-			<ActionWrapper draftId={draft.timeStamp}>
+			<ActionWrapper draftId={draft.timeStamp} tag={tag}>
 				<MenubarItem className="">
 					<Link
 						href={`/write?draft=${draft.timeStamp}`}
