@@ -37,12 +37,7 @@ export async function generateMetadata({
 	};
 }
 
-async function ProfilePostsLayout({
-	children,
-	postpreview,
-	params,
-}: LayoutProps) {
-	console.log("Post preview type ======================>", params);
+async function ProfilePostsLayout({ children, postpreview }: LayoutProps) {
 	return (
 		<>
 			<div className="grid grid-cols-10 w-full h-screen grid-rows-1 ">

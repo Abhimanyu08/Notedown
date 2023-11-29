@@ -6,7 +6,6 @@ import { PostActions } from "../PostComponents/PostOptions";
 import PostTitle from "../PostComponents/PostTitle";
 import { Draft } from "@utils/processDrafts";
 import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
-import ModifiedPostLink from "./ModifiedPostLink";
 
 export interface PostComponentProps {
 	post: Partial<Draft>;
@@ -36,7 +35,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 					slug,
 				}}
 			/>
-			<ModifiedPostLink
+			<Link
 				href={
 					published
 						? slug
@@ -75,7 +74,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 						</span>
 					</OwnerOnlyStuff>
 				</div>
-			</ModifiedPostLink>
+			</Link>
 		</div>
 	);
 };

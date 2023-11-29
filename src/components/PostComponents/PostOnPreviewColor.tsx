@@ -14,9 +14,13 @@ function PostOnPreviewColor({
 }) {
 	const params = useParams();
 	const searchParams = useSearchParams();
+
+	const paramId = (params?.postId as string) || null;
+
+	if (!paramId) return <></>;
+
 	const onPreview =
-		(parseInt(params?.postId as string) === postId ||
-			slug === params?.postId) &&
+		(parseInt(paramId) === postId || slug === paramId) &&
 		searchParams?.get("tagpreview") === tag;
 	if (!onPreview) return <></>;
 	return (

@@ -22,9 +22,8 @@ function PostPreviewControls({
 }) {
 	const [showToc, setShowToc] = useState(false);
 	const router = useRouter();
-	const params = useParams();
 	const owner = useOwner(postMeta.created_by!);
-	const { id: postId, timestamp: draftId } = postMeta;
+	const { id: postId, timestamp: draftId, created_by } = postMeta;
 	const pathname = usePathname();
 
 	const getEditLink = () => {
@@ -68,11 +67,10 @@ function PostPreviewControls({
 				<ToolTipComponent
 					tip="Close preview"
 					className=" text-gray-400 hover:text-white active:scale-95"
-					onClick={() => {
-						router.back();
-					}}
 				>
-					<AiFillCloseCircle size={24} />
+					<Link href={`/note/null`}>
+						<AiFillCloseCircle size={24} />
+					</Link>
 				</ToolTipComponent>
 			</div>
 			<div
