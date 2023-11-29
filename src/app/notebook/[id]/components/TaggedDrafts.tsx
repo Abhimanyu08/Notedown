@@ -31,25 +31,16 @@ export function TaggedDrafts({
 	if (searchParams && searchParams.has("showtag")) {
 		searchTag = searchParams.get("showtag");
 	}
-	// if (tag === "notag") {
-	// 	return (
-	// 		<div
-	// 			className={cn(
-	// 				"flex flex-col gap-3",
-	// 				searchTag && searchTag !== tag ? "hidden" : ""
-	// 			)}
-	// 		>
-	// 			{children}
-	// 			{/* <DraftsDisplay rawObjects={drafts} tag={tag} />
-	// 			<PostDisplay posts={posts} tag={tag} /> */}
-	// 		</div>
-	// 	);
-	// }
 
 	return (
 		<>
 			<details
-				open={searchTag === tag || tag === "notag" || false}
+				open={
+					searchTag === tag ||
+					tag === "notag" ||
+					searchParams?.get("tag") === tag ||
+					false
+				}
 				className={cn(
 					"relative ",
 					searchTag && searchTag !== tag ? "hidden" : ""

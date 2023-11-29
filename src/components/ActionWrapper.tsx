@@ -21,7 +21,7 @@ function ClosePreviewButton() {
 		<ToolTipComponent
 			tip="Close preview"
 			className="
-			absolute top-3 right-3 w-fit h-fit bg-gray-400 text-black rounded-full p-1 z-1000"
+			absolute top-3 right-3 w-fit h-fit bg-gray-400 hover:bg-gray-100 active:scale-95 text-black rounded-full p-1 z-1000"
 			side="right"
 		>
 			<Link

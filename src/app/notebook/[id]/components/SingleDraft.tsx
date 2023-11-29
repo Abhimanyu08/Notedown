@@ -3,7 +3,7 @@ import { Draft } from "@utils/processDrafts";
 import Link from "next/link";
 import { DraftActions } from "./DraftActions";
 import { DraftOnPreviewIndicator } from "./DraftOnPreviewIndicator";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export type SingleDraftProp = { draft: Draft; tag?: string };
 
