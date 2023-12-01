@@ -26,18 +26,18 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 		title: "Write and run code",
 		content:
 			"The code written inside usual markdown code blocks delimited by ``` can be edited and executed right in the browser. The environment in which they run is determined by the value of language field you provided in the frontmatter for eg if language is 'javascript', the code will run inside a node environment. The code inside every codeblock is written to the file whose filename is determined by the file parameter you provide in markdown (main by default) for eg code inside codeblock starting with ```file=foo will be written to 'foo.js'. Running a code block writes the code to it's respective file, executes that file and returns back the result in the terminal.",
-		time: 10,
+		time: 7,
 	},
 	{
 		title: "Draw diagrams using tldraw",
 		content:
 			"Embed a tldraw whiteboard (or blackboard) in your notes. Your drawings will be converted to a svg on preview",
-		time: 34,
+		time: 26,
 	},
 
 	{
 		title: "Embed CodeSandbox",
-		time: 65,
+		time: 44,
 		content:
 			"Embed a Codesandbox in your note. You can configure template, editorHeight, themes, file etc using the ugly json editor that comes up, hit 'Generate Sandbox' (or press shift-enter) to generate a sandbox using the given config. The changes you make to the sandbox files will persist.",
 	},
@@ -45,30 +45,36 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 		title: "Code snippets",
 		content:
 			"Select from dozens of languages and your desired theme for normal code blocks for proper syntax highlighting.",
-		time: 89,
+		time: 61,
 	},
 	{
 		title: "Add Images",
 		content:
 			"Add Images from your local filesystem. If you upload multiple images, they'll be rendered as a carousel. You can provide a caption for each one by using `;` as the separator in markdown like so:" +
 			`![caption 1; caption 2; caption 3](image1, image2, image3)`,
-		time: 108,
+		time: 78,
 	},
+	{
+		title: "Footnotes",
+		content: "Add footnotes using a simple syntax",
+		time: 106,
+	},
+
 	{
 		title: "All your notes are organized by tags",
 		content:
 			"All your notes will be visible from your home page seperated by tags. The tags act loosely as a folder here, with each note being a file. A note can have multiple tags, therefore, it will be visible under each of it's tag.",
-		time: 150,
+		time: 120,
 	},
 	{
 		title: "Upload your note to sync across devices",
 		content:
 			"Every note you write is entirely local by default, including it's markdown, images. You only need to upload it if you want to sync your note across devices. Uploaded notes stay private by default, i.e only you can access them on any device (after signing in) at the url /note/private/[slug].",
-		time: 166,
+		time: 128,
 	},
 	{
 		title: "Publish in a single click",
-		time: 186,
+		time: 152,
 		content:
 			" You can publish any uploaded note with a single click. Once public, your note will be available for anyone to read at /note/[slug].",
 	},
@@ -129,7 +135,7 @@ function Home() {
 
 		(window as any).onYouTubeIframeAPIReady = () => {
 			player = new (window as any).YT.Player("demo-iframe", {
-				videoId: "AHnrZucgBBM",
+				videoId: "eOq9_mD1TNo",
 			});
 
 			setPlayer(player);
@@ -161,7 +167,7 @@ function Home() {
 					>
 						<iframe
 							id="demo-iframe"
-							src="https://www.youtube.com/embed/AHnrZucgBBM?enablejsapi=1"
+							src="https://www.youtube.com/embed/eOq9_mD1TNo?enablejsapi=1"
 							title="YouTube video player"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							allowFullScreen
@@ -198,6 +204,7 @@ function Home() {
 														1000
 													);
 												}}
+												id={title}
 												className={cn(
 													"border-0 w-full features",
 													"data-[state=open]:text-lg"
