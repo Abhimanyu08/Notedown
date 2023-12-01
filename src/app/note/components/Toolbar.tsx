@@ -72,7 +72,7 @@ function Toolbar() {
 
 	return (
 		<>
-			{blogState.blogMeta.language && <EnableRceButton />}
+			<EnableRceButton />
 
 			<ToolTipComponent
 				className="relative text-gray-400 hover:text-white active:scale-95"

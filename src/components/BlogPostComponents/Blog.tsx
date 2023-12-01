@@ -1,40 +1,30 @@
 import { BlogProps } from "@/interfaces/BlogProps";
 import formatDate from "@utils/dateFormatter";
-import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { memo } from "react";
-import SyncWarning from "./SyncWarning";
-import { parseFrontMatter } from "@utils/parseFrontMatter";
 
-const Blog = memo(
-	function Blog({
-		markdown,
-		created_by,
-		published,
-		published_on,
-		created_at,
-		extraClasses,
-		AuthorComponent,
-		children,
-	}: Partial<BlogProps> & {
-		AuthorComponent:
-			| React.MemoExoticComponent<() => JSX.Element>
-			| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>)
-			| (() => JSX.Element);
+const Blog = memo(function Blog({
+	title,
+	description,
+	markdown,
+	created_by,
+	published,
+	published_on,
+	created_at,
+	extraClasses,
+	AuthorComponent,
+	children,
+}: Partial<BlogProps> & {
+	AuthorComponent:
+		| React.MemoExoticComponent<() => JSX.Element>
+		| (({ createdBy }: { createdBy: string }) => Promise<JSX.Element>)
+		| (() => JSX.Element);
 
-		children?: React.ReactNode;
-	}) {
-		const { content, data } = parseFrontMatter(markdown || "");
-		const { title, description } = data;
-		// let blogJsx = <></>;
-		// if (!children) {
-		// 	const { htmlAST } = mdToHast(content || "");
-		// 	blogJsx = transformer(htmlAST);
-		// }
-
-		return (
-			<div
-				className={
-					`
+	children?: React.ReactNode;
+}) {
+	return (
+		<div
+			className={
+				`
 				overflow-x-hidden		
 				// --------overflow-y-auto
 				prose
@@ -100,41 +90,36 @@ const Blog = memo(
 				
 				pb-20 md:pb-10 
 				` +
-					" " +
-					extraClasses
-				}
-			>
-				<header>
-					<h1 className="text-left " id="title">
-						{title}
-					</h1>
+				" " +
+				extraClasses
+			}
+		>
+			<header>
+				<h1 className="text-left " id="title">
+					{title}
+				</h1>
 
-					<blockquote className="text-left font-serif text-xl text-gray-400 not-italic">
-						{description}
-					</blockquote>
-					<div className="dark:text-gray-400 flex not-prose gap-2 text-xs md:text-sm text-black justify-start mb-10 md:mb-12">
-						<AuthorComponent createdBy={created_by || ""} />
-						<span className="first:hidden">.</span>
-						<span>
-							{published && published_on
-								? formatDate(published_on)
-								: created_at
-								? formatDate(created_at)
-								: formatDate(new Date().toDateString())}
-						</span>
-						<SyncWarning markdown={markdown || ""} />
-					</div>
-				</header>
-				<article className="" id="jsx">
-					{children}
-				</article>
-			</div>
-			// </BlogContext.Provider>
-		);
-	},
-	(prevProps, newProps) => {
-		return prevProps.markdown === newProps.markdown;
-	}
-);
+				<blockquote className="text-left font-serif text-xl text-gray-400 not-italic">
+					{description}
+				</blockquote>
+				<div className="dark:text-gray-400 flex not-prose gap-2 text-xs md:text-sm text-black justify-start mb-10 md:mb-12">
+					<AuthorComponent createdBy={created_by || ""} />
+					<span className="first:hidden">.</span>
+					<span>
+						{published && published_on
+							? formatDate(published_on)
+							: created_at
+							? formatDate(created_at)
+							: formatDate(new Date().toDateString())}
+					</span>
+				</div>
+			</header>
+			<article className="" id="jsx">
+				{children}
+			</article>
+		</div>
+		// </BlogContext.Provider>
+	);
+});
 
 export default Blog;

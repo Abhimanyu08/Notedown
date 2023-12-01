@@ -66,11 +66,11 @@ async function Note({ params }: { params: PostParams }) {
 			<BlogContextProvider
 				blogMeta={{
 					id: post?.id,
-					language: post?.language,
 					imageFolder: post?.image_folder,
 					blogger: post?.bloggers as { id: string; name: string },
 					timeStamp: post.timestamp!,
 				}}
+				language={post.language || undefined}
 				uploadedImages={imagesToUrls}
 				fileNames={fileNames}
 			>

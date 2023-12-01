@@ -20,7 +20,8 @@ import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 
 export function NotLoggedInOptions({
 	className,
-}: React.ComponentPropsWithoutRef<"div">) {
+	redirectTo,
+}: React.ComponentPropsWithoutRef<"div"> & { redirectTo?: string }) {
 	const pathname = usePathname();
 	const { supabase } = useSupabase();
 	return (
@@ -29,17 +30,25 @@ export function NotLoggedInOptions({
 			<Button
 				onClick={(e) => {
 					e.preventDefault();
-					handleSignIn(supabase, "github", pathname || "/");
+					handleSignIn(
+						supabase,
+						"github",
+						redirectTo || pathname || "/"
+					);
 				}}
 				className="p-2 justify-center gap-2 bg-gray-200 hover:bg-gray-500 text-black"
 			>
 				<AiFillGithub size={20} className="w-4 md:w-6 " /> GitHub
 			</Button>
-			<Divider>Or</Divider>
+			<Divider horizontal={className?.includes("flex-row")}>Or</Divider>
 			<Button
 				onClick={(e) => {
 					e.preventDefault();
-					handleSignIn(supabase, "google", pathname || "/");
+					handleSignIn(
+						supabase,
+						"google",
+						redirectTo || pathname || "/"
+					);
 				}}
 				className="p-2 justify-center gap-2 bg-gray-200 hover:bg-gray-500 text-black"
 				// className="btn btn-xs w-fit md:btn-sm bg-base-100 text-white normal-case"

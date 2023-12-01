@@ -10,6 +10,7 @@ import { tagToJsxConverterWithContext } from "@utils/html2Jsx/minimalJsxConverte
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
 import { parseFrontMatter } from "@utils/parseFrontMatter";
 import Footers from "@components/BlogPostComponents/Footers";
+import SyncWarning from "@components/BlogPostComponents/SyncWarning";
 
 async function PostPreview({ postId }: { postId: string }) {
 	const supabase = createSupabaseServerClient(cookies);
@@ -43,18 +44,15 @@ async function PostPreview({ postId }: { postId: string }) {
 				fileNames={fileNames}
 				blogMeta={{
 					id: post.id,
-					language: post.language as any,
 					imageFolder: post.image_folder,
 					blogger: post.bloggers as { id: string; name: string },
 					timeStamp: post.timestamp!,
 				}}
+				language={post.language || undefined}
 			>
 				{/* <PublishModal publishPostAction={publishPostAction} /> */}
-				<Blog
-					{...post}
-					markdown={markdown}
-					AuthorComponent={BlogAuthorServer}
-				>
+				<Blog {...post} AuthorComponent={BlogAuthorServer}>
+					<SyncWarning markdown={markdown} />
 					{blogJsx}
 
 					{tagToJsx.footnotes!.length > 0 && (

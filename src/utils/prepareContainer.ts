@@ -11,12 +11,12 @@ export default async function prepareContainer(language: BlogProps["language"] |
 
         if (resp.status !== 201) {
 
-            return new Error(resp.statusText);
+            throw new Error(resp.statusText);
         }
         const body: { containerId: string; } = await resp.json();
         return body.containerId
 
-    } catch (_) {
-        alert("Couldn't enable remote code execution");
+    } catch (e) {
+        alert((e as Error).message || "Couldn't enable remote code execution");
     }
 }

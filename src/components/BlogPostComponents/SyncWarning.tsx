@@ -8,44 +8,57 @@ import Link from "next/link";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-function SyncWarning({ markdown }: { markdown: string }) {
+function SyncWarning({ markdown }: { markdown?: string }) {
 	const inSync = useInSync({ markdown });
 	const pathname = usePathname();
-	const searchParams = useSearchParams();
 	const params = useParams();
+	const searchParams = useSearchParams();
 	const { blogState } = useContext(BlogContext);
 	const { blogMeta } = blogState;
 	if (inSync) {
 		return <></>;
 	}
 
-	if (pathname?.startsWith("/write") && !inSync) {
-		return (
-			<div className="flex gap-1 items-center">
-				<AlertTriangle size={14} className="text-rose-500" />
-				<span>The local and uploaded versions are not in sync</span>
-			</div>
-		);
+	function getHref() {
+		if (!searchParams) return;
+		if (pathname?.startsWith("/notebook")) {
+			if (searchParams?.has("note")) {
+				return `${pathname}?draft=${
+					blogMeta.timeStamp
+				}&synced=false&noteId=${searchParams.get(
+					"note"
+				)}&tag=${searchParams.get("tag")}`;
+			}
+			return `${pathname}?note=${searchParams.get(
+				"noteId"
+			)}&tag=${searchParams.get("tag")}`;
+		}
+
+		if (pathname?.startsWith("/note")) {
+			return `/draft/${blogMeta.timeStamp}?synced=false&noteId=${params?.postId}`;
+		}
+		return `/note/${searchParams.get("noteId")}?synced=false`;
+	}
+
+	const onLocal =
+		pathname?.startsWith("/draft") || searchParams?.has("draft");
+
+	if (onLocal && !searchParams?.has("synced")) {
+		return <></>;
 	}
 
 	return (
-		<div className="flex gap-1 items-center">
-			<span>.</span>
-			<AlertTriangle size={14} className="text-rose-500" />
+		<div className="flex gap-1 not-prose items-center text-xs bg-destructive text-black p-2 w-fit rounded-md">
 			<span>The</span>
 			<Link
 				href={
-					pathname?.startsWith("/draft")
+					onLocal
 						? `${pathname}?${searchParams?.toString()}`
-						: `/draft/${
-								blogMeta.timeStamp
-						  }?synced=false&postId=${params?.postId!}&public=${!pathname?.includes(
-								"private"
-						  )}`
+						: getHref()!
 				}
 				className={cn(
 					"underline hover:italic",
-					pathname?.startsWith("/draft") ? "text-gray-100" : ""
+					onLocal ? "text-gray-100" : ""
 				)}
 			>
 				local
@@ -53,17 +66,13 @@ function SyncWarning({ markdown }: { markdown: string }) {
 			<span>and</span>
 			<Link
 				href={
-					pathname?.startsWith("/note")
-						? pathname
-						: searchParams?.get("public") === "false"
-						? `/note/private/${searchParams.get(
-								"postId"
-						  )}?synced=false`
-						: `/note/${searchParams?.get("postId")}?synced=false`
+					!onLocal
+						? `${pathname}?${searchParams?.toString()}`
+						: getHref()!
 				}
 				className={cn(
 					"underline hover:italic",
-					pathname?.startsWith("/note") ? "text-gray-100" : ""
+					!onLocal ? "text-gray-100" : ""
 				)}
 			>
 				uploaded

@@ -1,6 +1,7 @@
 import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import Footers from "@components/BlogPostComponents/Footers";
+import SyncWarning from "@components/BlogPostComponents/SyncWarning";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ALLOWED_LANGUAGES } from "@utils/constants";
 import { getPost } from "@utils/getData";
@@ -44,11 +45,13 @@ function BlogLayout({
 				title={post?.title || data?.title || ""}
 			>
 				<Blog
-					markdown={markdown}
+					title={data.title}
+					description={data.description}
 					created_by={post?.created_by}
 					extraClasses="mx-auto"
 					AuthorComponent={AuthorComponent}
 				>
+					<SyncWarning markdown={markdown} />
 					{blogJsx}
 
 					{tagToJsx.footnotes!.length > 0 && (

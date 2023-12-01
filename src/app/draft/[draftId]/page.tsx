@@ -5,11 +5,11 @@ import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Footers from "@components/BlogPostComponents/Footers";
+import SyncWarning from "@components/BlogPostComponents/SyncWarning";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { tagToJsx } from "@utils/html2Jsx/defaultJsxConverter";
 import { mdToHast, transformer } from "@utils/html2Jsx/transformer";
-import { parseFrontMatter } from "@utils/parseFrontMatter";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
@@ -24,7 +24,7 @@ function Draft() {
 	const { dispatch } = useContext(BlogContext);
 	useEffect(() => {
 		if (blogData) {
-			dispatch({ type: "set blog meta", payload: blogData.data });
+			dispatch({ type: "set language", payload: blogData.data.language });
 		}
 	}, [blogData]);
 
@@ -41,16 +41,13 @@ function Draft() {
 				title={blogData?.data.title || ""}
 			>
 				<Blog
-					markdown={blogData.content}
-					language={blogData.data.language}
 					extraClasses="mx-auto"
 					AuthorComponent={() => <></>}
+					title={blogData.data.title}
+					description={blogData.data.description}
 				>
-					{transformer(
-						mdToHast(parseFrontMatter(blogData.content).content)
-							.htmlAST,
-						tagToJsx
-					)}
+					<SyncWarning />
+					{transformer(mdToHast(blogData.content).htmlAST, tagToJsx)}
 					{tagToJsx.footnotes!.length > 0 && (
 						<Footers
 							footNotes={tagToJsx.footnotes!}

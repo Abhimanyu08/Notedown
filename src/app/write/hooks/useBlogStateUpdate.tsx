@@ -113,17 +113,13 @@ function useBlogStateUpdate() {
 
 					const { data, frontMatterLength } =
 						parseFrontMatter(markdown);
-					if (blogState.blogMeta.language !== data.language) {
-						blogStateDispatch({
-							type: "set blog meta",
-							payload: {
-								language: data?.language || undefined,
-							},
-						});
-					}
 					editorStateDispatch({
 						type: "set frontmatter length",
 						payload: frontMatterLength,
+					});
+					blogStateDispatch({
+						type: "set language",
+						payload: data.language,
 					});
 
 					setBlogContent(markdown);
@@ -139,20 +135,14 @@ function useBlogStateUpdate() {
 							parseFrontMatter(markdown);
 
 						startTransition(() => {
-							if (blogState.blogMeta.language !== data.language) {
-								blogStateDispatch({
-									type: "set blog meta",
-									payload: {
-										language: data?.language || undefined,
-									},
-								});
-							}
-
 							editorStateDispatch({
 								type: "set frontmatter length",
 								payload: frontMatterLength,
 							});
-
+							blogStateDispatch({
+								type: "set language",
+								payload: data.language,
+							});
 							setBlogContent(markdown);
 						});
 					}

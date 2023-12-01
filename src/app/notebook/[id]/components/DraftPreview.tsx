@@ -12,6 +12,7 @@ import { parseFrontMatter } from "@utils/parseFrontMatter";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect } from "react";
 import EditorContextProvider from "@/app/write/components/EditorContext";
+import SyncWarning from "@components/BlogPostComponents/SyncWarning";
 
 function DraftPreview({ params }: { params: { draftId: string } }) {
 	const blogData = useRetrieveDraftFromIndexDb({ timeStamp: params.draftId });
@@ -19,7 +20,7 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 	const searchParams = useSearchParams();
 	useEffect(() => {
 		if (blogData) {
-			dispatch({ type: "set blog meta", payload: blogData.data });
+			dispatch({ type: "set language", payload: blogData.data.language });
 		}
 	}, [blogData]);
 	return (
@@ -30,15 +31,12 @@ function DraftPreview({ params }: { params: { draftId: string } }) {
 		>
 			{/* <PublishModal publishPostAction={publishPostAction} /> */}
 			<Blog
-				language={blogData.data?.language}
-				markdown={blogData.content}
+				title={blogData.data.title}
+				description={blogData.data.description}
 				AuthorComponent={() => <></>}
 			>
-				{transformer(
-					mdToHast(parseFrontMatter(blogData.content).content)
-						.htmlAST,
-					tagToJsx
-				)}
+				<SyncWarning />
+				{transformer(mdToHast(blogData.content).htmlAST, tagToJsx)}
 				{tagToJsx.footnotes!.length > 0 && (
 					<Footers
 						footNotes={tagToJsx.footnotes!}

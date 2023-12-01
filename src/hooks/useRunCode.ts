@@ -15,7 +15,7 @@ export function useRunCode({
 	dispatch: Dispatch<DispatchObj>;
 }) {
 	useEffect(() => {
-		let language = blogState.blogMeta.language;
+		let language = blogState.language;
 		if (!language || !ALLOWED_LANGUAGES.includes(language as any)) return;
 		const {
 			containerId,

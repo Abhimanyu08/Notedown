@@ -5,7 +5,7 @@ import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import { useContext, useEffect, useState } from "react";
 
 export default function useRetrieveDraftFromIndexDb({ timeStamp }: { timeStamp: string }) {
-    const [blogData, setBlogData] = useState<{ content: string, frontMatterLength: number, data: { title?: string, description?: string, postId?: number, language?: typeof ALLOWED_LANGUAGES[number] | null } }>({ content: "", frontMatterLength: 0, data: {} });
+    const [blogData, setBlogData] = useState<{ content: string, frontMatterLength: number, data: { title?: string, description?: string, postId?: number, language?: typeof ALLOWED_LANGUAGES[number] | null }, markdown?: string }>({ content: "", frontMatterLength: 0, data: {} });
     const { documentDb } = useContext(IndexedDbContext);
     // const [validKey, setValidKey] = useState("");
 
@@ -35,8 +35,8 @@ export default function useRetrieveDraftFromIndexDb({ timeStamp }: { timeStamp: 
         markdownObjectStoreRequest.onsuccess = (e) => {
             const { markdown, postId } = (e.target as IDBRequest<{ markdown: string, postId?: number }>)
                 .result;
-            const { data } = parseFrontMatter(markdown)
-            setBlogData(p => ({ ...p, content: markdown, data: { ...data, postId: postId } }));
+            const { data, content } = parseFrontMatter(markdown)
+            setBlogData(p => ({ ...p, content, data: { ...data, postId: postId } }));
         };
     }, [timeStamp, documentDb]);
 

@@ -11,7 +11,7 @@ function PrivateToolbar() {
 	const { blogState } = useContext(BlogContext);
 	return (
 		<>
-			{blogState.blogMeta.language && <EnableRceButton />}
+			<EnableRceButton />
 			<ToolTipComponent
 				tip="Edit markdown"
 				className={`text-gray-400 hover:text-white active:scale-95`}

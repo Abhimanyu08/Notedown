@@ -3,7 +3,7 @@ import { getPost } from "@utils/getData";
 import { Text } from "@codemirror/state";
 import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { EditorContext } from "./EditorContext";
 import MarkdownEditor from "./MarkdownEditor";
 import WriteToolbar from "./WriteToolbar";
@@ -36,7 +36,6 @@ function EditorLayout({
 						.name,
 					imageFolder: post.image_folder,
 					blogger: post.bloggers as any,
-					language: post.language,
 					slug: post.slug || undefined,
 					published: post.published,
 				},
@@ -49,6 +48,10 @@ function EditorLayout({
 			blogStateDispatch({
 				type: "set uploaded images",
 				payload: imagesToUrls!,
+			});
+			blogStateDispatch({
+				type: "set language",
+				payload: post.language,
 			});
 			blogStateDispatch({
 				type: "add sandbox filenames",
@@ -68,6 +71,11 @@ function EditorLayout({
 				previewRef.current.clientHeight,
 			left: 0,
 		});
+	}, [blogContent]);
+
+	const blogMeta = useMemo(() => {
+		const { data, content } = parseFrontMatter(blogContent);
+		return { title: data.title, description: data.description, content };
 	}, [blogContent]);
 
 	return (
@@ -106,14 +114,11 @@ function EditorLayout({
 				}}
 			>
 				<Blog
-					{...blogState.blogMeta}
-					markdown={blogContent}
+					title={blogMeta.title}
+					description={blogMeta.description}
 					AuthorComponent={() => <></>}
 				>
-					{transformer(
-						mdToHast(parseFrontMatter(blogContent).content).htmlAST,
-						tagToJsx
-					)}
+					{transformer(mdToHast(blogMeta.content).htmlAST, tagToJsx)}
 					{tagToJsx.footnotes && tagToJsx.footnotes.length > 0 && (
 						<Footers
 							footNotes={tagToJsx.footnotes}

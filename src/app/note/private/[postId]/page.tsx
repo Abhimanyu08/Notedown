@@ -31,12 +31,12 @@ async function PrivatePost({ params }: { params: PostParams }) {
 		<BlogContextProvider
 			blogMeta={{
 				id: post?.id,
-				language: post?.language,
 				imageFolder: post?.image_folder,
 				blogger: post?.bloggers as { id: string; name: string },
 				timeStamp: post.timestamp!,
 				published: post.published,
 			}}
+			language={post.language || undefined}
 			uploadedImages={imagesToUrls}
 			fileNames={fileNames}
 		>

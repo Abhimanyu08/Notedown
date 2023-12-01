@@ -6,15 +6,13 @@ import { BlogContext } from "@components/BlogPostComponents/BlogState";
 import { usePathname, useSearchParams } from "next/navigation";
 import { EditorContext } from "@/app/write/components/EditorContext";
 
-export default function useInSync({ markdown }: { markdown: string }) {
+export default function useInSync({ markdown }: { markdown?: string }) {
 
 
     const { blogState } = useContext(BlogContext)
-    const { editorState } = useContext(EditorContext)
     const { documentDb } = useContext(IndexedDbContext);
 
     const searchParams = useSearchParams()
-    const pathname = usePathname()
     const { blogMeta: noteMeta } = blogState
 
     const [inSync, setInSync] = useState(true);
