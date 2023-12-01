@@ -18,14 +18,13 @@ import Script from "next/script";
 const videoCheckpoints: { title: string; content: string; time: number }[] = [
 	{
 		title: "Write notes using markdown",
-		content:
-			"Write notes using all the markdown goodness. Fill in the relevant metadata in the frontmatter. Add tags to organize notes. Add a programming language that you will use in your executable code blocks (explained below) using the language field. The available languages are javascript, python, rust and go. The slug field is relevant only if you choose to upload your note. Your note (it's markdown, images you upload etc) will be stored entirely locally by default.",
+		content: "Write notes using all the markdown goodness ",
 		time: 0,
 	},
 	{
 		title: "Write and run code",
 		content:
-			"The code written inside usual markdown code blocks delimited by ``` can be edited and executed right in the browser. The environment in which they run is determined by the value of language field you provided in the frontmatter for eg if language is 'javascript', the code will run inside a node environment. The code inside every codeblock is written to the file whose filename is determined by the file parameter you provide in markdown (main by default) for eg code inside codeblock starting with ```file=foo will be written to 'foo.js'. Running a code block writes the code to it's respective file, executes that file and returns back the result in the terminal.",
+			"Your markdown code blocks will automatically be converted into a full fledged code editor with syntax highlighting and linting support. The environment in which the code is execeuted it determined by the value of language field you provide in the frontmatter. You can provide 'javascript', 'typescript', 'rust', 'go' or 'pythong' as the language.",
 		time: 7,
 	},
 	{
@@ -39,7 +38,7 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 		title: "Embed CodeSandbox",
 		time: 44,
 		content:
-			"Embed a Codesandbox in your note. You can configure template, editorHeight, themes, file etc using the ugly json editor that comes up, hit 'Generate Sandbox' (or press shift-enter) to generate a sandbox using the given config. The changes you make to the sandbox files will persist.",
+			"Embed a Codesandbox in your note. You can configure template, editorHeight, themes, file etc using the json editor that comes up, hit 'Generate Sandbox' (or press shift-enter) to generate a sandbox using the given config. The changes you make to the sandbox files will persist.",
 	},
 	{
 		title: "Code snippets",
@@ -50,8 +49,7 @@ const videoCheckpoints: { title: string; content: string; time: number }[] = [
 	{
 		title: "Add Images",
 		content:
-			"Add Images from your local filesystem. If you upload multiple images, they'll be rendered as a carousel. You can provide a caption for each one by using `;` as the separator in markdown like so:" +
-			`![caption 1; caption 2; caption 3](image1, image2, image3)`,
+			"Add Images from your local filesystem. If you upload multiple images, they'll be rendered as a carousel. You can provide a caption for each one by using `;` as the separator in markdown",
 		time: 78,
 	},
 	{
