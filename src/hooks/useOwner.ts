@@ -11,6 +11,10 @@ function useOwner(userId?: string) {
     useEffect(() => {
         supabase.auth.onAuthStateChange((_, session) => {
 
+            if (params?.id === "anon") {
+                setOwner(true)
+                return
+            }
             if (!session?.user.id) {
                 return
             }
@@ -26,6 +30,7 @@ function useOwner(userId?: string) {
             }
 
             if (params.id === session.user.id) setOwner(true)
+
         })
 
     }, [supabase])

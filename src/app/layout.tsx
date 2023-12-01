@@ -32,13 +32,14 @@ const sans = Nunito_Sans({
 
 export const metadata: Metadata = {
 	title: "Notedown",
-	description: "Markdown based note-taking app with useful embeddings.",
+	description: "Embed computation and tldraw canvas in your markdown notes",
 	icons: {
 		icon: "/icon.png",
 	},
 	twitter: {
 		title: "Notedown",
-		description: "Markdown based note-taking app with useful embeddings.",
+		description:
+			"Embed computation and tldraw canvas in your markdown notes",
 		card: "summary",
 		site: "https://notedown.art",
 	},
@@ -47,7 +48,8 @@ export const metadata: Metadata = {
 		type: "website",
 		title: "Notedown",
 		siteName: "Notedown",
-		description: "Markdown based note-taking app with useful embeddings.",
+		description:
+			"Embed computation and tldraw canvas in your markdown notes",
 	},
 };
 
