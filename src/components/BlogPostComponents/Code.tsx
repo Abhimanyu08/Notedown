@@ -57,7 +57,7 @@ function Code({
 	theme,
 }: CodeProps) {
 	const { blogState, dispatch } = useContext(BlogContext);
-	const { language } = blogState.blogMeta;
+	const language = blogState.language;
 
 	const [openShell, setOpenShell] = useState(false);
 	const [copied, setCopied] = useState(false);
