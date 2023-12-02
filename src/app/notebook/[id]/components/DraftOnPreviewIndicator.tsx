@@ -17,6 +17,13 @@ export function DraftOnPreviewIndicator({
 			if (tag === searchParams.get("tag")) {
 				onPreview = true;
 			}
+			if (
+				searchParams.has("q") &&
+				searchParams.get("q") &&
+				searchParams.get("tag") === "undefined"
+			) {
+				onPreview = true;
+			}
 		}
 	}
 	if (!onPreview) return <></>;

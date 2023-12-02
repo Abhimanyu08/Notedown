@@ -21,6 +21,13 @@ function PostOnPreviewColor({
 			if (tag === searchParams.get("tag")) {
 				onPreview = true;
 			}
+			if (
+				searchParams.has("q") &&
+				searchParams.get("q") &&
+				searchParams.get("tag") === "undefined"
+			) {
+				onPreview = true;
+			}
 		}
 	}
 

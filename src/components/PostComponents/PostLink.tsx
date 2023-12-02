@@ -22,8 +22,10 @@ function PostLink({
 	const href = searchParams?.has("showtag")
 		? `${pathname}?showtag=${searchParams.get("showtag")}&note=${
 				slug || id
-		  }&tag=${tag}`
-		: `${pathname}?note=${slug || id}&tag=${tag}`;
+		  }&tag=${tag}&q=${searchParams?.get("q")}`
+		: `${pathname}?note=${slug || id}&tag=${tag}&q=${searchParams?.get(
+				"q"
+		  )}`;
 	return (
 		<Link href={href} className={className}>
 			{children}

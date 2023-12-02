@@ -15,8 +15,10 @@ export function SingleDraft({ draft, tag }: SingleDraftProp) {
 	const href = searchParams?.has("showtag")
 		? `${pathname}?showtag=${searchParams.get("showtag")}&draft=${
 				draft.timeStamp
-		  }&tag=${tag}`
-		: `${pathname}?draft=${draft.timeStamp}&tag=${tag}`;
+		  }&tag=${tag}&q=${searchParams?.get("q")}`
+		: `${pathname}?draft=${
+				draft.timeStamp
+		  }&tag=${tag}&q=${searchParams?.get("q")}`;
 	return (
 		<div className="flex flex-col group p-2 relative ">
 			<DraftOnPreviewIndicator draftId={draft.timeStamp} tag={tag} />

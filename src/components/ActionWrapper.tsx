@@ -29,6 +29,9 @@ function ClosePreviewButton() {
 					`/notebook/${params?.id}` +
 					(searchParams?.has("showtag")
 						? `?showtag=${searchParams?.get("showtag")}`
+						: "") +
+					(searchParams?.has("q")
+						? `?q=${searchParams?.get("q")}`
 						: "")
 				}
 			>
@@ -57,7 +60,7 @@ function ActionWrapper({
 	const owner = useOwner();
 
 	if (searchParams?.has("note") || searchParams?.has("draft")) {
-		if (searchParams.get("tag") !== tag) return null;
+		if (searchParams.get("tag") !== (tag || "undefined")) return null;
 		const draftParam = searchParams.get("draft");
 		const noteParam = searchParams.get("note");
 		if (draftParam && draftId) {

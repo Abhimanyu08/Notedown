@@ -69,7 +69,7 @@ async function Page({
 
 		if (searchResults) {
 			SearchResultJsx = (
-				<div className="flex flex-col gap-4">
+				<div className="flex flex-col gap-4 px-2">
 					<PostDisplay
 						posts={searchResults.map((result) =>
 							postToDraft(result)
