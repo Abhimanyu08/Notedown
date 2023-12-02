@@ -15,9 +15,6 @@ function SyncWarning({ markdown }: { markdown?: string }) {
 	const searchParams = useSearchParams();
 	const { blogState } = useContext(BlogContext);
 	const { blogMeta } = blogState;
-	if (inSync) {
-		return <></>;
-	}
 
 	function getHref() {
 		if (!searchParams) return;
@@ -43,6 +40,9 @@ function SyncWarning({ markdown }: { markdown?: string }) {
 	const onLocal =
 		pathname?.startsWith("/draft") || searchParams?.has("draft");
 
+	if (inSync) {
+		return <></>;
+	}
 	if (onLocal && !searchParams?.has("synced")) {
 		return <></>;
 	}

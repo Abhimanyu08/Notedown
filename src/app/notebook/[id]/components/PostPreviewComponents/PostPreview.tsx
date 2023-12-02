@@ -49,10 +49,11 @@ async function PostPreview({ postId }: { postId: string }) {
 					timeStamp: post.timestamp!,
 				}}
 				language={post.language || undefined}
+				key={postId}
 			>
 				{/* <PublishModal publishPostAction={publishPostAction} /> */}
 				<Blog {...post} AuthorComponent={BlogAuthorServer}>
-					<SyncWarning markdown={markdown} />
+					<SyncWarning markdown={markdown} key={postId} />
 					{blogJsx}
 
 					{tagToJsx.footnotes!.length > 0 && (

@@ -202,7 +202,9 @@ async function Page({
 			>
 				<Suspense fallback={<PostLoading />}>
 					{searchParams?.["draft"] && (
-						<BlogContextProvider>
+						<BlogContextProvider
+							key={searchParams!["draft"]! as string}
+						>
 							<EditorContextProvider>
 								<DraftPreview
 									params={{

@@ -8,8 +8,6 @@ const CodesandboxWithEditor = lazy(
 	() => import("./CodeSandbox/CodesandboxWithEditor")
 );
 
-const DrawingSvg = lazy(() => import("./DrawingSvg"));
-
 const TLDrawing = lazy(() => import("./TLDrawing"));
 function CodeWord({ code }: { code: string }) {
 	const pathname = usePathname();
@@ -27,18 +25,14 @@ function CodeWord({ code }: { code: string }) {
 		const persistanceKey = regexArray.at(1)!;
 		const caption = regexArray.at(2) || "";
 		const dark = regexArray.at(4);
-		if (pathname?.startsWith("/write") || searchParams?.has("draft")) {
-			return (
-				<TLDrawing
-					persistanceKey={persistanceKey}
-					dark={dark !== "false"}
-					caption={caption}
-					key={persistanceKey}
-				/>
-			);
-		}
-
-		return <DrawingSvg {...{ persistanceKey, caption }} />;
+		return (
+			<TLDrawing
+				persistanceKey={persistanceKey}
+				dark={dark !== "false"}
+				caption={caption}
+				key={persistanceKey}
+			/>
+		);
 	}
 
 	const sandboxRegex = /<sandbox id=(\d+)\/>/;

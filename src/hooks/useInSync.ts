@@ -30,13 +30,8 @@ export default function useInSync({ markdown }: { markdown?: string }) {
         if (!markdown) return;
         if (!noteMeta.timeStamp) return;
 
-        // let tagPreview = "";
-        // if (searchParams?.has("tagpreview")) {
-        //     tagPreview = searchParams.get("tagpreview")!;
-        // }
 
-
-
+        console.log("Timestamp ============>", noteMeta.timeStamp)
         const markdownObjectStoreRequest = documentDb
             .transaction("markdown", "readonly")
             .objectStore("markdown")
@@ -50,7 +45,7 @@ export default function useInSync({ markdown }: { markdown?: string }) {
                 setInSync(false);
             }
         };
-    }, [documentDb, markdown, owner, blogState]);
+    }, [documentDb, markdown, owner]);
 
     return inSync
 }
