@@ -60,12 +60,12 @@ const Blog = memo(function Blog({
 
 				// ---------------prose-code---------------
 				dark:prose-code:bg-secondary
-				dark:prose-code:text-gray-400
+				dark:prose-code:text-gray-300
 				prose-code:bg-white
 				prose-code:text-black
 				prose-code:font-mono
-				prose-code:font-medium
-				prose-code:px-1 
+				prose-code:font-normal
+				prose-code:px-2 
 				prose-code:rounded-sm
 				prose-code:select-all
 
@@ -94,15 +94,15 @@ const Blog = memo(function Blog({
 				extraClasses
 			}
 		>
-			<header>
+			<header className="mb-20">
 				<h1 className="text-left " id="title">
 					{title}
 				</h1>
 
-				<blockquote className="text-left font-serif text-xl text-gray-400 not-italic">
+				<span className="text-left block text-xl mb-10 text-gray-400 ">
 					{description}
-				</blockquote>
-				<div className="dark:text-gray-400 flex not-prose gap-2 text-xs md:text-sm text-black justify-start mb-10 md:mb-12">
+				</span>
+				<div className="dark:text-gray-400 flex items-center not-prose gap-2 text-xs  text-black justify-start not-prose">
 					<AuthorComponent createdBy={created_by || ""} />
 					<span className="first:hidden">.</span>
 					<span>
@@ -112,6 +112,7 @@ const Blog = memo(function Blog({
 							? formatDate(created_at)
 							: formatDate(new Date().toDateString())}
 					</span>
+					<div className="grow border-t-[0.2px] border-b-0 border-gray-600"></div>
 				</div>
 			</header>
 			<article className="" id="jsx">

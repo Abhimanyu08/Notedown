@@ -86,7 +86,7 @@ export function tagToJsxConverterWithContext({
 						{
 							id: headingId,
 							className:
-								"group prose flex items-center prose-code:text-xl prose-code:mx-1",
+								"group prose flex hover:underline items-center prose-code:text-xl prose-code:mx-1",
 						},
 
 						[
