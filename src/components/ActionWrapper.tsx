@@ -2,7 +2,12 @@
 import useOwner from "@/hooks/useOwner";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import {
+	useParams,
+	usePathname,
+	useRouter,
+	useSearchParams,
+} from "next/navigation";
 import React from "react";
 import { SlOptions } from "react-icons/sl";
 import { ToolTipComponent } from "./ToolTipComponent";
@@ -17,6 +22,15 @@ import Link from "next/link";
 function ClosePreviewButton() {
 	const params = useParams();
 	const searchParams = useSearchParams();
+
+	let href = `/notebook/${params?.id}`;
+
+	if (searchParams?.get("showtag")) {
+		href += `?showtag=${searchParams.get("showtag")}`;
+	}
+	if (searchParams?.get("q")) {
+		href += `?q=${searchParams.get("q")}`;
+	}
 	return (
 		<ToolTipComponent
 			tip="Close preview"
@@ -24,17 +38,7 @@ function ClosePreviewButton() {
 			absolute top-3 right-3 w-fit h-fit bg-gray-400 hover:bg-gray-100 active:scale-95 text-black rounded-full p-1 z-1000"
 			side="right"
 		>
-			<Link
-				href={
-					`/notebook/${params?.id}` +
-					(searchParams?.has("showtag")
-						? `?showtag=${searchParams?.get("showtag")}`
-						: "") +
-					(searchParams?.has("q")
-						? `?q=${searchParams?.get("q")}`
-						: "")
-				}
-			>
+			<Link href={href}>
 				<X size={12} />
 			</Link>
 		</ToolTipComponent>
@@ -43,37 +47,21 @@ function ClosePreviewButton() {
 
 function ActionWrapper({
 	children,
-	tag,
-	postId,
-	slug,
-	draftId,
+	href,
 }: {
 	children: React.ReactNode;
 
-	tag: string;
-	postId?: number;
-	slug?: string;
-	draftId?: string;
+	href: string;
 }) {
 	const searchParams = useSearchParams();
+	const pathname = usePathname();
 
 	const owner = useOwner();
 
-	if (searchParams?.has("note") || searchParams?.has("draft")) {
-		if (searchParams.get("tag") !== (tag || "undefined")) return null;
-		const draftParam = searchParams.get("draft");
-		const noteParam = searchParams.get("note");
-		if (draftParam && draftId) {
-			if (draftId !== draftParam) return null;
-			return <ClosePreviewButton />;
-		}
-		if (noteParam) {
-			if (parseInt(noteParam as string) !== postId && noteParam !== slug)
-				return null;
-			return <ClosePreviewButton />;
-		}
-		return null;
+	if (pathname + "?" + searchParams?.toString() === href) {
+		return <ClosePreviewButton />;
 	}
+
 	if (!owner) return null;
 
 	return (

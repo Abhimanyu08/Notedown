@@ -4,26 +4,19 @@ import {
 	publishPostAction,
 	unpublishPostAction,
 } from "@/app/actions";
-import {
-	Menubar,
-	MenubarContent,
-	MenubarItem,
-	MenubarMenu,
-	MenubarTrigger,
-} from "@/components/ui/menubar";
-import useOwner from "@/hooks/useOwner";
+import { MenubarItem } from "@/components/ui/menubar";
+import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useContext, useState, useTransition } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { SlOptions } from "react-icons/sl";
-import { TbNews, TbNewsOff } from "react-icons/tb";
-import ActionModal from "../Modals/ActionModal";
-import { getMarkdownObjectStore } from "@utils/indexDbFuncs";
-import { IndexedDbContext } from "../../contexts/IndexedDbContext";
 import { IoMdShareAlt } from "react-icons/io";
+import { TbNews, TbNewsOff } from "react-icons/tb";
+import { IndexedDbContext } from "../../contexts/IndexedDbContext";
 import ActionWrapper from "../ActionWrapper";
+import ActionModal from "../Modals/ActionModal";
 import { useToast } from "../ui/use-toast";
+import modifyDraftAndPostLink from "@utils/modifyDraftAndPostLink";
 
 export function PostActions({
 	published,
@@ -45,8 +38,12 @@ export function PostActions({
 	>("");
 	const [isPending, startTransition] = useTransition();
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 	const { documentDb } = useContext(IndexedDbContext);
 	const { toast } = useToast();
+	let href = pathname + `?note=${slug || postId}`;
+
+	href = modifyDraftAndPostLink(href, searchParams, tag);
 
 	return (
 		<>
@@ -100,7 +97,7 @@ export function PostActions({
 				visible={takenAction === "unpublish"}
 				onClose={() => setTakenAction("")}
 			/>
-			<ActionWrapper postId={postId} slug={slug} tag={tag!}>
+			<ActionWrapper href={href}>
 				<MenubarItem className="">
 					<Link
 						href={

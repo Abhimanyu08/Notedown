@@ -20,7 +20,7 @@ export function SingleDraft({ draft, tag }: SingleDraftProp) {
 	return (
 		<div className="flex flex-col group p-2 relative ">
 			<PostOnPreviewColor href={href} />
-			<DraftActions draft={draft} tag={tag!} />
+			<DraftActions draft={draft} tag={tag!} href={href} />
 			<Link href={href} className="">
 				<PostTitle title={title || ""} />
 				<p className="text-xs text-gray-400 mt-1">

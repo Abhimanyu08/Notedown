@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import formatDate from "@utils/dateFormatter";
 import Link from "next/link";
 import PostOnPreviewColor from "../PostComponents/PostOnPreviewColor";
-import { PostActions } from "../PostComponents/PostOptions";
+import { PostActions } from "./PostActions";
 import PostTitle from "../PostComponents/PostTitle";
 import { Draft } from "@utils/processDrafts";
 import OwnerOnlyStuff from "@components/ProfileComponents/OwnerOnlyStuff";
