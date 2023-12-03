@@ -110,7 +110,7 @@ async function Page({
 								side="bottom"
 								type="submit"
 							>
-								<Link href={`/notebook/${params.id}?q`}>
+								<Link href={`/notebook/${params.id}`} shallow>
 									<AiFillCloseCircle size={20} />
 								</Link>
 							</ToolTipComponent>

@@ -2,8 +2,9 @@ import PostTitle from "@components/PostComponents/PostTitle";
 import { Draft } from "@utils/processDrafts";
 import Link from "next/link";
 import { DraftActions } from "./DraftActions";
-import { DraftOnPreviewIndicator } from "./DraftOnPreviewIndicator";
 import { usePathname, useSearchParams } from "next/navigation";
+import modifyDraftAndPostLink from "@utils/modifyDraftAndPostLink";
+import PostOnPreviewColor from "@components/PostComponents/PostOnPreviewColor";
 
 export type SingleDraftProp = { draft: Draft; tag?: string };
 
@@ -12,16 +13,13 @@ export function SingleDraft({ draft, tag }: SingleDraftProp) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	const href = searchParams?.has("showtag")
-		? `${pathname}?showtag=${searchParams.get("showtag")}&draft=${
-				draft.timeStamp
-		  }&tag=${tag}&q=${searchParams?.get("q")}`
-		: `${pathname}?draft=${
-				draft.timeStamp
-		  }&tag=${tag}&q=${searchParams?.get("q")}`;
+	let href = pathname + `?draft=${draft.timeStamp}`;
+
+	href = modifyDraftAndPostLink(href, searchParams, tag);
+
 	return (
 		<div className="flex flex-col group p-2 relative ">
-			<DraftOnPreviewIndicator draftId={draft.timeStamp} tag={tag} />
+			<PostOnPreviewColor href={href} />
 			<DraftActions draft={draft} tag={tag!} />
 			<Link href={href} className="">
 				<PostTitle title={title || ""} />

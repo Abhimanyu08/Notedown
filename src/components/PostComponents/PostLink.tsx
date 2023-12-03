@@ -1,7 +1,9 @@
 "use client";
+import modifyDraftAndPostLink from "@utils/modifyDraftAndPostLink";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
+import PostOnPreviewColor from "./PostOnPreviewColor";
 
 function PostLink({
 	children,
@@ -19,16 +21,14 @@ function PostLink({
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	const href = searchParams?.has("showtag")
-		? `${pathname}?showtag=${searchParams.get("showtag")}&note=${
-				slug || id
-		  }&tag=${tag}&q=${searchParams?.get("q")}`
-		: `${pathname}?note=${slug || id}&tag=${tag}&q=${searchParams?.get(
-				"q"
-		  )}`;
+	let href = pathname + `?note=${slug || id}`;
+
+	href = modifyDraftAndPostLink(href, searchParams, tag);
+
 	return (
 		<Link href={href} className={className}>
 			{children}
+			<PostOnPreviewColor href={href} />
 		</Link>
 	);
 }

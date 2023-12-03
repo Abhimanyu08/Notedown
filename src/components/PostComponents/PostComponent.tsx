@@ -43,12 +43,6 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 				tag={tag}
 				id={id}
 			>
-				<PostOnPreviewColor
-					postId={parseInt(id!)}
-					tag={tag}
-					slug={slug}
-				/>
-
 				<PostTitle
 					{...{
 						title: title!,

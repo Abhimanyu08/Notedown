@@ -1,35 +1,13 @@
 "use client";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-function PostOnPreviewColor({
-	postId,
-	tag,
-	slug,
-}: {
-	postId: number;
-	tag?: string;
-	slug?: string;
-}) {
+function PostOnPreviewColor({ href }: { href: string }) {
 	const searchParams = useSearchParams();
+	const pathname = usePathname();
 
-	let onPreview = false;
-	if (searchParams?.has("note")) {
-		const noteId = searchParams.get("note") as any;
-		if (noteId == postId || noteId === slug) {
-			if (tag === searchParams.get("tag")) {
-				onPreview = true;
-			}
-			if (
-				searchParams.has("q") &&
-				searchParams.get("q") &&
-				searchParams.get("tag") === "undefined"
-			) {
-				onPreview = true;
-			}
-		}
-	}
+	const onPreview = pathname + "?" + searchParams?.toString() === href;
 
 	if (!onPreview) return <></>;
 	return (
