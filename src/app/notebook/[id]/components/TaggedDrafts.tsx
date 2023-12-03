@@ -35,12 +35,7 @@ export function TaggedDrafts({
 	return (
 		<>
 			<details
-				open={
-					searchTag === tag ||
-					tag === "notag" ||
-					searchParams?.get("tag") === tag ||
-					false
-				}
+				open={searchTag === tag || tag === "notag" || false}
 				className={cn(
 					"relative ",
 					searchTag && searchTag !== tag ? "hidden" : ""

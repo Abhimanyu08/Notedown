@@ -9,7 +9,7 @@ const nextConfig = {
 		// ignoreBuildErrors: true,
 	},
 	experimental: {
-		// ppr: true,
+		ppr: true,
 	},
 };
 

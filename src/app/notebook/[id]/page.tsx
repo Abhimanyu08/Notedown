@@ -41,8 +41,6 @@ async function Page({
 	params: { id: string };
 	searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-	const supabase = createSupabaseServerClient(cookies);
-
 	let loggedInName = "",
 		loggedInUserName = "";
 	if (params.id !== "anon") {
@@ -52,36 +50,35 @@ async function Page({
 		loggedInName = name || "";
 		loggedInUserName = username || "";
 	}
-	const searchQuery = searchParams?.["q"] as string;
-	let SearchResultJsx: JSX.Element | null = null;
+	// const searchQuery = searchParams?.["q"] as string;
+	// let SearchResultJsx: JSX.Element | null = null;
 
-	if (searchQuery) {
-		const searchFunction = "search";
-		const searchArgs = {
-			user_id: params!.id as string,
-			search_term: searchQuery,
-		};
+	// if (searchQuery) {
+	// 	const searchFunction = "search";
+	// 	const searchArgs = {
+	// 		user_id: params!.id as string,
+	// 		search_term: searchQuery,
+	// 	};
 
-		const { data: searchResults } = await supabase.rpc(
-			searchFunction,
-			searchArgs
-		);
+	// 	const { data: searchResults } = await supabase.rpc(
+	// 		searchFunction,
+	// 		searchArgs
+	// 	);
 
-		if (searchResults) {
-			SearchResultJsx = (
-				<div className="flex flex-col gap-4 px-2">
-					<PostDisplay
-						posts={searchResults.map((result) =>
-							postToDraft(result)
-						)}
-					/>
-					<DraftSearch query={searchQuery} />
-				</div>
-			);
-		}
-	}
+	// 	if (searchResults) {
+	// 		SearchResultJsx = (
+	// 			<div className="flex flex-col gap-4 px-2">
+	// 				<PostDisplay
+	// 					posts={searchResults.map((result) =>
+	// 						postToDraft(result)
+	// 					)}
+	// 				/>
+	// 				<DraftSearch query={searchQuery} />
+	// 			</div>
+	// 		);
+	// 	}
+	// }
 
-	const map = await getPostTagMap(supabase, params.id);
 	return (
 		<>
 			<SideSheet
@@ -92,104 +89,7 @@ async function Page({
 				}
 				notLoggedInChildren={<NotLoggedInOptions />}
 			/>
-			<ProfileContextProvider tagToPostMap={map}>
-				<div className="flex flex-col col-span-3 row-span-1 pt-6 border-r-[1px] border-border">
-					<form
-						action={async (formData) => {
-							"use server";
-							const query = formData.get("query");
-							redirect(`/notebook/${params.id}?q=${query}`);
-						}}
-						className="flex gap-2 px-6"
-					>
-						<Input type="text" name="query" placeholder="Search" />
 
-						{SearchResultJsx && (
-							<ToolTipComponent
-								tip="Clear search results"
-								side="bottom"
-								type="submit"
-							>
-								<Link href={`/notebook/${params.id}`} shallow>
-									<AiFillCloseCircle size={20} />
-								</Link>
-							</ToolTipComponent>
-						)}
-					</form>
-
-					<div className="h-[2px] bg-border col-span-1 my-4"></div>
-					<div
-						className="
-							overflow-y-auto
-				lg:scrollbar-thin 
-				scrollbar-track-black 
-				scrollbar-thumb-slate-700
-				px-2
-				grow
-				"
-					>
-						{SearchResultJsx}
-						<div className={`${SearchResultJsx ? "hidden" : ""}`}>
-							<NotOwnerOnlyStuff id={params.id}>
-								<TaggedDraftContainer>
-									{Array.from(map.keys()).map((tag) => {
-										const posts = map.get(tag);
-										if (!posts || posts.length === 0)
-											return <></>;
-										return (
-											<TaggedDrafts tag={tag} key={tag}>
-												<PostDisplay
-													posts={posts}
-													tag={tag}
-												/>
-											</TaggedDrafts>
-										);
-									})}
-								</TaggedDraftContainer>
-							</NotOwnerOnlyStuff>
-
-							{params.id === "anon" ? (
-								<TaggedDraftContainer>
-									<Drafts />
-								</TaggedDraftContainer>
-							) : (
-								<OwnerOnlyStuff id={params.id}>
-									<TaggedDraftContainer>
-										{Array.from(map.keys()).map((tag) => {
-											const posts = map.get(tag);
-											if (!posts || posts.length === 0)
-												return <></>;
-											return (
-												<TaggedDrafts
-													tag={tag}
-													key={tag}
-												>
-													<PostDisplay
-														posts={posts}
-														tag={tag}
-													/>
-
-													<DraftsDisplay tag={tag} />
-												</TaggedDrafts>
-											);
-										})}
-
-										<Drafts />
-									</TaggedDraftContainer>
-								</OwnerOnlyStuff>
-							)}
-						</div>
-					</div>
-
-					{params.id === "anon" ? (
-						<NewNoteButton />
-					) : (
-						<OwnerOnlyStuff id={params.id}>
-							<NewNoteButton />
-						</OwnerOnlyStuff>
-					)}
-				</div>
-			</ProfileContextProvider>
 			<div
 				className="col-span-7 h-full row-span-1 pt-10 relative  
 				overflow-y-auto
@@ -200,10 +100,10 @@ async function Page({
 	
 				"
 			>
-				<Suspense fallback={<PostLoading />}>
+				<Suspense>
 					{searchParams?.["draft"] && (
 						<BlogContextProvider
-							key={searchParams!["draft"]! as string}
+							key={searchParams?.["draft"] as string}
 						>
 							<EditorContextProvider>
 								<DraftPreview
@@ -221,8 +121,8 @@ async function Page({
 							postId={searchParams?.["note"] as string}
 						/>
 					)}
+					<NoPreviewScreen />
 				</Suspense>
-				<NoPreviewScreen />
 			</div>
 		</>
 	);
@@ -244,53 +144,4 @@ function NoPreviewScreen() {
 	);
 }
 
-function TaggedDraftContainer({ children }: { children: React.ReactNode }) {
-	return <div className="flex flex-col gap-4 px-3">{children}</div>;
-}
-
-async function getPostTagMap(supabase: SupabaseClient<Database>, id: string) {
-	const map = new Map<string, Draft[]>();
-	if (id !== "anon") {
-		const { data: tagsData } = await supabase
-			.from(SUPABASE_TAGS_TABLE)
-			.select(
-				"tag_name, posts(id,title,description,created_at,timestamp,published,slug,created_by)"
-			)
-			.match({ created_by: id });
-
-		const postWithTagIds: number[] = [];
-		if (tagsData) {
-			for (let tagData of tagsData) {
-				if (tagData.posts) {
-					const posts = tagData.posts;
-					if (Array.isArray(posts)) {
-						map.set(
-							tagData.tag_name!,
-							posts.map((p) => {
-								postWithTagIds.push(p.id);
-								return postToDraft(p);
-							})
-						);
-					}
-				}
-			}
-		}
-
-		const { data: postWithoutTags } = await supabase
-			.from(SUPABASE_POST_TABLE)
-			.select(
-				"id,title,description,created_at,timestamp,published,slug,created_by"
-			)
-			.match({ created_by: id })
-			.not("id", "in", `(${postWithTagIds.join(",")})`);
-
-		if (postWithoutTags) {
-			map.set(
-				"notag",
-				postWithoutTags.map((p) => postToDraft(p))
-			);
-		}
-	}
-	return map;
-}
 export default Page;

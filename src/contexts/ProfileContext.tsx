@@ -62,7 +62,10 @@ function ProfileContextProvider({
 					const tag = cursor.key;
 					setTagToDraftMap((p) => {
 						const previousDrafts = p.get(tag as string) || [];
-						previousDrafts?.push(rawObjectToDraft(cursor.value));
+						if (cursor.value)
+							previousDrafts?.push(
+								rawObjectToDraft(cursor.value)
+							);
 						p.set(tag as string, previousDrafts);
 						return p;
 					});
