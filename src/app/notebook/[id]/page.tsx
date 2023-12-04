@@ -1,38 +1,14 @@
-import { Input } from "@components/ui/input";
-import Drafts from "./components/Drafts";
-import { redirect } from "next/navigation";
-import PostDisplay from "@components/PostComponents/PostDisplay";
-import NewNoteButton from "@components/ProfileComponents/NewPostButton";
-import OwnerOnlyStuff, {
-	NotOwnerOnlyStuff,
-} from "@components/ProfileComponents/OwnerOnlyStuff";
-import { DraftsDisplay } from "./components/DraftsDisplay";
-import { TaggedDrafts } from "./components/TaggedDrafts";
-import ProfileContextProvider from "@/contexts/ProfileContext";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { SUPABASE_TAGS_TABLE, SUPABASE_POST_TABLE } from "@utils/constants";
-import { postToDraft } from "@utils/postToDraft";
-import { Draft } from "@utils/processDrafts";
-import { Database } from "@/interfaces/supabase";
-import DraftSearch from "./components/DraftSearch";
-import { ToolTipComponent } from "@components/ToolTipComponent";
-import { AiFillCloseCircle } from "react-icons/ai";
-import Link from "next/link";
-import { createSupabaseServerClient } from "@utils/createSupabaseClients";
-import { cookies } from "next/headers";
-import { getUser } from "@utils/getData";
+import EditorContextProvider from "@/app/write/components/EditorContext";
+import BlogContextProvider from "@components/BlogPostComponents/BlogState";
 import {
 	LoggedInOptions,
 	NotLoggedInOptions,
 } from "@components/Navbar/Options";
 import SideSheet from "@components/SideSheet";
-import PostPreview from "./components/PostPreviewComponents/PostPreview";
+import { getUser } from "@utils/getData";
 import { Suspense } from "react";
-import PostLoading from "@components/BlogPostComponents/PostLoading";
 import DraftPreview from "./components/DraftPreview";
-import BlogContextProvider from "@components/BlogPostComponents/BlogState";
-import EditorContextProvider from "@/app/write/components/EditorContext";
-import { Button } from "@components/ui/button";
+import PostPreview from "./components/PostPreviewComponents/PostPreview";
 
 async function Page({
 	params,
@@ -50,34 +26,6 @@ async function Page({
 		loggedInName = name || "";
 		loggedInUserName = username || "";
 	}
-	// const searchQuery = searchParams?.["q"] as string;
-	// let SearchResultJsx: JSX.Element | null = null;
-
-	// if (searchQuery) {
-	// 	const searchFunction = "search";
-	// 	const searchArgs = {
-	// 		user_id: params!.id as string,
-	// 		search_term: searchQuery,
-	// 	};
-
-	// 	const { data: searchResults } = await supabase.rpc(
-	// 		searchFunction,
-	// 		searchArgs
-	// 	);
-
-	// 	if (searchResults) {
-	// 		SearchResultJsx = (
-	// 			<div className="flex flex-col gap-4 px-2">
-	// 				<PostDisplay
-	// 					posts={searchResults.map((result) =>
-	// 						postToDraft(result)
-	// 					)}
-	// 				/>
-	// 				<DraftSearch query={searchQuery} />
-	// 			</div>
-	// 		);
-	// 	}
-	// }
 
 	return (
 		<>
