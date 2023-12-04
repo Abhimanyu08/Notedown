@@ -1,40 +1,65 @@
 "use client";
 import { ToolTipComponent } from "@components/ToolTipComponent";
+import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
+import { Search, X } from "lucide-react";
 import Link from "next/link";
-import {
-	usePathname,
-	useSearchParams,
-	useRouter,
-	useParams,
-} from "next/navigation";
-import React, { useState } from "react";
-import { AiFillCloseCircle } from "react-icons/ai";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 function SearchInput() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const router = useRouter();
+	const [query, setQuery] = useState(searchParams?.get("q") || "");
+	function getSearchUrl(query: string) {
+		return (
+			pathname +
+			`?q=${query}` +
+			(searchParams?.has("searchtag")
+				? `&searchtag=${searchParams?.get("searchtag")}`
+				: "")
+		);
+	}
 	return (
 		<form
-			className="flex gap-2 px-6"
+			className="flex gap-2 px-6 items-center"
 			action={(formData: FormData) => {
-				const newEntry =
-					pathname +
-					`?q=${formData.get("query")}` +
-					(searchParams?.has("searchtag")
-						? `&searchtag=${searchParams?.get("searchtag")}`
-						: "");
+				const query = formData.get("query") as string;
+				if (!query) return;
 
-				router.push(newEntry);
+				router.push(getSearchUrl(query));
 			}}
 		>
-			<Input type="text" name="query" placeholder="Search" />
+			<Input
+				type="text"
+				name="query"
+				placeholder="Search"
+				value={query}
+				onChange={(e) => setQuery(e.target.value)}
+			/>
+
+			<Button
+				onClick={() => {
+					router.push(getSearchUrl(query));
+				}}
+				variant={"ghost"}
+				size={"sm"}
+				className="h-8 rounded-full p-2"
+			>
+				<Search size={16} />
+			</Button>
 
 			{searchParams?.get("q") && (
 				<ToolTipComponent tip="Clear search results" side="bottom">
 					<Link href={pathname!} shallow>
-						<AiFillCloseCircle size={20} />
+						<Button
+							variant={"ghost"}
+							size={"sm"}
+							className="h-8 rounded-full p-2"
+						>
+							<X size={16} />
+						</Button>
 					</Link>
 				</ToolTipComponent>
 			)}
