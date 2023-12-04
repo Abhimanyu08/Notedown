@@ -9,7 +9,7 @@ export function postToDraft(
 		timeStamp: post.timestamp!,
 		title: post.title,
 		description: post.description!,
-		postId: `${post.id}`!,
+		postId: post.id,
 		published: post.published,
 		slug: post.slug || undefined,
 		created_by: post.created_by!,

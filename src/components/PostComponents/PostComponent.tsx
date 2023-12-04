@@ -26,7 +26,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 			<PostActions
 				{...{
 					published: !!published,
-					postId: parseInt(id!),
+					postId: id!,
 					postTitle: title!,
 					timeStamp,
 					slug,

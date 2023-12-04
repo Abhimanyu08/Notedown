@@ -15,7 +15,7 @@ function PostLink({
 	children: React.ReactNode;
 	className: string;
 	slug?: string;
-	id?: string;
+	id?: number;
 	tag?: string;
 }) {
 	const pathname = usePathname();
