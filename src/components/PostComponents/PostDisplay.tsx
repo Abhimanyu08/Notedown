@@ -1,7 +1,5 @@
-import PostWithBlogger from "@/interfaces/PostWithBlogger";
-import Post from "./PostComponent";
-import { Database } from "@/interfaces/supabase";
 import { PostDisplayProps } from "../../interfaces/PostDisplayProps";
+import Post from "./PostComponent";
 
 function PostDisplay({ posts, tag }: PostDisplayProps) {
 	return (

@@ -13,7 +13,6 @@ import { AiFillCloseCircle } from "react-icons/ai";
 
 function SearchInput() {
 	const pathname = usePathname();
-	const params = useParams();
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	return (
@@ -23,8 +22,9 @@ function SearchInput() {
 				const newEntry =
 					pathname +
 					`?q=${formData.get("query")}` +
-					(searchParams?.toString() &&
-						`&${searchParams?.toString()}`);
+					(searchParams?.has("searchtag")
+						? `&searchtag=${searchParams?.get("searchtag")}`
+						: "");
 
 				router.push(newEntry);
 			}}

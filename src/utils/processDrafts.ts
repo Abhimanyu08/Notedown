@@ -4,13 +4,13 @@ import { getMarkdownObjectStore } from "./indexDbFuncs";
 export type Draft = {
     timeStamp: string;
     date: string;
-    postId?: string;
+    postId?: number;
     published?: boolean
     slug?: string
     created_by?: string
 } & FrontMatter;
 
-export type RawObject = { timeStamp: string, markdown: string, postId?: string }
+export type RawObject = { timeStamp: string, markdown: string, postId?: number }
 
 export function processNoTagDrafts(db: IDBDatabase) {
     // this funciton should only return drafts with no tags
@@ -26,7 +26,7 @@ export function processNoTagDrafts(db: IDBDatabase) {
             const cursor = (e.target as IDBRequest<IDBCursorWithValue>).result;
             if (cursor) {
 
-                const draft = cursor.value as { timeStamp: string, markdown: string, postId?: string, tags?: string[] }
+                const draft = cursor.value as { timeStamp: string, markdown: string, postId?: number, tags?: string[] }
                 const tagArray = draft["tags"]
                 if (!Object.hasOwn(draft, "tags") || tagArray === undefined || tagArray.length === 0)
                     rawObjs.push(draft);

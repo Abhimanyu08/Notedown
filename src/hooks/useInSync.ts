@@ -31,7 +31,6 @@ export default function useInSync({ markdown }: { markdown?: string }) {
         if (!noteMeta.timeStamp) return;
 
 
-        console.log("Timestamp ============>", noteMeta.timeStamp)
         const markdownObjectStoreRequest = documentDb
             .transaction("markdown", "readonly")
             .objectStore("markdown")

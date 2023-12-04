@@ -2,7 +2,7 @@ import { SinglePostLoading } from "../../../components/ProfileComponents/SingleP
 
 function PostsLoading({ numPosts = 4 }: { numPosts?: number }) {
 	return (
-		<div className="flex flex-col gap-10">
+		<div className="flex flex-col gap-10 px-4">
 			{Array.from({ length: numPosts }).map((_, i) => (
 				<SinglePostLoading key={i} />
 			))}

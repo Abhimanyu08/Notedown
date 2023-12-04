@@ -72,13 +72,12 @@ async function ProfilePostsLayout({ children, params }: LayoutProps) {
 				scrollbar-thumb-slate-700
 				px-2
 				grow
-				relative
 				"
 						>
 							<Suspense fallback={<PostsLoading />}>
 								<SearchResults />
 							</Suspense>
-							<div>
+							<div className="hidden first:block">
 								<NotOwnerOnlyStuff id={params.id}>
 									<TaggedDraftContainer>
 										{Array.from(map.keys()).map((tag) => {
