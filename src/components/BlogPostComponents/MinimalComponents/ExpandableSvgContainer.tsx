@@ -7,7 +7,7 @@ function ExpandableSvgContainer({ children }: { children: React.ReactNode }) {
 	return (
 		<div
 			className={cn(
-				"flex w-full justify-center items-center ",
+				"flex w-full flex-col aspect-[4/3] justify-center items-center ",
 				expand && "fixed top-0 left-0 h-full z-[2000] bg-black"
 			)}
 			onClick={() => setExpand((p) => !p)}

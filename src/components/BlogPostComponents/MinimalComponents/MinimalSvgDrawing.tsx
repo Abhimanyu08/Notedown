@@ -48,7 +48,12 @@ function jsonToSvg(svgJson: string) {
 	const attributes: Record<string, any> = {};
 	// Set attributes and properties
 	for (const [key, value] of Object.entries(parsedJson)) {
-		if (key !== "tagName" && key !== "innerHTML") {
+		if (
+			key !== "tagName" &&
+			key !== "innerHTML" &&
+			key !== "width" &&
+			key !== "height"
+		) {
 			if (key === "style") {
 				let styleProp = formatStyle(value);
 				attributes["style"] = styleProp;
@@ -62,6 +67,7 @@ function jsonToSvg(svgJson: string) {
 	return (
 		<svg
 			{...attributes}
+			className="w-full h-full"
 			dangerouslySetInnerHTML={{ __html: parsedJson.innerHTML }}
 		></svg>
 	);
