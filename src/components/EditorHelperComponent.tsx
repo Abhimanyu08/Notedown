@@ -14,24 +14,22 @@ import {
 	onSelect,
 	onUnordererdList,
 } from "@/utils/editorToolFunctions";
-import { StateEffect } from "@codemirror/state";
-import { memo, useContext, useEffect, useState } from "react";
+import { memo, useContext } from "react";
 import { FaBold, FaItalic } from "react-icons/fa";
 import { GoListOrdered, GoListUnordered } from "react-icons/go";
 import { SiVim } from "react-icons/si";
 
 import { EditorContext } from "@/app/write/components/EditorContext";
-import { Compartment } from "@codemirror/state";
-import { vim } from "@replit/codemirror-vim";
-import { usePathname } from "next/navigation";
 import useToggleVim from "@/hooks/useToggleVim";
 
 // const compartment = new Compartment();
 
-function EditorHelperComponent() {
+function EditorHelperComponent({
+	toggleVim,
+	vimEnabled,
+}: ReturnType<typeof useToggleVim>) {
 	const { editorState } = useContext(EditorContext);
 	const { editorView } = editorState;
-	const { toggleVim, vimEnabled } = useToggleVim({ editorView });
 
 	return (
 		<div className="flex w-full justify-start md:justify-center gap-2 pb-1 flex-wrap">
@@ -169,7 +167,7 @@ function EditorHelperComponent() {
 					}`}
 				/>
 				<span className="normal-case">
-					{vimEnabled ? "Disable" : "Enable"} Vim
+					{vimEnabled ? "Disable" : "Enable"} Vim {`(Ctrl-Shift-v)`}
 				</span>
 			</button>
 		</div>

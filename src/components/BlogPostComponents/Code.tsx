@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
+import { Compartment } from "@codemirror/state";
 import {
 	MouseEventHandler,
 	lazy,
@@ -81,6 +83,7 @@ function Code({
 	});
 
 	useEffect(() => {
+		// configuring shortcut to run code
 		if (!editorView) return;
 		editorView.dispatch({
 			effects: StateEffect.appendConfig.of([
@@ -112,6 +115,32 @@ function Code({
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [blockNumber, editorView]);
+
+	useEffect(() => {
+		if (!editorView) return;
+		const compartment = new Compartment();
+		editorView.dispatch({
+			effects: StateEffect.appendConfig.of(
+				compartment.of([
+					keymap.of([
+						{
+							key: "Ctrl-Shift-v",
+							run() {
+								dispatch({ type: "toggle vim", payload: null });
+								return true;
+							},
+						},
+					]),
+				])
+			),
+		});
+
+		return () => {
+			editorView.dispatch({
+				effects: compartment?.reconfigure([]),
+			});
+		};
+	}, [editorView]);
 
 	useEffect(() => {
 		dispatch({
@@ -191,7 +220,10 @@ function Code({
 					<TerminalIcon size={16} />
 				</CodeBlockButton>
 				<CodeBlockButton
-					tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
+					tip={
+						(vimEnabledLocally ? "Disable Vim" : "Enable Vim") +
+						"Ctrl-Shift-v"
+					}
 					onClick={() => {
 						dispatch({ type: "toggle vim", payload: null });
 					}}

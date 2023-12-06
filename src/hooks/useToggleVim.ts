@@ -1,5 +1,5 @@
 import { vim } from "@replit/codemirror-vim";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { StateEffect } from "@codemirror/state";
 
@@ -16,7 +16,7 @@ export default function useToggleVim({ editorView }: { editorView: EditorView | 
         }
     }, []);
 
-    const toggleVim = () => {
+    const toggleVim = useCallback(() => {
         if (!editorView) return;
 
         if (!vimEnabled) {
@@ -35,7 +35,7 @@ export default function useToggleVim({ editorView }: { editorView: EditorView | 
             setVimCompartment(compartment);
         }
         setVimEnabled((prev) => !prev);
-    };
+    }, [vimEnabled, editorView])
 
     return { vimEnabled, toggleVim }
 }

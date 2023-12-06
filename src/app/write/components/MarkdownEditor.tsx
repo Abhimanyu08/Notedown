@@ -1,11 +1,4 @@
-import useEditor from "@/hooks/useEditor";
-import { StateEffect } from "@codemirror/state";
-import EditorHelperComponent from "@components/EditorHelperComponent";
-import { memo, useContext, useEffect, useState } from "react";
-import { EditorContext } from "./EditorContext";
-import langToCodeMirrorExtension from "@utils/langToExtension";
-import { useParams, useSearchParams } from "next/navigation";
-import { IndexedDbContext } from "@/contexts/IndexedDbContext";
+import { Compartment } from "@codemirror/state";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -15,10 +8,17 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { IndexedDbContext } from "@/contexts/IndexedDbContext";
+import useEditor from "@/hooks/useEditor";
+import useToggleVim from "@/hooks/useToggleVim";
+import EditorHelperComponent from "@components/EditorHelperComponent";
 import { AlertTriangle } from "lucide-react";
+import { useParams, useSearchParams } from "next/navigation";
+import { memo, useContext, useEffect, useState } from "react";
+import { EditorContext } from "./EditorContext";
+import { StateEffect } from "@codemirror/state";
+import { keymap } from "@codemirror/view";
 
 // This component should be page diagnostic.
 
@@ -28,6 +28,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 	const [inSyncWithUploadedVersion, setInSyncWithUploadedVersion] =
 		useState(true);
 	const [localMarkdown, setLocalMarkdown] = useState("");
+
 	const params = useParams();
 
 	const { editorView } = useEditor({
@@ -36,6 +37,9 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 		editorParentId: "markdown-textarea",
 	});
 
+	const { toggleVim, vimEnabled } = useToggleVim({
+		editorView,
+	});
 	const searchParams = useSearchParams();
 
 	useEffect(() => {
@@ -43,6 +47,32 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 			dispatch({ type: "set editorView", payload: editorView });
 		}
 	}, [editorView]);
+
+	useEffect(() => {
+		if (!editorView) return;
+		const compartment = new Compartment();
+		editorView.dispatch({
+			effects: StateEffect.appendConfig.of(
+				compartment.of([
+					keymap.of([
+						{
+							key: "Ctrl-Shift-v",
+							run() {
+								toggleVim();
+								return true;
+							},
+						},
+					]),
+				])
+			),
+		});
+
+		return () => {
+			editorView.dispatch({
+				effects: compartment?.reconfigure([]),
+			});
+		};
+	}, [editorView, toggleVim]);
 
 	useEffect(() => {
 		// This is for when user loads the drafts. Initialmarkdown will change after we read from localstorage.
@@ -142,7 +172,7 @@ function MarkdownEditor({ initialMarkdown }: { initialMarkdown: string }) {
 					</AlertDialogContent>
 				</AlertDialog>
 			)}
-			<EditorHelperComponent />
+			<EditorHelperComponent {...{ toggleVim, vimEnabled }} />
 			<div
 				className={`flex-initial pb-20 lg:pb-0 overflow-y-auto  w-full`}
 				id="markdown-textarea"
