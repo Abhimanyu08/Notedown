@@ -16,6 +16,7 @@ import {
 	defaultSandpackProps,
 	sandboxConfigSchema,
 } from "./types";
+import { AiOutlineCodeSandbox } from "react-icons/ai";
 
 export const JsonEditorContext = createContext<{
 	jsonEditorView: EditorView | null;
@@ -119,8 +120,26 @@ function CodesandboxWithEditor({
 						persistanceKey={persistanceKey}
 					/>
 				</div>
+				<div className="flex w-full justify-end">
+					<Button
+						className={cn(
+							"text-sm bg-black py-1 px-2  border-border border-[1px] mb-2 text-gray-400 hover:text-white hover:scale-100",
+							editConfig ? "" : "hidden"
+						)}
+						variant={"outline"}
+						onClick={() => onSandboxGenerate()}
+					>
+						{/* <Button className="border-border border-[1px] text-gray-400 hover:text-white hover:scale-100"> */}
+
+						<AiOutlineCodeSandbox />
+						<span className="px-2">
+							Generate sandbox (Shift-Enter)
+						</span>
+						{/* </Button> */}
+					</Button>
+				</div>
 				<JsonConfigEditor
-					className={`${!editConfig ? "hidden" : ""}`}
+					className={`${editConfig ? "" : "hidden"}`}
 					{...{
 						persistanceKey,
 						jsonEditorView,

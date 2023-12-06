@@ -3,7 +3,7 @@ import {
 	BlogStateInterface,
 	DispatchObj,
 } from "@components/BlogPostComponents/BlogState";
-import { ALLOWED_LANGUAGES, langToExtension } from "@utils/constants";
+import { ALLOWED_LANGUAGES, langToFileExtension } from "@utils/constants";
 import { sendRequestToRceServer } from "@utils/sendRequest";
 import { Dispatch, useContext, useEffect } from "react";
 
@@ -66,14 +66,14 @@ export function useRunCode({
 				if (
 					blockFileName === fileName ||
 					blockFileName +
-					langToExtension[
-					language as keyof typeof langToExtension
+					langToFileExtension[
+					language as keyof typeof langToFileExtension
 					] ===
 					fileName ||
 					blockFileName ===
 					fileName +
-					langToExtension[
-					language as keyof typeof langToExtension
+					langToFileExtension[
+					language as keyof typeof langToFileExtension
 					]
 				) {
 					codeArray.push(blockToEditor[i].state.sliceDoc());

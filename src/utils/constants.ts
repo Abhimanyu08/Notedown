@@ -19,7 +19,7 @@ export const SEARCH_PRIVATE = "private_search"
 export const FILE_CHANGE_LIMIT = 5
 export const ALLOWED_LANGUAGES = ["python", "javascript", "rust", "go", "typescript"] as const
 export const LOCAL_MARKDOWN_KEY = "rce-markdown"
-export const langToExtension: Record<typeof ALLOWED_LANGUAGES[number], string> = {
+export const langToFileExtension: Record<typeof ALLOWED_LANGUAGES[number], string> = {
     python: ".py",
     javascript: ".js",
     rust: ".rs",

@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
+import { Compartment } from "@codemirror/state";
 import {
 	MouseEventHandler,
 	memo,
@@ -18,7 +20,7 @@ import {
 	CodeBlockButton,
 	CodeBlockButtons,
 } from "@components/EditorComponents/GenericCodeBlock";
-import { ALLOWED_LANGUAGES } from "@utils/constants";
+import { ALLOWED_LANGUAGES, langToFileExtension } from "@utils/constants";
 import {
 	Check,
 	ChevronRightSquare,
@@ -30,6 +32,8 @@ import {
 } from "lucide-react";
 import { DiVim } from "react-icons/di";
 import useTerminal from "../Terminal";
+import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
+import { cn } from "@/lib/utils";
 
 interface MinimalCodeProps {
 	code: string;
@@ -52,6 +56,7 @@ function MinimalCode({
 	const [openShell, setOpenShell] = useState(false);
 	const [copied, setCopied] = useState(false);
 
+	const [minimize, setMinimize] = useState(false);
 	const { editorView } = useEditor({
 		language: language!,
 		code,
@@ -98,6 +103,33 @@ function MinimalCode({
 	}, [blockNumber, editorView]);
 
 	useEffect(() => {
+		// shortcut to toggle vim mode
+		if (!editorView) return;
+		const compartment = new Compartment();
+		editorView.dispatch({
+			effects: StateEffect.appendConfig.of(
+				compartment.of([
+					keymap.of([
+						{
+							key: "Ctrl-Shift-v",
+							run() {
+								dispatch({ type: "toggle vim", payload: null });
+								return true;
+							},
+						},
+					]),
+				])
+			),
+		});
+
+		return () => {
+			editorView.dispatch({
+				effects: compartment?.reconfigure([]),
+			});
+		};
+	}, [editorView]);
+
+	useEffect(() => {
 		dispatch({
 			type: "set block to filename",
 			payload: { [blockNumber]: file || "main" },
@@ -139,7 +171,11 @@ function MinimalCode({
 					file={file || "main"}
 					language={language || ""}
 					themeClasses={editorView?.themeClasses}
+					className="justify-end"
 				>
+					<span className="text-sm grow cursor-pointer">
+						{getFileNameWithExt(file, language)}
+					</span>
 					<CodeBlockButton
 						onClick={onRunCode}
 						tip="Run Code (Shift+Enter)"
@@ -165,7 +201,10 @@ function MinimalCode({
 						<TerminalIcon size={16} />
 					</CodeBlockButton>
 					<CodeBlockButton
-						tip={vimEnabledLocally ? "Disable Vim" : "Enable Vim"}
+						tip={
+							(vimEnabledLocally ? "Disable Vim" : "Enable Vim") +
+							" (Ctrl-Shift-v)"
+						}
 						onClick={() => {
 							dispatch({ type: "toggle vim", payload: null });
 						}}
@@ -196,10 +235,26 @@ function MinimalCode({
 					>
 						{copied ? <Check size={16} /> : <Copy size={16} />}
 					</CodeBlockButton>
+					<CodeBlockButton
+						onClick={() => {
+							setMinimize((p) => !p);
+							setOpenShell(false);
+						}}
+						tip={minimize ? "maximize" : "minimize"}
+					>
+						{minimize ? (
+							<FiMaximize2 size={14} />
+						) : (
+							<FiMinimize2 size={14} />
+						)}
+					</CodeBlockButton>
 				</CodeBlockButtons>
 			)}
 			<div
-				className="w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none"
+				className={cn(
+					"w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none",
+					minimize && "h-0 overflow-hidden"
+				)}
 				id={`codearea-${blockNumber}`}
 				onDoubleClick={() => {
 					// if (setRunningBlock) setRunningBlock(blockNumber);
@@ -225,6 +280,18 @@ function MinimalCode({
 			></div>
 		</CodeBlock>
 	);
+}
+
+function getFileNameWithExt(fileName: string, language: string) {
+	const fileNameWithExtension =
+		fileName?.includes(".") && language
+			? fileName
+			: `${fileName}${
+					langToFileExtension[
+						language as keyof typeof langToFileExtension
+					]
+			  }`;
+	return fileNameWithExtension;
 }
 
 export default memo(MinimalCode);

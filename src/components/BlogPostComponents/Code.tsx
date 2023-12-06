@@ -36,6 +36,11 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { langToFileExtension } from "@utils/constants";
+import { Input } from "@components/ui/input";
+import { Button } from "@components/ui/button";
+import { EditorContext } from "@/app/write/components/EditorContext";
+import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
 const EditorThemeCombobox = lazy(
 	() => import("@/app/write/components/EditorThemeCombobox")
 );
@@ -74,6 +79,7 @@ function Code({
 	const { toggleVim, vimEnabled: vimEnabledLocally } = useToggleVim({
 		editorView,
 	});
+	const [minimize, setMinimize] = useState(false);
 
 	const terminal = useTerminal({ blockNumber });
 	useSyncHook({
@@ -117,6 +123,7 @@ function Code({
 	}, [blockNumber, editorView]);
 
 	useEffect(() => {
+		// shortcut to toggle vim mode
 		if (!editorView) return;
 		const compartment = new Compartment();
 		editorView.dispatch({
@@ -192,7 +199,21 @@ function Code({
 				file={file || "main"}
 				language={language || ""}
 				themeClasses={editorView?.themeClasses}
+				className={cn(!file && "justify-end")}
 			>
+				{file &&
+					language &&
+					(pathname?.startsWith("/write") ? (
+						<FileNameChanger
+							fileName={file}
+							language={language}
+							start={start}
+						/>
+					) : (
+						<span className="text-sm grow cursor-pointer">
+							{getFileNameWithExt(file, language)}
+						</span>
+					))}
 				<CodeBlockButton
 					onClick={onRunCode}
 					tip="Run Code (Shift+Enter)"
@@ -255,9 +276,25 @@ function Code({
 				>
 					{copied ? <Check size={16} /> : <Copy size={16} />}
 				</CodeBlockButton>
+				<CodeBlockButton
+					onClick={() => {
+						setMinimize((p) => !p);
+						setOpenShell(false);
+					}}
+					tip={minimize ? "maximize" : "minimize"}
+				>
+					{minimize ? (
+						<FiMaximize2 size={14} />
+					) : (
+						<FiMinimize2 size={14} />
+					)}
+				</CodeBlockButton>
 			</CodeBlockButtons>
 			<div
-				className="w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none"
+				className={cn(
+					"w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none",
+					minimize && "h-0 overflow-hidden"
+				)}
 				id={`codearea-${blockNumber}`}
 				onDoubleClick={() => {
 					// if (setRunningBlock) setRunningBlock(blockNumber);
@@ -288,4 +325,90 @@ function Code({
 	);
 }
 
+function FileNameChanger({
+	fileName,
+	language,
+	start,
+}: {
+	fileName: string;
+	language: string;
+	start: number;
+}) {
+	const [fullFileName, setFullFileName] = useState(fileName);
+	const [edit, setEdit] = useState(false);
+	const { editorState } = useContext(EditorContext);
+
+	useEffect(() => {
+		setFullFileName(getFileNameWithExt(fileName, language));
+	}, [fileName]);
+
+	const onSetFileName = () => {
+		if (!start) return;
+		const { editorView, frontMatterLength } = editorState;
+		const lineMeta = editorView?.state.doc.lineAt(
+			start + frontMatterLength - 1
+		);
+		if (!lineMeta) return;
+		const splitLineMeta = lineMeta.text.split("&");
+		const themeMeta = splitLineMeta[1];
+
+		let newMeta = "```" + `file=${fullFileName}`;
+		if (themeMeta) {
+			newMeta += "&" + themeMeta;
+		}
+		editorView?.dispatch({
+			changes: {
+				from: lineMeta?.from,
+				to: lineMeta.to,
+				insert: newMeta,
+			},
+		});
+
+		setEdit(false);
+	};
+
+	if (edit) {
+		return (
+			<div className="flex grow gap-2">
+				<Input
+					value={fullFileName}
+					className="h-6 w-fit"
+					onChange={(e) => setFullFileName(e.target.value)}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							onSetFileName();
+						}
+					}}
+				/>
+				<Button
+					variant={"outline"}
+					className="h-6 w-fit p-2"
+					onClick={onSetFileName}
+				>
+					Set filename
+				</Button>
+			</div>
+		);
+	}
+	return (
+		<span
+			className="text-sm grow cursor-pointer"
+			onClick={() => setEdit(true)}
+		>
+			{fullFileName}
+		</span>
+	);
+}
+
+function getFileNameWithExt(fileName: string, language: string) {
+	const fileNameWithExtension =
+		fileName?.includes(".") && language
+			? fileName
+			: `${fileName}${
+					langToFileExtension[
+						language as keyof typeof langToFileExtension
+					]
+			  }`;
+	return fileNameWithExtension;
+}
 export default memo(Code);

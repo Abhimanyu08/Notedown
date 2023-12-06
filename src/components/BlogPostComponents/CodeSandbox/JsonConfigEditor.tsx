@@ -16,6 +16,7 @@ import { useContext, useEffect, useState } from "react";
 import { AiOutlineCodeSandbox } from "react-icons/ai";
 import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { SiVim } from "react-icons/si";
+import { Button } from "@components/ui/button";
 
 function JsonConfigEditor({
 	persistanceKey,
@@ -111,17 +112,10 @@ function JsonConfigEditor({
 
 	return (
 		<CodeBlock className={cn("w-full", className)}>
-			<CodeBlockButtons themeClasses={jsonEditorView?.themeClasses}>
-				<CodeBlockButton
-					tip={
-						error
-							? "Please remove the error"
-							: "Generate code sandbox (shift + enter)"
-					}
-					onClick={() => onSandboxGenerate()}
-				>
-					<AiOutlineCodeSandbox />
-				</CodeBlockButton>
+			<CodeBlockButtons
+				themeClasses={jsonEditorView?.themeClasses}
+				className="justify-end"
+			>
 				<CodeBlockButton
 					onClick={() => toggleVim()}
 					tip={vimEnabled ? "Disable Vim" : "Enable Vim"}
@@ -145,7 +139,7 @@ function JsonConfigEditor({
 			<div
 				className={cn(
 					"w-full border-2  border-border rounded-sm rounded-t-none",
-					minimize && "h-10 overflow-hidden"
+					minimize && "h-0 overflow-hidden"
 				)}
 				id={`sandbox_${persistanceKey}`}
 			></div>
