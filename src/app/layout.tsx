@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import "@/styles/xterm.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { Petrona, Nunito_Sans, IBM_Plex_Mono } from "next/font/google";
 import { cookies } from "next/headers";
@@ -78,6 +79,7 @@ export default async function RootLayout({
 						{children}
 					</IndexedDbContextProvider>
 				</SupabaseProvider>
+				<SpeedInsights />
 				<Analytics />
 			</body>
 		</html>
