@@ -211,7 +211,7 @@ function Code({
 						/>
 					) : (
 						<span className="text-sm grow cursor-pointer">
-							{getFileNameWithExt(file, language)}
+							{getFileNameWithExt(file || "main", language)}
 						</span>
 					))}
 				<CodeBlockButton

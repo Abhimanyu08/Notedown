@@ -174,7 +174,7 @@ function MinimalCode({
 					className="justify-end"
 				>
 					<span className="text-sm grow cursor-pointer">
-						{getFileNameWithExt(file, language)}
+						{getFileNameWithExt(file || "main", language)}
 					</span>
 					<CodeBlockButton
 						onClick={onRunCode}
