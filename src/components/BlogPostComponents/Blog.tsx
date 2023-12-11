@@ -45,6 +45,8 @@ const Blog = memo(function Blog({
 				dark:marker:prose-li:text-gray-200
 				prose-li:text-black/80
 				dark:prose-li:text-gray-400
+				prose-li:pl-[19.2px]
+				prose-ol:pl-[19.2px]
 
 
 				// -----------prose-strong-----------
@@ -86,6 +88,7 @@ const Blog = memo(function Blog({
 				dark:prose-blockquote:border-l-gray-300
 				dark:prose-blockquote:text-gray-300
 				prose-blockquote:text-black/80
+				prose-blockquote:not-italic
 
 				
 				pb-20 md:pb-10 

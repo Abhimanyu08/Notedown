@@ -103,6 +103,13 @@ export function tagToJsxConverterWithContext({
 		})(),
 
 		BLOCK_NUMBER: 0,
+		blockquote(node) {
+			return (
+				<blockquote className="[&>p]:after:content-none [&>p]:before:content-none">
+					{node.children.map((c) => transformer(c, this))}
+				</blockquote>
+			);
+		},
 		img: (node) => {
 			const { alt, src } = node.properties as {
 				alt: string;

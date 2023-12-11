@@ -61,6 +61,13 @@ export const tagToJsx: TagToJsx = {
 	hr: () => {
 		return <hr />;
 	},
+	blockquote(node) {
+		return (
+			<blockquote className="[&>p]:after:content-none [&>p]:before:content-none">
+				{node.children.map((c) => transformer(c, this))}
+			</blockquote>
+		);
+	},
 	pre(node) {
 		let codeNode = node.children[0] as HtmlAstElement;
 		let code = (codeNode.children[0] as Text)?.value || "";
