@@ -14,3 +14,26 @@ export default function modifyDraftAndPostLink(href: string, searchParams: Reado
     }
     return href
 }
+
+
+export function checkOnPreview(pathname: string | null, searchParams: ReadonlyURLSearchParams | null, href: string) {
+
+
+    if (!searchParams || !pathname) return pathname === href
+    let searchParamString = ""
+    let i = 0
+    for (let [key, val] of Array.from(searchParams.entries())) {
+        if (i !== 0) searchParamString += "&"
+        searchParamString += `${key}=${val}`
+        i += 1
+    }
+
+    if (href.includes("Experiments")) {
+
+        console.log(pathname + "?" + searchParamString)
+        console.log(href)
+    }
+
+    return pathname + "?" + searchParamString === href
+
+}

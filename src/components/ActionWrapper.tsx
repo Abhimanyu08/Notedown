@@ -18,6 +18,7 @@ import {
 	MenubarTrigger,
 } from "./ui/menubar";
 import Link from "next/link";
+import { checkOnPreview } from "@utils/modifyDraftAndPostLink";
 
 function ClosePreviewButton() {
 	const params = useParams();
@@ -58,7 +59,7 @@ function ActionWrapper({
 
 	const owner = useOwner();
 
-	if (pathname + "?" + searchParams?.toString() === href) {
+	if (checkOnPreview(pathname, searchParams, href)) {
 		return <ClosePreviewButton />;
 	}
 

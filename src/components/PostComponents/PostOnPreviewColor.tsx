@@ -1,13 +1,13 @@
 "use client";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { checkOnPreview } from "@utils/modifyDraftAndPostLink";
 import { motion } from "framer-motion";
+import { usePathname, useSearchParams } from "next/navigation";
 
 function PostOnPreviewColor({ href }: { href: string }) {
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 
-	const onPreview = pathname + "?" + searchParams?.toString() === href;
+	const onPreview = checkOnPreview(pathname, searchParams, href);
 
 	if (!onPreview) return <></>;
 	return (
