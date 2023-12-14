@@ -28,11 +28,7 @@ export function checkOnPreview(pathname: string | null, searchParams: ReadonlyUR
         i += 1
     }
 
-    if (href.includes("Experiments")) {
 
-        console.log(pathname + "?" + searchParamString)
-        console.log(href)
-    }
 
     return pathname + "?" + searchParamString === href
 
