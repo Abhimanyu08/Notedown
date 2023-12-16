@@ -115,7 +115,8 @@ export const tagToJsx: TagToJsx = {
 	},
 
 	a: (node) => {
-		const { href } = node.properties as { href: string };
+		let { href } = node.properties as { href: string };
+		if (!href) href = "";
 		const linkText = node.children;
 
 		if (
