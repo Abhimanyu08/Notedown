@@ -357,7 +357,7 @@ export function tagToJsxConverterWithContext({
 					code={code}
 					language={language!}
 					blockNumber={this.BLOCK_NUMBER}
-					file={(blockMeta.file as any) || ""}
+					file={(blockMeta.file as any) || "main"}
 					theme={(blockMeta.theme as any) || ""}
 				/>
 			);

@@ -196,13 +196,12 @@ function Code({
 	return (
 		<CodeBlock className="mt-2">
 			<CodeBlockButtons
-				file={file || "main"}
+				file={file}
 				language={language || ""}
 				themeClasses={editorView?.themeClasses}
 				className={cn(!file && "justify-end")}
 			>
-				{file &&
-					language &&
+				{language &&
 					(pathname?.startsWith("/write") ? (
 						<FileNameChanger
 							fileName={file}
@@ -211,7 +210,7 @@ function Code({
 						/>
 					) : (
 						<span className="text-sm grow cursor-pointer">
-							{getFileNameWithExt(file || "main", language)}
+							{getFileNameWithExt(file, language)}
 						</span>
 					))}
 				<CodeBlockButton

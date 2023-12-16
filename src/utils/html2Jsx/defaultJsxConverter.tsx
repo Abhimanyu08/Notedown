@@ -108,7 +108,7 @@ export const tagToJsx: TagToJsx = {
 				code={code}
 				blockNumber={this.BLOCK_NUMBER}
 				{...{ start: start + blockMetaString.length + 4, end: end - 4 }}
-				file={(blockMeta.file as any) || ""}
+				file={(blockMeta.file as any) || "main"}
 				theme={(blockMeta.theme as any) || ""}
 			/>
 		);
