@@ -1,5 +1,4 @@
 "use client";
-import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import Link from "next/link";
 import { useContext } from "react";
@@ -11,7 +10,6 @@ function PrivateToolbar() {
 	const { blogState } = useContext(BlogContext);
 	return (
 		<>
-			<EnableRceButton />
 			<ToolTipComponent
 				tip="Edit markdown"
 				className={`text-gray-400 hover:text-white active:scale-95`}

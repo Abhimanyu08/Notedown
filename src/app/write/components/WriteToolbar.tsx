@@ -1,5 +1,4 @@
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
@@ -66,7 +65,6 @@ function WriteToolbar({ content }: { content: string }) {
 					</div>
 				) : (
 					<>
-						<EnableRceButton side="top" />
 						<ToolTipComponent
 							className=" hover:text-gray-100 text-gray-400 disabled:text-gray-700"
 							onClick={() => {

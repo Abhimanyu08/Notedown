@@ -1,7 +1,6 @@
 "use client";
 import useOwner from "@/hooks/useOwner";
 import { cn } from "@/lib/utils";
-import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Toc from "@components/BlogPostComponents/TableOfContents";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { Button } from "@components/ui/button";
@@ -58,7 +57,6 @@ function PostPreviewControls({
 						<BsArrowsAngleExpand size={20} />
 					</Link>
 				</ToolTipComponent>
-				<EnableRceButton />
 				<Button
 					className="bg-transparent hover:text-gray-100 text-gray-400 hover:bg-transparent"
 					onClick={() => setShowToc((p) => !p)}

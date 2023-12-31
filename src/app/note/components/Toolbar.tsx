@@ -1,6 +1,4 @@
 "use client";
-import useSetContainer from "@/hooks/useSetContainer";
-import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { usePathname } from "next/navigation";
 import { useContext, useState } from "react";
@@ -72,8 +70,6 @@ function Toolbar() {
 
 	return (
 		<>
-			<EnableRceButton />
-
 			<ToolTipComponent
 				className="relative text-gray-400 hover:text-white active:scale-95"
 				tip="Share this post"

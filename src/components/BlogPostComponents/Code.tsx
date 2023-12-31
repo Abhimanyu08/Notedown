@@ -41,6 +41,7 @@ import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
+import prepareContainer from "@utils/prepareContainer";
 const EditorThemeCombobox = lazy(
 	() => import("@/app/write/components/EditorThemeCombobox")
 );
@@ -169,8 +170,22 @@ function Code({
 		});
 	};
 
-	const onRunCode = () => {
+	const onRunCode = async (containerId: string | null) => {
 		setOpenShell(true);
+		if (!containerId) {
+			dispatch({
+				type: "set output",
+				payload: {
+					[blockNumber]:
+						"Enabling remote code execution, please wait",
+				},
+			});
+			const newContainerId = await prepareContainer(
+				language,
+				containerId
+			);
+			dispatch({ type: "set containerId", payload: newContainerId });
+		}
 		dispatch({
 			type: "set running block",
 			payload: blockNumber,
@@ -214,7 +229,7 @@ function Code({
 						</span>
 					))}
 				<CodeBlockButton
-					onClick={onRunCode}
+					onClick={() => onRunCode(blogState.containerId)}
 					tip="Run Code (Shift+Enter)"
 				>
 					<ChevronRightSquare size={16} />

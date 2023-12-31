@@ -34,6 +34,7 @@ import { DiVim } from "react-icons/di";
 import useTerminal from "../Terminal";
 import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { cn } from "@/lib/utils";
+import prepareContainer from "@utils/prepareContainer";
 
 interface MinimalCodeProps {
 	code: string;
@@ -149,8 +150,22 @@ function MinimalCode({
 		});
 	};
 
-	const onRunCode = () => {
+	const onRunCode = async (containerId: string | null) => {
 		setOpenShell(true);
+		if (!containerId) {
+			dispatch({
+				type: "set output",
+				payload: {
+					[blockNumber]:
+						"Enabling remote code execution, please wait",
+				},
+			});
+			const newContainerId = await prepareContainer(
+				language,
+				containerId
+			);
+			dispatch({ type: "set containerId", payload: newContainerId });
+		}
 		dispatch({
 			type: "set running block",
 			payload: blockNumber,
@@ -177,7 +192,7 @@ function MinimalCode({
 						{getFileNameWithExt(file || "main", language)}
 					</span>
 					<CodeBlockButton
-						onClick={onRunCode}
+						onClick={() => onRunCode(blogState.containerId)}
 						tip="Run Code (Shift+Enter)"
 					>
 						<ChevronRightSquare size={16} />

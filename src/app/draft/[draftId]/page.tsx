@@ -3,7 +3,6 @@ import useRetrieveDraftFromIndexDb from "@/hooks/useRetrieveBlogFromIndexDb";
 import BlogContainer from "@components/BlogContainer";
 import Blog from "@components/BlogPostComponents/Blog";
 import { BlogContext } from "@components/BlogPostComponents/BlogState";
-import EnableRceButton from "@components/BlogPostComponents/EnableRceButton";
 import Footers from "@components/BlogPostComponents/Footers";
 import SyncWarning from "@components/BlogPostComponents/SyncWarning";
 import Toc from "@components/BlogPostComponents/TableOfContents";
@@ -74,7 +73,6 @@ function DraftToolbar({ postId }: { postId?: number }) {
 	const params = useParams();
 	return (
 		<>
-			<EnableRceButton />
 			<ToolTipComponent
 				tip="Edit markdown"
 				className={`text-gray-400 hover:text-white active:scale-95`}

@@ -289,6 +289,10 @@ function useUploadPost({ startUpload = false }: { startUpload: boolean }) {
             await uploadSlugPostRow({ postId: post.id, slug: postMeta.slug })
         }
 
+        dispatch({
+            type: "set blog meta",
+            payload: { id: post.id, slug: postMeta.slug || undefined },
+        });
         setProgressMessage("Uploading markdown file")
         await uploadPostMarkdownFile({ postId: post.id, markdownFile: postMeta.markdownFile })
 
