@@ -42,6 +42,8 @@ import { Button } from "@components/ui/button";
 import { EditorContext } from "@/app/write/components/EditorContext";
 import { FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import prepareContainer from "@utils/prepareContainer";
+import { LoginDialog } from "./LoginDialog";
+import { useSupabase } from "@/app/appContext";
 const EditorThemeCombobox = lazy(
 	() => import("@/app/write/components/EditorThemeCombobox")
 );
@@ -65,6 +67,8 @@ function Code({
 	theme,
 }: CodeProps) {
 	const { blogState, dispatch } = useContext(BlogContext);
+	const { session } = useSupabase();
+	const [openLoginDialog, setOpenLoginDialog] = useState(false);
 	const language = blogState.language;
 
 	const [openShell, setOpenShell] = useState(false);
@@ -171,6 +175,10 @@ function Code({
 	};
 
 	const onRunCode = async (containerId: string | null) => {
+		if (!session?.user) {
+			setOpenLoginDialog(true);
+			return;
+		}
 		setOpenShell(true);
 		if (!containerId) {
 			dispatch({
@@ -209,133 +217,144 @@ function Code({
 	}
 
 	return (
-		<CodeBlock className="mt-2">
-			<CodeBlockButtons
-				file={file}
-				language={language || ""}
-				themeClasses={editorView?.themeClasses}
-				className={cn(!file && "justify-end")}
-			>
-				{language &&
-					(pathname?.startsWith("/write") ? (
-						<FileNameChanger
-							fileName={file}
-							language={language}
-							start={start}
-						/>
-					) : (
-						<span className="text-sm grow cursor-pointer">
-							{getFileNameWithExt(file, language)}
-						</span>
-					))}
-				<CodeBlockButton
-					onClick={() => onRunCode(blogState.containerId)}
-					tip="Run Code (Shift+Enter)"
+		<>
+			<CodeBlock className="mt-2">
+				<CodeBlockButtons
+					file={file}
+					language={language || ""}
+					themeClasses={editorView?.themeClasses}
+					className={cn(!file && "justify-end")}
 				>
-					<ChevronRightSquare size={16} />
-				</CodeBlockButton>
-				<CodeBlockButton
-					onClick={onWriteCode}
-					tip="Write code to file without running"
-				>
-					<Pen size={15} />
-				</CodeBlockButton>
-				{!pathname?.startsWith("/write") && (
+					{language &&
+						(pathname?.startsWith("/write") ? (
+							<FileNameChanger
+								fileName={file}
+								language={language}
+								start={start}
+							/>
+						) : (
+							<span className="text-sm grow cursor-pointer">
+								{getFileNameWithExt(file, language)}
+							</span>
+						))}
 					<CodeBlockButton
-						onClick={onUndo}
-						tip="back to original code"
+						onClick={() => onRunCode(blogState.containerId)}
+						tip="Run Code (Shift+Enter)"
 					>
-						<Undo2 size={16} />
+						<ChevronRightSquare size={16} />
 					</CodeBlockButton>
-				)}
-				<CodeBlockButton
-					onClick={() => setOpenShell((prev) => !prev)}
-					tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
-				>
-					<TerminalIcon size={16} />
-				</CodeBlockButton>
-				<CodeBlockButton
-					tip={
-						(vimEnabledLocally ? "Disable Vim" : "Enable Vim") +
-						"Ctrl-Shift-v"
-					}
-					onClick={() => {
-						dispatch({ type: "toggle vim", payload: null });
-					}}
-				>
-					<DiVim
-						className={`${
-							blogState.vimEnabled ? "text-lime-400" : ""
-						}`}
-						size={16}
-					/>
-				</CodeBlockButton>
-				<CodeBlockButton
-					onClick={() => terminal.clear()}
-					tip="Clear console"
-				>
-					<Eraser size={16} />
-				</CodeBlockButton>
-
-				<CodeBlockButton
-					onClick={() =>
-						navigator.clipboard
-							.writeText(editorView?.state.sliceDoc() || "")
-							.then(() => setCopied(true))
-							.then(() =>
-								setTimeout(() => setCopied(false), 2000)
-							)
-					}
-					tip="Copy code"
-				>
-					{copied ? <Check size={16} /> : <Copy size={16} />}
-				</CodeBlockButton>
-				<CodeBlockButton
-					onClick={() => {
-						setMinimize((p) => !p);
-						setOpenShell(false);
-					}}
-					tip={minimize ? "maximize" : "minimize"}
-				>
-					{minimize ? (
-						<FiMaximize2 size={14} />
-					) : (
-						<FiMinimize2 size={14} />
+					<CodeBlockButton
+						onClick={onWriteCode}
+						tip="Write code to file without running"
+					>
+						<Pen size={15} />
+					</CodeBlockButton>
+					{!pathname?.startsWith("/write") && (
+						<CodeBlockButton
+							onClick={onUndo}
+							tip="back to original code"
+						>
+							<Undo2 size={16} />
+						</CodeBlockButton>
 					)}
-				</CodeBlockButton>
-			</CodeBlockButtons>
-			<div
-				className={cn(
-					"w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none",
-					minimize && "h-0 overflow-hidden"
-				)}
-				id={`codearea-${blockNumber}`}
-				onDoubleClick={() => {
-					// if (setRunningBlock) setRunningBlock(blockNumber);
-					dispatch({
-						type: "set running block",
-						payload: blockNumber,
-					});
-				}}
-			></div>
+					<CodeBlockButton
+						onClick={() => setOpenShell((prev) => !prev)}
+						tip={`${openShell ? "Hide Terminal" : "Show Terminal"}`}
+					>
+						<TerminalIcon size={16} />
+					</CodeBlockButton>
+					<CodeBlockButton
+						tip={
+							(vimEnabledLocally ? "Disable Vim" : "Enable Vim") +
+							"Ctrl-Shift-v"
+						}
+						onClick={() => {
+							dispatch({ type: "toggle vim", payload: null });
+						}}
+					>
+						<DiVim
+							className={`${
+								blogState.vimEnabled ? "text-lime-400" : ""
+							}`}
+							size={16}
+						/>
+					</CodeBlockButton>
+					<CodeBlockButton
+						onClick={() => terminal.clear()}
+						tip="Clear console"
+					>
+						<Eraser size={16} />
+					</CodeBlockButton>
 
-			{/* <Terminal {...{ blockNumber, openShell }} /> */}
-			{/* ----------------Terminal----------------- */}
-			<div
-				className={cn(
-					"not-prose border-[1px] border-white/50 rounded-sm z-10  mt-2 bg-black pl-2 pb-1 overflow-y-auto ",
-					!openShell && "hidden",
-					"custom-terminal"
+					<CodeBlockButton
+						onClick={() =>
+							navigator.clipboard
+								.writeText(editorView?.state.sliceDoc() || "")
+								.then(() => setCopied(true))
+								.then(() =>
+									setTimeout(() => setCopied(false), 2000)
+								)
+						}
+						tip="Copy code"
+					>
+						{copied ? <Check size={16} /> : <Copy size={16} />}
+					</CodeBlockButton>
+					<CodeBlockButton
+						onClick={() => {
+							setMinimize((p) => !p);
+							setOpenShell(false);
+						}}
+						tip={minimize ? "maximize" : "minimize"}
+					>
+						{minimize ? (
+							<FiMaximize2 size={14} />
+						) : (
+							<FiMinimize2 size={14} />
+						)}
+					</CodeBlockButton>
+				</CodeBlockButtons>
+				<div
+					className={cn(
+						"w-full border-2 border-border rounded-sm  rounded-se-none rounded-ss-none",
+						minimize && "h-0 overflow-hidden"
+					)}
+					id={`codearea-${blockNumber}`}
+					onDoubleClick={() => {
+						// if (setRunningBlock) setRunningBlock(blockNumber);
+						dispatch({
+							type: "set running block",
+							payload: blockNumber,
+						});
+					}}
+				></div>
+
+				{/* <Terminal {...{ blockNumber, openShell }} /> */}
+				{/* ----------------Terminal----------------- */}
+				<div
+					className={cn(
+						"not-prose border-[1px] border-white/50 rounded-sm z-10  mt-2 bg-black pl-2 pb-1 overflow-y-auto ",
+						!openShell && "hidden",
+						"custom-terminal"
+					)}
+					id={`terminal-${blockNumber}`}
+					key={`terminal-${blockNumber}`}
+				></div>
+				{pathname?.startsWith("/write") && (
+					<div className="self-center flex gap-2 w-fit mt-2 ">
+						<EditorThemeCombobox
+							start={start}
+							theme={theme || ""}
+						/>
+					</div>
 				)}
-				id={`terminal-${blockNumber}`}
-				key={`terminal-${blockNumber}`}
-			></div>
-			{pathname?.startsWith("/write") && (
-				<div className="self-center flex gap-2 w-fit mt-2 ">
-					<EditorThemeCombobox start={start} theme={theme || ""} />
-				</div>
-			)}
-		</CodeBlock>
+			</CodeBlock>
+
+			<LoginDialog
+				dialog="Please login to execute code"
+				open={openLoginDialog}
+				setOpen={setOpenLoginDialog}
+			/>
+		</>
 	);
 }
 

@@ -23,7 +23,6 @@ export function LoginDialog({
 	setOpen: any;
 }) {
 	const { editorState } = useContext(EditorContext);
-	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	return (
 		<AlertDialog open={open}>
