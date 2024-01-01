@@ -9,9 +9,9 @@ export async function GET(request: NextRequest) {
     console.log("Search params =========================>", Array.from(searchParams.entries()))
 
     // next can be /write?draft=draftId
-    const nextSplit = next.split("?")
+    const nextSplit = next.split("?");
     const nextUrl = nextSplit.at(0)!
-    const nextSearch = nextSplit.at(1)
+    const nextSearchParam = nextSplit.at(1)
 
     if (code) {
 
@@ -19,15 +19,20 @@ export async function GET(request: NextRequest) {
         const url = request.nextUrl.clone()
         url.pathname = nextUrl
 
-        for (let key of Array.from(url.searchParams.keys())) {
-            url.searchParams.delete(key)
-        }
-        if (nextSearch) {
-            const match = /(.*)=(.*)/.exec(nextSearch)
+        url.searchParams.delete("code")
+        url.searchParams.delete("next")
+        if (nextSearchParam) {
+            const match = /(.*)=(.*)/.exec(nextSearchParam)
             if (match) {
                 url.searchParams.set(match[1], match[2])
             }
+
         }
+        for (let [key, val] of Array.from(searchParams.entries())) {
+            if (key !== "code" && key !== "next") url.searchParams.set(key, val)
+        }
+
+        console.log("Url =============> ", url)
 
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {

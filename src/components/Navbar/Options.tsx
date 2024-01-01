@@ -14,7 +14,7 @@ import {
 } from "@components/ui/sheet";
 import { useToast } from "@components/ui/use-toast";
 import { handleLogout, handleSignIn } from "@utils/handleAuth";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 
@@ -23,6 +23,7 @@ export function NotLoggedInOptions({
 	redirectTo,
 }: React.ComponentPropsWithoutRef<"div"> & { redirectTo?: string }) {
 	const pathname = usePathname();
+	const searchParams = useSearchParams();
 	const { supabase } = useSupabase();
 	return (
 		<div className={cn("flex flex-col gap-2 mt-4", className)}>
@@ -33,7 +34,9 @@ export function NotLoggedInOptions({
 					handleSignIn(
 						supabase,
 						"github",
-						redirectTo || pathname || "/"
+						redirectTo ||
+							pathname + "?" + searchParams?.toString() ||
+							"/"
 					);
 				}}
 				className="p-2 justify-center gap-2 bg-gray-200 hover:bg-gray-500 text-black"

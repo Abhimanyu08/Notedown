@@ -20,16 +20,19 @@ export function checkOnPreview(pathname: string | null, searchParams: ReadonlyUR
 
 
     if (!searchParams || !pathname) return pathname === href
-    let searchParamString = ""
-    let i = 0
-    for (let [key, val] of Array.from(searchParams.entries())) {
-        if (i !== 0) searchParamString += "&"
-        searchParamString += `${key}=${val}`
-        i += 1
+
+    const hrefSplit = href.split(/[?&]/)
+    const hrefPath = hrefSplit[0]
+
+    let pathMatches = pathname === hrefPath
+    if (!pathMatches) return pathMatches
+    for (let keyVal of hrefSplit.slice(1, undefined)) {
+        const keyValSplit = keyVal.split("=")
+        if (searchParams.get(keyValSplit[0]) !== keyValSplit[1]) {
+            return false
+        }
     }
 
-
-
-    return pathname + "?" + searchParamString === href
+    return true
 
 }
