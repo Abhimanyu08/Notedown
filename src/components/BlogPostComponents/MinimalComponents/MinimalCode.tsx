@@ -5,6 +5,7 @@ import { Compartment } from "@codemirror/state";
 import {
 	MouseEventHandler,
 	memo,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -82,11 +83,7 @@ function MinimalCode({
 					{
 						key: "Shift-Enter",
 						run() {
-							setOpenShell(true);
-							dispatch({
-								type: "set running block",
-								payload: blockNumber,
-							});
+							onRunCode();
 							return true;
 						},
 					},
@@ -154,7 +151,8 @@ function MinimalCode({
 		});
 	};
 
-	const onRunCode = async (containerId: string | null) => {
+	const onRunCode = useCallback(async () => {
+		const containerId = blogState.containerId;
 		if (!session?.user) {
 			setOpenLoginDialog(true);
 			return;
@@ -178,7 +176,7 @@ function MinimalCode({
 			type: "set running block",
 			payload: blockNumber,
 		});
-	};
+	}, [blogState.containerId, session?.user.id]);
 
 	const onWriteCode = () => {
 		dispatch({
@@ -201,7 +199,7 @@ function MinimalCode({
 							{getFileNameWithExt(file || "main", language)}
 						</span>
 						<CodeBlockButton
-							onClick={() => onRunCode(blogState.containerId)}
+							onClick={() => onRunCode()}
 							tip="Run Code (Shift+Enter)"
 						>
 							<ChevronRightSquare size={16} />

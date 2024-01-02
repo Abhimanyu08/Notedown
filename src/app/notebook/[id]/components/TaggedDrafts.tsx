@@ -6,7 +6,7 @@ import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ToolTipComponent } from "@components/ToolTipComponent";
 import { BiCheck, BiLink } from "react-icons/bi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@components/ui/button";
 import Link from "next/link";
 
@@ -20,12 +20,22 @@ export function TaggedDrafts({
 	const searchParams = useSearchParams();
 	const params = useParams();
 	const pathname = usePathname();
+	const detailsRef = useRef<HTMLDetailsElement | null>(null);
 	const [copied, setCopied] = useState(false);
 	useEffect(() => {
 		if (copied) {
 			setTimeout(() => setCopied(false), 2000);
 		}
 	}, [copied]);
+
+	useEffect(() => {
+		if (!detailsRef || !detailsRef.current) return;
+
+		const currentStatus = detailsRef.current.open;
+		if (searchParams?.get("tag") === tag && !currentStatus) {
+			detailsRef.current.open = true;
+		}
+	}, [searchParams]);
 
 	let searchTag = null;
 	if (searchParams && searchParams.has("showtag")) {
@@ -36,6 +46,7 @@ export function TaggedDrafts({
 		<>
 			<details
 				open={searchTag === tag || tag === "notag" || false}
+				ref={detailsRef}
 				className={cn(
 					"relative ",
 					searchTag && searchTag !== tag ? "hidden" : ""

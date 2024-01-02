@@ -6,6 +6,7 @@ import {
 	MouseEventHandler,
 	lazy,
 	memo,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -102,11 +103,7 @@ function Code({
 					{
 						key: "Shift-Enter",
 						run() {
-							setOpenShell(true);
-							dispatch({
-								type: "set running block",
-								payload: blockNumber,
-							});
+							onRunCode();
 							return true;
 						},
 					},
@@ -174,7 +171,8 @@ function Code({
 		});
 	};
 
-	const onRunCode = async (containerId: string | null) => {
+	const onRunCode = useCallback(async () => {
+		const containerId = blogState.containerId;
 		if (!session?.user) {
 			setOpenLoginDialog(true);
 			return;
@@ -198,7 +196,7 @@ function Code({
 			type: "set running block",
 			payload: blockNumber,
 		});
-	};
+	}, [blogState.containerId, session?.user.id]);
 
 	const onWriteCode = () => {
 		dispatch({
@@ -238,7 +236,7 @@ function Code({
 							</span>
 						))}
 					<CodeBlockButton
-						onClick={() => onRunCode(blogState.containerId)}
+						onClick={() => onRunCode()}
 						tip="Run Code (Shift+Enter)"
 					>
 						<ChevronRightSquare size={16} />
