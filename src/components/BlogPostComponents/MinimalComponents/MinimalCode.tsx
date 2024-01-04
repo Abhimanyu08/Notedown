@@ -77,19 +77,6 @@ function MinimalCode({
 
 	useEffect(() => {
 		if (!editorView) return;
-		editorView.dispatch({
-			effects: StateEffect.appendConfig.of([
-				keymap.of([
-					{
-						key: "Shift-Enter",
-						run() {
-							onRunCode();
-							return true;
-						},
-					},
-				]),
-			]),
-		});
 
 		dispatch({
 			type: "set editor",
@@ -177,6 +164,23 @@ function MinimalCode({
 			payload: blockNumber,
 		});
 	}, [blogState.containerId, session?.user.id]);
+
+	useEffect(() => {
+		if (!editorView || !blogState.containerId) return;
+		editorView.dispatch({
+			effects: StateEffect.appendConfig.of([
+				keymap.of([
+					{
+						key: "Shift-Enter",
+						run() {
+							onRunCode();
+							return true;
+						},
+					},
+				]),
+			]),
+		});
+	}, [editorView, blogState.containerId]);
 
 	const onWriteCode = () => {
 		dispatch({
