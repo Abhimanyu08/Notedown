@@ -74,6 +74,7 @@ function Code({
 
 	const [openShell, setOpenShell] = useState(false);
 	const [copied, setCopied] = useState(false);
+	const [runCodeCompartment, setRunCodeCompartment] = useState<Compartment>();
 
 	const pathname = usePathname();
 	const { editorView } = useEditor({
@@ -186,21 +187,31 @@ function Code({
 	}, [blogState.containerId, session?.user.id]);
 
 	useEffect(() => {
-		if (!editorView || !blogState.containerId) return;
-		editorView.dispatch({
-			effects: StateEffect.appendConfig.of([
-				keymap.of([
-					{
-						key: "Shift-Enter",
-						run() {
-							onRunCode();
-							return true;
-						},
-					},
-				]),
-			]),
+		if (!editorView) return;
+		const runCodeExtension = keymap.of([
+			{
+				key: "Shift-Enter",
+				run() {
+					onRunCode();
+					return true;
+				},
+			},
+		]);
+		if (runCodeCompartment) {
+			editorView.dispatch({
+				effects: runCodeCompartment.reconfigure(runCodeExtension),
+			});
+			return;
+		}
+
+		const compartment = new Compartment();
+		editorView?.dispatch({
+			effects: StateEffect.appendConfig.of(
+				compartment.of(runCodeExtension)
+			),
 		});
-	}, [editorView, blogState.containerId]);
+		setRunCodeCompartment(compartment);
+	}, [editorView, onRunCode]);
 
 	const onWriteCode = () => {
 		dispatch({
@@ -268,7 +279,7 @@ function Code({
 					<CodeBlockButton
 						tip={
 							(vimEnabledLocally ? "Disable Vim" : "Enable Vim") +
-							"Ctrl-Shift-v"
+							" (Ctrl-Shift-v)"
 						}
 						onClick={() => {
 							dispatch({ type: "toggle vim", payload: null });

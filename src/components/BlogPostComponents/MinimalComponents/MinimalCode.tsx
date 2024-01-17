@@ -61,7 +61,7 @@ function MinimalCode({
 	const [copied, setCopied] = useState(false);
 	const { session } = useSupabase();
 	const [openLoginDialog, setOpenLoginDialog] = useState(false);
-
+	const [runCodeCompartment, setRunCodeCompartment] = useState<Compartment>();
 	const [minimize, setMinimize] = useState(false);
 	const { editorView } = useEditor({
 		language: language!,
@@ -166,21 +166,31 @@ function MinimalCode({
 	}, [blogState.containerId, session?.user.id]);
 
 	useEffect(() => {
-		if (!editorView || !blogState.containerId) return;
-		editorView.dispatch({
-			effects: StateEffect.appendConfig.of([
-				keymap.of([
-					{
-						key: "Shift-Enter",
-						run() {
-							onRunCode();
-							return true;
-						},
-					},
-				]),
-			]),
+		if (!editorView) return;
+		const runCodeExtension = keymap.of([
+			{
+				key: "Shift-Enter",
+				run() {
+					onRunCode();
+					return true;
+				},
+			},
+		]);
+		if (runCodeCompartment) {
+			editorView.dispatch({
+				effects: runCodeCompartment.reconfigure(runCodeExtension),
+			});
+			return;
+		}
+
+		const compartment = new Compartment();
+		editorView?.dispatch({
+			effects: StateEffect.appendConfig.of(
+				compartment.of(runCodeExtension)
+			),
 		});
-	}, [editorView, blogState.containerId]);
+		setRunCodeCompartment(compartment);
+	}, [editorView, onRunCode]);
 
 	const onWriteCode = () => {
 		dispatch({

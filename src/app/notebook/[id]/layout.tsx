@@ -5,8 +5,6 @@ import NewNoteButton from "@components/ProfileComponents/NewPostButton";
 import OwnerOnlyStuff, {
 	NotOwnerOnlyStuff,
 } from "@components/ProfileComponents/OwnerOnlyStuff";
-import { ToolTipComponent } from "@components/ToolTipComponent";
-import { Input } from "@components/ui/input";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_POST_TABLE, SUPABASE_TAGS_TABLE } from "@utils/constants";
 import { createSupabaseServerClient } from "@utils/createSupabaseClients";
@@ -15,15 +13,12 @@ import { postToDraft } from "@utils/postToDraft";
 import { Draft } from "@utils/processDrafts";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
-import Link from "next/link";
-import { RedirectType, redirect } from "next/navigation";
 import React, { Suspense } from "react";
-import { AiFillCloseCircle } from "react-icons/ai";
 import Drafts from "./components/Drafts";
 import { DraftsDisplay } from "./components/DraftsDisplay";
-import { TaggedDrafts } from "./components/TaggedDrafts";
-import SearchResults from "./components/SearchResults";
 import SearchInput from "./components/SearchInput";
+import SearchResults from "./components/SearchResults";
+import { TaggedDrafts } from "./components/TaggedDrafts";
 import PostsLoading from "./loading";
 
 type LayoutProps = {
