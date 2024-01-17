@@ -1,11 +1,15 @@
 import 'server-only';
-import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
+import { LIMIT, SUPABASE_BLOGGER_TABLE, SUPABASE_FILES_BUCKET, SUPABASE_IMAGE_BUCKET, SUPABASE_POST_TABLE, SUPABASE_SLUGPOST_TABLE, SUPABASE_UPVOTES_TABLE } from "@utils/constants";
 import { cache } from "react";
 import { PostgrestError, SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@utils/supabaseClient';
 import { checkDataLength } from './postTypeToFetcher';
 import { Database } from '@/interfaces/supabase';
 import PostWithBlogger from '@/interfaces/PostWithBlogger';
+
+
+
+type Tables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]
 
 export const getUser = async (id: string) => {
 
@@ -26,19 +30,30 @@ export const getPost = async (postIdOrSlug: string, supabaseClient: SupabaseClie
     let postMetaError: PostgrestError | null
     if (isNaN(parseInt(postIdOrSlug))) {
 
+        let correctSlugPost = postIdOrSlug
+
+        const { data: slugData } = await supabaseClient.from<"slugpost", Tables<"slugpost">>(SUPABASE_SLUGPOST_TABLE).select("active, postid").eq("slug", postIdOrSlug).single()
+        if (slugData && !slugData.active) {
+
+            const { data: correctSlugData } = await supabaseClient.from<"slugpost", Tables<"slugpost">>(SUPABASE_SLUGPOST_TABLE).select("slug").match({ postid: slugData.postid, active: true }).single()
+
+            if (correctSlugData) correctSlugPost = correctSlugData.slug
+        }
+
+
         const { data, error } = await supabaseClient
-            .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
+            .from<"posts", Tables<"posts">>(SUPABASE_POST_TABLE)
             .select(
                 "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name),slug"
             )
-            .eq("slug", postIdOrSlug)
+            .eq("slug", correctSlugPost)
             .single();
         post = data
         postMetaError = error
     } else {
 
         const { data, error } = await supabaseClient
-            .from<"posts", Database["public"]["Tables"]["posts"]>(SUPABASE_POST_TABLE)
+            .from<"posts", Tables<"posts">>(SUPABASE_POST_TABLE)
             .select(
                 "id,created_by,timestamp,title,description,language,published_on,published,created_at,filename,image_folder,bloggers(id,name),slug"
             )
