@@ -54,11 +54,11 @@ export function TaggedDrafts({
 			>
 				<summary
 					className={cn(
-						"font-serif marker:text-gray-400 text-gray-100 text-lg cursor-pointer group/tag",
+						"font-serif marker:text-sm marker:text-gray-400 text-gray-100 cursor-pointer group/tag",
 						tag === "notag" && "hidden"
 					)}
 				>
-					{tag}
+					<span className="font-mono text-sm">{tag}</span>
 					<ToolTipComponent
 						tip="Copy tag link"
 						side="left"

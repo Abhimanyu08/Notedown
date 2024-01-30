@@ -40,9 +40,9 @@ export default function useRecoverSandpack({ persistanceKey }: { persistanceKey:
         const request = sandpackObjectStore.get(persistanceKey);
 
         request.onsuccess = (e) => {
-            const { config } = (
+            const config = (
                 e.target as IDBRequest<{ timeStamp: string; config: string }>
-            ).result;
+            ).result?.config;
             setJsonConfigString(config)
         };
 

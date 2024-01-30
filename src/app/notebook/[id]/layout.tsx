@@ -195,6 +195,8 @@ async function getPostTagMap(id: string, supabase: SupabaseClient<Database>) {
 	return map;
 }
 function TaggedDraftContainer({ children }: { children: React.ReactNode }) {
-	return <div className="flex flex-col gap-4 px-3">{children}</div>;
+	return (
+		<div className="flex flex-col gap-4 pl-[1.1rem] pr-3">{children}</div>
+	);
 }
 export default ProfilePostsLayout;

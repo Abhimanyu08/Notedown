@@ -33,7 +33,7 @@ function JsonConfigEditor({
 }) {
 	const [minimize, setMinimize] = useState(false);
 
-	const { editorState, dispatch } = useContext(EditorContext);
+	const { dispatch } = useContext(EditorContext);
 	const { documentDb } = useContext(IndexedDbContext);
 
 	const { toggleVim, vimEnabled } = useToggleVim({

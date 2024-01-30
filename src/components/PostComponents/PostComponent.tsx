@@ -49,7 +49,7 @@ const Post: React.FC<PostComponentProps> = ({ post, tag }) => {
 					<span className="">{date && formatDate(date)}</span>
 					<span
 						className={cn(
-							"rounded-lg px-1 text-xs underline underline-offset-2",
+							"rounded-lg px-1  underline underline-offset-2",
 							published
 								? "decoration-emerald-700"
 								: "decoration-rose-700"
